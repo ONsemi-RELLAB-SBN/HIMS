@@ -125,7 +125,7 @@ public class WhInventoryPdf extends AbstractITextPdfViewPotrait {
         table.addCell(cellContent);
         
         //8
-        cellHeader.setPhrase(new Phrase("Approved Date", fontHeader));
+        cellHeader.setPhrase(new Phrase("Verification Date", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whInventory.getDateVerify(), fontContent));
         table.addCell(cellContent);

@@ -74,8 +74,8 @@ public class WhRetrieveDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE hms_wh_retrieval_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ? "
-                 + "WHERE ref_id = ? AND material_pass_no = ? "
+                "UPDATE hms_wh_retrieval_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ? "
+             + "WHERE ref_id = ? AND material_pass_no = ? "
             );
             ps.setString(1, whRetrieve.getBarcodeVerify());
             ps.setString(2, whRetrieve.getDateVerify());
@@ -205,7 +205,7 @@ public class WhRetrieveDAO {
     }
 
     public WhRetrieve getWhRetrieve(String whRetrieveId) {
-        String sql  = "SELECT *,DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view "
+        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
                     + "FROM hms_wh_retrieval_list "
                     + "WHERE ref_id = '" + whRetrieveId + "' ";
         WhRetrieve whRetrieve = null;
@@ -216,16 +216,16 @@ public class WhRetrieveDAO {
                 whRetrieve = new WhRetrieve();
                 whRetrieve.setRefId(rs.getString("ref_id"));
                 whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
-                whRetrieve.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
                 whRetrieve.setType(rs.getString("type"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
-                whRetrieve.setRequestedDate(rs.getString("requested_date"));
+                whRetrieve.setRequestedDate(rs.getString("requested_date_view"));
                 whRetrieve.setRemarks(rs.getString("remarks"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
-                whRetrieve.setDateVerify(rs.getString("date_verify"));
+                whRetrieve.setDateVerify(rs.getString("date_verify_view"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
@@ -247,7 +247,7 @@ public class WhRetrieveDAO {
     }
 
     public List<WhRetrieve> getWhRetrieveList() {
-        String sql = "SELECT *,DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view "
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
                    + "FROM hms_wh_retrieval_list "
                    + "WHERE status NOT LIKE 'Move to Inventory'"
                    + "ORDER BY id DESC";
@@ -260,16 +260,16 @@ public class WhRetrieveDAO {
                 whRetrieve = new WhRetrieve();
                 whRetrieve.setRefId(rs.getString("ref_id"));
                 whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
-                whRetrieve.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
                 whRetrieve.setType(rs.getString("type"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
-                whRetrieve.setRequestedDate(rs.getString("requested_date"));
+                whRetrieve.setRequestedDate(rs.getString("requested_date_view"));
                 whRetrieve.setRemarks(rs.getString("remarks"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
-                whRetrieve.setDateVerify(rs.getString("date_verify"));
+                whRetrieve.setDateVerify(rs.getString("date_verify_view"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));

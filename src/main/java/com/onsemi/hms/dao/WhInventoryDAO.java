@@ -30,7 +30,7 @@ public class WhInventoryDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_inventory_list (ref_id, material_pass_no, inventory_date, inventory_rack, inventory_slot, inventory_by, status, flag) "
+                "INSERT INTO hms_wh_inventory_list (retrieve_id, material_pass_no, inventory_date, inventory_rack, inventory_slot, inventory_by, status, flag) "
               + "VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whInventory.getRefId());
@@ -67,7 +67,7 @@ public class WhInventoryDAO {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_inventory_list "
                    + "SET inventory_date = ?, inventory_rack = ?, inventory_slot = ?, inventory_by = ? "
-                   + "WHERE ref_id = ?";
+                   + "WHERE retrieve_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whInventory.getInventoryDate());
@@ -96,7 +96,7 @@ public class WhInventoryDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "DELETE FROM hms_wh_inventory_list WHERE ref_id = '" + whInventoryId + "'"
+                "DELETE FROM hms_wh_inventory_list WHERE retrieve_id = '" + whInventoryId + "'"
             );
             queryResult.setResult(ps.executeUpdate());
             ps.close();
@@ -116,17 +116,16 @@ public class WhInventoryDAO {
     }
 
     public WhInventory getWhInventory(String whInventoryId) {
-        LOGGER.info("getWhInventory : " + whInventoryId);
-        String sql = "SELECT * FROM hms_wh_inventory_list WHERE ref_id = '" + whInventoryId + "'";
+        String sql = "SELECT * "
+                   + "FROM hms_wh_inventory_list "
+                   + "WHERE retrieve_id = '" + whInventoryId + "'";
         WhInventory whInventory = null;
         try {
-            LOGGER.info("masuk 1...");
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                LOGGER.info("masuk 2...");
                 whInventory = new WhInventory();
-                whInventory.setRefId(rs.getString("ref_id"));
+                whInventory.setRefId(rs.getString("retrieve_id"));
                 whInventory.setMaterialPassNo(rs.getString("material_pass_no"));
                 whInventory.setStatus(rs.getString("status"));
                 whInventory.setFlag(rs.getString("flag"));                
@@ -148,29 +147,30 @@ public class WhInventoryDAO {
     }
         
     public WhInventory getWhInventoryMergeWithRetrieve(String whInventoryId) {
-        String sql = "SELECT IL.*, RL.* "
+        String sql = "SELECT IL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
+                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(IL.inventory_date,'%d %M %Y') AS inventory_date_view "
                    + "FROM hms_wh_inventory_list IL, hms_wh_retrieval_list RL "
-                   + "WHERE IL.ref_id = RL.ref_id AND IL.ref_id = '" + whInventoryId + "' ";
+                   + "WHERE IL.retrieve_id = RL.ref_id AND IL.retrieve_id = '" + whInventoryId + "' ";
         WhInventory whInventory = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whInventory = new WhInventory();
-                whInventory.setRefId(rs.getString("IL.ref_id"));
+                whInventory.setRefId(rs.getString("IL.retrieve_id"));
                 whInventory.setMaterialPassNo(rs.getString("IL.material_pass_no"));
-                whInventory.setMaterialPassExpiry(rs.getString("RL.material_pass_expiry"));
+                whInventory.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whInventory.setEquipmentType(rs.getString("RL.equipment_type"));
                 whInventory.setEquipmentId(rs.getString("RL.equipment_id"));
                 whInventory.setType(rs.getString("RL.type"));
                 whInventory.setQuantity(rs.getString("RL.quantity"));
                 whInventory.setRemarks(rs.getString("RL.remarks"));
                 whInventory.setRequestedBy(rs.getString("RL.requested_by"));
-                whInventory.setRequestedDate(rs.getString("RL.requested_date"));
+                whInventory.setRequestedDate(rs.getString("requested_date_view"));
                 whInventory.setBarcodeVerify(rs.getString("RL.barcode_verify"));
-                whInventory.setDateVerify(rs.getString("RL.date_verify"));
+                whInventory.setDateVerify(rs.getString("date_verify_view"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
-                whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
+                whInventory.setInventoryDate(rs.getString("inventory_date_view"));
                 whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
                 whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
                 whInventory.setStatus(rs.getString("IL.status"));
@@ -193,9 +193,10 @@ public class WhInventoryDAO {
     }
 
     public List<WhInventory> getWhInventoryListMergeRetrieve() {
-        String sql = "SELECT IL.*, RL.* "
+        String sql = "SELECT IL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
+                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(IL.inventory_date,'%d %M %Y') AS inventory_date_view "
                    + "FROM hms_wh_inventory_list IL, hms_wh_retrieval_list RL "
-                   + "WHERE IL.ref_id = RL.ref_id ";
+                   + "WHERE IL.retrieve_id = RL.ref_id ";
         List<WhInventory> whInventoryList = new ArrayList<WhInventory>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -203,20 +204,20 @@ public class WhInventoryDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whInventory = new WhInventory();
-                 whInventory.setRefId(rs.getString("IL.ref_id"));
+                whInventory.setRefId(rs.getString("IL.retrieve_id"));
                 whInventory.setMaterialPassNo(rs.getString("IL.material_pass_no"));
-                whInventory.setMaterialPassExpiry(rs.getString("RL.material_pass_expiry"));
+                whInventory.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whInventory.setEquipmentType(rs.getString("RL.equipment_type"));
                 whInventory.setEquipmentId(rs.getString("RL.equipment_id"));
                 whInventory.setType(rs.getString("RL.type"));
                 whInventory.setQuantity(rs.getString("RL.quantity"));
                 whInventory.setRemarks(rs.getString("RL.remarks"));
                 whInventory.setRequestedBy(rs.getString("RL.requested_by"));
-                whInventory.setRequestedDate(rs.getString("RL.requested_date"));
+                whInventory.setRequestedDate(rs.getString("requested_date_view"));
                 whInventory.setBarcodeVerify(rs.getString("RL.barcode_verify"));
-                whInventory.setDateVerify(rs.getString("RL.date_verify"));
+                whInventory.setDateVerify(rs.getString("date_verify_view"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
-                whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
+                whInventory.setInventoryDate(rs.getString("inventory_date_view"));
                 whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
                 whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
                 whInventory.setStatus(rs.getString("IL.status"));
@@ -243,7 +244,7 @@ public class WhInventoryDAO {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_inventory_list WHERE ref_id = '" + id + "' "
+                "SELECT COUNT(*) AS count FROM hms_wh_inventory_list WHERE retrieve_id = '" + id + "' "
             );
 
             ResultSet rs = ps.executeQuery();

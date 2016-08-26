@@ -127,7 +127,7 @@ public class WhRetrievePdf extends AbstractITextPdfViewPotrait {
         table.addCell(cellContent);
         
         //8
-        cellHeader.setPhrase(new Phrase("Approval Status", fontHeader));
+        cellHeader.setPhrase(new Phrase("Status", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whRetrieve.getStatus(), fontContent));
         table.addCell(cellContent);

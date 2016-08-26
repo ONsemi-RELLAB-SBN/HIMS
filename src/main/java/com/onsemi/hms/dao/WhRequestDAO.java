@@ -148,7 +148,7 @@ public class WhRequestDAO {
     }
 
     public WhRequest getWhRequest(String whRequestId) {
-        String sql = "SELECT *, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view "
+        String sql = "SELECT *, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view "
                    + "FROM hms_wh_request_list WHERE ref_id = '" + whRequestId + "'";
         WhRequest whRequest = null;
         try {
@@ -162,9 +162,9 @@ public class WhRequestDAO {
                 whRequest.setType(rs.getString("type"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
-                whRequest.setRequestedDate(rs.getString("requested_date"));
+                whRequest.setRequestedDate(rs.getString("requested_date_view"));
                 whRequest.setMaterialPassNo(rs.getString("material_pass_no"));
-                whRequest.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequest.setRack(rs.getString("rack"));
                 whRequest.setSlot(rs.getString("slot"));
                 whRequest.setRemarks(rs.getString("remarks"));
@@ -188,7 +188,7 @@ public class WhRequestDAO {
     }
 
     public List<WhRequest> getWhRequestList() {
-        String sql = "SELECT *,DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view "
+        String sql = "SELECT *,DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view "
                    + "FROM hms_wh_request_list "
                    + "ORDER BY id DESC";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
@@ -204,9 +204,9 @@ public class WhRequestDAO {
                 whRequest.setType(rs.getString("type"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
-                whRequest.setRequestedDate(rs.getString("requested_date"));
+                whRequest.setRequestedDate(rs.getString("requested_date_view"));
                 whRequest.setMaterialPassNo(rs.getString("material_pass_no"));
-                whRequest.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequest.setRack(rs.getString("rack"));
                 whRequest.setSlot(rs.getString("slot"));
                 whRequest.setRemarks(rs.getString("remarks"));
@@ -231,7 +231,7 @@ public class WhRequestDAO {
     }
 
     public List<WhRequest> getWhRequestListForShipping() {
-        String sql = "SELECT *,DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view "
+        String sql = "SELECT *, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view "
                    + "FROM hms_wh_request_list "
                    + "WHERE status = \"Verified\" "
                    + "ORDER BY id DESC";
@@ -248,9 +248,9 @@ public class WhRequestDAO {
                 whRequest.setType(rs.getString("type"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
-                whRequest.setRequestedDate(rs.getString("requested_date"));
+                whRequest.setRequestedDate(rs.getString("requested_date_view"));
                 whRequest.setMaterialPassNo(rs.getString("material_pass_no"));
-                whRequest.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequest.setRack(rs.getString("rack"));
                 whRequest.setSlot(rs.getString("slot"));
                 whRequest.setRemarks(rs.getString("remarks"));
