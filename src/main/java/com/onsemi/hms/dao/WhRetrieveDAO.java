@@ -31,7 +31,7 @@ public class WhRetrieveDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_wh_retrieval_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, type, quantity, "
+                    "INSERT INTO hms_wh_retrieval_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, quantity, "
                                                         + "requested_by, requested_date, remarks, status, flag) "
                   + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
@@ -40,13 +40,12 @@ public class WhRetrieveDAO {
             ps.setString(3, whRetrieve.getMaterialPassExpiry());
             ps.setString(4, whRetrieve.getEquipmentType());
             ps.setString(5, whRetrieve.getEquipmentId());
-            ps.setString(6, whRetrieve.getType());
-            ps.setString(7, whRetrieve.getQuantity());
-            ps.setString(8, whRetrieve.getRequestedBy());
-            ps.setString(9, whRetrieve.getRequestedDate());
-            ps.setString(10, whRetrieve.getRemarks());
-            ps.setString(11, whRetrieve.getStatus());
-            ps.setString(12, whRetrieve.getFlag());
+            ps.setString(6, whRetrieve.getQuantity());
+            ps.setString(7, whRetrieve.getRequestedBy());
+            ps.setString(8, whRetrieve.getRequestedDate());
+            ps.setString(9, whRetrieve.getRemarks());
+            ps.setString(10, whRetrieve.getStatus());
+            ps.setString(11, whRetrieve.getFlag());
 
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
@@ -219,7 +218,6 @@ public class WhRetrieveDAO {
                 whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
-                whRetrieve.setType(rs.getString("type"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
                 whRetrieve.setRequestedDate(rs.getString("requested_date_view"));
@@ -263,7 +261,6 @@ public class WhRetrieveDAO {
                 whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
-                whRetrieve.setType(rs.getString("type"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
                 whRetrieve.setRequestedDate(rs.getString("requested_date_view"));

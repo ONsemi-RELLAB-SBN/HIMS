@@ -17,9 +17,6 @@
                             <h2 class="pull-left">Hardware Request List</h2>
 
                             <div class="filter-block pull-right">
-                                <!--a href="${contextPath}/wh/whRequest/add" class="btn btn-primary pull-right">
-                                    <i class="fa fa-plus-circle fa-lg"></i> Add New Request
-                                </a-->
                             </div>
                         </div>
                         <hr/>
@@ -46,12 +43,11 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Material Pass No.</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Location</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
+                                        <th><span>Material Pass No.</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
@@ -60,16 +56,16 @@
                                     <c:forEach items="${whRequestList}" var="whRequest" varStatus="whRequestLoop">
                                         <tr>
                                             <td><c:out value="${whRequestLoop.index+1}"/></td>
-                                            <td><c:out value="${whRequest.materialPassNo}"/></td>
                                             <td><c:out value="${whRequest.equipmentType}"/></td>
                                             <td id="modal_delete_info_${whRequest.refId}"><c:out value="${whRequest.equipmentId}"/></td>
-                                            <td><c:out value="${whRequest.rack}"/>, <c:out value="${whRequest.slot}"/></td>
                                             <td><c:out value="${whRequest.requestedBy}"/></td>
                                             <td><c:out value="${whRequest.requestedDate}"/></td>
+                                            <td><c:out value="${whRequest.materialPassNo}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>
+                                            
                                             <td align="center">
                                                 <c:if test="${groupId == '1' || groupId == '2' || groupId == '29'}">
-                                                    <a href="${contextPath}/wh/whRequest/approval/${whRequest.refId}" id="approval" name="approval" class="table-link" title="Verification">
+                                                    <a href="${contextPath}/wh/whRequest/verify/${whRequest.refId}" id="verify" name="verify" class="table-link" title="Verification">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa fa-check fa-stack-1x fa-inverse"></i>
@@ -83,18 +79,6 @@
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
-                                                <!--a href="${contextPath}/wh/whRequest/edit/${whRequest.refId}" class="table-link" title="Edit">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
-                                                <a modaldeleterefId="${whRequest.id}" data-toggle="modal" href="#delete_modal" class="table-link danger group_delete" onclick="modalDelete(this);">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a-->
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -105,6 +89,7 @@
                 </div>
             </div>
         </div>
+        <hr class="separator">
     </s:layout-component>
     <s:layout-component name="page_js">
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
@@ -118,7 +103,7 @@
                     "order": [],
                     "aoColumnDefs": [
                         {"bSortable": false, "aTargets": [0]},
-                        {"bSortable": false, "aTargets": [8]}
+                        {"bSortable": false, "aTargets": [7]}
                     ],
                     "sDom": "tp"
                 });

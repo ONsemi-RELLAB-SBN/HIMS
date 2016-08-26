@@ -191,6 +191,51 @@ public class WhInventoryDAO {
         }
         return whInventory;
     }
+    
+    public WhInventory getWhInventoryMergeWithRetrievePdf(String whInventoryId) {
+        String sql = "SELECT IL.*, RL.* "
+                   + "FROM hms_wh_inventory_list IL, hms_wh_retrieval_list RL "
+                   + "WHERE IL.retrieve_id = RL.ref_id AND IL.retrieve_id = '" + whInventoryId + "' ";
+        WhInventory whInventory = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whInventory = new WhInventory();
+                whInventory.setRefId(rs.getString("IL.retrieve_id"));
+                whInventory.setMaterialPassNo(rs.getString("IL.material_pass_no"));
+                whInventory.setMaterialPassExpiry(rs.getString("RL.material_pass_expiry"));
+                whInventory.setEquipmentType(rs.getString("RL.equipment_type"));
+                whInventory.setEquipmentId(rs.getString("RL.equipment_id"));
+                whInventory.setType(rs.getString("RL.type"));
+                whInventory.setQuantity(rs.getString("RL.quantity"));
+                whInventory.setRemarks(rs.getString("RL.remarks"));
+                whInventory.setRequestedBy(rs.getString("RL.requested_by"));
+                whInventory.setRequestedDate(rs.getString("RL.requested_date"));
+                whInventory.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+                whInventory.setDateVerify(rs.getString("RL.date_verify"));
+                whInventory.setUserVerify(rs.getString("RL.user_verify"));
+                whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
+                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
+                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setStatus(rs.getString("IL.status"));
+                whInventory.setFlag(rs.getString("IL.flag"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whInventory;
+    }
 
     public List<WhInventory> getWhInventoryListMergeRetrieve() {
         String sql = "SELECT IL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "

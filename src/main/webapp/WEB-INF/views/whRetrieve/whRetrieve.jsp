@@ -45,8 +45,8 @@
                                         <th><span>No</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Retrieved By</span></th>
-                                        <th><span>Retrieved Date</span></th>
+                                        <th><span>Requested By</span></th>
+                                        <th><span>Requested Date</span></th>
                                         <th><span>Material Pass No.</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
@@ -65,7 +65,7 @@
                                             
                                             <td align="center">
                                                 <c:if test="${groupId == '1' || groupId == '2' || groupId == '29'}">
-                                                    <a href="${contextPath}/wh/whRetrieve/approval/${whRetrieve.refId}" id="approval" name="approval" class="table-link" title="Verification">
+                                                    <a href="${contextPath}/wh/whRetrieve/verify/${whRetrieve.refId}" id="verify" name="verify" class="table-link" title="Verification">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa fa-check fa-stack-1x fa-inverse"></i>

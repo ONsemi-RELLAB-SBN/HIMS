@@ -1,21 +1,21 @@
-package com.onsemi.hms.dao;
-
-import com.onsemi.hms.db.DB;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import javax.sql.DataSource;
-import com.onsemi.hms.model.WhShipping;
-import com.onsemi.hms.tools.QueryResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
-public class WhShippingDAO {
+//package com.onsemi.hms.dao;
+//
+//import com.onsemi.hms.db.DB;
+//import java.sql.Connection;
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.sql.Statement;
+//import java.util.ArrayList;
+//import java.util.List;
+//import javax.sql.DataSource;
+//import com.onsemi.hms.model.WhShipping;
+//import com.onsemi.hms.tools.QueryResult;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//
+//
+//public class WhShippingDAO {
 //    private static final Logger LOGGER = LoggerFactory.getLogger(WhShippingDAO.class);
 //    private final Connection conn;
 //    private final DataSource dataSource;
@@ -30,27 +30,21 @@ public class WhShippingDAO {
 //        QueryResult queryResult = new QueryResult();
 //        try {
 //            PreparedStatement ps = conn.prepareStatement(
-//                    "INSERT INTO cdars_wh_shipping (request_id, box_id, mp_no, mp_expiry_date, hardware_barcode_1, date_scan_1, hardware_barcode_2, date_scan_2, shipping_date, status, remarks, flag, created_by, created_date, modified_by, modified_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
+//                "INSERT INTO hms_wh_shipping_list (request_id, material_pass_no, shipping_date, inventory_rack, inventory_slot, shipping_by, status, flag) "
+//              + "VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
 //            );
-//            ps.setString(1, whShipping.getRequestId());
-//            ps.setString(2, whShipping.getBoxId());
-//            ps.setString(3, whShipping.getMpNo());
-//            ps.setString(4, whShipping.getMpExpiryDate());
-//            ps.setString(5, whShipping.getHardwareBarcode1());
-//            ps.setString(6, whShipping.getDateScan1());
-//            ps.setString(7, whShipping.getHardwareBarcode2());
-//            ps.setString(8, whShipping.getDateScan2());
-//            ps.setString(9, whShipping.getShippingDate());
-//            ps.setString(10, whShipping.getStatus());
-//            ps.setString(11, whShipping.getRemarks());
-//            ps.setString(12, whShipping.getFlag());
-//            ps.setString(13, whShipping.getCreatedBy());
-//            ps.setString(14, whShipping.getModifiedBy());
-//            ps.setString(15, whShipping.getModifiedDate());
+//            ps.setString(1, whShipping.getRefId());
+//            ps.setString(2, whShipping.getMaterialPassNo());
+//            ps.setString(3, whShipping.getInventoryDate());
+//            ps.setString(4, whShipping.getInventoryRack());
+//            ps.setString(5, whShipping.getInventorySlot());
+//            ps.setString(6, whShipping.getInventoryBy());
+//            ps.setString(7, whShipping.getStatus());
+//            ps.setString(8, whShipping.getFlag());
 //            queryResult.setResult(ps.executeUpdate());
 //            ResultSet rs = ps.getGeneratedKeys();
 //            if (rs.next()) {
-//                    queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
+//                queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
 //            }
 //            rs.close();
 //            ps.close();
@@ -71,107 +65,16 @@ public class WhShippingDAO {
 //
 //    public QueryResult updateWhShipping(WhShipping whShipping) {
 //        QueryResult queryResult = new QueryResult();
+//        String sql = "UPDATE hms_wh_shipping_list "
+//                   + "SET shipping_date = ?, inventory_rack = ?, inventory_slot = ?, shipping_by = ? "
+//                   + "WHERE request_id = ?";
 //        try {
-//            PreparedStatement ps = conn.prepareStatement(
-//                    "UPDATE cdars_wh_shipping SET request_id = ?, box_id = ?, mp_no = ?, mp_expiry_date = ?, hardware_barcode_1 = ?, date_scan_1 = ?, hardware_barcode_2 = ?, date_scan_2 = ?, shipping_date = ?, status = ?, remarks = ?, flag = ?, created_by = ?, modified_by = ?, modified_date = NOW() WHERE id = ?"
-//            );
-//            ps.setString(1, whShipping.getRequestId());
-//            ps.setString(2, whShipping.getBoxId());
-//            ps.setString(3, whShipping.getMpNo());
-//            ps.setString(4, whShipping.getMpExpiryDate());
-//            ps.setString(5, whShipping.getHardwareBarcode1());
-//            ps.setString(6, whShipping.getDateScan1());
-//            ps.setString(7, whShipping.getHardwareBarcode2());
-//            ps.setString(8, whShipping.getDateScan2());
-//            ps.setString(9, whShipping.getShippingDate());
-//            ps.setString(10, whShipping.getStatus());
-//            ps.setString(11, whShipping.getRemarks());
-//            ps.setString(12, whShipping.getFlag());
-//            ps.setString(13, whShipping.getCreatedBy());;
-//            ps.setString(14, whShipping.getModifiedBy());
-//            ps.setString(15, whShipping.getId());
-//            queryResult.setResult(ps.executeUpdate());
-//            ps.close();
-//    } catch (SQLException e) {
-//            queryResult.setErrorMessage(e.getMessage());
-//            LOGGER.error(e.getMessage());
-//        } finally {
-//            if (conn != null) {
-//                try {
-//                    conn.close();
-//                } catch (SQLException e) {
-//                    LOGGER.error(e.getMessage());
-//                }
-//            }
-//        }
-//        return queryResult;
-//    }
-//    
-//    public QueryResult updateWhShippingMp(WhShipping whShipping) {
-//        QueryResult queryResult = new QueryResult();
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(
-//                    "UPDATE cdars_wh_shipping SET mp_no = ?, mp_expiry_date = ?,  status = ?,  modified_by = ?, modified_date = NOW() WHERE id = ?"
-//            );
-//            ps.setString(1, whShipping.getMpNo());
-//            ps.setString(2, whShipping.getMpExpiryDate());			
-//            ps.setString(3, whShipping.getStatus());
-//            ps.setString(4, whShipping.getModifiedBy());
-//            ps.setString(5, whShipping.getId());
-//            queryResult.setResult(ps.executeUpdate());
-//            ps.close();
-//        } catch (SQLException e) {
-//            queryResult.setErrorMessage(e.getMessage());
-//            LOGGER.error(e.getMessage());
-//        } finally {
-//            if (conn != null) {
-//                try {
-//                    conn.close();
-//                } catch (SQLException e) {
-//                    LOGGER.error(e.getMessage());
-//                }
-//            }
-//        }
-//        return queryResult;
-//    }
-//    
-//    public QueryResult updateWhShippingTt(WhShipping whShipping) {
-//        QueryResult queryResult = new QueryResult();
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(
-//                "UPDATE cdars_wh_shipping SET hardware_barcode_1 = ?, date_scan_1 = NOW(), status = ?,  modified_by = ?, modified_date = NOW() WHERE id = ?"
-//            );
-//            ps.setString(1, whShipping.getHardwareBarcode1());
-//            ps.setString(2, whShipping.getStatus());
-//            ps.setString(3, whShipping.getModifiedBy());
-//            ps.setString(4, whShipping.getId());
-//            queryResult.setResult(ps.executeUpdate());
-//            ps.close();
-//        } catch (SQLException e) {
-//            queryResult.setErrorMessage(e.getMessage());
-//            LOGGER.error(e.getMessage());
-//        } finally {
-//            if (conn != null) {
-//                try {
-//                    conn.close();
-//                } catch (SQLException e) {
-//                    LOGGER.error(e.getMessage());
-//                }
-//            }
-//        }
-//        return queryResult;
-//    }
-//    
-//    public QueryResult updateWhShippingBs(WhShipping whShipping) {
-//        QueryResult queryResult = new QueryResult();
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(
-//                    "UPDATE cdars_wh_shipping SET hardware_barcode_2 = ?, date_scan_2 = NOW(), status = ?, modified_by = ?, modified_date = NOW() WHERE id = ?"
-//            );
-//            ps.setString(1, whShipping.getHardwareBarcode2());
-//            ps.setString(2, whShipping.getStatus());
-//            ps.setString(3, whShipping.getModifiedBy());
-//            ps.setString(4, whShipping.getId());
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setString(1, whShipping.getInventoryDate());
+//            ps.setString(2, whShipping.getInventoryRack());
+//            ps.setString(3, whShipping.getInventorySlot());
+//            ps.setString(4, whShipping.getInventoryBy());
+//            ps.setString(5, whShipping.getRefId());
 //            queryResult.setResult(ps.executeUpdate());
 //            ps.close();
 //        } catch (SQLException e) {
@@ -191,52 +94,41 @@ public class WhShippingDAO {
 //
 //    public QueryResult deleteWhShipping(String whShippingId) {
 //        QueryResult queryResult = new QueryResult();
-//            try {
-//                PreparedStatement ps = conn.prepareStatement(
-//                    "DELETE FROM cdars_wh_shipping WHERE id = '" + whShippingId + "'"
-//                );
-//                queryResult.setResult(ps.executeUpdate());
-//                ps.close();
-//            } catch (SQLException e) {
-//                queryResult.setErrorMessage(e.getMessage());
-//                LOGGER.error(e.getMessage());
-//            } finally {
-//                if (conn != null) {
-//                    try {
-//                            conn.close();
-//                    } catch (SQLException e) {
-//                            LOGGER.error(e.getMessage());
-//                    }
+//        try {
+//            PreparedStatement ps = conn.prepareStatement(
+//                "DELETE FROM hms_wh_shipping_list WHERE request_id = '" + whShippingId + "'"
+//            );
+//            queryResult.setResult(ps.executeUpdate());
+//            ps.close();
+//        } catch (SQLException e) {
+//            queryResult.setErrorMessage(e.getMessage());
+//            LOGGER.error(e.getMessage());
+//        } finally {
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException e) {
+//                    LOGGER.error(e.getMessage());
+//                }
 //            }
 //        }
 //        return queryResult;
 //    }
 //
 //    public WhShipping getWhShipping(String whShippingId) {
-//        String sql = "SELECT * FROM cdars_wh_shipping WHERE id = '" + whShippingId + "'";
+//        String sql = "SELECT * "
+//                   + "FROM hms_wh_shipping_list "
+//                   + "WHERE request_id = '" + whShippingId + "'";
 //        WhShipping whShipping = null;
 //        try {
 //            PreparedStatement ps = conn.prepareStatement(sql);
 //            ResultSet rs = ps.executeQuery();
 //            while (rs.next()) {
 //                whShipping = new WhShipping();
-//                whShipping.setId(rs.getString("id"));
-//                whShipping.setRequestId(rs.getString("request_id"));
-//                whShipping.setBoxId(rs.getString("box_id"));
-//                whShipping.setMpNo(rs.getString("mp_no"));
-//                whShipping.setMpExpiryDate(rs.getString("mp_expiry_date"));
-//                whShipping.setHardwareBarcode1(rs.getString("hardware_barcode_1"));
-//                whShipping.setDateScan1(rs.getString("date_scan_1"));
-//                whShipping.setHardwareBarcode2(rs.getString("hardware_barcode_2"));
-//                whShipping.setDateScan2(rs.getString("date_scan_2"));
-//                whShipping.setShippingDate(rs.getString("shipping_date"));
+//                whShipping.setRefId(rs.getString("request_id"));
+//                whShipping.setMaterialPassNo(rs.getString("material_pass_no"));
 //                whShipping.setStatus(rs.getString("status"));
-//                whShipping.setRemarks(rs.getString("remarks"));
-//                whShipping.setFlag(rs.getString("flag"));
-//                whShipping.setCreatedBy(rs.getString("created_by"));
-//                whShipping.setCreatedDate(rs.getString("created_date"));
-//                whShipping.setModifiedBy(rs.getString("modified_by"));
-//                whShipping.setModifiedDate(rs.getString("modified_date"));
+//                whShipping.setFlag(rs.getString("flag"));                
 //            }
 //            rs.close();
 //            ps.close();
@@ -255,42 +147,82 @@ public class WhShippingDAO {
 //    }
 //        
 //    public WhShipping getWhShippingMergeWithRequest(String whShippingId) {
-//        String sql = "SELECT sh.*, DATE_FORMAT(sh.mp_expiry_date,'%Y-%m-%d') AS new_mp_expiry_date, re.equipment_type AS equipment_type, re.equipment_id AS equipment_id, re.quantity AS quantity, re.type AS type, re.requested_by AS requested_by, DATE_FORMAT(re.requested_date,'%d %M %Y') AS requested_date "
-//                + "FROM cdars_wh_shipping sh, cdars_wh_request re WHERE sh.request_id = re.id AND sh.id = '" + whShippingId + "'";
+//        String sql = "SELECT IL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
+//                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(IL.shipping_date,'%d %M %Y') AS shipping_date_view "
+//                   + "FROM hms_wh_shipping_list IL, hms_wh_retrieval_list RL "
+//                   + "WHERE IL.request_id = RL.ref_id AND IL.request_id = '" + whShippingId + "' ";
 //        WhShipping whShipping = null;
 //        try {
 //            PreparedStatement ps = conn.prepareStatement(sql);
 //            ResultSet rs = ps.executeQuery();
 //            while (rs.next()) {
 //                whShipping = new WhShipping();
-//                whShipping.setId(rs.getString("id"));
-//                whShipping.setRequestId(rs.getString("request_id"));
-//                whShipping.setBoxId(rs.getString("box_id"));
-//                whShipping.setMpNo(rs.getString("mp_no"));
-//                whShipping.setMpExpiryDate(rs.getString("new_mp_expiry_date"));
-//                whShipping.setHardwareBarcode1(rs.getString("hardware_barcode_1"));
-//                whShipping.setDateScan1(rs.getString("date_scan_1"));
-//                whShipping.setHardwareBarcode2(rs.getString("hardware_barcode_2"));
-//                whShipping.setDateScan2(rs.getString("date_scan_2"));
-//                whShipping.setShippingDate(rs.getString("shipping_date"));
-//                whShipping.setStatus(rs.getString("status"));
-//                whShipping.setRemarks(rs.getString("remarks"));
-//                whShipping.setFlag(rs.getString("flag"));
-//                whShipping.setCreatedBy(rs.getString("created_by"));
-//                whShipping.setCreatedDate(rs.getString("created_date"));
-//                whShipping.setModifiedBy(rs.getString("modified_by"));
-//                whShipping.setModifiedDate(rs.getString("modified_date"));
-//
-//                //utk display data from table wh_request
-//                whShipping.setRequestEquipmentType(rs.getString("equipment_type"));
-//                whShipping.setRequestEquipmentId(rs.getString("equipment_id"));
-//                whShipping.setRequestQuantity(rs.getString("quantity"));
-//                whShipping.setRequestType(rs.getString("type"));
-//                whShipping.setRequestRequestedBy(rs.getString("requested_by"));
-//                whShipping.setRequestRequestedDate(rs.getString("requested_date"));
+//                whShipping.setRefId(rs.getString("IL.request_id"));
+//                whShipping.setMaterialPassNo(rs.getString("IL.material_pass_no"));
+//                whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+//                whShipping.setEquipmentType(rs.getString("RL.equipment_type"));
+//                whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
+//                whShipping.setType(rs.getString("RL.type"));
+//                whShipping.setQuantity(rs.getString("RL.quantity"));
+//                whShipping.setRemarks(rs.getString("RL.remarks"));
+//                whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+//                whShipping.setRequestedDate(rs.getString("requested_date_view"));
+//                whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+//                whShipping.setDateVerify(rs.getString("date_verify_view"));
+//                whShipping.setUserVerify(rs.getString("RL.user_verify"));
+//                whShipping.setInventoryDate(rs.getString("shipping_date_view"));
+//                whShipping.setInventoryRack(rs.getString("IL.inventory_rack"));
+//                whShipping.setInventorySlot(rs.getString("IL.inventory_slot"));
+//                whShipping.setStatus(rs.getString("IL.status"));
+//                whShipping.setFlag(rs.getString("IL.flag"));
 //            }
-//                rs.close();
-//                ps.close();
+//            rs.close();
+//            ps.close();
+//        } catch (SQLException e) {
+//            LOGGER.error(e.getMessage());
+//        } finally {
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException e) {
+//                    LOGGER.error(e.getMessage());
+//                }
+//            }
+//        }
+//        return whShipping;
+//    }
+//    
+//    public WhShipping getWhShippingMergeWithRequestPdf(String whShippingId) {
+//        String sql = "SELECT IL.*, RL.* "
+//                   + "FROM hms_wh_shipping_list IL, hms_wh_retrieval_list RL "
+//                   + "WHERE IL.request_id = RL.ref_id AND IL.request_id = '" + whShippingId + "' ";
+//        WhShipping whShipping = null;
+//        try {
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                whShipping = new WhShipping();
+//                whShipping.setRefId(rs.getString("IL.request_id"));
+//                whShipping.setMaterialPassNo(rs.getString("IL.material_pass_no"));
+//                whShipping.setMaterialPassExpiry(rs.getString("RL.material_pass_expiry"));
+//                whShipping.setEquipmentType(rs.getString("RL.equipment_type"));
+//                whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
+//                whShipping.setType(rs.getString("RL.type"));
+//                whShipping.setQuantity(rs.getString("RL.quantity"));
+//                whShipping.setRemarks(rs.getString("RL.remarks"));
+//                whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+//                whShipping.setRequestedDate(rs.getString("RL.requested_date"));
+//                whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+//                whShipping.setDateVerify(rs.getString("RL.date_verify"));
+//                whShipping.setUserVerify(rs.getString("RL.user_verify"));
+//                whShipping.setInventoryDate(rs.getString("IL.shipping_date"));
+//                whShipping.setInventoryRack(rs.getString("IL.inventory_rack"));
+//                whShipping.setInventorySlot(rs.getString("IL.inventory_slot"));
+//                whShipping.setStatus(rs.getString("IL.status"));
+//                whShipping.setFlag(rs.getString("IL.flag"));
+//            }
+//            rs.close();
+//            ps.close();
 //        } catch (SQLException e) {
 //            LOGGER.error(e.getMessage());
 //        } finally {
@@ -305,8 +237,11 @@ public class WhShippingDAO {
 //        return whShipping;
 //    }
 //
-//    public List<WhShipping> getWhShippingList() {
-//        String sql = "SELECT * FROM cdars_wh_shipping ORDER BY id ASC";
+//    public List<WhShipping> getWhShippingListMergeRequest() {
+//        String sql = "SELECT IL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
+//                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(IL.shipping_date,'%d %M %Y') AS shipping_date_view "
+//                   + "FROM hms_wh_shipping_list IL, hms_wh_retrieval_list RL "
+//                   + "WHERE IL.request_id = RL.ref_id ";
 //        List<WhShipping> whShippingList = new ArrayList<WhShipping>();
 //        try {
 //            PreparedStatement ps = conn.prepareStatement(sql);
@@ -314,23 +249,24 @@ public class WhShippingDAO {
 //            ResultSet rs = ps.executeQuery();
 //            while (rs.next()) {
 //                whShipping = new WhShipping();
-//                whShipping.setId(rs.getString("id"));
-//                whShipping.setRequestId(rs.getString("request_id"));
-//                whShipping.setBoxId(rs.getString("box_id"));
-//                whShipping.setMpNo(rs.getString("mp_no"));
-//                whShipping.setMpExpiryDate(rs.getString("mp_expiry_date"));
-//                whShipping.setHardwareBarcode1(rs.getString("hardware_barcode_1"));
-//                whShipping.setDateScan1(rs.getString("date_scan_1"));
-//                whShipping.setHardwareBarcode2(rs.getString("hardware_barcode_2"));
-//                whShipping.setDateScan2(rs.getString("date_scan_2"));
-//                whShipping.setShippingDate(rs.getString("shipping_date"));
-//                whShipping.setStatus(rs.getString("status"));
-//                whShipping.setRemarks(rs.getString("remarks"));
-//                whShipping.setFlag(rs.getString("flag"));
-//                whShipping.setCreatedBy(rs.getString("created_by"));
-//                whShipping.setCreatedDate(rs.getString("created_date"));
-//                whShipping.setModifiedBy(rs.getString("modified_by"));
-//                whShipping.setModifiedDate(rs.getString("modified_date"));
+//                whShipping.setRefId(rs.getString("IL.request_id"));
+//                whShipping.setMaterialPassNo(rs.getString("IL.material_pass_no"));
+//                whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+//                whShipping.setEquipmentType(rs.getString("RL.equipment_type"));
+//                whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
+//                whShipping.setType(rs.getString("RL.type"));
+//                whShipping.setQuantity(rs.getString("RL.quantity"));
+//                whShipping.setRemarks(rs.getString("RL.remarks"));
+//                whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+//                whShipping.setRequestedDate(rs.getString("requested_date_view"));
+//                whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+//                whShipping.setDateVerify(rs.getString("date_verify_view"));
+//                whShipping.setUserVerify(rs.getString("RL.user_verify"));
+//                whShipping.setInventoryDate(rs.getString("shipping_date_view"));
+//                whShipping.setInventoryRack(rs.getString("IL.inventory_rack"));
+//                whShipping.setInventorySlot(rs.getString("IL.inventory_slot"));
+//                whShipping.setStatus(rs.getString("IL.status"));
+//                whShipping.setFlag(rs.getString("IL.flag"));
 //                whShippingList.add(whShipping);
 //            }
 //            rs.close();
@@ -348,44 +284,17 @@ public class WhShippingDAO {
 //        }
 //        return whShippingList;
 //    }
-//
-//    public List<WhShipping> getWhShippingListMergeWithRequest() {
-//        String sql = "SELECT sh.*,re.equipment_type AS equipment_type, re.equipment_id AS equipment_id, re.quantity AS quantity, re.type AS type, re.requested_by AS requested_by, DATE_FORMAT(re.requested_date,'%d %M %Y') AS requested_date "
-//                + "FROM cdars_wh_shipping sh, cdars_wh_request re WHERE sh.request_id = re.id ORDER BY id DESC";
-//        List<WhShipping> whShippingList = new ArrayList<WhShipping>();
+//    
+//    public Integer getCountExistingData(String id) {
+//        Integer count = null;
 //        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            WhShipping whShipping;
+//            PreparedStatement ps = conn.prepareStatement(
+//                "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE request_id = '" + id + "' "
+//            );
+//
 //            ResultSet rs = ps.executeQuery();
 //            while (rs.next()) {
-//                whShipping = new WhShipping();
-//                whShipping.setId(rs.getString("id"));
-//                whShipping.setRequestId(rs.getString("request_id"));
-//                whShipping.setBoxId(rs.getString("box_id"));
-//                whShipping.setMpNo(rs.getString("mp_no"));
-//                whShipping.setMpExpiryDate(rs.getString("mp_expiry_date"));
-//                whShipping.setHardwareBarcode1(rs.getString("hardware_barcode_1"));
-//                whShipping.setDateScan1(rs.getString("date_scan_1"));
-//                whShipping.setHardwareBarcode2(rs.getString("hardware_barcode_2"));
-//                whShipping.setDateScan2(rs.getString("date_scan_2"));
-//                whShipping.setShippingDate(rs.getString("shipping_date"));
-//                whShipping.setStatus(rs.getString("status"));
-//                whShipping.setRemarks(rs.getString("remarks"));
-//                whShipping.setFlag(rs.getString("flag"));
-//                whShipping.setCreatedBy(rs.getString("created_by"));
-//                whShipping.setCreatedDate(rs.getString("created_date"));
-//                whShipping.setModifiedBy(rs.getString("modified_by"));
-//                whShipping.setModifiedDate(rs.getString("modified_date"));
-//
-//                //utk display data from table wh_request
-//                whShipping.setRequestEquipmentType(rs.getString("equipment_type"));
-//                whShipping.setRequestEquipmentId(rs.getString("equipment_id"));
-//                whShipping.setRequestQuantity(rs.getString("quantity"));
-//                whShipping.setRequestType(rs.getString("type"));
-//                whShipping.setRequestRequestedBy(rs.getString("requested_by"));
-//                whShipping.setRequestRequestedDate(rs.getString("requested_date"));
-//
-//                whShippingList.add(whShipping);
+//                count = rs.getInt("count");
 //            }
 //            rs.close();
 //            ps.close();
@@ -400,6 +309,6 @@ public class WhShippingDAO {
 //                }
 //            }
 //        }
-//        return whShippingList;
+//        return count;
 //    }
-}
+//}

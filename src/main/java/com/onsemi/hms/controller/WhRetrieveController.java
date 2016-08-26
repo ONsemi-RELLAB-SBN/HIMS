@@ -97,8 +97,8 @@ public class WhRetrieveController {
     }
 
     
-    @RequestMapping(value = "/approval/{whRetrieveId}", method = RequestMethod.GET)
-    public String approval(
+    @RequestMapping(value = "/verify/{whRetrieveId}", method = RequestMethod.GET)
+    public String verify(
             Model model,
             @PathVariable("whRetrieveId") String whRetrieveId
     ) {
@@ -146,7 +146,7 @@ public class WhRetrieveController {
             model.addAttribute("hiActiveTab", hiActiveTab);
         }
         model.addAttribute("whRetrieve", whRetrieve);
-        return "whRetrieve/approval";
+        return "whRetrieve/verify";
     }
     
     @RequestMapping(value = "/verifyMp", method = RequestMethod.POST)
@@ -189,11 +189,11 @@ public class WhRetrieveController {
         args = new String[1];
         args[0] = barcodeVerify;
         if (queryResult.getResult() == 1 && cp == true) {
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success2", args, locale));
         } else {
-            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+            //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
         }
-        return "redirect:/wh/whRetrieve/approval/" + refId;
+        return "redirect:/wh/whRetrieve/verify/" + refId;
     }
     
     @RequestMapping(value = "/setInventory", method = RequestMethod.POST)
@@ -261,7 +261,7 @@ public class WhRetrieveController {
                 args = new String[1];
                 args[0] = materialPassNo;
                 if (queryResult.getResult() == 0 && cp == false) {
-                    redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+                    //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
                 } else {
                     String username = System.getProperty("user.name");
                     //SEND EMAIL
@@ -274,7 +274,7 @@ public class WhRetrieveController {
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
                             WhInventoryDAO whdao = new WhInventoryDAO();
-                            WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
+                            WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
 
                             fileWriter.append(refId);
                             fileWriter.append(COMMA_DELIMITER);
@@ -325,7 +325,7 @@ public class WhRetrieveController {
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
                             WhInventoryDAO whdao = new WhInventoryDAO();
-                            WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
+                            WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
                             fileWriter.append(refId);
                             fileWriter.append(COMMA_DELIMITER); 
                             fileWriter.append(wh.getMaterialPassNo());
@@ -387,19 +387,19 @@ public class WhRetrieveController {
                         servletContext,
                         user,                                                   //user name
                         "cdarsrel@gmail.com",                                   //to
-                        "Approval Status for New Hardware Request from HMS",   //subject
-                        "Approval status for New Hardware Request has been made. Please go to this link " //msg
+                        "Verification Status for New Hardware Request from HMS",   //subject
+                        "Verification for New Hardware Request has been made. Please go to this link " //msg
                         + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRetrieve/edit/" + refId + "\">HMS</a>"
-                        + " for approval status checking."
+                        + " for verification status checking."
                     );
 
-                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
+                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
                 }
             } else {
                 LOGGER.info("data adeeeeee");
             }
         }
         
-        return "redirect:/wh/whInventory/view/"  + refId;
+        return "redirect:/wh/whInventory/";
     }
 }

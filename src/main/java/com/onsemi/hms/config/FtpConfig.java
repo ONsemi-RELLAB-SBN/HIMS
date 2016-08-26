@@ -42,7 +42,7 @@ public class FtpConfig {
     
     //@Scheduled(fixedRate = 60000) //- in ms
     //hold for now
-    @Scheduled(cron = "0 0/2 * * * ?") //every 1 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 0/1 * * * ?") //every 1 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() {
         LOGGER.info("Method executed at every 2 minute. Current time is : " + new Date());
         
@@ -53,7 +53,7 @@ public class FtpConfig {
 
         for (File listOfFile : listOfFiles) {
             if (listOfFile.isFile()) {
-                if (listOfFile.getName().equals("Request.csv")) {
+                if (listOfFile.getName().equals("cdars_retrieve.csv")) {
                     fileLocation = targetLocation + listOfFile.getName();
                     LOGGER.info("Request file found : " + fileLocation);
                     
@@ -77,16 +77,16 @@ public class FtpConfig {
                             ftp.setEquipmentType(r.getEquipmentType());
                             ftp.setEquipmentId(r.getEquipmentId());
                             ftp.setQuantity(r.getQuantity());
-                            ftp.setRequestedBy(r.getRequestedBy());
-                            ftp.setRequestedDate(r.getRequestedDate());
-                            ftp.setRemarks(r.getRemarks());
                             ftp.setMaterialPassNo(r.getMaterialPassNo());
                             ftp.setMaterialPassExpiry(r.getMaterialPassExpiry());
                             ftp.setRack(r.getRack());
                             ftp.setSlot(r.getSlot());
+                            ftp.setRequestedBy(r.getRequestedBy());
+                            ftp.setRequestedDate(r.getRequestedDate());
+                            ftp.setRemarks(r.getRemarks());
                             ftp.setStatus("New Request");
                             ftp.setFlag("0");
-
+                            
                             WhRequestDAO whRequestDAO = new WhRequestDAO();
                             int count = whRequestDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
@@ -278,7 +278,7 @@ public class FtpConfig {
 //        } catch (Exception ee) {
 //            ee.printStackTrace();
 //        }
-//        return "whRequest/approval";
+//        return "whRequest/verify";
 //    }
     
 //    @Scheduled(cron = "0 0/1 * * * ?") //every 1 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))

@@ -8,7 +8,6 @@ public class WhRetrieve {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
-    private String type;
     private String quantity;
     private String requestedBy;
     private String requestedDate;
@@ -50,15 +49,7 @@ public class WhRetrieve {
     public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
+    
     public String getQuantity() {
         return quantity;
     }

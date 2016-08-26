@@ -5,12 +5,11 @@ package com.onsemi.hms.model;
  */
 public class IonicFtpRequest {
     private String refId;
-//    private String requestType;
-    private String materialPassNo;
-    private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
     private String quantity;
+    private String materialPassNo;
+    private String materialPassExpiry;
     private String rack;
     private String slot;
     private String requestedBy;
@@ -19,33 +18,20 @@ public class IonicFtpRequest {
     
     public IonicFtpRequest() {
     }
-
-    /*
-    public IonicFtpRequest(String refId, String requestType, String equipmentType, String equipmentId, String quantity, String requestedDate, String requestedBy, String remarks) {
+    
+    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String quantity, String materialPassNo, String materialPassExpiry, String rack, String slot, String requestedBy, String requestedDate, String remarks) {
         this.refId = refId;
-        this.requestType = requestType;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
         this.quantity = quantity;
-        this.requestedBy = requestedBy;
-        this.requestedDate = requestedDate;
-        this.remarks = remarks;
-    }
-    */
-    public IonicFtpRequest(String refId, String materialPassNo, String materialPassExpiry, String equipmentType, String equipmentId, String quantity, String rack, String slot, String requestedBy, String requestedDate, String remarks) {
-        this.refId = refId;
         this.materialPassNo = materialPassNo;
         this.materialPassExpiry = materialPassExpiry;
-        this.equipmentType = equipmentType;
-        this.equipmentId = equipmentId;
-        this.quantity = quantity;
         this.rack = rack;
         this.slot = slot;
         this.requestedBy = requestedBy;
         this.requestedDate = requestedDate;
         this.remarks = remarks;
-    }
-    
+    }  
 
     public String getRefId() {
         return refId;

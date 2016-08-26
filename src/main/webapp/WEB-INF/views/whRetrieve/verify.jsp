@@ -99,7 +99,7 @@
                                 <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRetrieve/verifyMp" method="post">
                                     <input type="hidden" name="refId" value="${whRetrieve.refId}" />
                                     <input type="hidden" name="status" value="${whRetrieve.status}" />
-                                    <input type="hidden" name="materialPassNo" value="${whRetrieve.materialPassNo}" />
+                                    <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRetrieve.materialPassNo}" />
                                     <input type="hidden" name="flag" value="${whRetrieve.flag}" />
                                     <input type="hidden" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
                                     <!--input type="hidden" name="refId" value="${mpActiveTab}" /-->
@@ -109,6 +109,7 @@
                                             <input type="text" class="form-control" id="barcodeVerify" name="barcodeVerify" autofocus="autofocus" required='true' value="${whRetrieve.barcodeVerify}"/>
                                         </div>
                                     </div>
+                                    <div id = "alert_placeholder"></div>
                                     <br><br>
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel">Reset</button>
@@ -130,7 +131,6 @@
                                     <input type="hidden" name="refId" value="${whRetrieve.refId}" />
                                     <input type="hidden" name="equipmentType" value="${whRetrieve.equipmentType}" />
                                     <input type="hidden" name="equipmentId" value="${whRetrieve.equipmentId}" />
-                                    <input type="hidden" name="type" value="${whRetrieve.type}" />
                                     <input type="hidden" name="quantity" value="${whRetrieve.quantity}" />
                                     <input type="hidden" name="barcodeVerify" value="${whRetrieve.barcodeVerify}" />
                                     <input type="hidden" name="dateVerify" value="${whRetrieve.dateVerify}" />
@@ -174,6 +174,16 @@
         <script>
             $(document).ready(function () {
 
+                bootstrap_alert = function () {}
+                bootstrap_alert.warning = function (message) {
+                    $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                }
+                if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
+                    bootstrap_alert.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
+                    //                    $("#hardwareBarcode2").effect("highlight", {}, 1000);
+                    $("#hardwareBarcode2").addClass('highlight');
+                }
+                
                 var element = $('#equipmentType');
                 if (element.val() === "Motherboard") {
                     $("#quantitydiv").hide();

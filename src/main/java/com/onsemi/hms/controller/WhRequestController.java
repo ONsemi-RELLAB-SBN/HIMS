@@ -1,491 +1,47 @@
-package com.onsemi.hms.controller;
-
-import com.onsemi.hms.dao.ParameterDetailsDAO;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
-import com.onsemi.hms.dao.WhRequestDAO;
-import com.onsemi.hms.model.ParameterDetails;
-import com.onsemi.hms.model.WhRequest;
-import com.onsemi.hms.model.UserSession;
-import com.onsemi.hms.tools.EmailSender;
-import com.onsemi.hms.tools.QueryResult;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import javax.servlet.ServletContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-@Controller
-@RequestMapping(value = "/wh/whRequest")
-@SessionAttributes({"userSession"})
-public class WhRequestController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WhRequestController.class);
-    String[] args = {};
-
-    //Delimiters which has to be in the CSV file
-    private static final String COMMA_DELIMITER = ",";
-    private static final String LINE_SEPARATOR = "\n";
-
-    //File header
-    private static final String HEADER = "id,material_pass_no,material_pass_expiry,equipment_type,equipment_id,type,quantity,rack,slot,requested_by,requested_date,remarks";
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    ServletContext servletContext;
-
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String whRequest(
-            Model model, @ModelAttribute UserSession userSession
-    ) {
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        List<WhRequest> whRequestList = whRequestDAO.getWhRequestList();
-        String groupId = userSession.getGroup();
-
-        model.addAttribute("whRequestList", whRequestList);
-        model.addAttribute("groupId", groupId);
-
-        return "whRequest/whRequest";
-    }
-
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String add(Model model, @ModelAttribute UserSession userSession) {
-
-        ParameterDetailsDAO sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> requestType = sDAO.getGroupParameterDetailList("", "006");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> equipmentType = sDAO.getGroupParameterDetailList("", "002");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> mb = sDAO.getGroupParameterDetailList("", "011");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> stencil = sDAO.getGroupParameterDetailList("", "012");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> tray = sDAO.getGroupParameterDetailList("", "013");
-
-        String username = userSession.getFullname();
-//        model.addAttribute("requestType", requestType);
-        model.addAttribute("equipmentType", equipmentType);
-        model.addAttribute("mb", mb);
-        model.addAttribute("stencil", stencil);
-        model.addAttribute("tray", tray);
-        model.addAttribute("username", username);
-        return "whRequest/add";
-    }
-
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(
-            Model model,
-            HttpServletRequest request,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String refId,
-            @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String materialPassExpiry,
-            @RequestParam(required = false) String equipmentType,
-            @RequestParam(required = false) String equipmentId,
-            @RequestParam(required = false) String equipmentIdMb,
-            @RequestParam(required = false) String equipmentIdTray,
-            @RequestParam(required = false) String equipmentIdStencil,
-            @RequestParam(required = false) String equipmentIdPcb,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String quantity,
-            @RequestParam(required = false) String requestedBy,
-            @RequestParam(required = false) String requestedDate,
-            @RequestParam(required = false) String rack,
-            @RequestParam(required = false) String slot,
-            @RequestParam(required = false) String remarks) {
-        WhRequest whRequest = new WhRequest();
-        whRequest.setRefId(refId);
-        whRequest.setMaterialPassNo(materialPassNo);
-        whRequest.setMaterialPassExpiry(materialPassExpiry);
-        whRequest.setEquipmentType(equipmentType);
-        
-        if (!equipmentIdMb.equals("")) {
-            whRequest.setEquipmentId(equipmentIdMb);
-        } else if (!equipmentIdStencil.equals("")) {
-            whRequest.setEquipmentId(equipmentIdStencil);
-        } else if (!equipmentIdTray.equals("")) {
-            whRequest.setEquipmentId(equipmentIdTray);
-        } else if (!equipmentIdPcb.equals("")) {
-            whRequest.setEquipmentId(equipmentIdPcb);
-        } else {
-            whRequest.setEquipmentId(equipmentId);
-        }
-        
-        whRequest.setType(type);
-        if (!quantity.equals("")) {
-            whRequest.setQuantity(quantity);
-        } else {
-            whRequest.setQuantity("1");
-        }
-
-        whRequest.setRequestedBy(requestedBy);
-        whRequest.setRequestedDate(requestedDate);
-        whRequest.setRemarks(remarks);
-        whRequest.setStatus("New Request");
-        whRequest.setFlag("1");
-        
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        QueryResult queryResult = whRequestDAO.insertWhRequest(whRequest);
-        args = new String[1];
-        if (queryResult.getGeneratedKey().equals("0")) {
-            model.addAttribute("error", messageSource.getMessage("general.label.save.error", args, locale));
-            model.addAttribute("whRequest", whRequest);
-            return "whRequest/add";
-        } else {
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.success", args, locale));
-            
-            FileWriter fileWriter = null;
-
-            try {
-                String username = System.getProperty("user.name");
-                fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\CDARS\\Request.csv");
-
-                //Adding the header
-                fileWriter.append(HEADER);
-                //New Line after the header
-                fileWriter.append(LINE_SEPARATOR);
-
-                //Iterate the empList
-                WhRequestDAO whdao = new WhRequestDAO();
-                WhRequest wh = whdao.getWhRequest(queryResult.getGeneratedKey());
-
-                fileWriter.append(queryResult.getGeneratedKey());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getMaterialPassNo());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getMaterialPassExpiry());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getEquipmentType());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getEquipmentId());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getType());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getQuantity());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getRack());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getSlot());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getRequestedBy());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getRequestedDate());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(wh.getRemarks());
-//    		fileWriter.append(LINE_SEPARATOR);
-                LOGGER.info("Write to CSV file Succeeded!!!");
-            } catch (Exception ee) {
-                ee.printStackTrace();
-            } finally {
-                try {
-                    fileWriter.close();
-                } catch (IOException ie) {
-                    System.out.println("Error occured while closing the fileWriter");
-                    ie.printStackTrace();
-                }
-            }
-
-//          send email
-            LOGGER.info("send email to warehouse");
-
-            EmailSender emailSender = new EmailSender();
-            com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-            user.setFullname(userSession.getFullname());
-
-            //to get hostname
-            InetAddress ip;
-            String hostName ="";
-            try {
-                ip = InetAddress.getLocalHost();
-                hostName = ip.getHostName();
-            } catch (UnknownHostException ex) {
-                java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            emailSender.htmlEmailWithAttachmentRequest(
-                    servletContext,
-                    //                    user name
-                    user,
-                    //                    to
-                    "cdarsrel@gmail.com",
-                    //                    subject
-                    "New Hardware Request from HMS",
-                    //                    msg
-                    "New Hardware Request has been added to HMS. Please go to this link "
-                    + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-                    //+ "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-                    + " for verification process."
-            );
-            return "redirect:/wh/whRequest/edit/" + queryResult.getGeneratedKey();
-        }
-    }
-
-    @RequestMapping(value = "/edit/{whRequestId}", method = RequestMethod.GET)
-    public String edit(
-            Model model,
-            @PathVariable("whRequestId") String whRequestId
-    ) {
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-
-        ParameterDetailsDAO sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> requestType = sDAO.getGroupParameterDetailList(whRequest.getRequestType(), "006");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> equipmentType = sDAO.getGroupParameterDetailList(whRequest.getEquipmentType(), "002");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> mb = sDAO.getGroupParameterDetailList(whRequest.getEquipmentId(), "011");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> stencil = sDAO.getGroupParameterDetailList(whRequest.getEquipmentId(), "012");
-
-        sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> tray = sDAO.getGroupParameterDetailList(whRequest.getEquipmentId(), "013");
-
-        model.addAttribute("equipmentType", equipmentType);
-        model.addAttribute("mb", mb);
-        model.addAttribute("stencil", stencil);
-        model.addAttribute("tray", tray);
-        model.addAttribute("whRequest", whRequest);
-        return "whRequest/edit";
-    }
-
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String update(
-            Model model,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String refId,
-//            @RequestParam(required = false) String requestType,
-            @RequestParam(required = false) String equipmentType,
-            @RequestParam(required = false) String equipmentId,
-            @RequestParam(required = false) String equipmentIdMb,
-            @RequestParam(required = false) String equipmentIdTray,
-            @RequestParam(required = false) String equipmentIdStencil,
-            @RequestParam(required = false) String equipmentIdPcb,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String quantity,
-            @RequestParam(required = false) String requestedBy,
-            @RequestParam(required = false) String requestedDate,
-            @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String materialPassExpiry,
-            @RequestParam(required = false) String remarks,
-            @RequestParam(required = false) String flag) {
-        WhRequest whRequest = new WhRequest();
-        whRequest.setRefId(refId);
-//        whRequest.setRequestType(requestType);
-        whRequest.setEquipmentType(equipmentType);
-        
-        if (!equipmentIdMb.equals("")) {
-            whRequest.setEquipmentId(equipmentIdMb);
-        } else if (!equipmentIdStencil.equals("")) {
-            whRequest.setEquipmentId(equipmentIdStencil);
-        } else if (!equipmentIdTray.equals("")) {
-            whRequest.setEquipmentId(equipmentIdTray);
-        } else if (!equipmentIdPcb.equals("")) {
-            whRequest.setEquipmentId(equipmentIdPcb);
-        } else {
-            whRequest.setEquipmentId(equipmentId);
-        }
-        
-        whRequest.setType(type);
-        if (!quantity.equals("")) {
-            whRequest.setQuantity(quantity);
-        } else {
-            whRequest.setQuantity("1");
-        }
-
-        whRequest.setRequestedBy(requestedBy);
-        whRequest.setRequestedDate(requestedDate);
-        whRequest.setMaterialPassNo(materialPassNo);
-        whRequest.setMaterialPassExpiry(materialPassExpiry);
-        whRequest.setRemarks(remarks);
-        whRequest.setFlag(flag);
-        
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        QueryResult queryResult = whRequestDAO.updateWhRequest(whRequest);
-        args = new String[1];
-//        args[0] = requestType + " - " + equipmentType;
-        if (queryResult.getResult() == 1) {
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
-        } else {
-            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-        }
-        return "redirect:/wh/whRequest/edit/" + refId;
-    }
-
-    /*
-    @RequestMapping(value = "/delete/{whRequestId}", method = RequestMethod.GET)
-    public String delete(
-            Model model,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @PathVariable("whRequestId") String whRequestId
-    ) {
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-        whRequestDAO = new WhRequestDAO();
-        QueryResult queryResult = whRequestDAO.deleteWhRequest(whRequestId);
-        args = new String[1];
-        args[0] = whRequest.getRequestType() + " - " + whRequest.getEquipmentType();
-        if (queryResult.getResult() == 1) {
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.delete.success", args, locale));
-        } else {
-            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.delete.error", args, locale));
-        }
-        return "redirect:/wh/whRequest";
-    }
-    */
-    
-    @RequestMapping(value = "/view/{whRequestId}", method = RequestMethod.GET)
-    public String view(
-            Model model,
-            HttpServletRequest request,
-            @PathVariable("whRequestId") String whRequestId
-    ) throws UnsupportedEncodingException {
-        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whRequest/viewWhRequestPdf/" + whRequestId, "UTF-8");
-        String backUrl = servletContext.getContextPath() + "/wh/whRequest";
-        model.addAttribute("pdfUrl", pdfUrl);
-        model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Request");
-        return "pdf/viewer";
-    }
-
-    @RequestMapping(value = "/viewWhRequestPdf/{whRequestId}", method = RequestMethod.GET)
-    public ModelAndView viewWhRequestPdf(
-            Model model,
-            @PathVariable("whRequestId") String whRequestId
-    ) {
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-        return new ModelAndView("whRequestPdf", "whRequest", whRequest);
-    }
-
-    @RequestMapping(value = "/approval/{whRequestId}", method = RequestMethod.GET)
-    public String approval(
-            Model model,
-            @PathVariable("whRequestId") String whRequestId
-    ) {
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-
-        ParameterDetailsDAO sDAO = new ParameterDetailsDAO();
-        List<ParameterDetails> approvalStatus = sDAO.getGroupParameterDetailList(whRequest.getStatus(), "007");
-        model.addAttribute("whRequest", whRequest);
-        model.addAttribute("approvalStatus", approvalStatus);
-        return "whRequest/approval";
-    }
-
-    @RequestMapping(value = "/approvalupdate", method = RequestMethod.POST)
-    public String approvalupdate(
-            Model model,
-            Locale locale,
-            HttpServletRequest request,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String refId,
-//            @RequestParam(required = false) String requestType,
-            @RequestParam(required = false) String equipmentType,
-            @RequestParam(required = false) String equipmentId,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String quantity,
-            @RequestParam(required = false) String requestedBy,
-            @RequestParam(required = false) String requestedDate,
-            @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String materialPassExpiry,
-            @RequestParam(required = false) String rack,
-            @RequestParam(required = false) String slot,
-            @RequestParam(required = false) String remarks,
-            @RequestParam(required = false) String flag,
-            @RequestParam(required = false) String status
-    ) {
-        WhRequest whRequest = new WhRequest();
-        whRequest.setRefId(refId);
-        whRequest.setStatus(status);
-        whRequest.setRemarks(remarks);
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        QueryResult queryResult = whRequestDAO.updateWhRequestForApproval(whRequest);
-        args = new String[1];
-//        args[0] = requestType + " - " + equipmentType;
-        if (queryResult.getResult() == 1) {
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
-
-            EmailSender emailSender = new EmailSender();
-            whRequestDAO = new WhRequestDAO();
-            WhRequest whRequest1 = whRequestDAO.getWhRequest(refId);
-            String fullname = whRequest1.getRequestedBy();
-            com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-            user.setFullname(fullname);
-
-            
-            //to get hostname
-            InetAddress ip;
-            String hostName ="";
-            try {
-                ip = InetAddress.getLocalHost();
-                hostName = ip.getHostName();
-            } catch (UnknownHostException ex) {
-                java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-                    
-            emailSender.htmlEmail(
-                    servletContext,
-                    //                    user name
-                    user,
-                    //                    to
-                    "cdarsrel@gmail.com",
-                    //                    subject
-                    "Approval Status for New Hardware Request from HMS",
-                    //                    msg
-                    "Approval status for New Hardware Request has been made. Please go to this link "
-                    + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/edit/" + refId + "\">HMS</a>"
-                    //+ "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/edit/" + id + "\">HMS</a>"
-                    + " for approval status checking."
-            );
-        } else {
-            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-        }
-        return "redirect:/wh/whRequest";
-    }
-    
-
-    
-    
-    
-    
-    
-
-//OLD SAMPLE
-
+//package com.onsemi.hms.controller;
+//
+//import com.onsemi.hms.dao.WhShippingDAO;
+//import java.io.UnsupportedEncodingException;
+//import java.net.URLEncoder;
+//import java.util.List;
+//import java.util.Locale;
+//import javax.servlet.http.HttpServletRequest;
+//import com.onsemi.hms.dao.WhRequestDAO;
+//import com.onsemi.hms.model.WhRequest;
+//import com.onsemi.hms.model.UserSession;
+//import com.onsemi.hms.model.WhShipping;
+//import com.onsemi.hms.tools.EmailSender;
+//import com.onsemi.hms.tools.QueryResult;
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//import java.net.InetAddress;
+//import java.net.UnknownHostException;
+//import java.text.DateFormat;
+//import java.text.SimpleDateFormat;
+//import java.util.Date;
+//import java.util.logging.Level;
+//import javax.servlet.ServletContext;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.context.MessageSource;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.ModelAttribute;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestMethod;
+//import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.SessionAttributes;
+//import org.springframework.web.servlet.ModelAndView;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//@Controller
+//@RequestMapping(value = "/wh/whRequest")
+//@SessionAttributes({"userSession"})
+//public class WhRequestController {
+//
 //    private static final Logger LOGGER = LoggerFactory.getLogger(WhRequestController.class);
 //    String[] args = {};
 //
@@ -494,7 +50,7 @@ public class WhRequestController {
 //    private static final String LINE_SEPARATOR = "\n";
 //
 //    //File header
-//    private static final String HEADER = "id,request_type,hardware_type,hardware_id,type,quantity,requested_by,requested_date,remarks";
+//    private static final String HEADER = "id,material_pass_no,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,shipping_date,shipping_rack,shipping_slot,shipping_by,status";
 //
 //    @Autowired
 //    private MessageSource messageSource;
@@ -514,318 +70,6 @@ public class WhRequestController {
 //        model.addAttribute("groupId", groupId);
 //
 //        return "whRequest/whRequest";
-//    }
-//
-//    @RequestMapping(value = "/add", method = RequestMethod.GET)
-//    public String add(Model model, @ModelAttribute UserSession userSession) {
-//
-//        ParameterDetailsDAO sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> requestType = sDAO.getGroupParameterDetailList("", "006");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> equipmentType = sDAO.getGroupParameterDetailList("", "002");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> mb = sDAO.getGroupParameterDetailList("", "011");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> stencil = sDAO.getGroupParameterDetailList("", "012");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> tray = sDAO.getGroupParameterDetailList("", "013");
-//
-//        String username = userSession.getFullname();
-//        model.addAttribute("requestType", requestType);
-//        model.addAttribute("equipmentType", equipmentType);
-//        model.addAttribute("mb", mb);
-//        model.addAttribute("stencil", stencil);
-//        model.addAttribute("tray", tray);
-//        model.addAttribute("username", username);
-//        return "whRequest/add";
-//    }
-//
-//    @RequestMapping(value = "/save", method = RequestMethod.POST)
-//    public String save(
-//            Model model,
-//            HttpServletRequest request,
-//            Locale locale,
-//            RedirectAttributes redirectAttrs,
-//            @ModelAttribute UserSession userSession,
-//            @RequestParam(required = false) String requestType,
-//            @RequestParam(required = false) String equipmentType,
-//            @RequestParam(required = false) String equipmentId,
-//            @RequestParam(required = false) String equipmentIdMb,
-//            @RequestParam(required = false) String equipmentIdTray,
-//            @RequestParam(required = false) String equipmentIdStencil,
-//            @RequestParam(required = false) String equipmentIdPcb,
-//            @RequestParam(required = false) String quantity,
-//            @RequestParam(required = false) String type,
-//            @RequestParam(required = false) String requestedBy,
-//            @RequestParam(required = false) String remarks) {
-//        WhRequest whRequest = new WhRequest();
-//        whRequest.setRequestType(requestType);
-//        whRequest.setEquipmentType(equipmentType);
-//        if (!quantity.equals("")) {
-//            whRequest.setQuantity(quantity);
-//        } else {
-//            whRequest.setQuantity("1");
-//        }
-//
-//        whRequest.setType(type);
-//
-//        if (!equipmentIdMb.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdMb);
-//        } else if (!equipmentIdStencil.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdStencil);
-//        } else if (!equipmentIdTray.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdTray);
-//        } else if (!equipmentIdPcb.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdPcb);
-//        } else {
-//            whRequest.setEquipmentId(equipmentId);
-//        }
-//        whRequest.setRequestedBy(userSession.getFullname());
-//        whRequest.setRemarks(remarks);
-//        whRequest.setCreatedBy(userSession.getId());
-//        whRequest.setStatus("Waiting for Approval");
-//        whRequest.setFlag("1");
-//        WhRequestDAO whRequestDAO = new WhRequestDAO();
-//        QueryResult queryResult = whRequestDAO.insertWhRequest(whRequest);
-//        args = new String[1];
-//        args[0] = requestType + " - " + equipmentType;
-//        if (queryResult.getGeneratedKey().equals("0")) {
-//            model.addAttribute("error", messageSource.getMessage("general.label.save.error", args, locale));
-//            model.addAttribute("whRequest", whRequest);
-//            return "whRequest/add";
-//        } else {
-//            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.success", args, locale));
-//
-////            only send email to approver if requestor want to ship the item
-//            if ("Ship".equals(requestType)) {
-//                LOGGER.info("email will be send to approver");
-//
-//                EmailSender emailSender = new EmailSender();
-//                com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-//                user.setFullname(userSession.getFullname());
-//                
-//                //to get hostname
-//                InetAddress ip;
-//                String hostName ="";
-//                try {
-//                    ip = InetAddress.getLocalHost();
-//                    hostName = ip.getHostName();
-//                } catch (UnknownHostException ex) {
-//                    java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                
-//                emailSender.htmlEmail(
-//                        servletContext,
-//                        //                    user name
-//                        user,
-//                        //                    to
-//                        "cdarsrel@gmail.com",
-//                        //                    subject
-//                        "New Hardware Request from HMS",
-//                        //                    msg
-//                        "New Hardware Request has been added to HMS. Please go to this link "
-//                        + "<a href=\"" + request.getScheme() + "://"+ hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-//                        //+ "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-//                        + " for approval process."
-//                );
-//            }
-//
-////            only create csv file and send email to warehouse if requestor want to retrieve hardware
-//            if ("Retrieve".equals(requestType)) {
-//
-//                FileWriter fileWriter = null;
-//
-//                try {
-//                    String username = System.getProperty("user.name");
-//                    fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\CDARS\\test.csv");
-//
-//                    //Adding the header
-//                    fileWriter.append(HEADER);
-//                    //New Line after the header
-//                    fileWriter.append(LINE_SEPARATOR);
-//
-//                    //Iterate the empList
-//                    WhRequestDAO whdao = new WhRequestDAO();
-//                    WhRequest wh = whdao.getWhRequest(queryResult.getGeneratedKey());
-//
-//                    fileWriter.append(queryResult.getGeneratedKey());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getRequestType());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getEquipmentType());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getEquipmentId());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getType());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getQuantity());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getRequestedBy());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getRequestedDate());
-//                    fileWriter.append(COMMA_DELIMITER);
-//                    fileWriter.append(wh.getRemarks());
-////    			fileWriter.append(LINE_SEPARATOR);
-//                    System.out.println("Write to CSV file Succeeded!!!");
-//                } catch (Exception ee) {
-//                    ee.printStackTrace();
-//                } finally {
-//                    try {
-//                        fileWriter.close();
-//                    } catch (IOException ie) {
-//                        System.out.println("Error occured while closing the fileWriter");
-//                        ie.printStackTrace();
-//                    }
-//                }
-//
-////                send email
-//                LOGGER.info("send email to warehouse");
-//
-//                EmailSender emailSender = new EmailSender();
-//                com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-//                user.setFullname(userSession.getFullname());
-//                
-//                //to get hostname
-//                InetAddress ip;
-//                String hostName ="";
-//                try {
-//                    ip = InetAddress.getLocalHost();
-//                    hostName = ip.getHostName();
-//                } catch (UnknownHostException ex) {
-//                    java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            
-//                emailSender.htmlEmailWithAttachment(
-//                        servletContext,
-//                        //                    user name
-//                        user,
-//                        //                    to
-//                        "ama_nina1993@yahoo.com",
-//                        //                    subject
-//                        "New Hardware Request from HMS",
-//                        //                    msg
-//                        "New Hardware Request has been added to HMS. Please go to this link "
-//                        + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-//                        //+ "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-//                        + " for shipping process."
-//                );
-//
-//            }
-//
-//            return "redirect:/wh/whRequest/edit/" + queryResult.getGeneratedKey();
-//        }
-//    }
-//
-//    @RequestMapping(value = "/edit/{whRequestId}", method = RequestMethod.GET)
-//    public String edit(
-//            Model model,
-//            @PathVariable("whRequestId") String whRequestId
-//    ) {
-//        WhRequestDAO whRequestDAO = new WhRequestDAO();
-//        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-//
-//        ParameterDetailsDAO sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> requestType = sDAO.getGroupParameterDetailList(whRequest.getRequestType(), "006");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> equipmentType = sDAO.getGroupParameterDetailList(whRequest.getEquipmentType(), "002");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> mb = sDAO.getGroupParameterDetailList(whRequest.getEquipmentId(), "011");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> stencil = sDAO.getGroupParameterDetailList(whRequest.getEquipmentId(), "012");
-//
-//        sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> tray = sDAO.getGroupParameterDetailList(whRequest.getEquipmentId(), "013");
-//
-//        model.addAttribute("requestType", requestType);
-//        model.addAttribute("equipmentType", equipmentType);
-//        model.addAttribute("mb", mb);
-//        model.addAttribute("stencil", stencil);
-//        model.addAttribute("tray", tray);
-//        model.addAttribute("whRequest", whRequest);
-//        return "whRequest/edit";
-//    }
-//
-//    @RequestMapping(value = "/update", method = RequestMethod.POST)
-//    public String update(
-//            Model model,
-//            Locale locale,
-//            RedirectAttributes redirectAttrs,
-//            @ModelAttribute UserSession userSession,
-//            @RequestParam(required = false) String id,
-//            @RequestParam(required = false) String requestType,
-//            @RequestParam(required = false) String equipmentType,
-//            @RequestParam(required = false) String equipmentId,
-//            @RequestParam(required = false) String equipmentIdMb,
-//            @RequestParam(required = false) String equipmentIdStencil,
-//            @RequestParam(required = false) String equipmentIdTray,
-//            @RequestParam(required = false) String equipmentIdPcb,
-//            @RequestParam(required = false) String quantity,
-//            @RequestParam(required = false) String type,
-//            @RequestParam(required = false) String remarks,
-//            @RequestParam(required = false) String flag
-//    ) {
-//        WhRequest whRequest = new WhRequest();
-//        whRequest.setId(id);
-//        whRequest.setRequestType(requestType);
-//        if (!quantity.equals("")) {
-//            whRequest.setQuantity(quantity);
-//        } else {
-//            whRequest.setQuantity("1");
-//        }
-//        whRequest.setType(type);
-//        whRequest.setEquipmentType(equipmentType);
-//        if (!equipmentIdMb.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdMb);
-//        } else if (!equipmentIdStencil.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdStencil);
-//        } else if (!equipmentIdTray.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdTray);
-//        } else if (!equipmentIdPcb.equals("")) {
-//            whRequest.setEquipmentId(equipmentIdPcb);
-//        } else {
-//            whRequest.setEquipmentId(equipmentId);
-//        }
-//        whRequest.setRemarks(remarks);
-//        whRequest.setModifiedBy(userSession.getId());
-//        whRequest.setFlag(flag);
-//        WhRequestDAO whRequestDAO = new WhRequestDAO();
-//        QueryResult queryResult = whRequestDAO.updateWhRequest(whRequest);
-//        args = new String[1];
-//        args[0] = requestType + " - " + equipmentType;
-//        if (queryResult.getResult() == 1) {
-//            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
-//        } else {
-//            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-//        }
-//        return "redirect:/wh/whRequest/edit/" + id;
-//    }
-//
-//    @RequestMapping(value = "/delete/{whRequestId}", method = RequestMethod.GET)
-//    public String delete(
-//            Model model,
-//            Locale locale,
-//            RedirectAttributes redirectAttrs,
-//            @PathVariable("whRequestId") String whRequestId
-//    ) {
-//        WhRequestDAO whRequestDAO = new WhRequestDAO();
-//        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-//        whRequestDAO = new WhRequestDAO();
-//        QueryResult queryResult = whRequestDAO.deleteWhRequest(whRequestId);
-//        args = new String[1];
-//        args[0] = whRequest.getRequestType() + " - " + whRequest.getEquipmentType();
-//        if (queryResult.getResult() == 1) {
-//            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.delete.success", args, locale));
-//        } else {
-//            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.delete.error", args, locale));
-//        }
-//        return "redirect:/wh/whRequest";
 //    }
 //
 //    @RequestMapping(value = "/view/{whRequestId}", method = RequestMethod.GET)
@@ -852,87 +96,301 @@ public class WhRequestController {
 //        return new ModelAndView("whRequestPdf", "whRequest", whRequest);
 //    }
 //
-//    @RequestMapping(value = "/approval/{whRequestId}", method = RequestMethod.GET)
-//    public String approval(
+//    
+//    @RequestMapping(value = "/verify/{whRequestId}", method = RequestMethod.GET)
+//    public String verify(
 //            Model model,
 //            @PathVariable("whRequestId") String whRequestId
 //    ) {
 //        WhRequestDAO whRequestDAO = new WhRequestDAO();
 //        WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-//
-//        ParameterDetailsDAO sDAO = new ParameterDetailsDAO();
-//        List<ParameterDetails> approvalStatus = sDAO.getGroupParameterDetailList(whRequest.getFinalApprovedStatus(), "007");
+//        
+//        String type = whRequest.getEquipmentType();
+//        if ("Motherboard".equals(type)) {
+//            String IdLabel = "Motherboard ID";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else if ("Stencil".equals(type)) {
+//            String IdLabel = "Stencil ID";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else if ("Tray".equals(type)) {
+//            String IdLabel = "Tray Type";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else if ("PCB".equals(type)) {
+//            String IdLabel = "PCB Name";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else {
+//            String IdLabel = "Hardware ID";
+//            model.addAttribute("IdLabel", IdLabel);
+//        }
+//        //for check which tab should active
+//        if (whRequest.getStatus().equals("New Request") || whRequest.getStatus().equals("Verification Fail")) {
+//            String mpActive = "active";
+//            String mpActiveTab = "in active";
+//            model.addAttribute("mpActive", mpActive);
+//            model.addAttribute("mpActiveTab", mpActiveTab);
+//        } else {
+//            String mpActive = "";
+//            String mpActiveTab = "";
+//            model.addAttribute("mpActive", mpActive);
+//            model.addAttribute("mpActiveTab", mpActiveTab);
+//        }
 //        model.addAttribute("whRequest", whRequest);
-//        model.addAttribute("approvalStatus", approvalStatus);
-//        return "whRequest/approval";
+//        return "whRequest/verify";
 //    }
-//
-//    @RequestMapping(value = "/approvalupdate", method = RequestMethod.POST)
-//    public String approvalupdate(
+//    
+//    @RequestMapping(value = "/verifyMp", method = RequestMethod.POST)
+//    public String verifyMp(
+//            Model model,
+//            Locale locale,
+//            RedirectAttributes redirectAttrs,
+//            @ModelAttribute UserSession userSession,
+//            @RequestParam(required = false) String refId,
+//            @RequestParam(required = false) String materialPassNo,
+//            @RequestParam(required = false) String materialPassExpiry,
+//            @RequestParam(required = false) String barcodeVerify,
+//            @RequestParam(required = false) String status,
+//            @RequestParam(required = false) String flag
+//    ) {
+//        WhRequest whRequest = new WhRequest();
+//        whRequest.setRefId(refId);
+//        whRequest.setBarcodeVerify(barcodeVerify);
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date = new Date();
+//        whRequest.setDateVerify(dateFormat.format(date));
+//        whRequest.setUserVerify(userSession.getFullname());
+//        String barcodeVerified = whRequest.getBarcodeVerify();
+//        whRequest.setMaterialPassNo(materialPassNo);
+//        LOGGER.info("barcodeVerified : " + barcodeVerified);
+//        boolean cp = false;
+//        if (materialPassNo.equals(barcodeVerified)) {
+//            whRequest.setStatus("Verification Pass");
+//            whRequest.setFlag("1");
+//            cp = true;
+//            LOGGER.info("Verification Pass");
+//        } else {
+//            whRequest.setStatus("Verification Fail");
+//            whRequest.setFlag("0");
+//            cp = false;
+//            LOGGER.info("Verification Fail");
+//        }
+//        WhRequestDAO whRequestDAO = new WhRequestDAO();
+//        QueryResult queryResult = whRequestDAO.updateWhRequestVerification(whRequest);
+//        args = new String[1];
+//        args[0] = barcodeVerify;
+//        if (queryResult.getResult() == 1 && cp == true) {
+//            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success2", args, locale));
+//        } else {
+//            //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+//        }
+//        return "redirect:/wh/whRequest/verify/" + refId;
+//    }
+//    
+//    /*
+//    @RequestMapping(value = "/setShipping", method = RequestMethod.POST)
+//    public String setShipping(
 //            Model model,
 //            Locale locale,
 //            HttpServletRequest request,
 //            RedirectAttributes redirectAttrs,
 //            @ModelAttribute UserSession userSession,
-//            @RequestParam(required = false) String id,
-//            @RequestParam(required = false) String requestType,
+//            @RequestParam(required = false) String refId,
+//            @RequestParam(required = false) String materialPassNo,
+//            @RequestParam(required = false) String materialPassExpiry,
 //            @RequestParam(required = false) String equipmentType,
-//            @RequestParam(required = false) String finalApprovedStatus,
-//            @RequestParam(required = false) String finalApprovedDate,
-//            @RequestParam(required = false) String remarksApprover,
-//            @RequestParam(required = false) String modifiedBy,
+//            @RequestParam(required = false) String equipmentId,
+//            @RequestParam(required = false) String type,
+//            @RequestParam(required = false) String quantity,
+//            @RequestParam(required = false) String barcodeVerify,
+//            @RequestParam(required = false) String dateVerify,
+//            @RequestParam(required = false) String shippingDate,
+//            @RequestParam(required = false) String shippingRack,
+//            @RequestParam(required = false) String shippingSlot,
 //            @RequestParam(required = false) String status,
 //            @RequestParam(required = false) String flag
 //    ) {
 //        WhRequest whRequest = new WhRequest();
-//        whRequest.setId(id);
-//        whRequest.setFinalApprovedStatus(finalApprovedStatus);
-//        whRequest.setFinalApprovedBy(userSession.getFullname());
-//        whRequest.setRemarksApprover(remarksApprover);
-//        whRequest.setStatus(finalApprovedStatus);
-//        WhRequestDAO whRequestDAO = new WhRequestDAO();
-//        QueryResult queryResult = whRequestDAO.updateWhRequestForApproval(whRequest);
-//        args = new String[1];
-//        args[0] = requestType + " - " + equipmentType;
-//        if (queryResult.getResult() == 1) {
-//            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
-//
-//            EmailSender emailSender = new EmailSender();
-//            whRequestDAO = new WhRequestDAO();
-//            WhRequest whRequest1 = whRequestDAO.getWhRequest(id);
-//            String fullname = whRequest1.getRequestedBy();
-//            com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-//            user.setFullname(fullname);
-//
-//            
-//            //to get hostname
-//            InetAddress ip;
-//            String hostName ="";
-//            try {
-//                ip = InetAddress.getLocalHost();
-//                hostName = ip.getHostName();
-//            } catch (UnknownHostException ex) {
-//                java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            
-//                    
-//            emailSender.htmlEmail(
-//                    servletContext,
-//                    //                    user name
-//                    user,
-//                    //                    to
-//                    "cdarsrel@gmail.com",
-//                    //                    subject
-//                    "Approval Status for New Hardware Request from HMS",
-//                    //                    msg
-//                    "Approval status for New Hardware Request has been made. Please go to this link "
-//                    + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/edit/" + id + "\">HMS</a>"
-//                    //+ "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/edit/" + id + "\">HMS</a>"
-//                    + " for approval status checking."
-//            );
+//        whRequest.setRefId(refId);      
+//        whRequest.setMaterialPassNo(materialPassNo);
+//        boolean cp = false;
+//        if(status.equals("Verification Pass")) {
+//            whRequest.setStatus("Move to Shipping");
+//            whRequest.setFlag("1");
+//            cp = true;
+//            LOGGER.info("Shipping Pass");
 //        } else {
-//            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+//            whRequest.setStatus(status);
+//            whRequest.setFlag(flag);
+//            cp = false;
+//            LOGGER.info("Shipping Fail");
 //        }
-//        return "redirect:/wh/whRequest";
+//        WhRequestDAO whRequestDAO = new WhRequestDAO();
+//        QueryResult queryResult = whRequestDAO.updateWhRequestForShipping(whRequest);
+//        
+//        
+//        if(whRequest.getStatus().equals("Move to Shipping")) {
+//            //save id to table wh_shipping_list
+//            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            Date date = new Date();
+//        
+//            WhShipping whShipping = new WhShipping();
+//            whShipping.setRefId(refId);
+//            whShipping.setMaterialPassNo(materialPassNo);
+//            whShipping.setStatus(whRequest.getStatus());
+//            whShipping.setShippingBy(userSession.getFullname());
+//            whShipping.setShippingDate(dateFormat.format(date));
+//            whShipping.setShippingRack(shippingRack);
+//            whShipping.setShippingSlot(shippingSlot);
+//            
+//            WhShippingDAO whShippingDAO = new WhShippingDAO();
+//            int count = whShippingDAO.getCountExistingData(whShipping.getRefId());
+//            if (count == 0) {
+//                LOGGER.info("data xdeeeeee");
+//                whShippingDAO = new WhShippingDAO();
+//                QueryResult queryResult1 = whShippingDAO.insertWhShipping(whShipping);
+//                
+//                args = new String[1];
+//                args[0] = materialPassNo;
+//                if (queryResult.getResult() == 0 && cp == false) {
+//                    //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+//                } else {
+//                    String username = System.getProperty("user.name");
+//                    //SEND EMAIL
+//                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+//                    if (file.exists()) {
+//                        LOGGER.info("dh ada header");
+//                        FileWriter fileWriter = null;
+//                        try {
+//                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
+//                            //New Line after the header
+//                            fileWriter.append(LINE_SEPARATOR);
+//                            WhShippingDAO whdao = new WhShippingDAO();
+//                            WhShipping wh = whdao.getWhShippingMergeWithRequestPdf(refId);
+//
+//                            fileWriter.append(refId);
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getMaterialPassNo());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getEquipmentType());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getEquipmentId());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getQuantity());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getRequestedBy());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getRequestedDate());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getRemarks());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getDateVerify());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getShippingDate());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getShippingRack());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getShippingSlot());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(userSession.getFullname());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getStatus());
+////                            fileWriter.append(COMMA_DELIMITER);
+//                            System.out.println("append to CSV file Succeed!!!");
+//                        } catch (Exception ee) {
+//                            System.out.println("Error 1 occured while append the fileWriter");
+//                        } finally {
+//                            try {
+//                                fileWriter.close();
+//                            } catch (IOException ie) {
+//                                System.out.println("Error 2 occured while closing the fileWriter");
+//                            }
+//                        }
+//                    } else {
+//                        FileWriter fileWriter = null;
+//                        try {
+//                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+//                            LOGGER.info("no file yet");
+//                            //Adding the header
+//                            fileWriter.append(HEADER);
+//
+//                            //New Line after the header
+//                            fileWriter.append(LINE_SEPARATOR);
+//                            WhShippingDAO whdao = new WhShippingDAO();
+//                            WhShipping wh = whdao.getWhShippingMergeWithRequestPdf(refId);
+//                            fileWriter.append(refId);
+//                            fileWriter.append(COMMA_DELIMITER); 
+//                            fileWriter.append(wh.getMaterialPassNo());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getEquipmentType());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getEquipmentId());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getQuantity());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getRequestedBy());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getRequestedDate());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getRemarks());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getDateVerify());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getShippingDate());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getShippingRack());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getShippingSlot());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(userSession.getFullname());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getStatus());
+////                            fileWriter.append(COMMA_DELIMITER);              
+//                        } catch (Exception ee) {
+//                            System.out.println("Error 1 occured while append the fileWriter");
+//                        } finally {
+//                            try {
+//                                System.out.println("write new to CSV file Succeed!!!");
+//                                fileWriter.close();
+//                            } catch (IOException ie) {
+//                                System.out.println("Error 2 occured while closing the fileWriter");
+//                                ie.printStackTrace();
+//                            }
+//                        }
+//                    }
+//
+//                    //send email
+//                    LOGGER.info("send email to warehouse");
+//
+//                    //to get hostname
+//                    InetAddress ip;
+//                    String hostName ="";
+//                    try {
+//                        ip = InetAddress.getLocalHost();
+//                        hostName = ip.getHostName();
+//                    } catch (UnknownHostException ex) {
+//                        java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//
+//                    EmailSender emailSender = new EmailSender();
+//                    com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
+//                    user.setFullname(userSession.getFullname());
+//                    emailSender.htmlEmailWithAttachmentRequest(
+//                        servletContext,
+//                        user,                                                   //user name
+//                        "cdarsrel@gmail.com",                                   //to
+//                        "Verification Status for New Hardware Request from HMS",   //subject
+//                        "Verification for New Hardware Request has been made. Please go to this link " //msg
+//                        + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/edit/" + refId + "\">HMS</a>"
+//                        + " for verification status checking."
+//                    );
+//
+//                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
+//                }
+//            } else {
+//                LOGGER.info("data adeeeeee");
+//            }
+//        }
+//        
+//        return "redirect:/wh/whShipping/";
 //    }
-}
+//    */
+//}

@@ -43,10 +43,9 @@
                                         <th><span>Material Pass No.</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Type</span></th>
-                                        <th><span>Quantity</span></th>
-                                        <th><span>Rack Location</span></th>
-                                        <th><span>Slot Location</span></th>
+                                        <th><span>Qty</span></th>
+                                        <th><span>Rack</span></th>
+                                        <th><span>Slot</span></th>
                                         <th><span>Inventory Date</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
@@ -58,7 +57,6 @@
                                             <td><c:out value="${whInventory.materialPassNo}"/></td>
                                             <td><c:out value="${whInventory.equipmentType}"/></td>
                                             <td id="modal_delete_info_${whInventory.refId}"><c:out value="${whInventory.equipmentId}"/></td>
-                                            <td><c:out value="${whInventory.type}"/></td>
                                             <td><c:out value="${whInventory.quantity}"/></td>
                                             <td><c:out value="${whInventory.inventoryRack}"/></td>
                                             <td><c:out value="${whInventory.inventorySlot}"/></td>
@@ -99,7 +97,7 @@
                     "order": [],
                     "aoColumnDefs": [
                         {"bSortable": false, "aTargets": [0]},
-                        {"bSortable": false, "aTargets": [9]}
+                        {"bSortable": false, "aTargets": [8]}
                     ],
                     "sDom": "tp"
                 });
