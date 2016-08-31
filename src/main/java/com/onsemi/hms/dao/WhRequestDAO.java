@@ -43,8 +43,8 @@ public class WhRequestDAO {
             ps.setString(6, whRequest.getQuantity());
             ps.setString(7, whRequest.getRequestedBy());
             ps.setString(8, whRequest.getRequestedDate());
-            ps.setString(9, whRequest.getRack());
-            ps.setString(10, whRequest.getSlot());
+            ps.setString(9, whRequest.getInventoryRack());
+            ps.setString(10, whRequest.getInventorySlot());
             ps.setString(11, whRequest.getRemarks());
             ps.setString(12, whRequest.getStatus());
             ps.setString(13, whRequest.getFlag());
@@ -102,7 +102,7 @@ public class WhRequestDAO {
         return queryResult;
     }
     
-    public QueryResult updateWhRequestForInventory(WhRequest whRequest) {
+    public QueryResult updateWhRequestForShipping(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_request_list SET status = ?, flag = ? "
                    + "WHERE ref_id = ? AND material_pass_no = ? ";
@@ -223,8 +223,8 @@ public class WhRequestDAO {
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedDate(rs.getString("requested_date_view"));
-                whRequest.setRack(rs.getString("inventory_rack"));
-                whRequest.setSlot(rs.getString("inventory_slot"));
+                whRequest.setInventoryRack(rs.getString("inventory_rack"));
+                whRequest.setInventorySlot(rs.getString("inventory_slot"));
                 whRequest.setRemarks(rs.getString("remarks"));
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify_view"));
@@ -268,8 +268,8 @@ public class WhRequestDAO {
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedDate(rs.getString("requested_date_view"));
-                whRequest.setRack(rs.getString("inventory_rack"));
-                whRequest.setSlot(rs.getString("inventory_slot"));
+                whRequest.setInventoryRack(rs.getString("inventory_rack"));
+                whRequest.setInventorySlot(rs.getString("inventory_slot"));
                 whRequest.setRemarks(rs.getString("remarks"));
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify_view"));

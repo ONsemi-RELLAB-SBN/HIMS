@@ -14,6 +14,7 @@ public class WhInventory {
     private String dateVerify;
     private String userVerify;
     private String inventoryDate;
+    private String inventoryLoc;
     private String inventoryRack;
     private String inventorySlot;
     private String inventoryBy;
@@ -116,6 +117,14 @@ public class WhInventory {
 
     public void setInventoryDate(String inventoryDate) {
         this.inventoryDate = inventoryDate;
+    }
+
+    public String getInventoryLoc() {
+        return inventoryLoc;
+    }
+
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
     }
 
     public String getInventoryRack() {

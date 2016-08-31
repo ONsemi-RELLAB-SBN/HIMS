@@ -111,13 +111,13 @@ public class WhRequestPdf extends AbstractITextPdfViewPotrait {
         //5
         cellHeader.setPhrase(new Phrase("Hardware Inventory Rack", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whRequest.getRack(), fontContent));
+        cellContent.setPhrase(new Phrase(whRequest.getInventoryRack(), fontContent));
         table.addCell(cellContent);
 
         //6
         cellHeader.setPhrase(new Phrase("Hardware Inventory Slot", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whRequest.getSlot(), fontContent));
+        cellContent.setPhrase(new Phrase(whRequest.getInventorySlot(), fontContent));
         table.addCell(cellContent);
         
         //7

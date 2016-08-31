@@ -9,8 +9,9 @@ public class WhRequest {
     private String equipmentType;
     private String equipmentId;
     private String quantity;
-    private String rack;
-    private String slot;
+    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventorySlot;
     private String requestedBy;
     private String requestedDate;
     private String remarks;
@@ -76,20 +77,28 @@ public class WhRequest {
         this.quantity = quantity;
     }
 
-    public String getRack() {
-        return rack;
+    public String getInventoryLoc() {
+        return inventoryLoc;
     }
 
-    public void setRack(String rack) {
-        this.rack = rack;
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
     }
 
-    public String getSlot() {
-        return slot;
+    public String getInventoryRack() {
+        return inventoryRack;
     }
 
-    public void setSlot(String slot) {
-        this.slot = slot;
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventorySlot() {
+        return inventorySlot;
+    }
+
+    public void setInventorySlot(String inventorySlot) {
+        this.inventorySlot = inventorySlot;
     }
 
     public String getRequestedBy() {

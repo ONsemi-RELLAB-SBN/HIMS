@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhRequestDAO;
+import com.onsemi.hms.dao.WhShippingDAO;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhShipping;
@@ -138,18 +139,27 @@ public class WhRequestController {
         return "whRequest/verify";
     }
     
-    @RequestMapping(value = "/verifyMp", method = RequestMethod.POST)
-    public String verifyMp(
+    @RequestMapping(value = "/setShipping", method = RequestMethod.POST)
+    public String setShipping(
             Model model,
             Locale locale,
+            HttpServletRequest request,
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String equipmentType,
+            @RequestParam(required = false) String equipmentId,
+            @RequestParam(required = false) String quantity,
+            @RequestParam(required = false) String requestedBy,
+            @RequestParam(required = false) String requestedDate,
             @RequestParam(required = false) String materialPassExpiry,
+            @RequestParam(required = false) String inventoryRack,
+            @RequestParam(required = false) String inventorySlot,
             @RequestParam(required = false) String barcodeVerify,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String flag
+            @RequestParam(required = false) String shippingDate
+            
     ) {
         WhRequest whRequest = new WhRequest();
         whRequest.setRefId(refId);
@@ -163,86 +173,35 @@ public class WhRequestController {
         LOGGER.info("barcodeVerified : " + barcodeVerified);
         boolean cp = false;
         if (materialPassNo.equals(barcodeVerified)) {
-            whRequest.setStatus("Verification Pass");
+            whRequest.setStatus("Move to Shipping");
             whRequest.setFlag("1");
             cp = true;
-            LOGGER.info("Verification Pass");
+            LOGGER.info("Move to Shipping");
+            
+            
         } else {
             whRequest.setStatus("Verification Fail");
             whRequest.setFlag("0");
             cp = false;
             LOGGER.info("Verification Fail");
         }
-        WhRequestDAO whRequestDAO = new WhRequestDAO();
-        QueryResult queryResult = whRequestDAO.updateWhRequestVerification(whRequest);
-        args = new String[1];
-        args[0] = barcodeVerify;
-        if (queryResult.getResult() == 1 && cp == true) {
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success2", args, locale));
-        } else {
-            //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-        }
-        return "redirect:/wh/whRequest/verify/" + refId;
-    }
-    
-    /*
-    @RequestMapping(value = "/setShipping", method = RequestMethod.POST)
-    public String setShipping(
-            Model model,
-            Locale locale,
-            HttpServletRequest request,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String refId,
-            @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String materialPassExpiry,
-            @RequestParam(required = false) String equipmentType,
-            @RequestParam(required = false) String equipmentId,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String quantity,
-            @RequestParam(required = false) String barcodeVerify,
-            @RequestParam(required = false) String dateVerify,
-            @RequestParam(required = false) String shippingDate,
-            @RequestParam(required = false) String shippingRack,
-            @RequestParam(required = false) String shippingSlot,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String flag
-    ) {
-        WhRequest whRequest = new WhRequest();
-        whRequest.setRefId(refId);      
-        whRequest.setMaterialPassNo(materialPassNo);
-        boolean cp = false;
-        if(status.equals("Verification Pass")) {
-            whRequest.setStatus("Move to Shipping");
-            whRequest.setFlag("1");
-            cp = true;
-            LOGGER.info("Shipping Pass");
-        } else {
-            whRequest.setStatus(status);
-            whRequest.setFlag(flag);
-            cp = false;
-            LOGGER.info("Shipping Fail");
-        }
+        
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestForShipping(whRequest);
         
-        
         if(whRequest.getStatus().equals("Move to Shipping")) {
             //save id to table wh_shipping_list
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
-        
             WhShipping whShipping = new WhShipping();
-            whShipping.setRefId(refId);
+            whShipping.setRequestId(refId);
             whShipping.setMaterialPassNo(materialPassNo);
             whShipping.setStatus(whRequest.getStatus());
             whShipping.setShippingBy(userSession.getFullname());
             whShipping.setShippingDate(dateFormat.format(date));
-            whShipping.setShippingRack(shippingRack);
-            whShipping.setShippingSlot(shippingSlot);
+            whShipping.setInventoryRack(inventoryRack);
+            whShipping.setInventorySlot(inventorySlot);
             
             WhShippingDAO whShippingDAO = new WhShippingDAO();
-            int count = whShippingDAO.getCountExistingData(whShipping.getRefId());
+            int count = whShippingDAO.getCountExistingData(whShipping.getRequestId());
             if (count == 0) {
                 LOGGER.info("data xdeeeeee");
                 whShippingDAO = new WhShippingDAO();
@@ -264,7 +223,7 @@ public class WhRequestController {
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
                             WhShippingDAO whdao = new WhShippingDAO();
-                            WhShipping wh = whdao.getWhShippingMergeWithRequestPdf(refId);
+                            WhShipping wh = whdao.getWhShippingMergeWithRequest(refId);
 
                             fileWriter.append(refId);
                             fileWriter.append(COMMA_DELIMITER);
@@ -286,9 +245,9 @@ public class WhRequestController {
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getShippingDate());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getShippingRack());
+                            fileWriter.append(wh.getInventoryRack());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getShippingSlot());
+                            fileWriter.append(wh.getInventorySlot());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(userSession.getFullname());
                             fileWriter.append(COMMA_DELIMITER);
@@ -315,7 +274,7 @@ public class WhRequestController {
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
                             WhShippingDAO whdao = new WhShippingDAO();
-                            WhShipping wh = whdao.getWhShippingMergeWithRequestPdf(refId);
+                            WhShipping wh = whdao.getWhShippingMergeWithRequest(refId);
                             fileWriter.append(refId);
                             fileWriter.append(COMMA_DELIMITER); 
                             fileWriter.append(wh.getMaterialPassNo());
@@ -336,9 +295,9 @@ public class WhRequestController {
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getShippingDate());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getShippingRack());
+                            fileWriter.append(wh.getInventoryRack());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getShippingSlot());
+                            fileWriter.append(wh.getInventorySlot());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(userSession.getFullname());
                             fileWriter.append(COMMA_DELIMITER);
@@ -392,5 +351,4 @@ public class WhRequestController {
         
         return "redirect:/wh/whShipping/";
     }
-    */
 }

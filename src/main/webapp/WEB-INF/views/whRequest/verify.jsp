@@ -95,7 +95,7 @@
                         <div class="col-lg-6">
                             <div class="main-box">
                                 <h2>Verify Barcode Label</h2>
-                                <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyMp" method="post">
+                                <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/setShipping" method="post">
                                     <input type="hidden" name="refId" value="${whRequest.refId}" />
                                     <input type="hidden" name="status" value="${whRequest.status}" />
                                     <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRequest.materialPassNo}" />

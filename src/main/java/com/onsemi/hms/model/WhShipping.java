@@ -2,10 +2,22 @@ package com.onsemi.hms.model;
 
 public class WhShipping {
     private String id;
-    private String refId;
+    private String requestId;
     private String materialPassNo;
-    private String shipping_date;
-    private String shipping_by;
+    private String materialPassExpiry;
+    private String equipmentType;
+    private String equipmentId;
+    private String quantity;
+    private String requestedBy;
+    private String requestedDate;
+    private String inventoryRack;
+    private String inventorySlot;
+    private String remarks;
+    private String barcodeVerify;
+    private String userVerify;
+    private String dateVerify;
+    private String shippingDate;
+    private String shippingBy;
     private String status;
     private String flag;
 
@@ -17,12 +29,12 @@ public class WhShipping {
         this.id = id;
     }
 
-    public String getRefId() {
-        return refId;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setRefId(String refId) {
-        this.refId = refId;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getMaterialPassNo() {
@@ -33,20 +45,116 @@ public class WhShipping {
         this.materialPassNo = materialPassNo;
     }
 
-    public String getShipping_date() {
-        return shipping_date;
+    public String getMaterialPassExpiry() {
+        return materialPassExpiry;
     }
 
-    public void setShipping_date(String shipping_date) {
-        this.shipping_date = shipping_date;
+    public void setMaterialPassExpiry(String materialPassExpiry) {
+        this.materialPassExpiry = materialPassExpiry;
     }
 
-    public String getShipping_by() {
-        return shipping_by;
+    public String getEquipmentType() {
+        return equipmentType;
     }
 
-    public void setShipping_by(String shipping_by) {
-        this.shipping_by = shipping_by;
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
+
+    public String getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(String equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getRequestedBy() {
+        return requestedBy;
+    }
+
+    public void setRequestedBy(String requestedBy) {
+        this.requestedBy = requestedBy;
+    }
+
+    public String getRequestedDate() {
+        return requestedDate;
+    }
+
+    public void setRequestedDate(String requestedDate) {
+        this.requestedDate = requestedDate;
+    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
+    }
+
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventorySlot() {
+        return inventorySlot;
+    }
+
+    public void setInventorySlot(String inventorySlot) {
+        this.inventorySlot = inventorySlot;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getBarcodeVerify() {
+        return barcodeVerify;
+    }
+
+    public void setBarcodeVerify(String barcodeVerify) {
+        this.barcodeVerify = barcodeVerify;
+    }
+
+    public String getUserVerify() {
+        return userVerify;
+    }
+
+    public void setUserVerify(String userVerify) {
+        this.userVerify = userVerify;
+    }
+
+    public String getDateVerify() {
+        return dateVerify;
+    }
+
+    public void setDateVerify(String dateVerify) {
+        this.dateVerify = dateVerify;
+    }
+
+    public String getShippingDate() {
+        return shippingDate;
+    }
+
+    public void setShippingDate(String shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
+    public String getShippingBy() {
+        return shippingBy;
+    }
+
+    public void setShippingBy(String shippingBy) {
+        this.shippingBy = shippingBy;
     }
 
     public String getStatus() {
@@ -65,5 +173,5 @@ public class WhShipping {
         this.flag = flag;
     }
 
-    
+   
 }

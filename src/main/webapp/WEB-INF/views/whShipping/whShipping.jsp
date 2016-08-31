@@ -47,6 +47,7 @@
                                         <th><span>Rack</span></th>
                                         <th><span>Slot</span></th>
                                         <th><span>Shipping Date</span></th>
+                                        <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
                                 </thead>
@@ -56,19 +57,20 @@
                                             <td><c:out value="${whShippingLoop.index+1}"/></td>
                                             <td><c:out value="${whShipping.materialPassNo}"/></td>
                                             <td><c:out value="${whShipping.equipmentType}"/></td>
-                                            <td id="modal_delete_info_${whShipping.refId}"><c:out value="${whShipping.equipmentId}"/></td>
+                                            <td id="modal_delete_info_${whShipping.requestId}"><c:out value="${whShipping.equipmentId}"/></td>
                                             <td><c:out value="${whShipping.quantity}"/></td>
                                             <td><c:out value="${whShipping.inventoryRack}"/></td>
                                             <td><c:out value="${whShipping.inventorySlot}"/></td>
                                             <td><c:out value="${whShipping.shippingDate}"/></td>
+                                            <td><c:out value="${whShipping.status}"/></td>
                                             <td align="center">
-                                                <a href="${contextPath}/wh/whShipping/edit/${whShipping.refId}" class="table-link" title="Update">
+                                                <a href="${contextPath}/wh/whShipping/edit/${whShipping.requestId}" class="table-link" title="Update">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
-                                                <a href="${contextPath}/wh/whShipping/view/${whShipping.refId}" class="table-link" title="View">
+                                                <a href="${contextPath}/wh/whShipping/view/${whShipping.requestId}" class="table-link" title="View">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
@@ -97,7 +99,7 @@
                     "order": [],
                     "aoColumnDefs": [
                         {"bSortable": false, "aTargets": [0]},
-                        {"bSortable": false, "aTargets": [8]}
+                        {"bSortable": false, "aTargets": [9]}
                     ],
                     "sDom": "tp"
                 });
