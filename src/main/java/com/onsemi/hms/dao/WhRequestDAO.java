@@ -104,14 +104,17 @@ public class WhRequestDAO {
     
     public QueryResult updateWhRequestForShipping(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_request_list SET status = ?, flag = ? "
+        String sql = "UPDATE hms_wh_request_list SET barcode_verify = ?, user_verify = ?, date_verify = ?, status = ?, flag = ? "
                    + "WHERE ref_id = ? AND material_pass_no = ? ";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whRequest.getStatus());
-            ps.setString(2, whRequest.getFlag());
-            ps.setString(3, whRequest.getRefId());
-            ps.setString(4, whRequest.getMaterialPassNo());
+            ps.setString(1, whRequest.getBarcodeVerify());
+            ps.setString(2, whRequest.getUserVerify());
+            ps.setString(3, whRequest.getDateVerify());
+            ps.setString(4, whRequest.getStatus());
+            ps.setString(5, whRequest.getFlag());
+            ps.setString(6, whRequest.getRefId());
+            ps.setString(7, whRequest.getMaterialPassNo());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -251,7 +254,7 @@ public class WhRequestDAO {
     public List<WhRequest> getWhRequestList() {
         String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
                    + "FROM hms_wh_request_list "
-                   + "WHERE status NOT LIKE 'Move to Inventory'"
+                   + "WHERE status NOT LIKE 'Queue for Shipping'"
                    + "ORDER BY id DESC";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {

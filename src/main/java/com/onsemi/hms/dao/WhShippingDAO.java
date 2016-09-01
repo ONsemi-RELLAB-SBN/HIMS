@@ -30,15 +30,13 @@ public class WhShippingDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_shipping_list (requestId, material_pass_no, shipping_date, shipping_by, status, flag) "
-              + "VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO hms_wh_shipping_list (request_id, material_pass_no, status, flag) "
+              + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whShipping.getRequestId());
             ps.setString(2, whShipping.getMaterialPassNo());
-            ps.setString(3, whShipping.getShippingDate());
-            ps.setString(4, whShipping.getShippingBy());
-            ps.setString(5, whShipping.getStatus());
-            ps.setString(6, whShipping.getFlag());
+            ps.setString(3, whShipping.getStatus());
+            ps.setString(4, whShipping.getFlag());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -312,5 +310,78 @@ public class WhShippingDAO {
             }
         }
         return count;
+    }
+    
+    public Integer getCountMpNo(String mpno) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE material_pass_no = '" + mpno + "' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+    
+    public WhShipping getWhShippingMergeWithRequestByMpNo(String whShippingMpNo) {
+        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
+                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
+                   + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
+                   + "WHERE SL.material_pass_no = '" + whShippingMpNo + "' ";
+        WhShipping whShipping = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhShipping();
+                whShipping.setRequestId(rs.getString("SL.request_id"));
+                whShipping.setMaterialPassNo(rs.getString("SL.material_pass_no"));
+                whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whShipping.setEquipmentType(rs.getString("RL.equipment_type"));
+                whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
+                whShipping.setQuantity(rs.getString("RL.quantity"));
+                whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+                whShipping.setRequestedDate(rs.getString("requested_date_view"));
+                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
+                whShipping.setInventorySlot(rs.getString("RL.inventory_slot"));
+                whShipping.setRemarks(rs.getString("RL.remarks"));
+                whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+                whShipping.setUserVerify(rs.getString("RL.user_verify"));
+                whShipping.setDateVerify(rs.getString("date_verify_view"));
+                whShipping.setShippingDate(rs.getString("shipping_date_view"));
+                whShipping.setShippingBy(rs.getString("shipping_date_view"));
+                whShipping.setStatus(rs.getString("SL.status"));
+                whShipping.setFlag(rs.getString("SL.flag"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whShipping;
     }
 }

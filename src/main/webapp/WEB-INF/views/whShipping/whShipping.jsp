@@ -15,7 +15,13 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">Hardware Shipping List</h2>
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/wh/whShipping/whMpList" class="btn btn-primary pull-right">
+                                    <i class="fa fa-bars fa-lg"></i> Create Shipping Material Pass List
+                                </a>
+                            </div>
                         </div>
+                        
                         <hr/>
                         <div class="clearfix">
                             <div class="form-group pull-left">
@@ -46,7 +52,7 @@
                                         <th><span>Qty</span></th>
                                         <th><span>Rack</span></th>
                                         <th><span>Slot</span></th>
-                                        <th><span>Shipping Date</span></th>
+                                        <th><span>Verification Date</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
@@ -61,19 +67,25 @@
                                             <td><c:out value="${whShipping.quantity}"/></td>
                                             <td><c:out value="${whShipping.inventoryRack}"/></td>
                                             <td><c:out value="${whShipping.inventorySlot}"/></td>
-                                            <td><c:out value="${whShipping.shippingDate}"/></td>
+                                            <td><c:out value="${whShipping.dateVerify}"/></td>
                                             <td><c:out value="${whShipping.status}"/></td>
                                             <td align="center">
-                                                <a href="${contextPath}/wh/whShipping/edit/${whShipping.requestId}" class="table-link" title="Update">
+                                                <!--<a href="${contextPath}/wh/whShipping/edit/${whShipping.requestId}" class="table-link" title="Update">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                     </span>
-                                                </a>
+                                                </a>-->
                                                 <a href="${contextPath}/wh/whShipping/view/${whShipping.requestId}" class="table-link" title="View">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                                <a modaldeleteid="${whShipping.requestId}" data-toggle="modal" href="#delete_modal" class="table-link danger group_delete" onclick="modalDelete(this);">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
                                             </td>

@@ -1,8 +1,5 @@
 package com.onsemi.hms.model;
 
-/**
- * @author fg79cj
- */
 public class IonicFtpRequest {
     private String refId;
     private String equipmentType;
