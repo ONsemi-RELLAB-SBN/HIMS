@@ -50,7 +50,7 @@ public class WhRetrieveController {
     private static final String LINE_SEPARATOR = "\n";
 
     //File header
-    private static final String HEADER = "id,material_pass_no,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_rack,inventory_slot,inventory_by,status";
+    private static final String HEADER = "retrieve_id,material_pass_no,material_pass_expiry,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_rack,inventory_slot,inventory_by,status";
 
     @Autowired
     private MessageSource messageSource;
@@ -280,6 +280,8 @@ public class WhRetrieveController {
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getMaterialPassNo());
                             fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getMaterialPassExpiry());
+                            fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getEquipmentType());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getEquipmentId());
@@ -329,6 +331,8 @@ public class WhRetrieveController {
                             fileWriter.append(refId);
                             fileWriter.append(COMMA_DELIMITER); 
                             fileWriter.append(wh.getMaterialPassNo());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getMaterialPassExpiry());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getEquipmentType());
                             fileWriter.append(COMMA_DELIMITER);
@@ -387,8 +391,8 @@ public class WhRetrieveController {
                         servletContext,
                         user,                                                   //user name
                         "cdarsrel@gmail.com",                                   //to
-                        "Verification Status for New Hardware Request from HMS",   //subject
-                        "Verification for New Hardware Request has been made. Please go to this link " //msg
+                        "Verification Status for Hardware Inventory from HMS",   //subject
+                        "Verification for Hardware Inventory has been made. Please go to this link " //msg
                         + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRetrieve/edit/" + refId + "\">HMS</a>"
                         + " for verification status checking."
                     );

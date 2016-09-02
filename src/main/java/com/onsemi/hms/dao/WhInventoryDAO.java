@@ -296,6 +296,7 @@ public class WhInventoryDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
+            LOGGER.info("count id..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {

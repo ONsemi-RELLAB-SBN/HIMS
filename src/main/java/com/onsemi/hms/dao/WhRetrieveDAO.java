@@ -33,7 +33,7 @@ public class WhRetrieveDAO {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO hms_wh_retrieval_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, quantity, "
                                                         + "requested_by, requested_date, remarks, status, flag) "
-                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRetrieve.getRefId());
             ps.setString(2, whRetrieve.getMaterialPassNo());
@@ -164,6 +164,7 @@ public class WhRetrieveDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
+            LOGGER.info("count id..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {

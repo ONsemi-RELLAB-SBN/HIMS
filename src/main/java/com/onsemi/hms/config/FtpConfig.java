@@ -42,9 +42,9 @@ public class FtpConfig {
     
     //@Scheduled(fixedRate = 60000) //- in ms
     //hold for now
-    @Scheduled(cron = "0 0/2 * * * ?") //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 0/1 * * * ?") //every 1 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() {
-        LOGGER.info("Method executed at every 2 minute. Current time is : " + new Date());
+        LOGGER.info("Method executed at every 1 minute. Current time is : " + new Date());
         
         String username = System.getProperty("user.name");
         String targetLocation = "C:\\Users\\" + username + "\\Documents\\CDARS\\";

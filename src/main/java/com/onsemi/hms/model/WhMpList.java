@@ -2,32 +2,38 @@ package com.onsemi.hms.model;
 
 public class WhMpList {
 
-    private String refId;
-    private String whShipId;
+    private String id;
+    private String shippingId;
     private String materialPassNo;
     private String materialPassExpiry;
-    private String equipmentType;
     private String equipmentId;
+    private String equipmentType;
     private String quantity;
     private String requestedBy;
-     private String requestedDate;
+    private String requestedDate;
+    private String userVerify;
+    private String dateVerify;
+    private String inventoryRack;
+    private String inventorySlot;
     private String createdDate;
     private String createdBy;
+    private String status;
+    private String remarks;
 
-    public String getRefId() {
-        return refId;
+    public String getId() {
+        return id;
     }
 
-    public void setRefId(String refId) {
-        this.refId = refId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getWhShipId() {
-        return whShipId;
+    public String getShippingId() {
+        return shippingId;
     }
 
-    public void setWhShipId(String whShipId) {
-        this.whShipId = whShipId;
+    public void setShippingId(String shippingId) {
+        this.shippingId = shippingId;
     }
 
     public String getMaterialPassNo() {
@@ -86,6 +92,38 @@ public class WhMpList {
         this.requestedDate = requestedDate;
     }
 
+    public String getUserVerify() {
+        return userVerify;
+    }
+
+    public void setUserVerify(String userVerify) {
+        this.userVerify = userVerify;
+    }
+
+    public String getDateVerify() {
+        return dateVerify;
+    }
+
+    public void setDateVerify(String dateVerify) {
+        this.dateVerify = dateVerify;
+    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
+    }
+
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventorySlot() {
+        return inventorySlot;
+    }
+
+    public void setInventorySlot(String inventorySlot) {
+        this.inventorySlot = inventorySlot;
+    }
+
     public String getCreatedDate() {
         return createdDate;
     }
@@ -100,5 +138,21 @@ public class WhMpList {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

@@ -158,6 +158,31 @@ public class WhRequestDAO {
         return queryResult;
     }
     
+    public QueryResult updateWhRequestStatus(WhRequest whRequest) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_request_list SET status = ?"
+                   + "WHERE ref_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, whRequest.getStatus());
+            ps.setString(2, whRequest.getRefId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    
     public Integer getCountExistingData(String id) {
         Integer count = null;
         try {
@@ -169,6 +194,7 @@ public class WhRequestDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
+            LOGGER.info("count id..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {
@@ -254,7 +280,7 @@ public class WhRequestDAO {
     public List<WhRequest> getWhRequestList() {
         String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
                    + "FROM hms_wh_request_list "
-                   + "WHERE status NOT LIKE 'Queue for Shipping'"
+                   + "WHERE status NOT LIKE 'Queue for Shipping' and status NOT LIKE 'Ship' "
                    + "ORDER BY id DESC";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {

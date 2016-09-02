@@ -62,7 +62,7 @@ public class WhShippingDAO {
     public QueryResult updateWhShipping(WhShipping whShipping) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_shipping_list "
-                   + "SET shipping_date = ?, shipping_by, status = ?, flag = ? "
+                   + "SET shipping_date = ?, shipping_by = ?, status = ?, flag = ? "
                    + "WHERE request_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -71,6 +71,32 @@ public class WhShippingDAO {
             ps.setString(3, whShipping.getStatus());
             ps.setString(4, whShipping.getFlag());
             ps.setString(5, whShipping.getRequestId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    
+    public QueryResult updateWhShippingStatus(WhShipping whShipping) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_shipping_list "
+                   + "SET status = ? "
+                   + "WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, whShipping.getStatus());
+            ps.setString(2, whShipping.getRequestId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -170,7 +196,7 @@ public class WhShippingDAO {
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));
                 whShipping.setDateVerify(rs.getString("date_verify_view"));
                 whShipping.setShippingDate(rs.getString("shipping_date_view"));
-                whShipping.setShippingBy(rs.getString("shipping_date_view"));
+                whShipping.setShippingBy(rs.getString("SL.shipping_by"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
             }
@@ -264,7 +290,7 @@ public class WhShippingDAO {
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));
                 whShipping.setDateVerify(rs.getString("date_verify_view"));
                 whShipping.setShippingDate(rs.getString("shipping_date_view"));
-                whShipping.setShippingBy(rs.getString("shipping_date_view"));
+                whShipping.setShippingBy(rs.getString("SL.shipping_by"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
                 whShippingList.add(whShipping);
@@ -296,6 +322,7 @@ public class WhShippingDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
+            LOGGER.info("count id..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {
@@ -323,6 +350,7 @@ public class WhShippingDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
+            LOGGER.info("count mpno..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {

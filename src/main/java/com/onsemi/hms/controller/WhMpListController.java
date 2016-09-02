@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhMpListDAO;
+import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhShippingDAO;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.UserSession;
+import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhShipping;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
@@ -16,8 +18,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,15 +49,14 @@ public class WhMpListController {
     //Delimiters which has to be in the CSV file
     private static final String COMMA_DELIMITER = ",";
     private static final String LINE_SEPARATOR = "\n";
-    private static final String HEADER = "id,hardware_type,hardware_id,quantity,material pass number,material pass expiry date,requested_by,"
-            + "requested_date,remarks";
+    private static final String HEADER = "request id,material pass no,date verified,verified by,shipping date,shipping by,status";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String whMpList(
             Model model
     ) {
         WhMpListDAO whMpListDAO = new WhMpListDAO();
-        List<WhMpList> whMpListList = whMpListDAO.getWhMpListList();
+        List<WhMpList> whMpListList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
         model.addAttribute("whMpListList", whMpListList);
         return "whMpList/whMpList";
     }
@@ -74,67 +73,56 @@ public class WhMpListController {
             Locale locale,
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String mpNo
+            @RequestParam(required = false) String materialPassNo
     ) {
-        //check ad material pass ke tidak dkt shipping.
         WhShippingDAO whShipD = new WhShippingDAO();
-        int count = whShipD.getCountMpNo(mpNo);
+        int count = whShipD.getCountMpNo(materialPassNo); //mpno in shipping
         if (count != 0) {
-            //check da ade ke mp_no dkt whmplist
             WhMpListDAO whMpListDAO = new WhMpListDAO();
-            int countMpNo = whMpListDAO.getCountMpNo(mpNo);
+            int countMpNo = whMpListDAO.getCountMpNo(materialPassNo); //mpno in mplist
             if (countMpNo == 0) {
                 WhShippingDAO whshipD = new WhShippingDAO();
-
-                WhShipping whship = whshipD.getWhShippingMergeWithRequestByMpNo(mpNo);
-
+                WhShipping whship = whshipD.getWhShippingMergeWithRequestByMpNo(materialPassNo);
                 WhMpList whMpList = new WhMpList();
-                whMpList.setWhShipId(whship.getId());
-                whMpList.setMaterialPassNo(mpNo);
-                whMpList.setMaterialPassExpiry(whship.getMaterialPassExpiry());
-                whMpList.setEquipmentId(whship.getEquipmentId());
-                whMpList.setEquipmentType(whship.getEquipmentType());
-                whMpList.setQuantity(whship.getQuantity());
-                whMpList.setRequestedBy(whship.getRequestedBy());
-                whMpList.setRequestedDate(whship.getRequestedDate());
+                whMpList.setShippingId(whship.getRequestId());
+                whMpList.setMaterialPassNo(materialPassNo);
                 whMpList.setCreatedBy(userSession.getFullname());
+                whMpList.setStatus("Ship");
                 whMpListDAO = new WhMpListDAO();
                 QueryResult queryResult = whMpListDAO.insertWhMpList(whMpList);
                 args = new String[1];
-                args[0] = mpNo;
+                args[0] = materialPassNo;
                 if (queryResult.getGeneratedKey().equals("0")) {
                     model.addAttribute("error", messageSource.getMessage("general.label.save.error", args, locale));
                     model.addAttribute("whMpList", whMpList);
                     return "whMpList/add";
                 } else {
-                    File file = new File("C:\\hms_shipping.csv");
+                    /*create csv & email*/
+                    String username = System.getProperty("user.name");
+                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
 
-                    if (file.exists()) {
-                        //create csv file
+                    WhMpListDAO whListDao = new WhMpListDAO();
+                    WhMpList mplist = whListDao.getWhMpListMergeWithShippingAndRequest(whship.getRequestId());
+                    if (file.exists()) { //create csv file                        
                         LOGGER.info("tiada header");
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter("C:\\hms_ship_process.csv", true);
+                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
-
-                            fileWriter.append(queryResult.getGeneratedKey());
+                            fileWriter.append(mplist.getShippingId());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getEquipmentType());
+                            fileWriter.append(mplist.getMaterialPassNo());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getEquipmentId());
+                            fileWriter.append(mplist.getDateVerify());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getQuantity());
+                            fileWriter.append(mplist.getUserVerify());
+                            fileWriter.append(COMMA_DELIMITER);                            
+                            fileWriter.append(mplist.getCreatedDate());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mpNo);
+                            fileWriter.append(mplist.getCreatedBy());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getMaterialPassExpiry());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getRequestedBy());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getRequestedDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getRemarks());
+                            fileWriter.append(whMpList.getStatus());
                             fileWriter.append(COMMA_DELIMITER);
                             System.out.println("append to CSV file Succeed!!!");
                         } catch (Exception ee) {
@@ -150,31 +138,26 @@ public class WhMpListController {
                     } else {
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter("C:\\hms_ship_process.csv");
+                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
                             LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);
 
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
-
-                            fileWriter.append(queryResult.getGeneratedKey());
+                            fileWriter.append(mplist.getShippingId());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getEquipmentType());
+                            fileWriter.append(mplist.getMaterialPassNo());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getEquipmentId());
+                            fileWriter.append(mplist.getDateVerify());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getQuantity());
+                            fileWriter.append(mplist.getUserVerify());
+                            fileWriter.append(COMMA_DELIMITER);                            
+                            fileWriter.append(mplist.getCreatedDate());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mpNo);
+                            fileWriter.append(mplist.getCreatedBy());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getMaterialPassExpiry());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getRequestedBy());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getRequestedDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whship.getRemarks());
+                            fileWriter.append(whMpList.getStatus());
                             fileWriter.append(COMMA_DELIMITER);
                             System.out.println("Write new to CSV file Succeed!!!");
                         } catch (Exception ee) {
@@ -189,6 +172,9 @@ public class WhMpListController {
                         }
                     }
 
+                    //send email
+                    LOGGER.info("send email to warehouse");
+
                     //to get hostname
                     InetAddress ip;
                     String hostName ="";
@@ -196,32 +182,50 @@ public class WhMpListController {
                         ip = InetAddress.getLocalHost();
                         hostName = ip.getHostName();
                     } catch (UnknownHostException ex) {
-                        java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
+                        java.util.logging.Logger.getLogger(WhMpListController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                
+
                     EmailSender emailSender = new EmailSender();
                     com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
                     user.setFullname(userSession.getFullname());
-                    //String[] to = {"hmsrelon@gmail.com", "cdarsrel@gmail.com"};
                     emailSender.htmlEmailWithAttachmentShipping(
-                            servletContext,
-                            user,                               //user name
-                            "cdarsrel@gmail.com",               //to
-                            "New Hardware Shipping from HMS",   //subject
-                            "New hardware will be ship to storage factory. Please go to this link "     //msg
-                            + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/approval/" + queryResult.getGeneratedKey() + "\">HMS</a>"
-                            + " to check the shipping list."
+                        servletContext,
+                        user,                                                   //user name
+                        "cdarsrel@gmail.com",                                   //to
+                        "Verification Status for Hardware Shipping from HMS",   //subject
+                        "Verification for Hardware Request has been made. Please go to this link " //msg
+                        + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whShipping/" + "\">HMS</a>"
+                        + " for status checking."
                     );
-                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.success", args, locale));
-                    return "whMpList/add";
+                    
+                    WhShipping whShipping = new WhShipping();
+                    whShipping.setRequestId(whship.getRequestId());
+                    whShipping.setStatus("Ship");
+                    WhShippingDAO whShippingDao = new WhShippingDAO();
+                    QueryResult queryResult2 = whShippingDao.updateWhShippingStatus(whShipping);
+                    
+                    WhRequest whReq = new WhRequest();
+                    whReq.setRefId(whship.getRequestId());
+                    whReq.setStatus("Ship");
+                    WhRequestDAO whRequestDao = new WhRequestDAO();
+                    QueryResult queryResult3 = whRequestDao.updateWhRequestStatus(whReq);
+                    
+                    if(queryResult3.getResult() == 1){
+                      redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
+                    return "redirect:/wh/whShipping/whMpList/add";  
+                    }else{
+                        LOGGER.info("Data failed to update");
+                        return "whMpList/add";  
+                    }
+                    
                 }
             } else {
-                String messageError = "Material Pass Number " + mpNo + " already added to the list!";
+                String messageError = "Material Pass Number " + materialPassNo + " already added to the list!";
                 model.addAttribute("error", messageError);
                 return "whMpList/add";
             }
         } else {
-            String messageError = "Material Pass Number " + mpNo + " Not Exist!";
+            String messageError = "Material Pass Number " + materialPassNo + " Not Exist!";
             model.addAttribute("error", messageError);
             return "whMpList/add";
         }

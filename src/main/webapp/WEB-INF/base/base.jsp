@@ -92,7 +92,7 @@
             <header class="navbar" id="header-navbar">
                 <div class="container">
                     <a href="${contextPath}/" id="logo" class="navbar-brand col-md-6 col-sm-6 col-xs-12">
-                        <span>Hardware Management System (HMS)</span>
+                        <span>Hardware Management System (HMS) - Sg. Gadut</span>
                     </a>
 
                     <button class="navbar-toggle" data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button">

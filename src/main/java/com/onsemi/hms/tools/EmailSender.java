@@ -175,6 +175,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
         }).start();
     }
     
+    /*
     public void htmlEmailWithAttachmentRequest(final ServletContext servletContext, final User user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -223,6 +224,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
+    */
     
     public void htmlEmailWithAttachmentShipping(final ServletContext servletContext, final User user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
@@ -240,7 +242,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_ship_process.csv");
+                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);

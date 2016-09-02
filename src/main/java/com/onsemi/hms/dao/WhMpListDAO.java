@@ -30,17 +30,18 @@ public class WhMpListDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_mp_list (wh_ship_id, mp_no, mp_expiry_date, hardware_id, hardware_type, quantity, requested_by, requested_date, created_date, created_by) VALUES (?,?,?,?,?,?,?,?,NOW(),?)", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO hms_wh_mp_list (shipping_id, material_pass_no, created_by, created_date, status) VALUES (?,?,?,NOW(),?)", Statement.RETURN_GENERATED_KEYS
             );
-            ps.setString(1, whMpList.getWhShipId());
+            
+            System.out.println(whMpList.getShippingId());
+            System.out.println(whMpList.getMaterialPassNo());
+            System.out.println(whMpList.getCreatedBy());
+            System.out.println(whMpList.getStatus());
+            
+            ps.setString(1, whMpList.getShippingId());
             ps.setString(2, whMpList.getMaterialPassNo());
-            ps.setString(3, whMpList.getMaterialPassExpiry());
-            ps.setString(4, whMpList.getEquipmentId());
-            ps.setString(5, whMpList.getEquipmentType());
-            ps.setString(6, whMpList.getQuantity());
-            ps.setString(7, whMpList.getRequestedBy());
-            ps.setString(8, whMpList.getRequestedDate());
-            ps.setString(9, whMpList.getCreatedBy());
+            ps.setString(3, whMpList.getCreatedBy());
+            ps.setString(4, whMpList.getStatus());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -67,17 +68,11 @@ public class WhMpListDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE hms_mp_list SET wh_ship_id = ?, mp_no = ?, mp_expiry_date = ?, hardware_id = ?, hardware_type = ?, quantity = ?, requested_by = ?, requested_date = ? WHERE id = ?"
+                    "UPDATE hms_wh_mp_list SET created_by = ?, created_date = NOW(), status = ? WHERE shipping_id = ?"
             );
-            ps.setString(1, whMpList.getWhShipId());
-            ps.setString(2, whMpList.getMaterialPassNo());
-            ps.setString(3, whMpList.getMaterialPassExpiry());
-            ps.setString(4, whMpList.getEquipmentId());
-            ps.setString(5, whMpList.getEquipmentType());
-            ps.setString(6, whMpList.getQuantity());
-            ps.setString(7, whMpList.getRequestedBy());
-            ps.setString(8, whMpList.getRequestedDate());
-            ps.setString(9, whMpList.getRefId());
+            ps.setString(1, whMpList.getCreatedBy());
+            ps.setString(2, whMpList.getStatus());
+            ps.setString(3, whMpList.getShippingId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -99,7 +94,7 @@ public class WhMpListDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM hms_mp_list WHERE id = '" + whMpListId + "'"
+                    "DELETE FROM hms_wh_mp_list WHERE shipping_id = '" + whMpListId + "'"
             );
             queryResult.setResult(ps.executeUpdate());
             ps.close();
@@ -118,25 +113,32 @@ public class WhMpListDAO {
         return queryResult;
     }
 
-    public WhMpList getWhMpList(String whMpListId) {
-        String sql = "SELECT * FROM hms_mp_list WHERE id = '" + whMpListId + "'";
+    public WhMpList getWhMpListMergeWithShippingAndRequest(String whMpListId) {
+        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view "
+                   + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
+                   + "WHERE RL.ref_id = SL.request_id AND SL.request_id = ML.shipping_id AND ML.shipping_id = '" + whMpListId + "'";
         WhMpList whMpList = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whMpList = new WhMpList();
-                whMpList.setRefId(rs.getString("id"));
-                whMpList.setWhShipId(rs.getString("wh_ship_id"));
-                whMpList.setMaterialPassNo(rs.getString("mp_no"));
-                whMpList.setMaterialPassExpiry(rs.getString("mp_expiry_date"));
-                whMpList.setEquipmentId(rs.getString("hardware_id"));
-                whMpList.setEquipmentType(rs.getString("hardware_type"));
-                whMpList.setQuantity(rs.getString("quantity"));
-                whMpList.setRequestedBy(rs.getString("requested_by"));
-                whMpList.setRequestedDate(rs.getString("requested_date"));
-                whMpList.setCreatedDate(rs.getString("created_date"));
-                whMpList.setCreatedBy(rs.getString("created_by"));
+                whMpList.setShippingId(rs.getString("ML.shipping_id"));
+                whMpList.setMaterialPassNo(rs.getString("ML.material_pass_no"));
+                whMpList.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whMpList.setEquipmentType(rs.getString("RL.equipment_type"));
+                whMpList.setEquipmentId(rs.getString("RL.equipment_id"));
+                whMpList.setQuantity(rs.getString("RL.quantity"));
+                whMpList.setRequestedBy(rs.getString("RL.requested_by"));
+                whMpList.setRequestedDate(rs.getString("requested_date_view"));
+                whMpList.setRemarks(rs.getString("RL.remarks"));
+                whMpList.setUserVerify(rs.getString("RL.user_verify"));
+                whMpList.setDateVerify(rs.getString("RL.date_verify"));
+                whMpList.setInventoryRack(rs.getString("RL.inventory_rack"));
+                whMpList.setInventorySlot(rs.getString("RL.inventory_slot"));
+                whMpList.setCreatedDate(rs.getString("created_date_view"));
+                whMpList.setCreatedBy(rs.getString("ML.created_by"));
+                whMpList.setStatus(rs.getString("SL.status"));
             }
             rs.close();
             ps.close();
@@ -154,8 +156,11 @@ public class WhMpListDAO {
         return whMpList;
     }
 
-    public List<WhMpList> getWhMpListList() {
-        String sql = "SELECT * FROM hms_wh_mp_list ORDER BY id ASC";
+    public List<WhMpList> getWhMpListMergeWithShippingAndRequestList() {
+        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view "
+                   + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
+                   + "WHERE RL.ref_id = SL.request_id AND SL.request_id = ML.shipping_id " 
+                   + "ORDER BY ML.shipping_id ASC ";
         List<WhMpList> whMpListList = new ArrayList<WhMpList>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -163,17 +168,17 @@ public class WhMpListDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whMpList = new WhMpList();
-                whMpList.setRefId(rs.getString("id"));
-                whMpList.setWhShipId(rs.getString("wh_ship_id"));
-                whMpList.setMaterialPassNo(rs.getString("mp_no"));
-                whMpList.setMaterialPassExpiry(rs.getString("mp_expiry_date"));
-                whMpList.setEquipmentId(rs.getString("hardware_id"));
-                whMpList.setEquipmentType(rs.getString("hardware_type"));
-                whMpList.setQuantity(rs.getString("quantity"));
-                whMpList.setRequestedBy(rs.getString("requested_by"));
-                whMpList.setRequestedDate(rs.getString("requested_date"));
-                whMpList.setCreatedDate(rs.getString("created_date"));
-                whMpList.setCreatedBy(rs.getString("created_by"));
+                whMpList.setShippingId(rs.getString("ML.shipping_id"));
+                whMpList.setMaterialPassNo(rs.getString("ML.material_pass_no"));
+                whMpList.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whMpList.setEquipmentId(rs.getString("RL.equipment_id"));
+                whMpList.setEquipmentType(rs.getString("RL.equipment_type"));
+                whMpList.setQuantity(rs.getString("RL.quantity"));
+                whMpList.setRequestedBy(rs.getString("RL.requested_by"));
+                whMpList.setRequestedDate(rs.getString("requested_date_view"));
+                whMpList.setCreatedDate(rs.getString("created_date_view"));
+                whMpList.setCreatedBy(rs.getString("ML.created_by"));
+                whMpList.setStatus(rs.getString("SL.status"));
                 whMpListList.add(whMpList);
             }
             rs.close();
@@ -215,17 +220,45 @@ public class WhMpListDAO {
         return queryResult;
     }
     
-     public Integer getCountMpNo(String mpNo) {
-//        QueryResult queryResult = new QueryResult();
+    public Integer getCountMpNo(String mpNo) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT COUNT(*) AS count FROM hms_wh_mp_list WHERE mp_no = '" + mpNo + "'"
+                "SELECT COUNT(*) AS count FROM hms_wh_mp_list WHERE material_pass_no = '" + mpNo + "'"
             );
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 count = rs.getInt("count");
             }
+            LOGGER.info("count mpno..........." + count.toString());
+            rs.close();
+
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+    
+    public Integer getCount() {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) AS count FROM hms_wh_mp_list"
+            );
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            LOGGER.info("count qty..........." + count.toString());
             rs.close();
 
             ps.close();

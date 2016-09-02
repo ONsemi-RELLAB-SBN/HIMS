@@ -1,6 +1,5 @@
 package com.onsemi.hms.controller;
 
-//import com.onsemi.hms.dao.WhShippingDAO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -186,7 +185,17 @@ public class WhRequestController {
         
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestForShipping(whRequest);
-
+        
+        if(cp == true) {
+            WhShipping whShipping = new WhShipping();
+            whShipping.setRequestId(refId);
+            whShipping.setMaterialPassNo(materialPassNo);
+            whShipping.setStatus("Queue for Shipping");
+            whShipping.setFlag("0");
+            WhShippingDAO whShippingDao = new WhShippingDAO();
+            QueryResult queryResult2 = whShippingDao.insertWhShipping(whShipping);
+        }
+        
         String check = "";
         
         args = new String[1];
@@ -195,152 +204,7 @@ public class WhRequestController {
             //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
             check = "redirect:/wh/whRequest/verify/" + refId;
         } else {
-            WhShipping whShipping = new WhShipping();
-            WhShippingDAO whShippingDAO = new WhShippingDAO();
-            int count = whShippingDAO.getCountExistingData(whShipping.getRequestId());
-            
-            if (count == 0) {
-                LOGGER.info("data xdeeeeee");
-                whShipping.setRequestId(refId);
-                whShipping.setMaterialPassNo(materialPassNo);
-                whShipping.setStatus(whRequest.getStatus());
-                whShipping.setFlag("0");
-                whShippingDAO = new WhShippingDAO();
-                QueryResult queryResult1 = whShippingDAO.insertWhShipping(whShipping);   
-                
-                String username = System.getProperty("user.name");
-                //SEND EMAIL
-                File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
-                if (file.exists()) {
-                    LOGGER.info("dh ada header");
-                    FileWriter fileWriter = null;
-                    try {
-                        fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
-                        //New Line after the header
-                        fileWriter.append(LINE_SEPARATOR);
-                        WhShippingDAO whdao = new WhShippingDAO();
-                        WhShipping wh = whdao.getWhShippingMergeWithRequest(refId);
-
-                        fileWriter.append(refId);
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getMaterialPassNo());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getEquipmentType());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getEquipmentId());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getQuantity());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getRequestedBy());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getRequestedDate());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getRemarks());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getDateVerify());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getShippingDate());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getInventoryRack());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getInventorySlot());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(userSession.getFullname());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getStatus());
-//                            fileWriter.append(COMMA_DELIMITER);
-                        System.out.println("append to CSV file Succeed!!!");
-                    } catch (Exception ee) {
-                        System.out.println("Error 1 occured while append the fileWriter");
-                    } finally {
-                        try {
-                            fileWriter.close();
-                        } catch (IOException ie) {
-                            System.out.println("Error 2 occured while closing the fileWriter");
-                        }
-                    }
-                } else {
-                    FileWriter fileWriter = null;
-                    try {
-                        fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
-                        LOGGER.info("no file yet");
-                        //Adding the header
-                        fileWriter.append(HEADER);
-
-                        //New Line after the header
-                        fileWriter.append(LINE_SEPARATOR);
-                        WhShippingDAO whdao = new WhShippingDAO();
-                        WhShipping wh = whdao.getWhShippingMergeWithRequest(refId);
-                        fileWriter.append(refId);
-                        fileWriter.append(COMMA_DELIMITER); 
-                        fileWriter.append(wh.getMaterialPassNo());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getEquipmentType());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getEquipmentId());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getQuantity());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getRequestedBy());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getRequestedDate());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getRemarks());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getDateVerify());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getShippingDate());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getInventoryRack());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getInventorySlot());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(userSession.getFullname());
-                        fileWriter.append(COMMA_DELIMITER);
-                        fileWriter.append(wh.getStatus());
-//                            fileWriter.append(COMMA_DELIMITER);              
-                    } catch (Exception ee) {
-                        System.out.println("Error 1 occured while append the fileWriter");
-                    } finally {
-                        try {
-                            System.out.println("write new to CSV file Succeed!!!");
-                            fileWriter.close();
-                        } catch (IOException ie) {
-                            System.out.println("Error 2 occured while closing the fileWriter");
-                            ie.printStackTrace();
-                        }
-                    }
-                }
-
-                //send email
-                LOGGER.info("send email to warehouse");
-
-                //to get hostname
-                InetAddress ip;
-                String hostName ="";
-                try {
-                    ip = InetAddress.getLocalHost();
-                    hostName = ip.getHostName();
-                } catch (UnknownHostException ex) {
-                    java.util.logging.Logger.getLogger(WhRequestController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                EmailSender emailSender = new EmailSender();
-                com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-                user.setFullname(userSession.getFullname());
-                emailSender.htmlEmailWithAttachmentRequest(
-                    servletContext,
-                    user,                                                   //user name
-                    "cdarsrel@gmail.com",                                   //to
-                    "Verification Status for New Hardware Request from HMS",   //subject
-                    "Verification for New Hardware Request has been made. Please go to this link " //msg
-                    + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRequest/edit/" + refId + "\">HMS</a>"
-                    + " for verification status checking."
-                );
-                redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success4", args, locale));
-            } else {
-                LOGGER.info("data adeeeeee");
-            }
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success4", args, locale));
             check = "redirect:/wh/whShipping/";
         }
         return check;

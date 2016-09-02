@@ -171,7 +171,5 @@ public class WhShipping {
 
     public void setFlag(String flag) {
         this.flag = flag;
-    }
-
-   
+    } 
 }

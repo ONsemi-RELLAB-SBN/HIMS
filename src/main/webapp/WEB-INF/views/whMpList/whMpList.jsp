@@ -59,16 +59,18 @@
                                         <th><span>Hardware Type</span></th>
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Quantity</span></th>
+                                        <th><span>Status</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${whMpListList}" var="whMpList" varStatus="whMpListLoop">
                                         <tr>
                                             <td><c:out value="${whMpListLoop.index+1}"/></td>
-                                            <td><c:out value="${whMpList.mpNo}"/></td>
-                                            <td><c:out value="${whMpList.hardwareType}"/></td>
-                                            <td><c:out value="${whMpList.hardwareId}"/></td>
+                                            <td><c:out value="${whMpList.materialPassNo}"/></td>
+                                            <td><c:out value="${whMpList.equipmentType}"/></td>
+                                            <td><c:out value="${whMpList.equipmentId}"/></td>
                                             <td><c:out value="${whMpList.quantity}"/></td>
+                                            <td><c:out value="${whMpList.status}"/></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -85,64 +87,60 @@
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
-                                    $(document).ready(function () {
+            $(document).ready(function () {
+                oTable = $('#dt_spml').DataTable({
+                    "pageLength": 10,
+                    "order": [],
+                    "aoColumnDefs": [
+                        {"bSortable": false, "aTargets": [0]}
+                    ],
+                    "sDom": "tp"
+                });
+                var exportTitle = "Material Pass List";
+                var tt = new $.fn.dataTable.TableTools(oTable, {
+                    "sSwfPath": "${contextPath}/resources/private/datatables/swf/copy_csv_xls_pdf.swf",
+                    "aButtons": [
+                        {
+                            "sExtends": "copy",
+                            "sButtonText": "Copy",
+                            "sTitle": exportTitle,
+                            "mColumns": [0, 1, 2, 3, 4]
+                        },
+                        {
+                            "sExtends": "xls",
+                            "sButtonText": "Excel",
+                            "sTitle": exportTitle,
+                            "mColumns": [0, 1, 2, 3, 4]
+                        },
+                        {
+                            "sExtends": "pdf",
+                            "sButtonText": "PDF",
+                            "sTitle": exportTitle,
+                            "mColumns": [0, 1, 2, 3, 4]
+                        },
+                        {
+                            "sExtends": "print",
+                            "sButtonText": "Print"
+                        }
+                    ]
+                });
+                $(tt.fnContainer()).appendTo("#dt_spml_tt");
+                $('#dt_spml_search').keyup(function () {
+                    oTable.search($(this).val()).draw();
+                });
+                $("#dt_spml_rows").change(function () {
+                    oTable.page.len($(this).val()).draw();
+                });
+            });
 
-                                        oTable = $('#dt_spml').DataTable({
-                                            "pageLength": 10,
-                                            "order": [],
-                                            "aoColumnDefs": [
-                                                {"bSortable": false, "aTargets": [0]},
-                                                {"bSortable": false, "aTargets": [4]}
-                                            ],
-                                            "sDom": "tp"
-                                        });
-                                        var exportTitle = "Material Pass List";
-                                        var tt = new $.fn.dataTable.TableTools(oTable, {
-                                            "sSwfPath": "${contextPath}/resources/private/datatables/swf/copy_csv_xls_pdf.swf",
-                                            "aButtons": [
-                                                {
-                                                    "sExtends": "copy",
-                                                    "sButtonText": "Copy",
-                                                    "sTitle": exportTitle,
-                                                    "mColumns": [0, 1, 2, 3, 4]
-                                                },
-                                                {
-                                                    "sExtends": "xls",
-                                                    "sButtonText": "Excel",
-                                                    "sTitle": exportTitle,
-                                                    "mColumns": [0, 1, 2, 3, 4]
-                                                },
-                                                {
-                                                    "sExtends": "pdf",
-                                                    "sButtonText": "PDF",
-                                                    "sTitle": exportTitle,
-                                                    "mColumns": [0, 1, 2, 3, 4]
-                                                },
-                                                {
-                                                    "sExtends": "print",
-                                                    "sButtonText": "Print"
-                                                }
-                                            ]
-                                        });
-                                        $(tt.fnContainer()).appendTo("#dt_spml_tt");
-                                        $('#dt_spml_search').keyup(function () {
-                                            oTable.search($(this).val()).draw();
-                                        });
-                                        $("#dt_spml_rows").change(function () {
-                                            oTable.page.len($(this).val()).draw();
-                                        });
-                                    });
-
-                                    function modalDelete(e) {
-//                var deleteId = $(e).attr("modaldeleteid");
-//                var deleteInfo = $("#modal_delete_info_" + deleteId).html();
-                                        var deleteUrl = "${contextPath}/wh/whShipping/whMpList/deleteAll";
-                                        var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
-                                        $("#delete_modal .modal-body").html(deleteMsg);
-                                        $("#modal_delete_button").attr("href", deleteUrl);
-                                    }
-
-
+            function modalDelete(e) {
+                //var deleteId = $(e).attr("modaldeleteid");
+                //var deleteInfo = $("#modal_delete_info_" + deleteId).html();
+                var deleteUrl = "${contextPath}/wh/whShipping/whMpList/deleteAll";
+                var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
+                $("#delete_modal .modal-body").html(deleteMsg);
+                $("#modal_delete_button").attr("href", deleteUrl);
+            }
         </script>
     </s:layout-component>
 </s:layout-render>
