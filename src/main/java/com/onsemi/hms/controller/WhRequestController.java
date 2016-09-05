@@ -10,17 +10,10 @@ import com.onsemi.hms.dao.WhShippingDAO;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhShipping;
-import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -192,6 +185,7 @@ public class WhRequestController {
             whShipping.setMaterialPassNo(materialPassNo);
             whShipping.setStatus("Queue for Shipping");
             whShipping.setFlag("0");
+            whShipping.setShippingBy(userSession.getFullname());
             WhShippingDAO whShippingDao = new WhShippingDAO();
             QueryResult queryResult2 = whShippingDao.insertWhShipping(whShipping);
         }

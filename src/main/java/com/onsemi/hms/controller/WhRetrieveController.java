@@ -248,6 +248,7 @@ public class WhRetrieveController {
             whInventory.setStatus(whRetrieve.getStatus());
             whInventory.setInventoryBy(userSession.getFullname());
             whInventory.setInventoryDate(dateFormat.format(date));
+//            whInventory.setInventoryLoc("SG");
             whInventory.setInventoryRack(inventoryRack);
             whInventory.setInventorySlot(inventorySlot);
             

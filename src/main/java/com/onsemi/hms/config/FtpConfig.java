@@ -148,7 +148,7 @@ public class FtpConfig {
                     }
                 } else {
                     fileLocation = targetLocation + listOfFile.getName();
-                    LOGGER.info("Other file found : " + fileLocation);
+                    //LOGGER.info("Other file found : " + fileLocation);
                 }
                 //return checkPoint;
             }

@@ -17,6 +17,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
@@ -87,6 +90,9 @@ public class WhMpListController {
                 whMpList.setShippingId(whship.getRequestId());
                 whMpList.setMaterialPassNo(materialPassNo);
                 whMpList.setCreatedBy(userSession.getFullname());
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
+                whMpList.setCreatedDate(dateFormat.format(date));
                 whMpList.setStatus("Ship");
                 whMpListDAO = new WhMpListDAO();
                 QueryResult queryResult = whMpListDAO.insertWhMpList(whMpList);
@@ -211,7 +217,7 @@ public class WhMpListController {
                     QueryResult queryResult3 = whRequestDao.updateWhRequestStatus(whReq);
                     
                     if(queryResult3.getResult() == 1){
-                      redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
+                        redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success5", args, locale));
                     return "redirect:/wh/whShipping/whMpList/add";  
                     }else{
                         LOGGER.info("Data failed to update");

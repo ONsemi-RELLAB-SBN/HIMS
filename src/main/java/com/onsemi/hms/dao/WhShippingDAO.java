@@ -30,13 +30,14 @@ public class WhShippingDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_shipping_list (request_id, material_pass_no, status, flag) "
-              + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO hms_wh_shipping_list (request_id, material_pass_no, shipping_date, shipping_by, status, flag) "
+              + "VALUES (?,?,NOW(),?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whShipping.getRequestId());
             ps.setString(2, whShipping.getMaterialPassNo());
-            ps.setString(3, whShipping.getStatus());
-            ps.setString(4, whShipping.getFlag());
+            ps.setString(3, whShipping.getShippingBy());
+            ps.setString(4, whShipping.getStatus());
+            ps.setString(5, whShipping.getFlag());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {

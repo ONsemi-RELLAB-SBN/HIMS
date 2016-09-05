@@ -15,6 +15,7 @@ public class WhRequest {
     private String requestedBy;
     private String requestedDate;
     private String remarks;
+    private String receivedDate;
     private String barcodeVerify;
     private String dateVerify;
     private String userVerify;
@@ -123,6 +124,14 @@ public class WhRequest {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(String receivedDate) {
+        this.receivedDate = receivedDate;
     }
 
     public String getBarcodeVerify() {

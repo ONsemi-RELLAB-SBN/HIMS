@@ -30,7 +30,7 @@ public class WhMpListDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_mp_list (shipping_id, material_pass_no, created_by, created_date, status) VALUES (?,?,?,NOW(),?)", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO hms_wh_mp_list (shipping_id, material_pass_no, created_by, created_date, status) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             
             System.out.println(whMpList.getShippingId());
@@ -41,7 +41,8 @@ public class WhMpListDAO {
             ps.setString(1, whMpList.getShippingId());
             ps.setString(2, whMpList.getMaterialPassNo());
             ps.setString(3, whMpList.getCreatedBy());
-            ps.setString(4, whMpList.getStatus());
+            ps.setString(4, whMpList.getCreatedDate());
+            ps.setString(5, whMpList.getStatus());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -114,7 +115,7 @@ public class WhMpListDAO {
     }
 
     public WhMpList getWhMpListMergeWithShippingAndRequest(String whMpListId) {
-        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view "
+        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view "
                    + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
                    + "WHERE RL.ref_id = SL.request_id AND SL.request_id = ML.shipping_id AND ML.shipping_id = '" + whMpListId + "'";
         WhMpList whMpList = null;
@@ -136,7 +137,7 @@ public class WhMpListDAO {
                 whMpList.setDateVerify(rs.getString("RL.date_verify"));
                 whMpList.setInventoryRack(rs.getString("RL.inventory_rack"));
                 whMpList.setInventorySlot(rs.getString("RL.inventory_slot"));
-                whMpList.setCreatedDate(rs.getString("created_date_view"));
+                whMpList.setCreatedDate(rs.getString("ML.created_date"));
                 whMpList.setCreatedBy(rs.getString("ML.created_by"));
                 whMpList.setStatus(rs.getString("SL.status"));
             }

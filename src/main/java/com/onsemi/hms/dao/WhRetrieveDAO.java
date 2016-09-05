@@ -32,8 +32,8 @@ public class WhRetrieveDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO hms_wh_retrieval_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, quantity, "
-                                                        + "requested_by, requested_date, remarks, status, flag) "
-                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                                                        + "requested_by, requested_date, remarks, received_date, status, flag) "
+                  + "VALUES (?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRetrieve.getRefId());
             ps.setString(2, whRetrieve.getMaterialPassNo());
@@ -164,7 +164,7 @@ public class WhRetrieveDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
-            LOGGER.info("count id..........." + count.toString());
+//            LOGGER.info("count id..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {
@@ -268,6 +268,50 @@ public class WhRetrieveDAO {
                 whRetrieve.setRemarks(rs.getString("remarks"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify_view"));
+                whRetrieve.setUserVerify(rs.getString("user_verify"));
+                whRetrieve.setStatus(rs.getString("status"));
+                whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieveList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whRetrieveList;
+    }
+    
+    public List<WhRetrieve> getWhRetrieveReportList() {
+        String sql = "SELECT * "
+                   + "FROM hms_wh_retrieval_list "
+                   + "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) ";
+        List<WhRetrieve> whRetrieveList = new ArrayList<WhRetrieve>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieve whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setRefId(rs.getString("ref_id"));
+                whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
+                whRetrieve.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRetrieve.setEquipmentType(rs.getString("equipment_type"));
+                whRetrieve.setEquipmentId(rs.getString("equipment_id"));
+                whRetrieve.setQuantity(rs.getString("quantity"));
+                whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                whRetrieve.setRequestedDate(rs.getString("requested_date"));
+                whRetrieve.setRemarks(rs.getString("remarks"));
+                whRetrieve.setReceivedDate(rs.getString("received_date"));
+                whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
+                whRetrieve.setDateVerify(rs.getString("date_verify"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));

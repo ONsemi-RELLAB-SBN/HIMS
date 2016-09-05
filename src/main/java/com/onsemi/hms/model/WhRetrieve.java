@@ -11,7 +11,9 @@ public class WhRetrieve {
     private String quantity;
     private String requestedBy;
     private String requestedDate;
+    private String shippingDate;
     private String remarks;
+    private String receivedDate;
     private String barcodeVerify;
     private String dateVerify;
     private String userVerify;
@@ -70,6 +72,14 @@ public class WhRetrieve {
         return requestedDate;
     }
 
+    public String getShippingDate() {
+        return shippingDate;
+    }
+
+    public void setShippingDate(String shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
     public void setRequestedDate(String requestedDate) {
         this.requestedDate = requestedDate;
     }
@@ -96,6 +106,14 @@ public class WhRetrieve {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(String receivedDate) {
+        this.receivedDate = receivedDate;
     }
 
     public String getStatus() {
