@@ -319,7 +319,7 @@ public class WhInventoryDAO {
         String sql = "SELECT RL.*, IL.* "
                    + "FROM hms_wh_retrieval_list RL, hms_wh_inventory_list IL "
                    + "WHERE DATE(RL.material_pass_expiry) >= DATE(NOW()) "
-                   + "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),14) "
+                   + "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),30) "
                    + "AND RL.ref_id = IL.retrieve_id "
                    + "ORDER BY RL.material_pass_expiry ASC ";
         List<WhInventory> whInventoryList = new ArrayList<WhInventory>();
@@ -375,7 +375,7 @@ public class WhInventoryDAO {
                 "SELECT COUNT(RL.material_pass_expiry) AS count " +
                 "FROM hms_wh_retrieval_list RL, hms_wh_inventory_list IL " +
                 "WHERE DATE(RL.material_pass_expiry) >= DATE(NOW()) " +
-                "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),14) " +
+                "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),30) " +
                 "AND RL.ref_id = IL.retrieve_id "
             );
 

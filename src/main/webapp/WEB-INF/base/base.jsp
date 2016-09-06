@@ -92,7 +92,7 @@
             <header class="navbar" id="header-navbar">
                 <div class="container">
                     <a href="${contextPath}/" id="logo" class="navbar-brand col-md-6 col-sm-6 col-xs-12">
-                        <span>Hardware Management System (HMS) - Sg. Gadut</span>
+                        <span>Hardware Management System (HMS)</span>
                     </a>
 
                     <button class="navbar-toggle" data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button">
@@ -108,7 +108,7 @@
                                     <span class="hidden-xs">${sessionScope.userSession.fullname}</span> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${contextPath}/profile"><i class="fa fa-user"></i>Profile</a></li>
+                                    <li><a href="${contextPath}/user/profile/${sessionScope.userSession.loginId}" id="profile" name="profile"><i class="fa fa-user"></i>Profile</a></li>
                                     <li><a href="${contextPath}/logout"><i class="fa fa-power-off"></i>Logout</a></li>
                                 </ul>
                             </li>

@@ -51,7 +51,7 @@ public class FtpConfigExpiry {
         LOGGER.info("count is ~~~~~~~~~~~~~~~~~~~~~~ " + count);
         
         if (count == 0) {
-            LOGGER.info("++++++++++++++ NO MATERIAL PASS EXPIRATION WITHIN THIS TWO WEEKS ++++++++++++++++++++++");
+            LOGGER.info("++++++++++++++ NO MATERIAL PASS EXPIRATION WITHIN ONE MONTH ++++++++++++++++++++++");
         } else {
             WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
             List<WhInventory> whInventoryList = whInventoryDAO.getWhInventoryMpExpiryList();
@@ -174,7 +174,7 @@ public class FtpConfigExpiry {
                 "cdarsrel@gmail.com",                                   //to
                 "Material Pass Expiry Date",   //subject
                 "Report for Material Pass Expiry Date from CDARS has been made. " + 
-                "This report will shows the expired date for each material pass within two (2) weeks durations. " + 
+                "This report will shows the expired date for each material pass within ONE (1) month durations. " + 
                 "Hence, attached is the report file for your view and perusal. Thank you." //msg
             );
         }
