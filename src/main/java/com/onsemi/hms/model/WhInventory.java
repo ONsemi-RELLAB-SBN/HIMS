@@ -10,6 +10,8 @@ public class WhInventory {
     private String type;
     private String quantity;
     private String remarks;
+    private String shippingDate;
+    private String receivedDate;
     private String barcodeVerify;
     private String dateVerify;
     private String userVerify;
@@ -189,5 +191,21 @@ public class WhInventory {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getShippingDate() {
+        return shippingDate;
+    }
+
+    public void setShippingDate(String shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
+    public String getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(String receivedDate) {
+        this.receivedDate = receivedDate;
     }
 }
