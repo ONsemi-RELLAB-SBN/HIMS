@@ -399,4 +399,89 @@ public class WhInventoryDAO {
         }
         return count;
     }
+    
+    public List<WhInventory> getWhInventoryMpExpiryAlertList() {
+        String sql = "SELECT RL.*, IL.* "
+                   + "FROM hms_wh_retrieval_list RL, hms_wh_inventory_list IL "
+                   + "WHERE DATE(RL.material_pass_expiry) >= DATE(NOW()) "
+                   + "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),3) "
+                   + "AND RL.ref_id = IL.retrieve_id "
+                   + "ORDER BY RL.material_pass_expiry ASC ";
+        List<WhInventory> whInventoryList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whInventory;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whInventory = new WhInventory();
+                whInventory.setRefId(rs.getString("IL.retrieve_id"));
+                whInventory.setMaterialPassNo(rs.getString("IL.material_pass_no"));
+                whInventory.setMaterialPassExpiry(rs.getString("RL.material_pass_expiry"));
+                whInventory.setEquipmentType(rs.getString("RL.equipment_type"));
+                whInventory.setEquipmentId(rs.getString("RL.equipment_id"));
+                whInventory.setType(rs.getString("RL.type"));
+                whInventory.setQuantity(rs.getString("RL.quantity"));
+                whInventory.setRequestedBy(rs.getString("RL.requested_by"));
+                whInventory.setRequestedDate(rs.getString("RL.requested_date"));
+                whInventory.setShippingDate(rs.getString("RL.shipping_date"));
+                whInventory.setRemarks(rs.getString("RL.remarks"));
+                whInventory.setReceivedDate(rs.getString("RL.received_date"));
+                whInventory.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+                whInventory.setDateVerify(rs.getString("RL.date_verify"));
+                whInventory.setUserVerify(rs.getString("RL.user_verify"));
+                whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
+                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
+                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setInventoryBy(rs.getString("IL.inventory_by"));
+                whInventory.setStatus(rs.getString("IL.status"));
+                whInventory.setFlag(rs.getString("IL.flag"));
+                whInventoryList.add(whInventory);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whInventoryList;
+    }
+    
+    public Integer getCountMpExpiryAlert() {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(RL.material_pass_expiry) AS count " +
+                "FROM hms_wh_retrieval_list RL, hms_wh_inventory_list IL " +
+                "WHERE DATE(RL.material_pass_expiry) >= DATE(NOW()) " +
+                "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),3) " +
+                "AND RL.ref_id = IL.retrieve_id "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            LOGGER.info("count MP expiry..........." + count.toString());
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
 }
