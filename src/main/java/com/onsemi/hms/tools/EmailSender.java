@@ -282,8 +282,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
         }).start();
     }
     
-    /*
-    public void htmlEmailWithAttachmentRequest(final ServletContext servletContext, final User user, final String to, final String subject, final String msg) {
+    public void htmlEmailWithAttachmentShipping(final ServletContext servletContext, final User user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -331,9 +330,8 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    */
     
-    public void htmlEmailWithAttachmentShipping(final ServletContext servletContext, final User user, final String to, final String subject, final String msg) {
+    public void htmlEmailWithAttachmentMpExpiry(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -349,7 +347,10 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+                    DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
+                    Date date = new Date();
+                    String todayDate = dateFormat.format(date);
+                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\Material Pass Expiry Date Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -361,7 +362,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String logoCid = htmlEmail.embed(logoFile);
 
                     Map model = new HashMap();
-                    model.put("user", user.getFullname());
+                    model.put("user", user);
                     model.put("subject", subject);
                     model.put("message", msg);
                     model.put("logoCid", logoCid);
