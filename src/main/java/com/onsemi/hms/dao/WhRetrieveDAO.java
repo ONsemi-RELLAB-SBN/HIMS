@@ -308,6 +308,7 @@ public class WhRetrieveDAO {
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
                 whRetrieve.setRequestedDate(rs.getString("requested_date"));
+                whRetrieve.setShippingDate(rs.getString("shipping_date"));
                 whRetrieve.setRemarks(rs.getString("remarks"));
                 whRetrieve.setReceivedDate(rs.getString("received_date"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
@@ -331,5 +332,35 @@ public class WhRetrieveDAO {
             }
         }
         return whRetrieveList;
+    }
+    
+    public Integer getCountYesterday() {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(date_verify) AS count " +
+                "FROM hms_wh_retrieval_list " +
+                "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            LOGGER.info("count date..........." + count.toString());
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
     }
 }

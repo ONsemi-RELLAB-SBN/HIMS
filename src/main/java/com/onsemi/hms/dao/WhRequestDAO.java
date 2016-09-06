@@ -368,4 +368,34 @@ public class WhRequestDAO {
         }
         return whRequestList;
     }
+    
+    public Integer getCountYesterday() {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(date_verify) AS count " +
+                "FROM hms_wh_request_list " +
+                "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            LOGGER.info("count date..........." + count.toString());
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
 }
