@@ -105,6 +105,23 @@ public class WhRetrieveController {
         WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
         WhRetrieve whRetrieve = whRetrieveDAO.getWhRetrieve(whRetrieveId);
         
+        String type = whRetrieve.getEquipmentType();
+        if ("Motherboard".equals(type)) {
+            String IdLabel = "Motherboard ID";
+            model.addAttribute("IdLabel", IdLabel);
+        } else if ("Stencil".equals(type)) {
+            String IdLabel = "Stencil ID";
+            model.addAttribute("IdLabel", IdLabel);
+        } else if ("Tray".equals(type)) {
+            String IdLabel = "Tray Type";
+            model.addAttribute("IdLabel", IdLabel);
+        } else if ("PCB".equals(type)) {
+            String IdLabel = "PCB Name";
+            model.addAttribute("IdLabel", IdLabel);
+        } else {
+            String IdLabel = "Hardware ID";
+            model.addAttribute("IdLabel", IdLabel);
+        }
         //for check which tab should active
         if (whRetrieve.getStatus().equals("New Retrieval Request") || whRetrieve.getStatus().equals("Verification Fail")) {
             String mpActive = "active";
@@ -359,13 +376,35 @@ public class WhRetrieveController {
                         java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    EmailSender emailSender = new EmailSender();
-                    emailSender.htmlEmailWithAttachmentRetrieve(
+                    System.out.println("******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
+                    
+//                    EmailSender emailSender = new EmailSender();
+//                    emailSender.htmlEmailWithAttachmentRetrieve(
+//                        servletContext,
+//                        "CDARS",                                                   //user name
+//                        "cdarsrel@gmail.com",                                   //to
+//                        "Status for Hardware Inventory from HMS",  //subject
+//                        "Verification and inventory for Hardware has been made."    //msg
+//                    );
+                    
+                    WhInventoryDAO whdao = new WhInventoryDAO();
+                    WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
+                    
+                    System.out.println(wh.getRequestedBy() + "******************* EMAIL REQUESTOR ******************* " + wh.getRequestedEmail());
+                    //sent to requestor
+                    EmailSender emailSender2 = new EmailSender();
+                    com.onsemi.hms.model.User user2 = new com.onsemi.hms.model.User();
+                    user2.setFullname(userSession.getFullname());
+                    String emailTitle = "Status for Hardware Shipping from HMS";
+                    
+                    emailSender2.htmlEmail2(
                         servletContext,
-                        "CDARS",                                                   //user name
-                        "cdarsrel@gmail.com",                                   //to
-                        "Status for Hardware Inventory from HMS",  //subject
-                        "Verification and inventory for Hardware has been made."    //msg
+                        wh.getRequestedBy(),                       //from
+                        wh.getRequestedEmail(), //to
+                        emailTitle,         
+                        "Verification for Hardware Inventory has been made. Please go to this link " //msg
+                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whInventory/" + "\">CDARS</a>"
+                        + " for status checking."
                     );
 
                     redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));

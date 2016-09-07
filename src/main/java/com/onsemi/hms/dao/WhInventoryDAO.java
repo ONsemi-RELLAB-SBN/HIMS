@@ -207,6 +207,7 @@ public class WhInventoryDAO {
                 whInventory.setQuantity(rs.getString("RL.quantity"));
                 whInventory.setRemarks(rs.getString("RL.remarks"));
                 whInventory.setRequestedBy(rs.getString("RL.requested_by"));
+                whInventory.setRequestedEmail(rs.getString("RL.requested_email"));
                 whInventory.setRequestedDate(rs.getString("RL.requested_date"));
                 whInventory.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whInventory.setDateVerify(rs.getString("RL.date_verify"));

@@ -122,12 +122,18 @@ public class WhRetrievePdf extends AbstractITextPdfViewPotrait {
         table.addCell(cellContent);
         
         //7
+        cellHeader.setPhrase(new Phrase("Shipping Date", fontHeader));
+        table.addCell(cellHeader);
+        cellContent.setPhrase(new Phrase(whRetrieve.getShippingDate(), fontContent));
+        table.addCell(cellContent);
+        
+        //8
         cellHeader.setPhrase(new Phrase("Remarks", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whRetrieve.getRemarks(), fontContent));
         table.addCell(cellContent);
         
-        //8
+        //9
         cellHeader.setPhrase(new Phrase("Status", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whRetrieve.getStatus(), fontContent));

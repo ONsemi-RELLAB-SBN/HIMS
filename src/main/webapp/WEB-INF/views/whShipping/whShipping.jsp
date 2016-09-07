@@ -50,7 +50,7 @@
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Material Pass No.</span></th>
                                         <th><span>Qty</span></th>
-                                        <th><span>Inventory Location</span></th>
+                                        <th><span>Inventory</span></th>
                                         <th><span>Verification Date</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>

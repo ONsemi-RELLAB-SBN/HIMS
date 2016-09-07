@@ -85,7 +85,7 @@
             <div class="row">
                 <ul class="nav nav-tabs">
                     <li class="${mpActive}"><a data-toggle="tab" href="#mp">Verify Barcode Label</a></li>
-                    <li class="${hiActive}"><a data-toggle="tab" href="#hi">Hardware Inventory</a></li>
+                    <li class="${hiActive}"><a data-toggle="tab" href="#hi">Hardware Location</a></li>
                 </ul>
                 <div class="tab-content">
 
@@ -126,7 +126,7 @@
                         <h6></h6>
                         <div class="col-lg-6">
                             <div class="main-box">
-                                <h2>Inventory Locator</h2>
+                                <h2>Hardware Location</h2>
                                 <form id="hi_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRetrieve/setInventory" method="post">
                                     <input type="hidden" name="refId" value="${whRetrieve.refId}" />
                                     <input type="hidden" name="equipmentType" value="${whRetrieve.equipmentType}" />
@@ -140,7 +140,7 @@
                                     <input type="hidden" name="flag" value="${whRetrieve.flag}" />
                                     <!--<input type="hidden" name="inventoryDate" value="${whInventory.inventoryDate}" />-->
                                     
-                                    <label for=" inventoryLoc" class="col-lg-4 control-label">Inventory Location</label>
+                                    <label for=" inventoryLoc" class="col-lg-4 control-label">Hardware Location</label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" autofocus="autofocus" value="${whInventory.inventoryLoc}" required/> 
                                     </div>

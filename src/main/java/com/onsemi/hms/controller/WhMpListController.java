@@ -245,23 +245,21 @@ public class WhMpListController {
                         servletContext,
                         "CDARS",                                                   //user name
                         "cdarsrel@gmail.com",                                   //to
-                        "Verification Status for Hardware Shipping from HMS",   //subject
-                        "Verification for Hardware Request has been made."      //msg
+                        "Status for Hardware Shipping from HMS",  //subject
+                        "Verification and status for Hardware Shipping has been made."    //msg
                     );
                     
                     System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
                     //sent to requestor
                     EmailSender emailSender2 = new EmailSender();
-                    com.onsemi.hms.model.User user2 = new com.onsemi.hms.model.User();
-                    user2.setFullname(userSession.getFullname());
-                    String emailTitle = "Verification Status for Hardware Shipping from HMS";
+                    String emailTitle = "Status for Hardware Shipping from HMS";
                     emailSender2.htmlEmail2(
                         servletContext,
                         whship.getRequestedBy(),                       //from
                         whship.getRequestedEmail(), //to
                         emailTitle,         
-                        "Verification for Hardware Request has been made. Please go to this link " //msg
-                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRetrieval/" + "\">CDARS</a>"
+                        "Verification for Hardware Shipping has been made. Please go to this link " //msg
+                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
                         + " for status checking."
                     );
                     

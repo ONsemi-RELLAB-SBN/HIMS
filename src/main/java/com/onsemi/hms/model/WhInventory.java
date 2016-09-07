@@ -19,6 +19,7 @@ public class WhInventory {
     private String inventoryLoc;
     private String inventoryBy;
     private String requestedDate;
+    private String requestedEmail;
     private String requestedBy;
     private String status;
     private String flag;
@@ -149,6 +150,14 @@ public class WhInventory {
 
     public void setRequestedBy(String requestedBy) {
         this.requestedBy = requestedBy;
+    }
+
+    public String getRequestedEmail() {
+        return requestedEmail;
+    }
+
+    public void setRequestedEmail(String requestedEmail) {
+        this.requestedEmail = requestedEmail;
     }
 
     public String getStatus() {

@@ -40,9 +40,9 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Material Pass No.</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
+                                        <th><span>Material Pass No.</span></th>
                                         <th><span>Qty</span></th>
                                         <th><span>Inventory</span></th>
                                         <th><span>Inventory Date</span></th>
@@ -53,9 +53,9 @@
                                     <c:forEach items="${whInventoryList}" var="whInventory" varStatus="whInventoryLoop">
                                         <tr>                                            
                                             <td><c:out value="${whInventoryLoop.index+1}"/></td>
-                                            <td><c:out value="${whInventory.materialPassNo}"/></td>
                                             <td><c:out value="${whInventory.equipmentType}"/></td>
                                             <td id="modal_delete_info_${whInventory.refId}"><c:out value="${whInventory.equipmentId}"/></td>
+                                            <td><c:out value="${whInventory.materialPassNo}"/></td>
                                             <td><c:out value="${whInventory.quantity}"/></td>
                                             <td><c:out value="${whInventory.inventoryLoc}"/></td>
                                             <td><c:out value="${whInventory.inventoryDate}"/></td>
