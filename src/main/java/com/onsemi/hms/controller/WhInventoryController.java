@@ -101,7 +101,7 @@ public class WhInventoryController {
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String inventoryRack,
+            @RequestParam(required = false) String inventoryLoc,
             @RequestParam(required = false) String inventorySlot
     ) {
         WhInventory whInventory = new WhInventory();
@@ -110,10 +110,8 @@ public class WhInventoryController {
         LOGGER.info(refId);
         whInventory.setMaterialPassNo(materialPassNo); //args
         LOGGER.info(materialPassNo);
-        whInventory.setInventoryRack(inventoryRack); //update
-        LOGGER.info(inventoryRack);
-        whInventory.setInventorySlot(inventorySlot); //update
-        LOGGER.info(inventorySlot);
+        whInventory.setInventoryLoc(inventoryLoc); //update
+        LOGGER.info(inventoryLoc);
         LOGGER.info(materialPassNo);
         whInventory.setInventoryBy(userSession.getFullname()); //update
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -153,16 +151,15 @@ public class WhInventoryController {
                             split[3], split[4], split[5], 
                             split[6], split[7], split[8],
                             split[9], split[10], split[11],
-                            split[12], split[13] //date = [9], rack = [10], slot = [11], by = [12]
+                            split[12], split[13] //date = [9], loc = [10], by = [11]
                         );
                             
                         if(split[0].equals(refId)) {
                             LOGGER.info(row + " : refId found...................." + data);
                             CSV csv = new CSV();
                             csv.open(new File(targetLocation));
-                            csv.put(9, row, "" + whInventory.getInventoryDate());
-                            csv.put(10, row, "" + whInventory.getInventoryRack());
-                            csv.put(11, row, "" + whInventory.getInventorySlot());
+                            csv.put(10, row, "" + whInventory.getInventoryDate());
+                            csv.put(11, row, "" + whInventory.getInventoryLoc());
                             csv.put(12, row, "" + whInventory.getInventoryBy());
                             csv.save(new File(targetLocation));  
                         } else {
@@ -200,16 +197,12 @@ public class WhInventoryController {
             }
 
             EmailSender emailSender = new EmailSender();
-            com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-            user.setFullname(userSession.getFullname());
             emailSender.htmlEmailWithAttachmentRetrieve(
                 servletContext,
-                user,                                                   //user name
+                "CDARS",                                                   //user name
                 "cdarsrel@gmail.com",                                   //to
-                "Status for Hardware Inventory from HMS",   //subject
-                "New inventory for the existing hardware has been made. Please go to this link " //msg
-                + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRetrieve/edit/" + refId + "\">HMS</a>"
-                + " for review."
+                "Status for Hardware Inventory from HMS",  //subject
+                "Verification and inventory for Hardware has been made."    //msg
             );
             
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));

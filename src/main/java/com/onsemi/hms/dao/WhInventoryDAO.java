@@ -30,17 +30,15 @@ public class WhInventoryDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_inventory_list (retrieve_id, material_pass_no, inventory_date, inventory_rack, inventory_slot, inventory_by, status, flag) "
-              + "VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO hms_wh_inventory_list (retrieve_id, material_pass_no, inventory_date, inventory_loc, inventory_by, status, flag) "
+              + "VALUES (?,?,NOW(),?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whInventory.getRefId());
             ps.setString(2, whInventory.getMaterialPassNo());
-            ps.setString(3, whInventory.getInventoryDate());
-            ps.setString(4, whInventory.getInventoryRack());
-            ps.setString(5, whInventory.getInventorySlot());
-            ps.setString(6, whInventory.getInventoryBy());
-            ps.setString(7, whInventory.getStatus());
-            ps.setString(8, whInventory.getFlag());
+            ps.setString(3, whInventory.getInventoryLoc());
+            ps.setString(4, whInventory.getInventoryBy());
+            ps.setString(5, whInventory.getStatus());
+            ps.setString(6, whInventory.getFlag());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -66,15 +64,13 @@ public class WhInventoryDAO {
     public QueryResult updateWhInventory(WhInventory whInventory) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_inventory_list "
-                   + "SET inventory_date = ?, inventory_rack = ?, inventory_slot = ?, inventory_by = ? "
+                   + "SET inventory_date = NOW(), inventory_loc = ?, inventory_by = ? "
                    + "WHERE retrieve_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whInventory.getInventoryDate());
-            ps.setString(2, whInventory.getInventoryRack());
-            ps.setString(3, whInventory.getInventorySlot());
-            ps.setString(4, whInventory.getInventoryBy());
-            ps.setString(5, whInventory.getRefId());
+            ps.setString(1, whInventory.getInventoryLoc());
+            ps.setString(2, whInventory.getInventoryBy());
+            ps.setString(3, whInventory.getRefId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -171,8 +167,7 @@ public class WhInventoryDAO {
                 whInventory.setDateVerify(rs.getString("date_verify_view"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
                 whInventory.setInventoryDate(rs.getString("inventory_date_view"));
-                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
-                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setInventoryLoc(rs.getString("IL.inventory_loc"));
                 whInventory.setInventoryBy(rs.getString("IL.inventory_by"));
                 whInventory.setStatus(rs.getString("IL.status"));
                 whInventory.setFlag(rs.getString("IL.flag"));
@@ -217,8 +212,7 @@ public class WhInventoryDAO {
                 whInventory.setDateVerify(rs.getString("RL.date_verify"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
                 whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
-                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
-                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setInventoryLoc(rs.getString("IL.inventory_loc"));
                 whInventory.setInventoryBy(rs.getString("IL.inventory_by"));
                 whInventory.setStatus(rs.getString("IL.status"));
                 whInventory.setFlag(rs.getString("IL.flag"));
@@ -265,8 +259,7 @@ public class WhInventoryDAO {
                 whInventory.setDateVerify(rs.getString("date_verify_view"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
                 whInventory.setInventoryDate(rs.getString("inventory_date_view"));
-                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
-                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setInventoryLoc(rs.getString("IL.inventory_loc"));
                 whInventory.setInventoryBy(rs.getString("IL.inventory_by"));
                 whInventory.setStatus(rs.getString("IL.status"));
                 whInventory.setFlag(rs.getString("IL.flag"));
@@ -345,8 +338,7 @@ public class WhInventoryDAO {
                 whInventory.setDateVerify(rs.getString("RL.date_verify"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
                 whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
-                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
-                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setInventoryLoc(rs.getString("IL.inventory_loc"));
                 whInventory.setInventoryBy(rs.getString("IL.inventory_by"));
                 whInventory.setStatus(rs.getString("IL.status"));
                 whInventory.setFlag(rs.getString("IL.flag"));
@@ -430,8 +422,7 @@ public class WhInventoryDAO {
                 whInventory.setDateVerify(rs.getString("RL.date_verify"));
                 whInventory.setUserVerify(rs.getString("RL.user_verify"));
                 whInventory.setInventoryDate(rs.getString("IL.inventory_date"));
-                whInventory.setInventoryRack(rs.getString("IL.inventory_rack"));
-                whInventory.setInventorySlot(rs.getString("IL.inventory_slot"));
+                whInventory.setInventoryLoc(rs.getString("IL.inventory_loc"));
                 whInventory.setInventoryBy(rs.getString("IL.inventory_by"));
                 whInventory.setStatus(rs.getString("IL.status"));
                 whInventory.setFlag(rs.getString("IL.flag"));

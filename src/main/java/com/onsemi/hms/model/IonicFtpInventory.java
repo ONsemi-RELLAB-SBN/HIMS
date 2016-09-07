@@ -2,6 +2,7 @@ package com.onsemi.hms.model;
 public class IonicFtpInventory {
     private String refId;
     private String materialPassNo;
+    private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
     private String quantity;
@@ -10,17 +11,17 @@ public class IonicFtpInventory {
     private String remarks;
     private String dateVerify;
     private String inventoryDate;
-    private String inventoryRack;
-    private String inventorySlot;
+    private String inventoryLoc;
     private String inventoryBy;
     private String status;
     
     public IonicFtpInventory() {
     }
 
-    public IonicFtpInventory(String refId, String materialPassNo, String equipmentType, String equipmentId, String quantity, String requestedBy, String requestedDate, String remarks, String dateVerify, String inventoryDate, String inventoryRack, String inventorySlot, String inventoryBy, String status) {
+    public IonicFtpInventory(String refId, String materialPassNo, String materialPassExpiry, String equipmentType, String equipmentId, String quantity, String requestedBy, String requestedDate, String remarks, String dateVerify, String inventoryDate, String inventoryLoc, String inventoryBy, String status) {
         this.refId = refId;
         this.materialPassNo = materialPassNo;
+        this.materialPassExpiry = materialPassExpiry;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
         this.quantity = quantity;
@@ -29,8 +30,7 @@ public class IonicFtpInventory {
         this.remarks = remarks;
         this.dateVerify = dateVerify;
         this.inventoryDate = inventoryDate;
-        this.inventoryRack = inventoryRack;
-        this.inventorySlot = inventorySlot;
+        this.inventoryLoc = inventoryLoc;
         this.inventoryBy = inventoryBy;
         this.status = status;
     }
@@ -49,6 +49,14 @@ public class IonicFtpInventory {
 
     public void setMaterialPassNo(String materialPassNo) {
         this.materialPassNo = materialPassNo;
+    }
+
+    public String getMaterialPassExpiry() {
+        return materialPassExpiry;
+    }
+
+    public void setMaterialPassExpiry(String materialPassExpiry) {
+        this.materialPassExpiry = materialPassExpiry;
     }
 
     public String getEquipmentType() {
@@ -115,20 +123,12 @@ public class IonicFtpInventory {
         this.inventoryDate = inventoryDate;
     }
 
-    public String getInventoryRack() {
-        return inventoryRack;
+    public String getInventoryLoc() {
+        return inventoryLoc;
     }
 
-    public void setInventoryRack(String inventoryRack) {
-        this.inventoryRack = inventoryRack;
-    }
-
-    public String getInventorySlot() {
-        return inventorySlot;
-    }
-
-    public void setInventorySlot(String inventorySlot) {
-        this.inventorySlot = inventorySlot;
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
     }
     
     public String getInventoryBy() {

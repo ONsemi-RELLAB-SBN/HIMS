@@ -45,9 +45,10 @@
                                         <th><span>No</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
+                                        <th><span>Material Pass No.</span></th>
+                                        <th><span>Inventory</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
-                                        <th><span>Material Pass No.</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
@@ -58,9 +59,10 @@
                                             <td><c:out value="${whRequestLoop.index+1}"/></td>
                                             <td><c:out value="${whRequest.equipmentType}"/></td>
                                             <td id="modal_delete_info_${whRequest.refId}"><c:out value="${whRequest.equipmentId}"/></td>
+                                            <td><c:out value="${whRequest.materialPassNo}"/></td>
+                                            <td><c:out value="${whRequest.inventoryLoc}"/></td>
                                             <td><c:out value="${whRequest.requestedBy}"/></td>
                                             <td><c:out value="${whRequest.requestedDate}"/></td>
-                                            <td><c:out value="${whRequest.materialPassNo}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>
                                             
                                             <td align="center">
@@ -102,8 +104,7 @@
                     "pageLength": 10,
                     "order": [],
                     "aoColumnDefs": [
-                        {"bSortable": false, "aTargets": [0]},
-                        {"bSortable": false, "aTargets": [7]}
+                        {"bSortable": false, "aTargets": [8]}
                     ],
                     "sDom": "tp"
                 });

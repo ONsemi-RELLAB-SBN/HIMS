@@ -10,6 +10,7 @@ public class WhRetrieve {
     private String equipmentId;
     private String quantity;
     private String requestedBy;
+    private String requestedEmail;
     private String requestedDate;
     private String shippingDate;
     private String remarks;
@@ -66,6 +67,14 @@ public class WhRetrieve {
 
     public void setRequestedBy(String requestedBy) {
         this.requestedBy = requestedBy;
+    }
+
+    public String getRequestedEmail() {
+        return requestedEmail;
+    }
+
+    public void setRequestedEmail(String requestedEmail) {
+        this.requestedEmail = requestedEmail;
     }
 
     public String getRequestedDate() {

@@ -15,7 +15,7 @@ import org.apache.commons.io.FileUtils;
 public class SpmlUtil {
 
     public static String nullToEmptyString(String string) {
-        if (string == null) {
+        if (string == null || string.equals("null")) {
             return "";
         } else {
             return string;

@@ -10,9 +10,8 @@ public class WhRequest {
     private String equipmentId;
     private String quantity;
     private String inventoryLoc;
-    private String inventoryRack;
-    private String inventorySlot;
     private String requestedBy;
+    private String requestedEmail;
     private String requestedDate;
     private String remarks;
     private String receivedDate;
@@ -86,28 +85,20 @@ public class WhRequest {
         this.inventoryLoc = inventoryLoc;
     }
 
-    public String getInventoryRack() {
-        return inventoryRack;
-    }
-
-    public void setInventoryRack(String inventoryRack) {
-        this.inventoryRack = inventoryRack;
-    }
-
-    public String getInventorySlot() {
-        return inventorySlot;
-    }
-
-    public void setInventorySlot(String inventorySlot) {
-        this.inventorySlot = inventorySlot;
-    }
-
     public String getRequestedBy() {
         return requestedBy;
     }
 
     public void setRequestedBy(String requestedBy) {
         this.requestedBy = requestedBy;
+    }
+
+    public String getRequestedEmail() {
+        return requestedEmail;
+    }
+
+    public void setRequestedEmail(String requestedEmail) {
+        this.requestedEmail = requestedEmail;
     }
 
     public String getRequestedDate() {

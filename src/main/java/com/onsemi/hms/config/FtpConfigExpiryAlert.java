@@ -36,7 +36,7 @@ public class FtpConfigExpiryAlert {
     @Autowired
     ServletContext servletContext;
 
-    @Scheduled(cron = "0 51 18 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 30 9 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() throws FileNotFoundException, IOException {
         LOGGER.info("Method Expiry executed at everyday on 8:00 am. Current time is : " + new Date());
         
@@ -45,7 +45,7 @@ public class FtpConfigExpiryAlert {
         Date date = new Date();
         String todayDate = dateFormat.format(date);
         
-        String reportName = "C:\\Users\\" + username + "\\Documents\\from HMS\\Material Pass Expiry Date Report (" + todayDate + ").xls";
+        String reportName = "C:\\Users\\" + username + "\\Documents\\from HMS\\Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls";
         WhInventoryDAO whInventoryDAO1 = new WhInventoryDAO();
         int count = whInventoryDAO1.getCountMpExpiryAlert();
         LOGGER.info("count is ~~~~~~~~~~~~~~~~~~~~~~ " + count);
@@ -160,7 +160,7 @@ public class FtpConfigExpiryAlert {
                     loc = SpmlUtil.nullToEmptyString(whInventoryList.get(i).getInventoryLoc());
                 }
                 HSSFCell cell2_11 = contents.createCell(11);
-                cell2_11.setCellValue(loc + whInventoryList.get(i).getInventoryRack() + whInventoryList.get(i).getInventorySlot());
+                cell2_11.setCellValue(loc);
             }
             workbook.write(fileOut);
             workbook.close();
@@ -168,13 +168,13 @@ public class FtpConfigExpiryAlert {
             //send email
             LOGGER.info("send email to person in charge");
             EmailSender emailSender = new EmailSender();
-            emailSender.htmlEmailWithAttachmentMpExpiry(
+            emailSender.htmlEmailWithAttachmentMpExpiry3(
                 servletContext,
                 "Requestor",                                                   //user name requestor
                 "cdarsrel@gmail.com",                                   //to
-                "Material Pass Expiry Date",   //subject
+                "Material Pass Expiry Date within 3 Days",   //subject
                 "Report for Material Pass Expiry Date from CDARS has been made. " + 
-                "This report will shows the expired date for each material pass within THREE (3) days durations. " + 
+                "This report will shows the expired date for each material pass within THREE (3) days durations. " +
                 "Hence, attached is the report file for your view and perusal. Thank you." //msg
             );
         }

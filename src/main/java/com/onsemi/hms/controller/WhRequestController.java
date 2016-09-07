@@ -146,8 +146,7 @@ public class WhRequestController {
             @RequestParam(required = false) String requestedBy,
             @RequestParam(required = false) String requestedDate,
             @RequestParam(required = false) String materialPassExpiry,
-            @RequestParam(required = false) String inventoryRack,
-            @RequestParam(required = false) String inventorySlot,
+            @RequestParam(required = false) String inventoryLoc,
             @RequestParam(required = false) String barcodeVerify,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String shippingDate

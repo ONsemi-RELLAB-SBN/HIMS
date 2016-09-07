@@ -131,14 +131,16 @@ public class WhMpListDAO {
                 whMpList.setEquipmentId(rs.getString("RL.equipment_id"));
                 whMpList.setQuantity(rs.getString("RL.quantity"));
                 whMpList.setRequestedBy(rs.getString("RL.requested_by"));
+                whMpList.setRequestedEmail(rs.getString("RL.requested_email"));
                 whMpList.setRequestedDate(rs.getString("requested_date_view"));
                 whMpList.setRemarks(rs.getString("RL.remarks"));
                 whMpList.setUserVerify(rs.getString("RL.user_verify"));
                 whMpList.setDateVerify(rs.getString("RL.date_verify"));
-                whMpList.setInventoryRack(rs.getString("RL.inventory_rack"));
-                whMpList.setInventorySlot(rs.getString("RL.inventory_slot"));
+                whMpList.setInventoryLoc(rs.getString("RL.inventory_loc"));
                 whMpList.setCreatedDate(rs.getString("ML.created_date"));
                 whMpList.setCreatedBy(rs.getString("ML.created_by"));
+                whMpList.setShippingDate(rs.getString("SL.shipping_date"));
+                whMpList.setShippingBy(rs.getString("SL.shipping_by"));
                 whMpList.setStatus(rs.getString("SL.status"));
             }
             rs.close();
@@ -158,7 +160,8 @@ public class WhMpListDAO {
     }
 
     public List<WhMpList> getWhMpListMergeWithShippingAndRequestList() {
-        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view "
+        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
+                   + "DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
                    + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
                    + "WHERE RL.ref_id = SL.request_id AND SL.request_id = ML.shipping_id " 
                    + "ORDER BY ML.shipping_id ASC ";
@@ -175,10 +178,14 @@ public class WhMpListDAO {
                 whMpList.setEquipmentId(rs.getString("RL.equipment_id"));
                 whMpList.setEquipmentType(rs.getString("RL.equipment_type"));
                 whMpList.setQuantity(rs.getString("RL.quantity"));
+                whMpList.setInventoryLoc(rs.getString("RL.inventory_loc"));
                 whMpList.setRequestedBy(rs.getString("RL.requested_by"));
+                whMpList.setRequestedEmail(rs.getString("RL.requested_email"));
                 whMpList.setRequestedDate(rs.getString("requested_date_view"));
                 whMpList.setCreatedDate(rs.getString("created_date_view"));
                 whMpList.setCreatedBy(rs.getString("ML.created_by"));
+                whMpList.setShippingDate(rs.getString("shipping_date_view"));
+                whMpList.setShippingBy(rs.getString("SL.shipping_by"));
                 whMpList.setStatus(rs.getString("SL.status"));
                 whMpListList.add(whMpList);
             }

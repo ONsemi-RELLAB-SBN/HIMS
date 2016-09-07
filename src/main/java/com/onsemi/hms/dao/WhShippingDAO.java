@@ -189,9 +189,9 @@ public class WhShippingDAO {
                 whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
                 whShipping.setQuantity(rs.getString("RL.quantity"));
                 whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+                whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
                 whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
-                whShipping.setInventorySlot(rs.getString("RL.inventory_slot"));
+                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
                 whShipping.setRemarks(rs.getString("RL.remarks"));
                 whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));
@@ -217,53 +217,6 @@ public class WhShippingDAO {
         return whShipping;
     }
     
-    /*
-    public WhShipping getWhShippingMergeWithRequestPdf(String whShippingId) {
-        String sql = "SELECT SL.*, RL.* "
-                   + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.request_id = RL.ref_id AND SL.request_id = '" + whShippingId + "' ";
-        WhShipping whShipping = null;
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                whShipping = new WhShipping();
-                whShipping.setRequestId(rs.getString("SL.request_id"));
-                whShipping.setMaterialPassNo(rs.getString("SL.material_pass_no"));
-                whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
-                whShipping.setEquipmentType(rs.getString("RL.equipment_type"));
-                whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
-                whShipping.setQuantity(rs.getString("RL.quantity"));
-                whShipping.setRequestedBy(rs.getString("RL.requested_by"));
-                whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
-                whShipping.setInventorySlot(rs.getString("RL.inventory_slot"));
-                whShipping.setRemarks(rs.getString("RL.remarks"));
-                whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
-                whShipping.setUserVerify(rs.getString("RL.user_verify"));
-                whShipping.setDateVerify(rs.getString("date_verify_view"));
-                whShipping.setShippingDate(rs.getString("shipping_date_view"));
-                whShipping.setShippingBy(rs.getString("shipping_date_view"));
-                whShipping.setStatus(rs.getString("SL.status"));
-                whShipping.setFlag(rs.getString("SL.flag"));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return whShipping;
-    }
-    */
-    
     public List<WhShipping> getWhShippingListMergeRequest() {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
                    + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
@@ -283,9 +236,9 @@ public class WhShippingDAO {
                 whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
                 whShipping.setQuantity(rs.getString("RL.quantity"));
                 whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+                whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
                 whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
-                whShipping.setInventorySlot(rs.getString("RL.inventory_slot"));
+                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
                 whShipping.setRemarks(rs.getString("RL.remarks"));
                 whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));
@@ -386,9 +339,9 @@ public class WhShippingDAO {
                 whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
                 whShipping.setQuantity(rs.getString("RL.quantity"));
                 whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+                whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
                 whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
-                whShipping.setInventorySlot(rs.getString("RL.inventory_slot"));
+                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
                 whShipping.setRemarks(rs.getString("RL.remarks"));
                 whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));

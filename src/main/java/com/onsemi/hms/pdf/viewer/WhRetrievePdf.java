@@ -16,6 +16,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.pdf.AbstractITextPdfViewPotrait;
+import com.onsemi.hms.tools.SpmlUtil;
 
 public class WhRetrievePdf extends AbstractITextPdfViewPotrait {
 

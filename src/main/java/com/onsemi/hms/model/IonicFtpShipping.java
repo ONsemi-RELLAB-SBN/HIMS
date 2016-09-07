@@ -3,20 +3,22 @@ package com.onsemi.hms.model;
 public class IonicFtpShipping {
     private String requestId;
     private String materialPassNo;
+    private String dateVerify;
+    private String userVerify;
     private String shippingDate;
     private String shippingBy;
     private String status;
-    private String flag;
 
-    public IonicFtpShipping(String requestId, String materialPassNo, String shippingDate, String shippingBy, String status, String flag) {
+    public IonicFtpShipping(String requestId, String materialPassNo, String dateVerify, String userVerify, String shippingDate, String shippingBy, String status) {
         this.requestId = requestId;
         this.materialPassNo = materialPassNo;
+        this.dateVerify = dateVerify;
+        this.userVerify = userVerify;
         this.shippingDate = shippingDate;
         this.shippingBy = shippingBy;
         this.status = status;
-        this.flag = flag;
     }
-
+    
     public String getRequestId() {
         return requestId;
     }
@@ -31,6 +33,22 @@ public class IonicFtpShipping {
 
     public void setMaterialPassNo(String materialPassNo) {
         this.materialPassNo = materialPassNo;
+    }
+
+    public String getDateVerify() {
+        return dateVerify;
+    }
+
+    public void setDateVerify(String dateVerify) {
+        this.dateVerify = dateVerify;
+    }
+
+    public String getUserVerify() {
+        return userVerify;
+    }
+
+    public void setUserVerify(String userVerify) {
+        this.userVerify = userVerify;
     }
 
     public String getShippingDate() {
@@ -56,12 +74,4 @@ public class IonicFtpShipping {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public String getFlag() {
-        return flag;
-    }
-
-    public void setFlag(String flag) {
-        this.flag = flag;
-    } 
 }

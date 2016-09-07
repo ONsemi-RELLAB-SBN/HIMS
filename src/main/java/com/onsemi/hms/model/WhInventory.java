@@ -17,8 +17,6 @@ public class WhInventory {
     private String userVerify;
     private String inventoryDate;
     private String inventoryLoc;
-    private String inventoryRack;
-    private String inventorySlot;
     private String inventoryBy;
     private String requestedDate;
     private String requestedBy;
@@ -127,22 +125,6 @@ public class WhInventory {
 
     public void setInventoryLoc(String inventoryLoc) {
         this.inventoryLoc = inventoryLoc;
-    }
-
-    public String getInventoryRack() {
-        return inventoryRack;
-    }
-
-    public void setInventoryRack(String inventoryRack) {
-        this.inventoryRack = inventoryRack;
-    }
-
-    public String getInventorySlot() {
-        return inventorySlot;
-    }
-
-    public void setInventorySlot(String inventorySlot) {
-        this.inventorySlot = inventorySlot;
     }
 
     public String getInventoryBy() {

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.tools.QueryResult;
+import com.onsemi.hms.tools.SpmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,8 @@ public class WhRetrieveDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO hms_wh_retrieval_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, quantity, "
-                                                        + "requested_by, requested_date, remarks, received_date, status, flag) "
-                  + "VALUES (?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
+                                                        + "requested_by, requested_email, requested_date, remarks, shipping_date, received_date, status, flag) "
+                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRetrieve.getRefId());
             ps.setString(2, whRetrieve.getMaterialPassNo());
@@ -42,10 +43,12 @@ public class WhRetrieveDAO {
             ps.setString(5, whRetrieve.getEquipmentId());
             ps.setString(6, whRetrieve.getQuantity());
             ps.setString(7, whRetrieve.getRequestedBy());
-            ps.setString(8, whRetrieve.getRequestedDate());
-            ps.setString(9, whRetrieve.getRemarks());
-            ps.setString(10, whRetrieve.getStatus());
-            ps.setString(11, whRetrieve.getFlag());
+            ps.setString(8, whRetrieve.getRequestedEmail());
+            ps.setString(9, whRetrieve.getRequestedDate());
+            ps.setString(10, whRetrieve.getRemarks());
+            ps.setString(11, whRetrieve.getShippingDate());
+            ps.setString(12, whRetrieve.getStatus());
+            ps.setString(13, whRetrieve.getFlag());
 
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
@@ -74,7 +77,7 @@ public class WhRetrieveDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(
                 "UPDATE hms_wh_retrieval_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ? "
-             + "WHERE ref_id = ? AND material_pass_no = ? "
+                + "WHERE ref_id = ? AND material_pass_no = ? "
             );
             ps.setString(1, whRetrieve.getBarcodeVerify());
             ps.setString(2, whRetrieve.getDateVerify());
@@ -205,7 +208,8 @@ public class WhRetrieveDAO {
     }
 
     public WhRetrieve getWhRetrieve(String whRetrieveId) {
-        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
+        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, "
+                + "             DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y') AS shipping_date_view "
                     + "FROM hms_wh_retrieval_list "
                     + "WHERE ref_id = '" + whRetrieveId + "' ";
         WhRetrieve whRetrieve = null;
@@ -221,8 +225,14 @@ public class WhRetrieveDAO {
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                whRetrieve.setRequestedEmail(rs.getString("requested_email"));
                 whRetrieve.setRequestedDate(rs.getString("requested_date_view"));
-                whRetrieve.setRemarks(rs.getString("remarks"));
+                whRetrieve.setShippingDate(rs.getString("shipping_date_view"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRetrieve.setRemarks(remarks);
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify_view"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
@@ -246,10 +256,11 @@ public class WhRetrieveDAO {
     }
 
     public List<WhRetrieve> getWhRetrieveList() {
-        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y') AS shipping_date_view "
                    + "FROM hms_wh_retrieval_list "
-                   + "WHERE status NOT LIKE 'Move to Inventory'"
-                   + "ORDER BY id DESC";
+                   + "WHERE flag = 0 "
+                   + "ORDER BY id DESC ";
         List<WhRetrieve> whRetrieveList = new ArrayList<WhRetrieve>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -264,8 +275,14 @@ public class WhRetrieveDAO {
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                whRetrieve.setRequestedEmail(rs.getString("requested_email"));
                 whRetrieve.setRequestedDate(rs.getString("requested_date_view"));
-                whRetrieve.setRemarks(rs.getString("remarks"));
+                whRetrieve.setShippingDate(rs.getString("shipping_date_view"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRetrieve.setRemarks(remarks);
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify_view"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
@@ -307,9 +324,14 @@ public class WhRetrieveDAO {
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                whRetrieve.setRequestedEmail(rs.getString("requested_email"));
                 whRetrieve.setRequestedDate(rs.getString("requested_date"));
                 whRetrieve.setShippingDate(rs.getString("shipping_date"));
-                whRetrieve.setRemarks(rs.getString("remarks"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRetrieve.setRemarks(remarks);
                 whRetrieve.setReceivedDate(rs.getString("received_date"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify"));

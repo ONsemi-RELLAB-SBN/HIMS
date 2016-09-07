@@ -11,6 +11,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.tools.QueryResult;
+import com.onsemi.hms.tools.SpmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class WhRequestDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO hms_wh_request_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, quantity, "
-                                                    + "requested_by, requested_date, inventory_rack, inventory_slot, remarks, received_date, status, flag) "
+                                                    + "requested_by, requested_email, requested_date, inventory_loc, remarks, received_date, status, flag) "
                   + "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRequest.getRefId());
@@ -42,9 +43,9 @@ public class WhRequestDAO {
             ps.setString(5, whRequest.getEquipmentId());
             ps.setString(6, whRequest.getQuantity());
             ps.setString(7, whRequest.getRequestedBy());
-            ps.setString(8, whRequest.getRequestedDate());
-            ps.setString(9, whRequest.getInventoryRack());
-            ps.setString(10, whRequest.getInventorySlot());
+            ps.setString(8, whRequest.getRequestedEmail());
+            ps.setString(9, whRequest.getRequestedDate());
+            ps.setString(10, whRequest.getInventoryLoc());
             ps.setString(11, whRequest.getRemarks());
             ps.setString(12, whRequest.getStatus());
             ps.setString(13, whRequest.getFlag());
@@ -251,10 +252,14 @@ public class WhRequestDAO {
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
+                whRequest.setRequestedEmail(rs.getString("requested_email"));
                 whRequest.setRequestedDate(rs.getString("requested_date_view"));
-                whRequest.setInventoryRack(rs.getString("inventory_rack"));
-                whRequest.setInventorySlot(rs.getString("inventory_slot"));
-                whRequest.setRemarks(rs.getString("remarks"));
+                whRequest.setInventoryLoc(rs.getString("inventory_loc"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRequest.setRemarks(remarks);
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify_view"));
                 whRequest.setUserVerify(rs.getString("user_verify"));
@@ -296,10 +301,14 @@ public class WhRequestDAO {
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
+                whRequest.setRequestedEmail(rs.getString("requested_email"));
                 whRequest.setRequestedDate(rs.getString("requested_date_view"));
-                whRequest.setInventoryRack(rs.getString("inventory_rack"));
-                whRequest.setInventorySlot(rs.getString("inventory_slot"));
-                whRequest.setRemarks(rs.getString("remarks"));
+                whRequest.setInventoryLoc(rs.getString("inventory_loc"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRequest.setRemarks(remarks);
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify_view"));
                 whRequest.setUserVerify(rs.getString("user_verify"));
@@ -341,10 +350,14 @@ public class WhRequestDAO {
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
+                whRequest.setRequestedEmail(rs.getString("requested_email"));
                 whRequest.setRequestedDate(rs.getString("requested_date"));
-                whRequest.setInventoryRack(rs.getString("inventory_rack"));
-                whRequest.setInventorySlot(rs.getString("inventory_slot"));
-                whRequest.setRemarks(rs.getString("remarks"));
+                whRequest.setInventoryLoc(rs.getString("inventory_loc"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRequest.setRemarks(remarks);
                 whRequest.setReceivedDate(rs.getString("received_date"));
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify"));

@@ -29,22 +29,14 @@ public class FtpConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpConfig.class);
     String[] args = {};
 
-    //File header
-    private static final String HEADER = "id,material_pass_no, material_expiry_date,equipment_type,equipment_id,type,quantity,rack,slot,requested_by,requested_date,remarks";
-
-    @Autowired
-    private MessageSource messageSource;
-
     @Autowired
     ServletContext servletContext;
 
     String fileLocation = "";
-    
-    //@Scheduled(fixedRate = 60000) //- in ms
-    //hold for now
-    @Scheduled(cron = "0 0/2 * * * ?") //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+
+    @Scheduled(cron = "0 0/1 * * * ?") //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() {
-        LOGGER.info("Method executed at every 2 minute. Current time is : " + new Date());
+        LOGGER.info("Method executed at every 1 minute. Current time is : " + new Date());
         
         String username = System.getProperty("user.name");
         String targetLocation = "C:\\Users\\" + username + "\\Documents\\CDARS\\";
@@ -79,14 +71,13 @@ public class FtpConfig {
                             ftp.setQuantity(r.getQuantity());
                             ftp.setMaterialPassNo(r.getMaterialPassNo());
                             ftp.setMaterialPassExpiry(r.getMaterialPassExpiry());
-                            ftp.setInventoryRack(r.getRack());
-                            ftp.setInventorySlot(r.getSlot());
+                            ftp.setInventoryLoc(r.getInventoryLoc());
                             ftp.setRequestedBy(r.getRequestedBy());
+                            ftp.setRequestedEmail(r.getRequestedEmail());
                             ftp.setRequestedDate(r.getRequestedDate());
                             ftp.setRemarks(r.getRemarks());
                             ftp.setStatus("New Request");
                             ftp.setFlag("0");
-                            
                             WhRequestDAO whRequestDAO = new WhRequestDAO();
                             int count = whRequestDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
@@ -115,7 +106,8 @@ public class FtpConfig {
                             IonicFtpRetrieve retrieve = new IonicFtpRetrieve(
                                 ionicFtp[0], ionicFtp[1], ionicFtp[2],
                                 ionicFtp[3], ionicFtp[4], ionicFtp[5], 
-                                ionicFtp[6], ionicFtp[7], ionicFtp[8]);
+                                ionicFtp[6], ionicFtp[7], ionicFtp[8], 
+                                ionicFtp[9], ionicFtp[10]);
                             retrieveList.add(retrieve);
                         }
                         for (IonicFtpRetrieve r : retrieveList) {
@@ -127,11 +119,12 @@ public class FtpConfig {
                             ftp.setEquipmentId(r.getEquipmentId());
                             ftp.setQuantity(r.getQuantity());
                             ftp.setRequestedBy(r.getRequestedBy());
+                            ftp.setRequestedEmail(r.getRequestedEmail());
                             ftp.setRequestedDate(r.getRequestedDate());
                             ftp.setRemarks(r.getRemarks());
+                            ftp.setShippingDate(r.getShippingDate());
                             ftp.setStatus("New Retrieval Request");
                             ftp.setFlag("0");
-
                             WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
                             int count = whRetrieveDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
@@ -148,9 +141,7 @@ public class FtpConfig {
                     }
                 } else {
                     fileLocation = targetLocation + listOfFile.getName();
-                    //LOGGER.info("Other file found : " + fileLocation);
                 }
-                //return checkPoint;
             }
         }
     }

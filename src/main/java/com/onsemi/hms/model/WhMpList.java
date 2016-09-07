@@ -10,13 +10,15 @@ public class WhMpList {
     private String equipmentType;
     private String quantity;
     private String requestedBy;
+    private String requestedEmail;
     private String requestedDate;
+    private String inventoryLoc;
     private String userVerify;
     private String dateVerify;
-    private String inventoryRack;
-    private String inventorySlot;
     private String createdDate;
     private String createdBy;
+    private String shippingDate;
+    private String shippingBy;
     private String status;
     private String remarks;
 
@@ -76,12 +78,28 @@ public class WhMpList {
         this.quantity = quantity;
     }
 
+    public String getInventoryLoc() {
+        return inventoryLoc;
+    }
+
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
+    }
+
     public String getRequestedBy() {
         return requestedBy;
     }
 
     public void setRequestedBy(String requestedBy) {
         this.requestedBy = requestedBy;
+    }
+
+    public String getRequestedEmail() {
+        return requestedEmail;
+    }
+
+    public void setRequestedEmail(String requestedEmail) {
+        this.requestedEmail = requestedEmail;
     }
 
     public String getRequestedDate() {
@@ -108,22 +126,6 @@ public class WhMpList {
         this.dateVerify = dateVerify;
     }
 
-    public String getInventoryRack() {
-        return inventoryRack;
-    }
-
-    public void setInventoryRack(String inventoryRack) {
-        this.inventoryRack = inventoryRack;
-    }
-
-    public String getInventorySlot() {
-        return inventorySlot;
-    }
-
-    public void setInventorySlot(String inventorySlot) {
-        this.inventorySlot = inventorySlot;
-    }
-
     public String getCreatedDate() {
         return createdDate;
     }
@@ -140,6 +142,22 @@ public class WhMpList {
         this.createdBy = createdBy;
     }
 
+    public String getShippingDate() {
+        return shippingDate;
+    }
+
+    public void setShippingDate(String shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
+    public String getShippingBy() {
+        return shippingBy;
+    }
+
+    public void setShippingBy(String shippingBy) {
+        this.shippingBy = shippingBy;
+    }
+    
     public String getStatus() {
         return status;
     }

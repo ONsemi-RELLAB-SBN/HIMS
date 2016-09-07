@@ -44,8 +44,7 @@
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Qty</span></th>
-                                        <th><span>Rack</span></th>
-                                        <th><span>Slot</span></th>
+                                        <th><span>Inventory</span></th>
                                         <th><span>Inventory Date</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
@@ -58,8 +57,7 @@
                                             <td><c:out value="${whInventory.equipmentType}"/></td>
                                             <td id="modal_delete_info_${whInventory.refId}"><c:out value="${whInventory.equipmentId}"/></td>
                                             <td><c:out value="${whInventory.quantity}"/></td>
-                                            <td><c:out value="${whInventory.inventoryRack}"/></td>
-                                            <td><c:out value="${whInventory.inventorySlot}"/></td>
+                                            <td><c:out value="${whInventory.inventoryLoc}"/></td>
                                             <td><c:out value="${whInventory.inventoryDate}"/></td>
                                             <td align="center">
                                                 <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" title="Update">
@@ -96,8 +94,7 @@
                     "pageLength": 10,
                     "order": [],
                     "aoColumnDefs": [
-                        {"bSortable": false, "aTargets": [0]},
-                        {"bSortable": false, "aTargets": [8]}
+                        {"bSortable": false, "aTargets": [7]}
                     ],
                     "sDom": "tp"
                 });

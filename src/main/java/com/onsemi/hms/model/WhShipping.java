@@ -9,9 +9,9 @@ public class WhShipping {
     private String equipmentId;
     private String quantity;
     private String requestedBy;
+    private String requestedEmail;
     private String requestedDate;
-    private String inventoryRack;
-    private String inventorySlot;
+    private String inventoryLoc;
     private String remarks;
     private String barcodeVerify;
     private String userVerify;
@@ -84,6 +84,14 @@ public class WhShipping {
     public void setRequestedBy(String requestedBy) {
         this.requestedBy = requestedBy;
     }
+    
+    public String getRequestedEmail() {
+        return requestedEmail;
+    }
+
+    public void setRequestedEmail(String requestedEmail) {
+        this.requestedEmail = requestedEmail;
+    }
 
     public String getRequestedDate() {
         return requestedDate;
@@ -93,20 +101,12 @@ public class WhShipping {
         this.requestedDate = requestedDate;
     }
 
-    public String getInventoryRack() {
-        return inventoryRack;
+    public String getInventoryLoc() {
+        return inventoryLoc;
     }
 
-    public void setInventoryRack(String inventoryRack) {
-        this.inventoryRack = inventoryRack;
-    }
-
-    public String getInventorySlot() {
-        return inventorySlot;
-    }
-
-    public void setInventorySlot(String inventorySlot) {
-        this.inventorySlot = inventorySlot;
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
     }
 
     public String getRemarks() {

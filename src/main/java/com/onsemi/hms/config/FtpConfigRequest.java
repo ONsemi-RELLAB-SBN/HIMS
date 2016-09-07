@@ -96,6 +96,7 @@ public class FtpConfigRequest {
                 
                 HSSFCell cell2_1 = contents.createCell(0);
                 cell2_1.setCellValue(whRequestList.get(i).getMaterialPassNo());
+                
                 HSSFCell cell2_2 = contents.createCell(1);
                 cell2_2.setCellValue(whRequestList.get(i).getEquipmentId());
 
@@ -113,15 +114,12 @@ public class FtpConfigRequest {
                 HSSFCell cell2_4 = contents.createCell(3);
                 cell2_4.setCellValue(qty);
 
-                String loc = whRequestList.get(i).getInventoryLoc();
-                if(whRequestList.get(i).getInventoryLoc()== null) {
-                    loc = SpmlUtil.nullToEmptyString(whRequestList.get(i).getInventoryLoc());
-                }
                 HSSFCell cell2_5 = contents.createCell(4);
-                cell2_5.setCellValue(loc + whRequestList.get(i).getInventoryRack() + whRequestList.get(i).getInventorySlot());
+                cell2_5.setCellValue(whRequestList.get(i).getInventoryLoc());
 
                 HSSFCell cell2_6 = contents.createCell(5);
                 cell2_6.setCellValue(whRequestList.get(i).getReceivedDate());
+                
                 HSSFCell cell2_7 = contents.createCell(6);
                 cell2_7.setCellValue(whRequestList.get(i).getDateVerify());
             }

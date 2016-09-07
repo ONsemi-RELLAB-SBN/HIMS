@@ -6,13 +6,16 @@ import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhMpListDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhShippingDAO;
+import com.onsemi.hms.model.IonicFtpShipping;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhShipping;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -77,7 +80,7 @@ public class WhMpListController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String materialPassNo
-    ) {
+    ) throws IOException {
         WhShippingDAO whShipD = new WhShippingDAO();
         int count = whShipD.getCountMpNo(materialPassNo); //mpno in shipping
         if (count != 0) {
@@ -112,25 +115,68 @@ public class WhMpListController {
                     if (file.exists()) { //create csv file                        
                         LOGGER.info("tiada header");
                         FileWriter fileWriter = null;
+                        FileReader fileReader = null;
                         try {
                             fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
-                            //New Line after the header
-                            fileWriter.append(LINE_SEPARATOR);
-                            fileWriter.append(mplist.getShippingId());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mplist.getMaterialPassNo());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mplist.getDateVerify());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mplist.getUserVerify());
-                            fileWriter.append(COMMA_DELIMITER);                            
-                            fileWriter.append(mplist.getCreatedDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mplist.getCreatedBy());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(whMpList.getStatus());
-                            fileWriter.append(COMMA_DELIMITER);
-                            System.out.println("append to CSV file Succeed!!!");
+                            fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+                            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv";
+
+                            BufferedReader bufferedReader = new BufferedReader(fileReader); 
+                            String data = bufferedReader.readLine();
+                            StringBuilder buff = new StringBuilder();
+
+                            boolean check = false;
+                            int row = 0;
+                            while(data != null){
+                                LOGGER.info("start reading file..........");
+                                buff.append(data).append(System.getProperty("line.separator"));
+                                System.out.println("dataaaaaaaaa : \n" + data);
+
+                                String[] split = data.split(",");
+                                IonicFtpShipping shipping = new IonicFtpShipping(
+                                    split[0], split[1], split[2],
+                                    split[3], split[4], split[5], 
+                                    split[6] //date = [4], by = [5], status = [6]
+                                );
+
+                                if(split[0].equals(mplist.getShippingId())) {
+                                    LOGGER.info(row + " : request Id found...................." + data);
+                                    CSV csv = new CSV();
+                                    csv.open(new File(targetLocation));
+                                    csv.put(4, row, "" + mplist.getCreatedDate());
+                                    csv.put(5, row, "" + mplist.getCreatedBy());
+                                    csv.save(new File(targetLocation));
+                                    
+                                    check = true;
+                                } else {
+                                    LOGGER.info("refId not found........" + data);
+                                }
+                                data = bufferedReader.readLine();
+                                row++;
+                            }
+                            bufferedReader.close();
+                            fileReader.close();
+                            
+                            if(check == false) {
+                                fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
+                                //New Line after the header
+                                fileWriter.append(LINE_SEPARATOR);
+                                fileWriter.append(mplist.getShippingId());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(mplist.getMaterialPassNo());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(mplist.getDateVerify());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(mplist.getUserVerify());
+                                fileWriter.append(COMMA_DELIMITER);                            
+                                fileWriter.append(mplist.getCreatedDate());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(mplist.getCreatedBy());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(whMpList.getStatus());
+//                                fileWriter.append(COMMA_DELIMITER);
+                                System.out.println("append to CSV file Succeed!!!");
+                            }
                         } catch (Exception ee) {
                             ee.printStackTrace();
                         } finally {
@@ -164,7 +210,7 @@ public class WhMpListController {
                             fileWriter.append(mplist.getCreatedBy());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(whMpList.getStatus());
-                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(COMMA_DELIMITER);
                             System.out.println("Write new to CSV file Succeed!!!");
                         } catch (Exception ee) {
                             ee.printStackTrace();
@@ -191,18 +237,35 @@ public class WhMpListController {
                         java.util.logging.Logger.getLogger(WhMpListController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
+                    System.out.println("######################### START EMAIL PROCESS ########################### ");
+                    System.out.println("\n******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
+                    //sent to cdars
                     EmailSender emailSender = new EmailSender();
-                    com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-                    user.setFullname(userSession.getFullname());
                     emailSender.htmlEmailWithAttachmentShipping(
                         servletContext,
-                        user,                                                   //user name
+                        "CDARS",                                                   //user name
                         "cdarsrel@gmail.com",                                   //to
                         "Verification Status for Hardware Shipping from HMS",   //subject
+                        "Verification for Hardware Request has been made."      //msg
+                    );
+                    
+                    System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
+                    //sent to requestor
+                    EmailSender emailSender2 = new EmailSender();
+                    com.onsemi.hms.model.User user2 = new com.onsemi.hms.model.User();
+                    user2.setFullname(userSession.getFullname());
+                    String emailTitle = "Verification Status for Hardware Shipping from HMS";
+                    emailSender2.htmlEmail2(
+                        servletContext,
+                        whship.getRequestedBy(),                       //from
+                        whship.getRequestedEmail(), //to
+                        emailTitle,         
                         "Verification for Hardware Request has been made. Please go to this link " //msg
-                        + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whShipping/" + "\">HMS</a>"
+                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + request.getContextPath() + "/wh/whRetrieval/" + "\">CDARS</a>"
                         + " for status checking."
                     );
+                    
+                    System.out.println("######################### END EMAIL PROCESS ########################### ");
                     
                     WhShipping whShipping = new WhShipping();
                     whShipping.setRequestId(whship.getRequestId());
@@ -218,7 +281,7 @@ public class WhMpListController {
                     
                     if(queryResult3.getResult() == 1){
                         redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success5", args, locale));
-                    return "redirect:/wh/whShipping/whMpList/add";  
+                    return "redirect:/wh/whShipping/whMpList";  
                     }else{
                         LOGGER.info("Data failed to update");
                         return "whMpList/add";  

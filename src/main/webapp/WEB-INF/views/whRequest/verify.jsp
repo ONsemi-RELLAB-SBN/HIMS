@@ -35,29 +35,42 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="requestBy" class="col-lg-4 control-label">Requested By</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="requestBy" name="requestBy" placeholder="Request For" value="${whRequest.requestedBy}" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="requestDate" class="col-lg-4 control-label">Requested Date</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="requestDate" name="requestDate" placeholder="Request For" value="${whRequest.requestedDate}" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label for="materialPassNo" class="col-lg-4 control-label">Material Pass No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="${whRequest.materialPassNo}" readonly>
                                 </div>
                             </div>
-                                <div class="form-group">
+                            <div class="form-group">
                                 <label for="materialPassExpiry" class="col-lg-4 control-label">Material Pass Expiry Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="${whRequest.materialPassExpiry}" readonly>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="inventoryLoc" class="col-lg-4 control-label">Inventory Location</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" value="${whRequest.inventoryLoc}" readonly>
+                                </div>
+                            </div>  
+                            <div class="form-group">
+                                <label for="requestedBy" class="col-lg-4 control-label">Requested By</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="requestedBy" name="requestedBy" placeholder="Request For" value="${whRequest.requestedBy}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="requestedEmail" class="col-lg-4 control-label">Requestor Email</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="requestedEmail" name="requestedEmail" placeholder="requestedEmail" value="${whRequest.requestedEmail}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="requestedDate" class="col-lg-4 control-label">Requested Date</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="requestedDate" name="requestedDate" placeholder="Request For" value="${whRequest.requestedDate}" readonly>
+                                </div>
+                            </div>
+                            
                             <div class="form-group">
                                 <label for="remarks" class="col-lg-4 control-label">Remarks </label>
                                 <div class="col-lg-8">
@@ -160,7 +173,8 @@
                 var validator = $("#mp_form").validate({
                     rules: {
                         barcodeVerify: {
-                            required: true
+                            required: true,
+                            equalToMpNo: materialPassNo
                         }
                     }
                 });

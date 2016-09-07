@@ -107,30 +107,24 @@ public class WhInventoryPdf extends AbstractITextPdfViewPotrait {
             table.addCell(cellContent);
         }
         //5
-        cellHeader.setPhrase(new Phrase("Inventory Rack", fontHeader));
+        cellHeader.setPhrase(new Phrase("Inventory Locatin", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whInventory.getInventoryRack(), fontContent));
+        cellContent.setPhrase(new Phrase(whInventory.getInventoryLoc(), fontContent));
         table.addCell(cellContent);
 
         //6
-        cellHeader.setPhrase(new Phrase("Inventory Slot", fontHeader));
-        table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whInventory.getInventorySlot(), fontContent));
-        table.addCell(cellContent);
-
-        //7
         cellHeader.setPhrase(new Phrase("Inventory Date", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whInventory.getInventoryDate(), fontContent));
         table.addCell(cellContent);
         
-        //8
+        //7
         cellHeader.setPhrase(new Phrase("Verification Date", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whInventory.getDateVerify(), fontContent));
         table.addCell(cellContent);
         
-        //9
+        //8
         cellHeader.setPhrase(new Phrase("Status", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whInventory.getStatus(), fontContent));

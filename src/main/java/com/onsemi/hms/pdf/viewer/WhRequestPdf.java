@@ -109,21 +109,21 @@ public class WhRequestPdf extends AbstractITextPdfViewPotrait {
         }
         
         //5
-        cellHeader.setPhrase(new Phrase("Hardware Inventory Rack", fontHeader));
+        cellHeader.setPhrase(new Phrase("Inventory Location", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whRequest.getInventoryRack(), fontContent));
-        table.addCell(cellContent);
-
-        //6
-        cellHeader.setPhrase(new Phrase("Hardware Inventory Slot", fontHeader));
-        table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whRequest.getInventorySlot(), fontContent));
+        cellContent.setPhrase(new Phrase(whRequest.getInventoryLoc(), fontContent));
         table.addCell(cellContent);
         
-        //7
+        //6
         cellHeader.setPhrase(new Phrase("Requested By", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whRequest.getRequestedBy(), fontContent));
+        table.addCell(cellContent);
+        
+        //7
+        cellHeader.setPhrase(new Phrase("Requestor Email", fontHeader));
+        table.addCell(cellHeader);
+        cellContent.setPhrase(new Phrase(whRequest.getRequestedEmail(), fontContent));
         table.addCell(cellContent);
 
         //8

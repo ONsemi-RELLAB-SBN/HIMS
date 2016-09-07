@@ -50,7 +50,7 @@ public class WhRetrieveController {
     private static final String LINE_SEPARATOR = "\n";
 
     //File header
-    private static final String HEADER = "retrieve_id,material_pass_no,material_pass_expiry,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_rack,inventory_slot,inventory_by,status";
+    private static final String HEADER = "retrieve_id,material_pass_no,material_pass_expiry,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_location,inventory_by,status";
 
     @Autowired
     private MessageSource messageSource;
@@ -105,23 +105,6 @@ public class WhRetrieveController {
         WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
         WhRetrieve whRetrieve = whRetrieveDAO.getWhRetrieve(whRetrieveId);
         
-        String type = whRetrieve.getEquipmentType();
-        if ("Motherboard".equals(type)) {
-            String IdLabel = "Motherboard ID";
-            model.addAttribute("IdLabel", IdLabel);
-        } else if ("Stencil".equals(type)) {
-            String IdLabel = "Stencil ID";
-            model.addAttribute("IdLabel", IdLabel);
-        } else if ("Tray".equals(type)) {
-            String IdLabel = "Tray Type";
-            model.addAttribute("IdLabel", IdLabel);
-        } else if ("PCB".equals(type)) {
-            String IdLabel = "PCB Name";
-            model.addAttribute("IdLabel", IdLabel);
-        } else {
-            String IdLabel = "Hardware ID";
-            model.addAttribute("IdLabel", IdLabel);
-        }
         //for check which tab should active
         if (whRetrieve.getStatus().equals("New Retrieval Request") || whRetrieve.getStatus().equals("Verification Fail")) {
             String mpActive = "active";
@@ -175,7 +158,7 @@ public class WhRetrieveController {
         boolean cp = false;
         if (materialPassNo.equals(barcodeVerified)) {
             whRetrieve.setStatus("Verification Pass");
-            whRetrieve.setFlag("1");
+            whRetrieve.setFlag("0");
             cp = true;
             LOGGER.info("Verification Pass");
         } else {
@@ -212,9 +195,7 @@ public class WhRetrieveController {
             @RequestParam(required = false) String quantity,
             @RequestParam(required = false) String barcodeVerify,
             @RequestParam(required = false) String dateVerify,
-            @RequestParam(required = false) String inventoryDate,
-            @RequestParam(required = false) String inventoryRack,
-            @RequestParam(required = false) String inventorySlot,
+            @RequestParam(required = false) String inventoryLoc,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String flag
     ) {
@@ -237,7 +218,7 @@ public class WhRetrieveController {
         QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
         
         
-        if(whRetrieve.getStatus().equals("Move to Inventory")) {
+        if(whRetrieve.getFlag().equals("1")) {
             //save id to table wh_inventory_list
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -247,10 +228,7 @@ public class WhRetrieveController {
             whInventory.setMaterialPassNo(materialPassNo);
             whInventory.setStatus(whRetrieve.getStatus());
             whInventory.setInventoryBy(userSession.getFullname());
-            whInventory.setInventoryDate(dateFormat.format(date));
-//            whInventory.setInventoryLoc("SG");
-            whInventory.setInventoryRack(inventoryRack);
-            whInventory.setInventorySlot(inventorySlot);
+            whInventory.setInventoryLoc(inventoryLoc);
             
             WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
             int count = whInventoryDAO.getCountExistingData(whInventory.getRefId());
@@ -299,9 +277,7 @@ public class WhRetrieveController {
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getInventoryDate());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryRack());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventorySlot());
+                            fileWriter.append(wh.getInventoryLoc());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(userSession.getFullname());
                             fileWriter.append(COMMA_DELIMITER);
@@ -351,9 +327,7 @@ public class WhRetrieveController {
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(wh.getInventoryDate());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryRack());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventorySlot());
+                            fileWriter.append(wh.getInventoryLoc());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(userSession.getFullname());
                             fileWriter.append(COMMA_DELIMITER);
@@ -386,16 +360,12 @@ public class WhRetrieveController {
                     }
 
                     EmailSender emailSender = new EmailSender();
-                    com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
-                    user.setFullname(userSession.getFullname());
                     emailSender.htmlEmailWithAttachmentRetrieve(
                         servletContext,
-                        user,                                                   //user name
+                        "CDARS",                                                   //user name
                         "cdarsrel@gmail.com",                                   //to
-                        "Verification Status for Hardware Inventory from HMS",   //subject
-                        "Verification for Hardware Inventory has been made. Please go to this link " //msg
-                        + "<a href=\"" + request.getScheme() + "://" + hostName + ":" + request.getServerPort() + request.getContextPath() + "/wh/whRetrieve/edit/" + refId + "\">HMS</a>"
-                        + " for verification status checking."
+                        "Status for Hardware Inventory from HMS",  //subject
+                        "Verification and inventory for Hardware has been made."    //msg
                     );
 
                     redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
@@ -404,7 +374,6 @@ public class WhRetrieveController {
                 LOGGER.info("data adeeeeee");
             }
         }
-        
         return "redirect:/wh/whInventory/";
     }
 }

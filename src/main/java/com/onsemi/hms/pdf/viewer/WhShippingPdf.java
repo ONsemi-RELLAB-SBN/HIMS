@@ -21,7 +21,7 @@ public class WhShippingPdf extends AbstractITextPdfViewPotrait {
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
             PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {        
-        String title = "WAREHOUSE MANAGEMENT - HARDWARE INVENTORY INFORMATION";
+        String title = "WAREHOUSE MANAGEMENT - HARDWARE SHIPPING INFORMATION";
 
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
@@ -104,49 +104,44 @@ public class WhShippingPdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(whShipping.getEquipmentId(), fontContent));
             table.addCell(cellContent);
         }
-        //5
-        cellHeader.setPhrase(new Phrase("Inventory Rack", fontHeader));
-        table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whShipping.getInventoryRack(), fontContent));
-        table.addCell(cellContent);
 
-        //6
-        cellHeader.setPhrase(new Phrase("Inventory Slot", fontHeader));
+        //5
+        cellHeader.setPhrase(new Phrase("Inventory Location", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whShipping.getInventorySlot(), fontContent));
+        cellContent.setPhrase(new Phrase(whShipping.getInventoryLoc(), fontContent));
         table.addCell(cellContent);
         
-        //7
+        //6
         cellHeader.setPhrase(new Phrase("Requested By", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whShipping.getRequestedBy(), fontContent));
         table.addCell(cellContent);
         
-        //8
+        //7
         cellHeader.setPhrase(new Phrase("Requested Date", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whShipping.getRequestedDate(), fontContent));
         table.addCell(cellContent);
         
-        //9
+        //8
         cellHeader.setPhrase(new Phrase("Verification Date", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whShipping.getDateVerify(), fontContent));
         table.addCell(cellContent);
         
-        //10
+        //9
         cellHeader.setPhrase(new Phrase("Verification By", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whShipping.getUserVerify(), fontContent));
         table.addCell(cellContent);
         
-        //11
+        //10
         cellHeader.setPhrase(new Phrase("Remarks", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whShipping.getRemarks(), fontContent));
         table.addCell(cellContent);
         
-        //12
+        //11
         cellHeader.setPhrase(new Phrase("Status", fontHeader));
         table.addCell(cellHeader);
         cellContent.setPhrase(new Phrase(whShipping.getStatus(), fontContent));

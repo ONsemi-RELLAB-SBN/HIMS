@@ -17,13 +17,13 @@
                         <form id="approval_hardwaretrieve_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRetrieve/approvalupdate" method="post">
                             <input type="hidden" name="refId" value="${whRetrieve.refId}" />
                             <div class="form-group">
-                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Category</label>
+                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Type</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentType" name="equipmentType" value="${whRetrieve.equipmentType}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-4 control-label">Equipment ID</label>
+                                <label for="equipmentId" class="col-lg-4 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.equipmentId}" readonly>
                                 </div>
@@ -35,27 +35,27 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="retrieveBy" class="col-lg-4 control-label">Retrieved By</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Retrieve For" value="${whRetrieve.requestedBy}" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="retrieveDate" class="col-lg-4 control-label">Retrieved Date</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="retrieveDate" name="retrieveDate" placeholder="Retrieve For" value="${whRetrieve.requestedDate}" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label for="materialPassNo" class="col-lg-4 control-label">Material Pass No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="${whRetrieve.materialPassNo}" readonly>
                                 </div>
                             </div>
-                                <div class="form-group">
+                            <div class="form-group">
                                 <label for="materialPassExpiry" class="col-lg-4 control-label">Material Pass Expiry Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="retrieveBy" class="col-lg-4 control-label">Requested By</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Retrieve For" value="${whRetrieve.requestedBy}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="retrieveDate" class="col-lg-4 control-label">Requested Date</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="retrieveDate" name="retrieveDate" placeholder="Retrieve For" value="${whRetrieve.requestedDate}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -138,16 +138,11 @@
                                     <input type="hidden" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
                                     <input type="hidden" name="status" value="${whRetrieve.status}" />
                                     <input type="hidden" name="flag" value="${whRetrieve.flag}" />
-                                    <input type="hidden" name="inventoryDate" value="${whInventory.inventoryDate}" />
+                                    <!--<input type="hidden" name="inventoryDate" value="${whInventory.inventoryDate}" />-->
                                     
-                                    <label for=" inventoryRack" class="col-lg-4 control-label">Rack Number</label>
+                                    <label for=" inventoryLoc" class="col-lg-4 control-label">Inventory Location</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="inventoryRack" name="inventoryRack" autofocus="autofocus" value="${whInventory.inventoryRack}" required/> 
-                                    </div>
-                                    <br><br><br>
-                                    <label for=" inventorySlot" class="col-lg-4 control-label">Slot Number</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="inventorySlot" name="inventorySlot" autofocus="autofocus"  value="${whInventory.inventorySlot}" required/>
+                                        <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" autofocus="autofocus" value="${whInventory.inventoryLoc}" required/> 
                                     </div>
                                     <br><br><br>
                                     <div class="pull-right">
@@ -200,16 +195,14 @@
                 var validator = $("#mp_form").validate({
                     rules: {
                         barcodeVerify: {
-                            required: true
+                            required: true,
+                            equalToMpNo: materialPassNo
                         }
                     }
                 });
                 var validator1 = $("#hi_form").validate({
                     rules: {
-                        inventoryRack: {
-                            required: true
-                        },
-                        inventorySlot: {
+                        inventoryLoc: {
                             required: true
                         }
                     }

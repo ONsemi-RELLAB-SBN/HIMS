@@ -53,18 +53,11 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inventoryRack" class="col-lg-4 control-label">Rack</label>
+                                <label for="inventoryLoc" class="col-lg-4 control-label">Inventory Location</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="inventoryRack" name="inventoryRack" placeholder="${whShipping.inventoryRack}" required>
+                                    <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" placeholder="${whShipping.inventoryLoc}" required>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="inventorySlot" class="col-lg-4 control-label">Slot</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="inventorySlot" name="inventorySlot" placeholder="${whShipping.inventorySlot}" required>
-                                </div>
-                            </div>
-                           
                             <a href="${contextPath}/wh/whShipping" class="btn btn-info pull-left"><i class="fa fa-reply"></i>Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>
