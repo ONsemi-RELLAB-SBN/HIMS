@@ -258,7 +258,7 @@ public class WhMpListController {
                         whship.getRequestedBy(),                       //from
                         whship.getRequestedEmail(), //to
                         emailTitle,         
-                        "Verification for Hardware Shipping has been made. Please go to this link " //msg
+                        "Hardware has been ready to shipping. Please go to this link " //msg
                         + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
                         + " for status checking."
                     );

@@ -36,7 +36,7 @@ public class FtpConfigExpiry {
     @Autowired
     ServletContext servletContext;
 
-    @Scheduled(cron = "0 30 9 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 0 8 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() throws FileNotFoundException, IOException {
         LOGGER.info("Method Expiry executed at everyday on 8:00 am. Current time is : " + new Date());
         

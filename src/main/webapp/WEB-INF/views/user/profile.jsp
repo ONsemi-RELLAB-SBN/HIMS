@@ -17,43 +17,42 @@
                             <div class="form-group">
                                 <label for="loginId" class="col-lg-4 control-label">Login ID *</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="loginId" name="loginId" placeholder="Login ID" value="${user.loginId}" readonly>
+                                    <input type="text" class="form-control" id="loginId" name="loginId" placeholder="Login ID" value="${sessionScope.userSession.loginId}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="fullname" class="col-lg-4 control-label">Name *</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Name" value="${user.fullname}" readonly>
+                                    <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Name" value="${sessionScope.userSession.fullname}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="col-lg-4 control-label">Email *</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="${user.email}" readonly>
+                                    <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="${sessionScope.userSession.email}" readonly>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <!--<div class="form-group">
                                 <label for="groupId" class="col-lg-4 control-label">Group *</label>
-                                
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="groupCode" name="groupCode" placeholder="Code" value="${user.groupCode}" readonly>
-                                    <!--<select id="groupId" name="groupId" class="form-control" disabled>
+                                    <!--<input type="text" class="form-control" id="groupCode" name="groupCode" placeholder="Code" value="${user.groupCode}" readonly>-->
+                                    <!--select id="groupId" name="groupId" class="form-control" disabled>
                                         <option value="" selected="" disabled>Select Group...</option>
                                         <c:forEach items="${userGroupList}" var="group">
-                                            <option value="${group.id}" ${group.selected}>${group.code} - ${group.name}</option>
+                                            <option value="${user.groupId}" ${group.selected}>${user.groupCode} - ${user.groupName}</option>
                                         </c:forEach>
-                                    </select>-->
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="form-group">
+                            </div>-->
+                            <!--<div class="form-group">
                                 <label for="isActive" class="col-lg-4 control-label">Status *</label>
                                 <div class="col-lg-8">
-                                    <!--<select id="isActive" name="isActive" class="form-control" disabled>
+                                    <select id="isActive" name="isActive" class="form-control" disabled>
                                         <option value="0" <c:if test="${user.isActive == '0'}">selected=""</c:if>>Inactive</option>
                                         <option value="1" <c:if test="${user.isActive == '1'}">selected=""</c:if>>Active</option>
-                                    </select>-->
+                                    </select>
                                 </div>
-                            </div>
+                            </div>-->
                             <a href="${contextPath}/" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <!--<div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>

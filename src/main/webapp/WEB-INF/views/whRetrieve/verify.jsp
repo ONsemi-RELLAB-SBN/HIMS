@@ -102,7 +102,7 @@
                                     <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRetrieve.materialPassNo}" />
                                     <input type="hidden" name="flag" value="${whRetrieve.flag}" />
                                     <input type="hidden" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
-                                    <!--input type="hidden" name="refId" value="${mpActiveTab}" /-->
+                                    <input type="hidden" name="tab" value="${mpActiveTab}" />
                                     <div class="form-group">
                                         <label for=" barcodeVerify" class="col-lg-4 control-label">Scan Barcode Label</label>
                                         <div class="col-lg-8" id="barcodeVerifyDiv">
@@ -113,7 +113,7 @@
                                     <br><br>
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                        <button type="submit" class="btn btn-primary" >Verify</button>
+                                        <button type="submit" class="btn btn-primary" name="submit" id="submit">Verify</button>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
@@ -138,6 +138,7 @@
                                     <input type="hidden" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
                                     <input type="hidden" name="status" value="${whRetrieve.status}" />
                                     <input type="hidden" name="flag" value="${whRetrieve.flag}" />
+                                    <input type="hidden" name="tab" value="${hiActiveTab}" />
                                     <!--<input type="hidden" name="inventoryDate" value="${whInventory.inventoryDate}" />-->
                                     
                                     <label for=" inventoryLoc" class="col-lg-4 control-label">Hardware Location</label>
@@ -147,7 +148,7 @@
                                     <br><br><br>
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel1">Reset</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="submit" name="submit" id="submit" class="btn btn-primary">Save</button>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
@@ -207,6 +208,19 @@
                         }
                     }
                 });
+                
+                var element = $('#barcodeVerify');
+                if (element.val() === "#materialPassNo") {
+                    $("#submit").attr("disabled", true);
+                    $("#barcodeVerify").attr("readonly", true);
+                }
+                
+                var element = $('#inventoryLoc');
+                if (element.val() !== "" || "#barcodeVerify" === "#materialPassNo") {
+                    $("#submit").attr("disabled", true);
+                    $("#submit1").attr("disabled", true);
+                    $("#inventoryLoc").attr("readonly", true);
+                }
 
                 $(".cancel").click(function () {
                     validator.resetForm();

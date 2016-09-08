@@ -20,6 +20,7 @@ public class WhRequest {
     private String userVerify;
     private String status;
     private String flag;
+    private String duration;
 
     public String getId() {
         return id;
@@ -163,5 +164,13 @@ public class WhRequest {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

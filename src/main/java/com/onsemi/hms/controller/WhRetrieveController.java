@@ -219,6 +219,8 @@ public class WhRetrieveController {
         WhRetrieve whRetrieve = new WhRetrieve();
         whRetrieve.setRefId(refId);      
         whRetrieve.setMaterialPassNo(materialPassNo);
+        
+        
         boolean cp = false;
         if(status.equals("Verification Pass")) {
             whRetrieve.setStatus("Move to Inventory");
@@ -378,34 +380,33 @@ public class WhRetrieveController {
 
                     System.out.println("******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
                     
-//                    EmailSender emailSender = new EmailSender();
-//                    emailSender.htmlEmailWithAttachmentRetrieve(
-//                        servletContext,
-//                        "CDARS",                                                   //user name
-//                        "cdarsrel@gmail.com",                                   //to
-//                        "Status for Hardware Inventory from HMS",  //subject
-//                        "Verification and inventory for Hardware has been made."    //msg
-//                    );
-                    
-                    WhInventoryDAO whdao = new WhInventoryDAO();
-                    WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
-                    
-                    System.out.println(wh.getRequestedBy() + "******************* EMAIL REQUESTOR ******************* " + wh.getRequestedEmail());
-                    //sent to requestor
-                    EmailSender emailSender2 = new EmailSender();
-                    com.onsemi.hms.model.User user2 = new com.onsemi.hms.model.User();
-                    user2.setFullname(userSession.getFullname());
-                    String emailTitle = "Status for Hardware Shipping from HMS";
-                    
-                    emailSender2.htmlEmail2(
+                    EmailSender emailSender = new EmailSender();
+                    emailSender.htmlEmailWithAttachmentRetrieve(
                         servletContext,
-                        wh.getRequestedBy(),                       //from
-                        wh.getRequestedEmail(), //to
-                        emailTitle,         
-                        "Verification for Hardware Inventory has been made. Please go to this link " //msg
-                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whInventory/" + "\">CDARS</a>"
-                        + " for status checking."
+                        "CDARS",                                                   //user name
+                        "cdarsrel@gmail.com",                                   //to
+                        "Status for Hardware Inventory from HMS",  //subject
+                        "Verification and inventory for Hardware has been made."    //msg
                     );
+                    
+//                    WhInventoryDAO whdao = new WhInventoryDAO();
+//                    WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
+//                    System.out.println(wh.getRequestedBy() + "******************* EMAIL REQUESTOR ******************* " + wh.getRequestedEmail());
+//                    //sent to requestor
+//                    EmailSender emailSender2 = new EmailSender();
+//                    com.onsemi.hms.model.User user2 = new com.onsemi.hms.model.User();
+//                    user2.setFullname(userSession.getFullname());
+//                    String emailTitle = "Status for Hardware Shipping from HMS";
+//                    
+//                    emailSender2.htmlEmail2(
+//                        servletContext,
+//                        wh.getRequestedBy(),                       //from
+//                        wh.getRequestedEmail(), //to
+//                        emailTitle,         
+//                        "Verification for Hardware Inventory has been made. Please go to this link " //msg
+//                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whInventory/" + "\">CDARS</a>"
+//                        + " for status checking."
+//                    );
 
                     redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
                 }

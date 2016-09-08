@@ -86,10 +86,13 @@ public class FtpConfigRequest {
             cell1_5.setCellValue("INVENTORY");
             HSSFCell cell1_6 = rowhead.createCell(5);
             cell1_6.setCellStyle(style);
-            cell1_6.setCellValue("RECEIVED DATE");
+            cell1_6.setCellValue("HMS RECEIVED DATE");
             HSSFCell cell1_7 = rowhead.createCell(6);
             cell1_7.setCellStyle(style);
             cell1_7.setCellValue("BARCODE VERIFICATION DATE");
+            HSSFCell cell1_8 = rowhead.createCell(7);
+            cell1_8.setCellStyle(style);
+            cell1_8.setCellValue("TIME TAKEN/DURATION");
 
             for(int i=0; i<whRequestList.size(); i++) {            
                 HSSFRow contents = sheet.createRow(i + 1);
@@ -122,6 +125,9 @@ public class FtpConfigRequest {
                 
                 HSSFCell cell2_7 = contents.createCell(6);
                 cell2_7.setCellValue(whRequestList.get(i).getDateVerify());
+                
+                HSSFCell cell2_8 = contents.createCell(7);
+                cell2_8.setCellValue(whRequestList.get(i).getDuration());
             }
             workbook.write(fileOut);
             workbook.close();
@@ -135,7 +141,7 @@ public class FtpConfigRequest {
                 "cdarsrel@gmail.com",                                   //to
                 "Hardware Shipping from HMS Report",   //subject
                 "Report for Hardware Shipping from HMS has been made. " + 
-                "This report will shows the time for ON Semiconductor to ship the item(s) to warehouse and the time for the verification process on every item(s) that have been delivered yesterday. " + 
+                "This report will shows the time for HMS to read the request for ON semi delivering to warehouse and the time for the verification process on every item(s) that have been delivered yesterday. " + 
                 "Hence, attached is the report file for your view and perusal. Thank you." //msg
             );
         }

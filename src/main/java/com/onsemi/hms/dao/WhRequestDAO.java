@@ -333,7 +333,7 @@ public class WhRequestDAO {
     }
     
     public List<WhRequest> getWhRequestReportList() {
-        String sql = "SELECT * "
+        String sql = "SELECT *, CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' DAYS, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' HOURS, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' MINS') AS DURATION "
                    + "FROM hms_wh_request_list "
                    + "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) ";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
@@ -364,6 +364,7 @@ public class WhRequestDAO {
                 whRequest.setUserVerify(rs.getString("user_verify"));
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
+                whRequest.setDuration(rs.getString("duration"));
                 whRequestList.add(whRequest);
             }
             rs.close();

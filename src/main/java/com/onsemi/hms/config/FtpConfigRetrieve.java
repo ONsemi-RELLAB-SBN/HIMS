@@ -84,10 +84,13 @@ public class FtpConfigRetrieve {
             cell1_4.setCellValue("QUANTITY");
             HSSFCell cell1_5 = rowhead.createCell(4);
             cell1_5.setCellStyle(style);
-            cell1_5.setCellValue("SHIPPING DATE");
+            cell1_5.setCellValue("ON SEMI SHIPPING DATE");
             HSSFCell cell1_6 = rowhead.createCell(5);
             cell1_6.setCellStyle(style);
             cell1_6.setCellValue("BARCODE VERIFICATION DATE");
+            HSSFCell cell1_7 = rowhead.createCell(6);
+            cell1_7.setCellStyle(style);
+            cell1_7.setCellValue("TIME TAKEN / DURATION");
 
             for(int i=0; i<whRetrieveList.size(); i++) {            
                 HSSFRow contents = sheet.createRow(i + 1);
@@ -118,11 +121,15 @@ public class FtpConfigRetrieve {
 
                 HSSFCell cell2_5 = contents.createCell(4);
                 cell2_5.setCellValue(whRetrieveList.get(i).getReceivedDate());
-                System.out.println(eType + " @ " + whRetrieveList.get(i).getReceivedDate());
+                System.out.println(whRetrieveList.get(i).getShippingDate());
                 
                 HSSFCell cell2_6 = contents.createCell(5);
                 cell2_6.setCellValue(whRetrieveList.get(i).getDateVerify());
-                System.out.println(eType + " @ " + whRetrieveList.get(i).getDateVerify());
+                System.out.println(whRetrieveList.get(i).getDateVerify());
+                
+                HSSFCell cell2_7 = contents.createCell(6);
+                cell2_7.setCellValue(whRetrieveList.get(i).getDuration());
+                System.out.println(whRetrieveList.get(i).getDuration());
             }
             workbook.write(fileOut);
             workbook.close();
@@ -136,7 +143,7 @@ public class FtpConfigRetrieve {
                 "cdarsrel@gmail.com",                                   //to
                 "Hardware Arrival from HMS Report",   //subject
                 "Report for Hardware Arrival from HMS has been made. " + 
-                "This report will shows the time for HMS to read the request from ON Semiconductor and the time for verification process on every item(s) that have been delivered to warehouse yesterday. " + 
+                "This report will shows the time for ON Semi delivering hardware to warehouse date and the time for verification process on every item(s) that have been . " + 
                 "Hence, attached is the report file for your view and perusal. Thank you." //msg
             );
         }
