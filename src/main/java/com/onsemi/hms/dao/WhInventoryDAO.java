@@ -121,8 +121,12 @@ public class WhInventoryDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whInventory = new WhInventory();
+                whInventory.setId("id");
                 whInventory.setRefId(rs.getString("retrieve_id"));
                 whInventory.setMaterialPassNo(rs.getString("material_pass_no"));
+                whInventory.setInventoryDate("inventory_date");
+                whInventory.setInventoryLoc("inventory_loc");
+                whInventory.setInventoryBy("inventory_by");
                 whInventory.setStatus(rs.getString("status"));
                 whInventory.setFlag(rs.getString("flag"));                
             }

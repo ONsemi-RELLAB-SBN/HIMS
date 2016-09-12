@@ -17,13 +17,13 @@
                         <form id="approval_hardwarequest_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/approvalupdate" method="post">
                             <input type="hidden" name="refId" value="${whRequest.refId}" />
                             <div class="form-group">
-                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Category</label>
+                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Type</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentType" name="equipmentType" value="${whRequest.equipmentType}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-4 control-label">Equipment ID</label>
+                                <label for="equipmentId" class="col-lg-4 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.equipmentId}" readonly>
                                 </div>
@@ -47,15 +47,21 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inventoryLoc" class="col-lg-4 control-label">Inventory Location</label>
+                                <label for="inventoryLoc" class="col-lg-4 control-label">Hardware Inventory</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" value="${whRequest.inventoryLoc}" readonly>
                                 </div>
-                            </div>  
+                            </div>
                             <div class="form-group">
-                                <label for="requestedBy" class="col-lg-4 control-label">Requested By</label>
+                                <label for="retrieveBy" class="col-lg-4 control-label">Requested By</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="requestedBy" name="requestedBy" placeholder="Request For" value="${whRequest.requestedBy}" readonly>
+                                    <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Request For" value="${whRequest.requestedBy}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="retrieveDate" class="col-lg-4 control-label">Requested Date</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="retrieveDate" name="retrieveDate" placeholder="Request For" value="${whRequest.requestedDate}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -98,23 +104,21 @@
             <div class="row">
                 <ul class="nav nav-tabs">
                     <li class="${mpActive}"><a data-toggle="tab" href="#mp">Verify Barcode Label</a></li>
+                    <li class="${hiActive}"><a data-toggle="tab" href="#hi">Verify Hardware Location</a></li>
                 </ul>
                 <div class="tab-content">
-
                     <!--Tab for Scan Material Pass-->
                     <div id="mp" class="tab-pane fade ${mpActiveTab}">
-
                         <h6></h6>
                         <div class="col-lg-6">
                             <div class="main-box">
                                 <h2>Verify Barcode Label</h2>
-                                <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/setShipping" method="post">
+                                <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyMp" method="post">
                                     <input type="hidden" name="refId" value="${whRequest.refId}" />
                                     <input type="hidden" name="status" value="${whRequest.status}" />
                                     <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRequest.materialPassNo}" />
                                     <input type="hidden" name="flag" value="${whRequest.flag}" />
-                                    <input type="hidden" name="materialPassExpiry" value="${whRequest.materialPassExpiry}" />
-                                    <!--input type="hidden" name="refId" value="${mpActiveTab}" /-->
+                                    <input type="hidden" name="tab" value="${mpActiveTab}" />
                                     <div class="form-group">
                                         <label for=" barcodeVerify" class="col-lg-4 control-label">Scan Barcode Label</label>
                                         <div class="col-lg-8" id="barcodeVerifyDiv">
@@ -126,6 +130,38 @@
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel">Reset</button>
                                         <button type="submit" class="btn btn-primary" >Verify</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--tab for inventory-->
+                    <div id="hi" class="tab-pane fade ${hiActiveTab}">
+                        <h6></h6>
+                        <div class="col-lg-6">
+                            <div class="main-box">
+                                <h2>Hardware Location</h2>
+                                <form id="hi_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyInventory" method="post">
+                                    <input type="hidden" name="refId" value="${whRequest.refId}" />
+                                    <input type="hidden" name="materialPassNo" value="${whRequest.materialPassNo}" />
+                                    <input type="hidden" name="status" value="${whRequest.status}" />
+                                    <input type="hidden" name="flag" value="${whRequest.flag}" />
+                                    <input type="hidden" name="inventoryLoc" value="${whRequest.inventoryLoc}" />
+                                    <input type="hidden" name="tab" value="${hiActiveTab}" />
+                                    <div class="form-group">
+                                        <label for=" inventoryLocVerify" class="col-lg-4 control-label">Scan Hardware's Location</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="inventoryLocVerify" name="inventoryLocVerify" autofocus="autofocus" value="${whRequest.inventoryLocVerify}" required/> 
+                                        </div>
+                                        <!--<button type="submit" class="btn btn-secondary send">Send Email</button>-->
+                                    </div>
+                                    <div id = "alert_placeholder2"></div>
+                                    <br><br>
+                                    <div class="pull-right">
+                                        <button type="reset" class="btn btn-secondary cancel1">Reset</button>
+                                        <button type="submit" name="submit" id="submit" class="btn btn-primary">Save</button>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
@@ -151,10 +187,21 @@
                 bootstrap_alert.warning = function (message) {
                     $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 }
+                
                 if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
                     bootstrap_alert.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
-                    //                    $("#hardwareBarcode2").effect("highlight", {}, 1000);
-                    $("#hardwareBarcode2").addClass('highlight');
+                                        $("#barcodeVerify").effect("highlight", {}, 1000);
+                    $("#barcodeVerify").addClass('highlight');
+                }
+                
+                bootstrap_alert2 = function () {}
+                bootstrap_alert2.warning = function (message) {
+                    $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                }
+                if ($('#inventoryLocVerify').val() !== "" && $('#inventoryLocVerify').val() !== $('#inventoryLoc').val()) {
+                    bootstrap_alert2.warning('Location Barcode NOT MATCH with Inventory Location! Please re-check and try again.');
+                                        $("#inventoryLocVerify").effect("highlight", {}, 1000);
+                    $("#inventoryLocVerify").addClass('highlight');
                 }
                 
                 var element = $('#equipmentType');
@@ -174,13 +221,38 @@
                     rules: {
                         barcodeVerify: {
                             required: true,
-                            equalToMpNo: materialPassNo
+                            equalToBarcode: materialPassNo
                         }
                     }
                 });
+                var validator1 = $("#hi_form").validate({
+                    rules: {
+                        inventoryLocVerify: {
+                            required: true,
+                            equalToBarcode: inventoryLoc
+                        }
+                    }
+                });
+                
+                var element = $('#barcodeVerify');
+                if (element.val() === "#materialPassNo") {
+                    $("#submit").attr("disabled", true);
+                    $("#barcodeVerify").attr("readonly", true);
+                }
+                
+                var element = $('#inventoryLoc');
+                if (element.val() === "#inventoryLoc" && "#materialPassNo" === "#barcodeVerify") {
+                    $("#submit").attr("disabled", true);
+                    $("#submit1").attr("disabled", true);
+                    $("#inventoryLoc").attr("readonly", true);
+                }
 
                 $(".cancel").click(function () {
                     validator.resetForm();
+                });
+                
+                $(".cancel1").click(function () {
+                    validator1.resetForm();
                 });
             });
         </script>

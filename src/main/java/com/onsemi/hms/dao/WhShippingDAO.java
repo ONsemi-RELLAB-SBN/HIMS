@@ -172,8 +172,8 @@ public class WhShippingDAO {
     }
         
     public WhShipping getWhShippingMergeWithRequest(String whShippingId) {
-        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
-                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
+        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
                    + "WHERE SL.request_id = RL.ref_id AND SL.request_id = '" + whShippingId + "' ";
         WhShipping whShipping = null;
@@ -218,8 +218,8 @@ public class WhShippingDAO {
     }
     
     public List<WhShipping> getWhShippingListMergeRequest() {
-        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
-                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
+        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
                    + "WHERE SL.request_id = RL.ref_id ";
         List<WhShipping> whShippingList = new ArrayList<WhShipping>();
@@ -322,8 +322,8 @@ public class WhShippingDAO {
     }
     
     public WhShipping getWhShippingMergeWithRequestByMpNo(String whShippingMpNo) {
-        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
-                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
+        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
                    + "WHERE SL.material_pass_no = '" + whShippingMpNo + "' ";
         WhShipping whShipping = null;

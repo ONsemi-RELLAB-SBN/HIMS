@@ -24,7 +24,8 @@ public class MenuDAO {
 
     public List<Menu> getMenuAccess(String parentCode, String currentPath, String groupId) {
         String sql = "SELECT m.parent_code, m.code, m.name, m.url_path, m.target, m.icon, m.label_key, "
-                + "IF(url_path = \"" + currentPath + "\", \"class=\\\"active\\\"\", \"\") AS class_active FROM hms_menu m, hms_menu_access ma "
+                + "IF(url_path = \"" + currentPath + "\", \"class=\\\"active\\\"\", \"\") AS class_active "
+                + "FROM hms_menu m, hms_menu_access ma "
                 + "WHERE ma.group_id = '" + groupId + "' AND m.id = ma.menu_id AND m.parent_code='" + parentCode + "' "
                 + "AND m.is_active = '1' AND m.is_enabled = '1' ORDER BY m.sequence";
         //System.out.println(sql);
@@ -55,7 +56,10 @@ public class MenuDAO {
     }
     
     public List<Menu> getMenuList(String parentCode) {
-        String sql = "SELECT id, parent_code, code, name, icon, label_key FROM hms_menu m WHERE m.parent_code='" + parentCode + "' ORDER BY m.sequence ASC";
+        String sql = "SELECT id, parent_code, code, name, icon, label_key "
+                + "FROM hms_menu m "
+                + "WHERE m.parent_code='" + parentCode + "' "
+                + "ORDER BY m.sequence ASC";
         List<Menu> menuList = new ArrayList<Menu>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

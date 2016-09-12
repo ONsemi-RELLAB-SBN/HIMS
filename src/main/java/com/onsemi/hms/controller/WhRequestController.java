@@ -116,7 +116,7 @@ public class WhRequestController {
             model.addAttribute("IdLabel", IdLabel);
         }
         //for check which tab should active
-        if (whRequest.getStatus().equals("New Request") || whRequest.getStatus().equals("Verification Fail")) {
+        if (whRequest.getStatus().equals("New Request") || whRequest.getStatus().equals("Barcode Verification Fail")) {
             String mpActive = "active";
             String mpActiveTab = "in active";
             model.addAttribute("mpActive", mpActive);
@@ -127,12 +127,23 @@ public class WhRequestController {
             model.addAttribute("mpActive", mpActive);
             model.addAttribute("mpActiveTab", mpActiveTab);
         }
+        if (whRequest.getStatus().equals("Barcode Verification Pass") || whRequest.getStatus().equals("Wrong Inventory")) {
+            String hiActive = "active";
+            String hiActiveTab = "in active";
+            model.addAttribute("hiActive", hiActive);
+            model.addAttribute("hiActiveTab", hiActiveTab);
+        } else {
+            String hiActive = "";
+            String hiActiveTab = "";
+            model.addAttribute("hiActive", hiActive);
+            model.addAttribute("hiActiveTab", hiActiveTab);
+        }
         model.addAttribute("whRequest", whRequest);
         return "whRequest/verify";
     }
     
-    @RequestMapping(value = "/setShipping", method = RequestMethod.POST)
-    public String setShipping(
+    @RequestMapping(value = "/verifyMp", method = RequestMethod.POST)
+    public String verifyMp(
             Model model,
             Locale locale,
             HttpServletRequest request,
@@ -140,17 +151,8 @@ public class WhRequestController {
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String equipmentType,
-            @RequestParam(required = false) String equipmentId,
-            @RequestParam(required = false) String quantity,
-            @RequestParam(required = false) String requestedBy,
-            @RequestParam(required = false) String requestedDate,
-            @RequestParam(required = false) String materialPassExpiry,
-            @RequestParam(required = false) String inventoryLoc,
             @RequestParam(required = false) String barcodeVerify,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String shippingDate
-            
+            @RequestParam(required = false) String status
     ) {
         WhRequest whRequest = new WhRequest();
         whRequest.setRefId(refId);
@@ -164,15 +166,66 @@ public class WhRequestController {
         LOGGER.info("barcodeVerified : " + barcodeVerified);
         boolean cp = false;
         if (materialPassNo.equals(barcodeVerified)) {
+            whRequest.setStatus("Barcode Verification Pass");
+            whRequest.setFlag("0");
+            cp = true;
+            LOGGER.info("Barcode Verification Pass");
+        } else {
+            whRequest.setStatus("Barcode Verification Fail");
+            whRequest.setFlag("0");
+            cp = false;
+            LOGGER.info("Barcode Verification Fail");
+        }
+        
+        WhRequestDAO whRequestDAO = new WhRequestDAO();
+        QueryResult queryResult = whRequestDAO.updateWhRequestVerification(whRequest);
+        
+       // String check = "";
+        args = new String[1];
+        args[0] = materialPassNo;
+        if (queryResult.getResult() == 1 && cp == true) {
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success2", args, locale));
+        } else {
+            //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+        }
+        return "redirect:/wh/whRequest/verify/" + refId;
+    }
+    
+    @RequestMapping(value = "/verifyInventory", method = RequestMethod.POST)
+    public String setInventory(
+            Model model,
+            Locale locale,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String refId,
+            @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String inventoryLoc,
+            @RequestParam(required = false) String inventoryLocVerify,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String flag
+    ) {
+        WhRequest whRequest = new WhRequest();
+        whRequest.setRefId(refId);      
+        whRequest.setMaterialPassNo(materialPassNo);
+        whRequest.setInventoryLocVerify(inventoryLocVerify);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        whRequest.setInventoryDateVerify(dateFormat.format(date));
+        whRequest.setInventoryUserVerify(userSession.getFullname());
+        String barcodeVerified = whRequest.getInventoryLocVerify();
+        LOGGER.info("barcodeInventoryVerified : " + barcodeVerified);
+        boolean cp = false;
+        if (inventoryLoc.equals(barcodeVerified)) {
             whRequest.setStatus("Queue for Shipping");
             whRequest.setFlag("1");
             cp = true;
             LOGGER.info("Queue for Shipping");
         } else {
-            whRequest.setStatus("Verification Fail");
+            whRequest.setStatus("Wrong Inventory");
             whRequest.setFlag("0");
             cp = false;
-            LOGGER.info("Verification Fail");
+            LOGGER.info("Wrong Inventory");
         }
         
         WhRequestDAO whRequestDAO = new WhRequestDAO();
@@ -190,7 +243,6 @@ public class WhRequestController {
         }
         
         String check = "";
-        
         args = new String[1];
         args[0] = materialPassNo;
         if (queryResult.getResult() == 0 || cp == false) {

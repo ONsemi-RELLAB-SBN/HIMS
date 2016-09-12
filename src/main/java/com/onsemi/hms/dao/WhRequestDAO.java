@@ -74,14 +74,13 @@ public class WhRequestDAO {
     
     public QueryResult updateWhRequestVerification(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_request_list SET barcode_verify = ?, user_verify = ?, date_verify = ?, status = ?, flag = ? "
+                   + "WHERE ref_id = ? AND material_pass_no = ? ";
         try {
-            PreparedStatement ps = conn.prepareStatement(
-                "UPDATE hms_wh_request_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ? "
-             + "WHERE ref_id = ? AND material_pass_no = ? "
-            );
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRequest.getBarcodeVerify());
-            ps.setString(2, whRequest.getDateVerify());
-            ps.setString(3, whRequest.getUserVerify());
+            ps.setString(2, whRequest.getUserVerify());
+            ps.setString(3, whRequest.getDateVerify());
             ps.setString(4, whRequest.getStatus());
             ps.setString(5, whRequest.getFlag());
             ps.setString(6, whRequest.getRefId());
@@ -105,13 +104,14 @@ public class WhRequestDAO {
     
     public QueryResult updateWhRequestForShipping(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_request_list SET barcode_verify = ?, user_verify = ?, date_verify = ?, status = ?, flag = ? "
-                   + "WHERE ref_id = ? AND material_pass_no = ? ";
-        try {
+        String sql = 
+               "UPDATE hms_wh_request_list SET inventory_loc_verify = ?, inventory_date_verify = ?, inventory_user_verify = ?, status = ?, flag = ? "
+             + "WHERE ref_id = ? AND material_pass_no = ? ";
+        try{
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whRequest.getBarcodeVerify());
-            ps.setString(2, whRequest.getUserVerify());
-            ps.setString(3, whRequest.getDateVerify());
+            ps.setString(1, whRequest.getInventoryLocVerify());
+            ps.setString(2, whRequest.getInventoryDateVerify());
+            ps.setString(3, whRequest.getInventoryUserVerify());
             ps.setString(4, whRequest.getStatus());
             ps.setString(5, whRequest.getFlag());
             ps.setString(6, whRequest.getRefId());
@@ -236,7 +236,8 @@ public class WhRequestDAO {
     }
 
     public WhRequest getWhRequest(String whRequestId) {
-        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
+        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y' %h:%i %p) AS requested_date_view, "
+                    + "DATE_FORMAT(date_verify,'%d %M %Y' %h:%i %p) AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y' %h:%i %p) AS inventory_date_verify_view "
                     + "FROM hms_wh_request_list "
                     + "WHERE ref_id = '" + whRequestId + "' ";
         WhRequest whRequest = null;
@@ -263,6 +264,9 @@ public class WhRequestDAO {
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify_view"));
                 whRequest.setUserVerify(rs.getString("user_verify"));
+                whRequest.setInventoryLocVerify(rs.getString("inventory_loc_verify"));
+                whRequest.setInventoryDateVerify(rs.getString("inventory_date_verify_view"));
+                whRequest.setInventoryUserVerify(rs.getString("inventory_user_verify"));
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
             }
@@ -283,9 +287,10 @@ public class WhRequestDAO {
     }
 
     public List<WhRequest> getWhRequestList() {
-        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view "
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
                    + "FROM hms_wh_request_list "
-                   + "WHERE status NOT LIKE 'Queue for Shipping' and status NOT LIKE 'Ship' "
+                   + "WHERE status NOT LIKE 'Queue for Shipping' AND status NOT LIKE 'Ship' "
                    + "ORDER BY id DESC";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {
@@ -312,6 +317,9 @@ public class WhRequestDAO {
                 whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRequest.setDateVerify(rs.getString("date_verify_view"));
                 whRequest.setUserVerify(rs.getString("user_verify"));
+                whRequest.setInventoryLocVerify(rs.getString("inventory_loc_verify"));
+                whRequest.setInventoryDateVerify(rs.getString("inventory_date_verify_view"));
+                whRequest.setInventoryUserVerify(rs.getString("inventory_user_verify"));
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
                 whRequestList.add(whRequest);

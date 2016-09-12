@@ -206,7 +206,7 @@ public class WhRetrieveDAO {
         }
         return queryResult;
     }
-
+    
     public WhRetrieve getWhRetrieve(String whRetrieveId) {
         String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, "
                 + "             DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y') AS shipping_date_view "
@@ -235,6 +235,54 @@ public class WhRetrieveDAO {
                 whRetrieve.setRemarks(remarks);
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify_view"));
+                whRetrieve.setUserVerify(rs.getString("user_verify"));
+                whRetrieve.setStatus(rs.getString("status"));
+                whRetrieve.setFlag(rs.getString("flag"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whRetrieve;
+    }
+
+    public WhRetrieve getWhRet(String whRetrieveId) {
+        String sql  = "SELECT * "
+                    + "FROM hms_wh_retrieval_list "
+                    + "WHERE ref_id = '" + whRetrieveId + "' ";
+        WhRetrieve whRetrieve = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setRefId(rs.getString("ref_id"));
+                whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
+                whRetrieve.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
+                whRetrieve.setEquipmentType(rs.getString("equipment_type"));
+                whRetrieve.setEquipmentId(rs.getString("equipment_id"));
+                whRetrieve.setQuantity(rs.getString("quantity"));
+                whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                whRetrieve.setRequestedEmail(rs.getString("requested_email"));
+                whRetrieve.setRequestedDate(rs.getString("requested_date"));
+                whRetrieve.setShippingDate(rs.getString("shipping_date"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRetrieve.setRemarks(remarks);
+                whRetrieve.setReceivedDate(rs.getString("received_date"));
+                whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
+                whRetrieve.setDateVerify(rs.getString("date_verify"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));

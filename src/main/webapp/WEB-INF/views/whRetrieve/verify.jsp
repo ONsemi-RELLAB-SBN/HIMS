@@ -197,7 +197,7 @@
                     rules: {
                         barcodeVerify: {
                             required: true,
-                            equalToMpNo: materialPassNo
+                            equalToBarcode: materialPassNo
                         }
                     }
                 });

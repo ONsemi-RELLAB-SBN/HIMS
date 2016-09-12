@@ -72,6 +72,12 @@
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
+                                                <a href="${contextPath}/wh/whInventory/history/${whInventory.refId}" class="table-link" title="History">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-book fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
                                             </td>
                                         </tr>
                                     </c:forEach>
