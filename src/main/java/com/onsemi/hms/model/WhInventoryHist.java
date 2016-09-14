@@ -2,29 +2,33 @@ package com.onsemi.hms.model;
 
 public class WhInventoryHist {
     private String id;
-    private String refId;
+    private String retrieveId;
+    private String inventoryId;
     private String materialPassNo;
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
-    private String type;
     private String quantity;
-    private String remarks;
+    private String requestedBy;
+    private String requestedEmail;
+    private String requestedDate;
     private String shippingDate;
+    private String remarks;
     private String receivedDate;
     private String barcodeVerify;
-    private String dateVerify;
     private String userVerify;
+    private String dateVerify;
+    private String retrieveStatus;
+    private String retrieveFlag;
+    private String retrieveUpdatedDate;
+    private String retrieveUpdatedBy;
     private String inventoryDate;
     private String inventoryLoc;
     private String inventoryBy;
-    private String updatedBy;
-    private String updatedDate;
-    private String requestedDate;
-    private String requestedEmail;
-    private String requestedBy;
-    private String status;
-    private String flag;
+    private String inventoryStatus;
+    private String inventoryFlag;
+    private String inventoryUpdatedDate;
+    private String inventoryUpdatedBy;
 
     public String getId() {
         return id;
@@ -34,12 +38,20 @@ public class WhInventoryHist {
         this.id = id;
     }
 
-    public String getRefId() {
-        return refId;
+    public String getRetrieveId() {
+        return retrieveId;
     }
 
-    public void setRefId(String refId) {
-        this.refId = refId;
+    public void setRetrieveId(String retrieveId) {
+        this.retrieveId = retrieveId;
+    }
+
+    public String getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(String inventoryId) {
+        this.inventoryId = inventoryId;
     }
 
     public String getMaterialPassNo() {
@@ -74,20 +86,60 @@ public class WhInventoryHist {
         this.equipmentId = equipmentId;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getQuantity() {
         return quantity;
     }
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public String getRequestedBy() {
+        return requestedBy;
+    }
+
+    public void setRequestedBy(String requestedBy) {
+        this.requestedBy = requestedBy;
+    }
+
+    public String getRequestedEmail() {
+        return requestedEmail;
+    }
+
+    public void setRequestedEmail(String requestedEmail) {
+        this.requestedEmail = requestedEmail;
+    }
+
+    public String getRequestedDate() {
+        return requestedDate;
+    }
+
+    public void setRequestedDate(String requestedDate) {
+        this.requestedDate = requestedDate;
+    }
+
+    public String getShippingDate() {
+        return shippingDate;
+    }
+
+    public void setShippingDate(String shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(String receivedDate) {
+        this.receivedDate = receivedDate;
     }
 
     public String getBarcodeVerify() {
@@ -98,6 +150,14 @@ public class WhInventoryHist {
         this.barcodeVerify = barcodeVerify;
     }
 
+    public String getUserVerify() {
+        return userVerify;
+    }
+
+    public void setUserVerify(String userVerify) {
+        this.userVerify = userVerify;
+    }
+
     public String getDateVerify() {
         return dateVerify;
     }
@@ -106,12 +166,36 @@ public class WhInventoryHist {
         this.dateVerify = dateVerify;
     }
 
-    public String getUserVerify() {
-        return userVerify;
+    public String getRetrieveStatus() {
+        return retrieveStatus;
     }
 
-    public void setUserVerify(String userVerify) {
-        this.userVerify = userVerify;
+    public void setRetrieveStatus(String retrieveStatus) {
+        this.retrieveStatus = retrieveStatus;
+    }
+
+    public String getRetrieveFlag() {
+        return retrieveFlag;
+    }
+
+    public void setRetrieveFlag(String retrieveFlag) {
+        this.retrieveFlag = retrieveFlag;
+    }
+
+    public String getRetrieveUpdatedDate() {
+        return retrieveUpdatedDate;
+    }
+
+    public void setRetrieveUpdatedDate(String retrieveUpdatedDate) {
+        this.retrieveUpdatedDate = retrieveUpdatedDate;
+    }
+
+    public String getRetrieveUpdatedBy() {
+        return retrieveUpdatedBy;
+    }
+
+    public void setRetrieveUpdatedBy(String retrieveUpdatedBy) {
+        this.retrieveUpdatedBy = retrieveUpdatedBy;
     }
 
     public String getInventoryDate() {
@@ -138,83 +222,35 @@ public class WhInventoryHist {
         this.inventoryBy = inventoryBy;
     }
 
-    public String getUpdatedBy() {
-        return updatedBy;
+    public String getInventoryStatus() {
+        return inventoryStatus;
     }
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
+    public void setInventoryStatus(String inventoryStatus) {
+        this.inventoryStatus = inventoryStatus;
     }
 
-    public String getUpdatedDate() {
-        return updatedDate;
+    public String getInventoryFlag() {
+        return inventoryFlag;
     }
 
-    public void setUpdatedDate(String updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setInventoryFlag(String inventoryFlag) {
+        this.inventoryFlag = inventoryFlag;
     }
 
-    public String getRequestedDate() {
-        return requestedDate;
+    public String getInventoryUpdatedDate() {
+        return inventoryUpdatedDate;
     }
 
-    public void setRequestedDate(String requestedDate) {
-        this.requestedDate = requestedDate;
+    public void setInventoryUpdatedDate(String inventoryUpdatedDate) {
+        this.inventoryUpdatedDate = inventoryUpdatedDate;
     }
 
-    public String getRequestedBy() {
-        return requestedBy;
+    public String getInventoryUpdatedBy() {
+        return inventoryUpdatedBy;
     }
 
-    public void setRequestedBy(String requestedBy) {
-        this.requestedBy = requestedBy;
-    }
-
-    public String getRequestedEmail() {
-        return requestedEmail;
-    }
-
-    public void setRequestedEmail(String requestedEmail) {
-        this.requestedEmail = requestedEmail;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getFlag() {
-        return flag;
-    }
-
-    public void setFlag(String flag) {
-        this.flag = flag;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public String getShippingDate() {
-        return shippingDate;
-    }
-
-    public void setShippingDate(String shippingDate) {
-        this.shippingDate = shippingDate;
-    }
-
-    public String getReceivedDate() {
-        return receivedDate;
-    }
-
-    public void setReceivedDate(String receivedDate) {
-        this.receivedDate = receivedDate;
+    public void setInventoryUpdatedBy(String inventoryUpdatedBy) {
+        this.inventoryUpdatedBy = inventoryUpdatedBy;
     }
 }

@@ -61,7 +61,7 @@ public abstract class AbstractITextPdfViewPotrait extends AbstractView {
         // Add Logo
         ServletContext context = getServletContext();
         //String file = "/resources/img/cmts_all.png";
-        String file = "/resources/img/cdars_logo.png";
+        String file = "/resources/img/warehouse.png";
         InputStream is = context.getResourceAsStream(file);
         byte[] bytes = IOUtils.toByteArray(is);
         Image image = Image.getInstance(bytes);
@@ -215,7 +215,7 @@ public abstract class AbstractITextPdfViewPotrait extends AbstractView {
                 cellLogo.setBorderColor(borderColor);
                 cellLogo.setBorderWidth(borderWidth);
                 cellLogo.setFixedHeight(35);
-                cellLogo.setPaddingBottom(5);
+                cellLogo.setPaddingBottom(3);
                 tableHeader.addCell(cellLogo);
                 // Set Text Header
                 PdfPCell cellTitle = new PdfPCell();

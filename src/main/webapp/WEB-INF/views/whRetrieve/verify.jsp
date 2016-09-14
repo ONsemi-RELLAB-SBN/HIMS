@@ -196,8 +196,7 @@
                 var validator = $("#mp_form").validate({
                     rules: {
                         barcodeVerify: {
-                            required: true,
-                            equalToBarcode: materialPassNo
+                            required: true
                         }
                     }
                 });

@@ -75,7 +75,7 @@ public class FtpConfig {
                             ftp.setRequestedEmail(r.getRequestedEmail());
                             ftp.setRequestedDate(r.getRequestedDate());
                             ftp.setRemarks(r.getRemarks());
-                            ftp.setStatus("New Request");
+                            ftp.setStatus("New Shipping Request");
                             ftp.setFlag("0");
                             WhRequestDAO whRequestDAO = new WhRequestDAO();
                             int count = whRequestDAO.getCountExistingData(r.getRefId());
@@ -122,7 +122,7 @@ public class FtpConfig {
                             ftp.setRequestedDate(r.getRequestedDate());
                             ftp.setRemarks(r.getRemarks());
                             ftp.setShippingDate(r.getShippingDate());
-                            ftp.setStatus("New Retrieval Request");
+                            ftp.setStatus("New Inventory Request");
                             ftp.setFlag("0");
                             WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
                             int count = whRetrieveDAO.getCountExistingData(r.getRefId());

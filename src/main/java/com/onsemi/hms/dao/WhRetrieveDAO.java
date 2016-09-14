@@ -304,8 +304,8 @@ public class WhRetrieveDAO {
     }
 
     public List<WhRetrieve> getWhRetrieveList() {
-        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, "
-                   + "DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y') AS shipping_date_view "
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_retrieval_list "
                    + "WHERE flag = 0 "
                    + "ORDER BY id DESC ";

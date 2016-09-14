@@ -15,13 +15,13 @@ import com.onsemi.hms.tools.SpmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WhRequestDAO {
+public class WhRequestHistDAO {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WhRequestDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WhRequestHistDAO.class);
     private final Connection conn;
     private final DataSource dataSource;
 
-    public WhRequestDAO() {
+    public WhRequestHistDAO() {
         DB db = new DB();
         this.conn = db.getConnection();
         this.dataSource = db.getDataSource();
@@ -72,118 +72,6 @@ public class WhRequestDAO {
         return queryResult;
     }
     
-    public QueryResult updateWhRequestVerification(WhRequest whRequest) {
-        QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_request_list SET barcode_verify = ?, user_verify = ?, date_verify = ?, status = ?, flag = ? "
-                   + "WHERE ref_id = ? AND material_pass_no = ? ";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whRequest.getBarcodeVerify());
-            ps.setString(2, whRequest.getUserVerify());
-            ps.setString(3, whRequest.getDateVerify());
-            ps.setString(4, whRequest.getStatus());
-            ps.setString(5, whRequest.getFlag());
-            ps.setString(6, whRequest.getRefId());
-            ps.setString(7, whRequest.getMaterialPassNo());
-            queryResult.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-    
-    public QueryResult updateWhRequestForShipping(WhRequest whRequest) {
-        QueryResult queryResult = new QueryResult();
-        String sql = 
-               "UPDATE hms_wh_request_list SET inventory_loc_verify = ?, inventory_date_verify = ?, inventory_user_verify = ?, status = ?, flag = ? "
-             + "WHERE ref_id = ? AND material_pass_no = ? ";
-        try{
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whRequest.getInventoryLocVerify());
-            ps.setString(2, whRequest.getInventoryDateVerify());
-            ps.setString(3, whRequest.getInventoryUserVerify());
-            ps.setString(4, whRequest.getStatus());
-            ps.setString(5, whRequest.getFlag());
-            ps.setString(6, whRequest.getRefId());
-            ps.setString(7, whRequest.getMaterialPassNo());
-            queryResult.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-
-    public QueryResult updateWhRequestForApproval(WhRequest whRequest) {
-        QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_request_list SET status = ?, flag = ?"
-                   + "WHERE ref_id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whRequest.getStatus());
-            ps.setString(2, whRequest.getFlag());
-            ps.setString(3, whRequest.getRefId());
-            queryResult.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-    
-    public QueryResult updateWhRequestStatus(WhRequest whRequest) {
-        QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_request_list SET status = ?"
-                   + "WHERE ref_id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, whRequest.getStatus());
-            ps.setString(2, whRequest.getRefId());
-            queryResult.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-    
     public Integer getCountExistingData(String id) {
         Integer count = null;
         try {
@@ -212,29 +100,6 @@ public class WhRequestDAO {
         return count;
     }
     
-    public QueryResult deleteWhRequest(String whRequestId) {
-        QueryResult queryResult = new QueryResult();
-        try {
-            PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM hms_wh_request_list WHERE ref_id = '" + whRequestId + "'"
-            );
-            queryResult.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-
     public WhRequest getWhRequest(String whRequestId) {
         String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
                     + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "

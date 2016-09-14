@@ -9,6 +9,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhRetrieveDAO;
 import com.onsemi.hms.dao.WhRetrieveHistDAO;
+import com.onsemi.hms.model.IonicFtpRetrieve2;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhInventory;
@@ -16,7 +17,9 @@ import com.onsemi.hms.model.WhInventoryHist;
 import com.onsemi.hms.model.WhRetrieveHist;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -127,7 +130,7 @@ public class WhRetrieveController {
             model.addAttribute("IdLabel", IdLabel);
         }
         //for check which tab should active
-        if (whRetrieve.getStatus().equals("New Retrieval Request") || whRetrieve.getStatus().equals("Verification Fail")) {
+        if (whRetrieve.getStatus().equals("New Inventory Request") || whRetrieve.getStatus().equals("Verification Fail")) {
             String mpActive = "active";
             String mpActiveTab = "in active";
             model.addAttribute("mpActive", mpActive);
@@ -291,15 +294,15 @@ public class WhRetrieveController {
                     WhInventoryDAO whInventoryDAO2 = new WhInventoryDAO();
                     WhInventory whInventoryH = whInventoryDAO2.getWhInventory(refId);
                     WhInventoryHist whInventoryHist = new WhInventoryHist();
-                    whInventoryHist.setRefId(whInventoryH.getRefId());  //retrieveId
-                    whInventoryHist.setId(whInventoryH.getId());    //inventoryId
+                    whInventoryHist.setRetrieveId(whInventoryH.getRefId());  //retrieveId
+                    whInventoryHist.setInventoryId(whInventoryH.getId());    //inventoryId
                     whInventoryHist.setMaterialPassNo(whInventoryH.getMaterialPassNo());
                     whInventoryHist.setInventoryDate(whInventoryH.getInventoryDate());
                     whInventoryHist.setInventoryLoc(whInventoryH.getInventoryLoc());
                     whInventoryHist.setInventoryBy(whInventoryH.getInventoryBy());
-                    whInventoryHist.setUpdatedBy(userSession.getFullname());
-                    whInventoryHist.setStatus(whRetrieve.getStatus());
-                    whInventoryHist.setFlag(whInventoryH.getFlag());
+                    whInventoryHist.setInventoryUpdatedBy(userSession.getFullname());
+                    whInventoryHist.setInventoryStatus(whInventoryH.getStatus());
+                    whInventoryHist.setInventoryFlag(whInventoryH.getFlag());
                     WhInventoryHistDAO whInventoryHistDao = new WhInventoryHistDAO();
                     QueryResult queryResultHist = whInventoryHistDao.insertWhInventoryHist(whInventoryHist);
                 
@@ -309,42 +312,80 @@ public class WhRetrieveController {
                     if (file.exists()) {
                         LOGGER.info("dh ada header");
                         FileWriter fileWriter = null;
+                        FileReader fileReader = null;
                         try {
                             fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv", true);
-                            //New Line after the header
-                            fileWriter.append(LINE_SEPARATOR);
-                            WhInventoryDAO whdao = new WhInventoryDAO();
-                            WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
+                            fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
 
-                            fileWriter.append(refId);
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getMaterialPassNo());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getMaterialPassExpiry());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getEquipmentType());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getEquipmentId());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getQuantity());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getRequestedBy());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getRequestedDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getRemarks());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getDateVerify());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryLoc());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(userSession.getFullname());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getStatus());
-//                            fileWriter.append(COMMA_DELIMITER);
-                            System.out.println("append to CSV file Succeed!!!");
+                            BufferedReader bufferedReader = new BufferedReader(fileReader); 
+                            String data = bufferedReader.readLine();
+                            StringBuilder buff = new StringBuilder();
+
+                            boolean check = false;
+                            int row = 0;
+                            while(data != null){
+                                LOGGER.info("start reading file..........");
+                                buff.append(data).append(System.getProperty("line.separator"));
+                                System.out.println("dataaaaaaaaa : \n" + data);
+
+                                String[] split = data.split(",");
+                                IonicFtpRetrieve2 retrieve = new IonicFtpRetrieve2(
+                                    split[0], split[1], split[2],
+                                    split[3], split[4], split[5], 
+                                    split[6], split[7], split[8],
+                                    split[9], split[10], split[11],
+                                    split[12], split[13]
+                                );
+
+                                if(split[0].equals(refId)) {
+                                    LOGGER.info(row + " : retrieve Id found...................." + data);
+                                    check = true;
+                                } else {
+                                    LOGGER.info("retrieve Id not found........" + data);
+                                }
+                                data = bufferedReader.readLine();
+                                row++;
+                            }
+                            bufferedReader.close();
+                            fileReader.close();
+                            
+                            if(check == false) {
+                                //New Line after the header
+                                fileWriter.append(LINE_SEPARATOR);
+                                WhInventoryDAO whdao = new WhInventoryDAO();
+                                WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
+
+                                fileWriter.append(refId);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getMaterialPassNo());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getMaterialPassExpiry());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getEquipmentType());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getEquipmentId());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getQuantity());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getRequestedBy());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getRequestedDate());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getRemarks());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getDateVerify());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getInventoryDate());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getInventoryLoc());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(userSession.getFullname());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getStatus());
+    //                            fileWriter.append(COMMA_DELIMITER);
+                                System.out.println("append to CSV file Succeed!!!");
+                            }
                         } catch (Exception ee) {
                             System.out.println("Error 1 occured while append the fileWriter");
                         } finally {

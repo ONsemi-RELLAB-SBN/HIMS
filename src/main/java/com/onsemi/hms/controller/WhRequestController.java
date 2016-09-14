@@ -116,7 +116,7 @@ public class WhRequestController {
             model.addAttribute("IdLabel", IdLabel);
         }
         //for check which tab should active
-        if (whRequest.getStatus().equals("New Request") || whRequest.getStatus().equals("Barcode Verification Fail")) {
+        if (whRequest.getStatus().equals("New Shipping Request") || whRequest.getStatus().equals("Barcode Verification Fail")) {
             String mpActive = "active";
             String mpActiveTab = "in active";
             model.addAttribute("mpActive", mpActive);

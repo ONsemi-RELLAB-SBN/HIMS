@@ -47,7 +47,7 @@
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Material Pass No.</span></th>
                                         <th><span>Inventory</span></th>
-                                        <th><span>Requested By</span></th>
+                                        <!--th><span>Requested By</span></th-->
                                         <th><span>Requested Date</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
@@ -61,7 +61,7 @@
                                             <td id="modal_delete_info_${whRequest.refId}"><c:out value="${whRequest.equipmentId}"/></td>
                                             <td><c:out value="${whRequest.materialPassNo}"/></td>
                                             <td><c:out value="${whRequest.inventoryLoc}"/></td>
-                                            <td><c:out value="${whRequest.requestedBy}"/></td>
+                                            <!--td><c:out value="${whRequest.requestedBy}"/></td-->
                                             <td><c:out value="${whRequest.requestedDate}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>
                                             
@@ -79,6 +79,12 @@
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                                <a href="${contextPath}/wh/whRequest/history/${whInventory.refId}" class="table-link" title="History">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-book fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
                                             </td>
@@ -104,7 +110,7 @@
                     "pageLength": 10,
                     "order": [],
                     "aoColumnDefs": [
-                        {"bSortable": false, "aTargets": [8]}
+                        {"bSortable": false, "aTargets": [7]}
                     ],
                     "sDom": "tp"
                 });
