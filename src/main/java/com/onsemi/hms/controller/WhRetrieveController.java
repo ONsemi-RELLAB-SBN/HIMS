@@ -1,20 +1,16 @@
 package com.onsemi.hms.controller;
 
 import com.onsemi.hms.dao.WhInventoryDAO;
-import com.onsemi.hms.dao.WhInventoryHistDAO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhRetrieveDAO;
-import com.onsemi.hms.dao.WhRetrieveHistDAO;
 import com.onsemi.hms.model.IonicFtpRetrieve2;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhInventory;
-import com.onsemi.hms.model.WhInventoryHist;
-import com.onsemi.hms.model.WhRetrieveHist;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import java.io.BufferedReader;
@@ -198,30 +194,6 @@ public class WhRetrieveController {
         args[0] = barcodeVerify;
         if (queryResult.getResult() == 1 && cp == true) {
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success2", args, locale));
-            whRetrieveDAO = new WhRetrieveDAO();
-            WhRetrieve whRetrieveH = whRetrieveDAO.getWhRet(refId);
-            WhRetrieveHist whRetrieveHist = new WhRetrieveHist();
-            whRetrieveHist.setRefId(refId);
-            whRetrieveHist.setRetrieveId(whRetrieveH.getId());
-            whRetrieveHist.setMaterialPassNo(whRetrieveH.getMaterialPassNo());
-            whRetrieveHist.setMaterialPassExpiry(whRetrieveH.getMaterialPassExpiry());
-            whRetrieveHist.setEquipmentType(whRetrieveH.getEquipmentType());
-            whRetrieveHist.setEquipmentId(whRetrieveH.getEquipmentId());
-            whRetrieveHist.setQuantity(whRetrieveH.getQuantity());
-            whRetrieveHist.setRequestedBy(whRetrieveH.getRequestedBy());
-            whRetrieveHist.setRequestedEmail(whRetrieveH.getRequestedEmail());
-            whRetrieveHist.setRequestedDate(whRetrieveH.getRequestedDate());
-            whRetrieveHist.setShippingDate(whRetrieveH.getShippingDate());
-            whRetrieveHist.setRemarks(whRetrieveH.getRemarks());
-            whRetrieveHist.setReceivedDate(whRetrieveH.getReceivedDate());
-            whRetrieveHist.setBarcodeVerify(whRetrieveH.getBarcodeVerify());
-            whRetrieveHist.setUserVerify(whRetrieveH.getUserVerify());
-            whRetrieveHist.setDateVerify(whRetrieveH.getDateVerify());
-            whRetrieveHist.setStatus(whRetrieveH.getStatus());
-            whRetrieveHist.setFlag(whRetrieveH.getFlag());
-            whRetrieveHist.setUpdatedBy(userSession.getFullname());
-            WhRetrieveHistDAO whRetrieveHistDao = new WhRetrieveHistDAO();
-            QueryResult queryResultHist = whRetrieveHistDao.insertWhRetrieveHist(whRetrieveHist);
         } else {
             //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
         }
@@ -291,21 +263,6 @@ public class WhRetrieveController {
                 if (queryResult.getResult() == 0 && cp == false) {
                     //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
                 } else {
-                    WhInventoryDAO whInventoryDAO2 = new WhInventoryDAO();
-                    WhInventory whInventoryH = whInventoryDAO2.getWhInventory(refId);
-                    WhInventoryHist whInventoryHist = new WhInventoryHist();
-                    whInventoryHist.setRetrieveId(whInventoryH.getRefId());  //retrieveId
-                    whInventoryHist.setInventoryId(whInventoryH.getId());    //inventoryId
-                    whInventoryHist.setMaterialPassNo(whInventoryH.getMaterialPassNo());
-                    whInventoryHist.setInventoryDate(whInventoryH.getInventoryDate());
-                    whInventoryHist.setInventoryLoc(whInventoryH.getInventoryLoc());
-                    whInventoryHist.setInventoryBy(whInventoryH.getInventoryBy());
-                    whInventoryHist.setInventoryUpdatedBy(userSession.getFullname());
-                    whInventoryHist.setInventoryStatus(whInventoryH.getStatus());
-                    whInventoryHist.setInventoryFlag(whInventoryH.getFlag());
-                    WhInventoryHistDAO whInventoryHistDao = new WhInventoryHistDAO();
-                    QueryResult queryResultHist = whInventoryHistDao.insertWhInventoryHist(whInventoryHist);
-                
                     String username = System.getProperty("user.name");
                     //SEND EMAIL
                     File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");

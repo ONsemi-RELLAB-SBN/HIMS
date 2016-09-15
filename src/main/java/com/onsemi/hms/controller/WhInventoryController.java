@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhInventoryDAO;
-import com.onsemi.hms.dao.WhInventoryHistDAO;
 import com.onsemi.hms.model.IonicFtpInventory;
 import com.onsemi.hms.model.WhInventory;
 import com.onsemi.hms.model.UserSession;
-import com.onsemi.hms.model.WhInventoryHist;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import java.io.BufferedReader;
@@ -164,21 +162,6 @@ public class WhInventoryController {
                             csv.put(11, row, "" + whInventory.getInventoryLoc());
                             csv.put(12, row, "" + whInventory.getInventoryBy());
                             csv.save(new File(targetLocation)); 
-                            
-                            WhInventoryDAO whInventoryDAO2 = new WhInventoryDAO();
-                            WhInventory whInventoryH = whInventoryDAO2.getWhInventory(refId);
-                            WhInventoryHist whInventoryHist = new WhInventoryHist();
-                            whInventoryHist.setRetrieveId(whInventoryH.getRefId());  //retrieveId
-                            whInventoryHist.setInventoryId(whInventoryH.getId());    //inventoryId
-                            whInventoryHist.setMaterialPassNo(whInventoryH.getMaterialPassNo());
-                            whInventoryHist.setInventoryDate(whInventoryH.getInventoryDate());
-                            whInventoryHist.setInventoryLoc(whInventoryH.getInventoryLoc());
-                            whInventoryHist.setInventoryBy(whInventoryH.getInventoryBy());
-                            whInventoryHist.setInventoryUpdatedBy(userSession.getFullname());
-                            whInventoryHist.setInventoryStatus(whInventoryH.getStatus());
-                            whInventoryHist.setInventoryFlag(whInventoryH.getFlag());
-                            WhInventoryHistDAO whInventoryHistDao = new WhInventoryHistDAO();
-                            QueryResult queryResultHist = whInventoryHistDao.insertWhInventoryHist(whInventoryHist);
                         } else {
                             LOGGER.info("refId not found........" + data);
                         }
@@ -272,18 +255,5 @@ public class WhInventoryController {
         model.addAttribute("pageTitle", "Warehouse Management - Hardware Inventory History");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
-    }
-
-    @RequestMapping(value = "/viewWhInventoryHistPdf/{whInventoryId}", method = RequestMethod.GET)
-    public ModelAndView viewWhInventoryHistPdf(
-            Model model,
-            @PathVariable("whInventoryId") String whInventoryId
-    ) {
-        WhInventoryHistDAO whInventoryHistDAO = new WhInventoryHistDAO();
-        LOGGER.info("Masuk 1........");
-        WhInventoryHist whInventoryHist = whInventoryHistDAO.getWhInventoryMergeWithRetrieve(whInventoryId);
-        LOGGER.info("Masuk 2........");
-        List<WhInventoryHist> whInventoryList = whInventoryHistDAO.getWhInventoryListMergeRetrieve(whInventoryId);
-        return new ModelAndView("whInventoryHistPdf", "whInventoryHist", whInventoryList);
     }
 }

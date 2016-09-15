@@ -182,6 +182,7 @@ public class WhShippingDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whShipping = new WhShipping();
+                whShipping.setId(rs.getString("id"));
                 whShipping.setRequestId(rs.getString("SL.request_id"));
                 whShipping.setMaterialPassNo(rs.getString("SL.material_pass_no"));
                 whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
