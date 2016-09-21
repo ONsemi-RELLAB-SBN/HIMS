@@ -109,7 +109,7 @@ public class WhInventoryPdf extends AbstractITextPdfViewPotrait {
         //5
         cellHeader.setPhrase(new Phrase("Inventory Locatin", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whInventory.getInventoryLoc(), fontContent));
+        cellContent.setPhrase(new Phrase(whInventory.getInventoryRack() + ", " + whInventory.getInventoryShelf(), fontContent));
         table.addCell(cellContent);
 
         //6

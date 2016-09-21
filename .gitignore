@@ -1,5 +1,2 @@
 target/HMS/Tomcat.dpf
-target/HMS/WEB-INF/classes/com/onsemi/hms/tools/ReadCSVFile_openCsv.class
-target/classes/com/onsemi/hms/tools/ReadCSVFile_openCsv.class
-target/HMS/WEB-INF/classes/com/onsemi/hms/controller/IonicFtpController.class
 /target/

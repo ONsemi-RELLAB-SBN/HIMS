@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.LogModuleDAO;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import com.onsemi.hms.dao.WhMpListDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhShippingDAO;
 import com.onsemi.hms.model.IonicFtpShipping;
+import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhRequest;
@@ -91,14 +93,28 @@ public class WhMpListController {
                 WhShipping whship = whshipD.getWhShippingMergeWithRequestByMpNo(materialPassNo);
                 WhMpList whMpList = new WhMpList();
                 whMpList.setShippingId(whship.getRequestId());
+                String refId = whship.getRequestId();
+                whMpList.setRequestId(refId);
                 whMpList.setMaterialPassNo(materialPassNo);
                 whMpList.setCreatedBy(userSession.getFullname());
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date();
-                whMpList.setCreatedDate(dateFormat.format(date));
                 whMpList.setStatus("Ship");
                 whMpListDAO = new WhMpListDAO();
                 QueryResult queryResult = whMpListDAO.insertWhMpList(whMpList);
+                
+                WhShippingDAO whShippingDAO1 = new WhShippingDAO();
+                 WhShipping query1 = whShippingDAO1.getWhShipping(refId);
+                WhMpListDAO whMpListDAO3 = new WhMpListDAO();
+                WhMpList query2 = whMpListDAO3.getWhMpListMergeWithShippingAndRequest(refId);
+                LogModule logModule2 = new LogModule();
+                LogModuleDAO logModuleDAO2 = new LogModuleDAO();
+                logModule2.setModuleId(query1.getId());
+                logModule2.setReferenceId(refId);
+                logModule2.setModuleName("hms_wh_shipping_list");
+                logModule2.setStatus("Ship");
+                logModule2.setVerifiedBy(query2.getCreatedBy());
+                logModule2.setVerifiedDate(query2.getCreatedDate());
+                QueryResult queryResult1 = logModuleDAO2.insertLogForVerification(logModule2);
+                
                 args = new String[1];
                 args[0] = materialPassNo;
                 if (queryResult.getGeneratedKey().equals("0")) {

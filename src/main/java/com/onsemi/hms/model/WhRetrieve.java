@@ -8,6 +8,14 @@ public class WhRetrieve {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
+    private String pcbA;
+    private String pcbB;
+    private String pcbC;
+    private String pcbControl;
+    private String qtyQualA;
+    private String qtyQualB;
+    private String qtyQualC;
+    private String qtyControl;
     private String quantity;
     private String requestedBy;
     private String requestedEmail;
@@ -52,6 +60,70 @@ public class WhRetrieve {
 
     public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
+    }
+
+    public String getPcbA() {
+        return pcbA;
+    }
+
+    public void setPcbA(String pcbA) {
+        this.pcbA = pcbA;
+    }
+
+    public String getPcbB() {
+        return pcbB;
+    }
+
+    public void setPcbB(String pcbB) {
+        this.pcbB = pcbB;
+    }
+
+    public String getPcbC() {
+        return pcbC;
+    }
+
+    public void setPcbC(String pcbC) {
+        this.pcbC = pcbC;
+    }
+
+    public String getPcbControl() {
+        return pcbControl;
+    }
+
+    public void setPcbControl(String pcbControl) {
+        this.pcbControl = pcbControl;
+    }
+
+    public String getQtyQualA() {
+        return qtyQualA;
+    }
+
+    public void setQtyQualA(String qtyQualA) {
+        this.qtyQualA = qtyQualA;
+    }
+
+    public String getQtyQualB() {
+        return qtyQualB;
+    }
+
+    public void setQtyQualB(String qtyQualB) {
+        this.qtyQualB = qtyQualB;
+    }
+
+    public String getQtyQualC() {
+        return qtyQualC;
+    }
+
+    public void setQtyQualC(String qtyQualC) {
+        this.qtyQualC = qtyQualC;
+    }
+
+    public String getQtyControl() {
+        return qtyControl;
+    }
+
+    public void setQtyControl(String qtyControl) {
+        this.qtyControl = qtyControl;
     }
     
     public String getQuantity() {

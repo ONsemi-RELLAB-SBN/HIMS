@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.LogModuleDAO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhShippingDAO;
+import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhShipping;
@@ -180,6 +182,18 @@ public class WhRequestController {
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestVerification(whRequest);
         
+        WhRequestDAO whRequestDAO3 = new WhRequestDAO();
+        WhRequest query3 = whRequestDAO3.getWhReq(refId);
+        LogModule logModule3 = new LogModule();
+        LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+        logModule3.setModuleId(query3.getId());
+        logModule3.setReferenceId(refId);
+        logModule3.setModuleName("hms_wh_request_list");
+        logModule3.setStatus(query3.getStatus());
+        logModule3.setVerifiedBy(query3.getUserVerify());
+        logModule3.setVerifiedDate(query3.getDateVerify());
+        QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
+        
        // String check = "";
         args = new String[1];
         args[0] = materialPassNo;
@@ -200,23 +214,26 @@ public class WhRequestController {
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String inventoryLoc,
-            @RequestParam(required = false) String inventoryLocVerify,
+            @RequestParam(required = false) String inventoryRack,
+            @RequestParam(required = false) String inventoryRackVerify,
+            @RequestParam(required = false) String inventoryShelf,
+            @RequestParam(required = false) String inventoryShelfVerify,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String flag
     ) {
         WhRequest whRequest = new WhRequest();
         whRequest.setRefId(refId);      
         whRequest.setMaterialPassNo(materialPassNo);
-        whRequest.setInventoryLocVerify(inventoryLocVerify);
+        whRequest.setInventoryRackVerify(inventoryRackVerify);
+        whRequest.setInventoryShelfVerify(inventoryShelfVerify);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         whRequest.setInventoryDateVerify(dateFormat.format(date));
         whRequest.setInventoryUserVerify(userSession.getFullname());
-        String barcodeVerified = whRequest.getInventoryLocVerify();
-        LOGGER.info("barcodeInventoryVerified : " + barcodeVerified);
+        String rackVerified = whRequest.getInventoryRackVerify();
+        String shelfVerified = whRequest.getInventoryShelfVerify();
         boolean cp = false;
-        if (inventoryLoc.equals(barcodeVerified)) {
+        if (inventoryRack.equals(rackVerified) && inventoryShelf.equals(shelfVerified)) {
             whRequest.setStatus("Queue for Shipping");
             whRequest.setFlag("1");
             cp = true;
@@ -231,15 +248,37 @@ public class WhRequestController {
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestForShipping(whRequest);
         
+        WhRequestDAO whRequestDAO3 = new WhRequestDAO();
+        WhRequest query3 = whRequestDAO3.getWhReq(refId);
+        LogModule logModule3 = new LogModule();
+        LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+        logModule3.setModuleId(query3.getId());
+        logModule3.setReferenceId(refId);
+        logModule3.setModuleName("hms_wh_request_list");
+        logModule3.setStatus(query3.getStatus());
+        logModule3.setVerifiedBy(query3.getInventoryUserVerify());
+        logModule3.setVerifiedDate(query3.getInventoryDateVerify());
+        QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
+        
         if(cp == true) {
             WhShipping whShipping = new WhShipping();
             whShipping.setRequestId(refId);
             whShipping.setMaterialPassNo(materialPassNo);
-            whShipping.setStatus("Queue for Shipping");
+            whShipping.setStatus("Ready for Shipment");
             whShipping.setFlag("0");
             whShipping.setShippingBy(userSession.getFullname());
             WhShippingDAO whShippingDao = new WhShippingDAO();
             QueryResult queryResult2 = whShippingDao.insertWhShipping(whShipping);
+            
+            WhShippingDAO whShippingDAO3 = new WhShippingDAO();
+            WhShipping query2 = whShippingDAO3.getWhShipping(refId);
+            LogModule logModule2 = new LogModule();
+            LogModuleDAO logModuleDAO2 = new LogModuleDAO();
+            logModule2.setModuleId(query2.getId());
+            logModule2.setReferenceId(refId);
+            logModule2.setModuleName("hms_wh_shipping_list");
+            logModule2.setStatus(query2.getStatus());
+            QueryResult queryResult1 = logModuleDAO2.insertLog(logModule2);
         }
         
         String check = "";

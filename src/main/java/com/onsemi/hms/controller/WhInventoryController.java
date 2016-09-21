@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.LogModuleDAO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhInventoryDAO;
 import com.onsemi.hms.model.IonicFtpInventory;
+import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhInventory;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.tools.EmailSender;
@@ -101,8 +103,8 @@ public class WhInventoryController {
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
-            @RequestParam(required = false) String inventoryLoc,
-            @RequestParam(required = false) String inventorySlot
+            @RequestParam(required = false) String inventoryRack,
+            @RequestParam(required = false) String inventoryShelf
     ) {
         WhInventory whInventory = new WhInventory();
         
@@ -110,15 +112,27 @@ public class WhInventoryController {
         LOGGER.info(refId);
         whInventory.setMaterialPassNo(materialPassNo); //args
         LOGGER.info(materialPassNo);
-        whInventory.setInventoryLoc(inventoryLoc); //update
-        LOGGER.info(inventoryLoc);
-        LOGGER.info(materialPassNo);
+        whInventory.setInventoryRack(inventoryRack); //update
+        whInventory.setInventoryShelf(inventoryShelf); //update
         whInventory.setInventoryBy(userSession.getFullname()); //update
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         whInventory.setInventoryDate(dateFormat.format(date));
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         QueryResult queryResult = whInventoryDAO.updateWhInventory(whInventory);
+        
+        WhInventoryDAO whInventoryDAO3 = new WhInventoryDAO();
+        WhInventory query3 = whInventoryDAO3.getWhInventory(refId);
+        LogModule logModule3 = new LogModule();
+        LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+        logModule3.setModuleId(query3.getId());
+        logModule3.setReferenceId(refId);
+        logModule3.setModuleName("hms_wh_inventory_list");
+        logModule3.setStatus("Change of Inventory");
+        logModule3.setVerifiedBy(query3.getInventoryBy());
+        logModule3.setVerifiedDate(query3.getInventoryDate());
+        QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
+        
         args = new String[1];
         args[0] = materialPassNo;
         if (queryResult.getResult() == 1) {
@@ -151,16 +165,20 @@ public class WhInventoryController {
                             split[3], split[4], split[5], 
                             split[6], split[7], split[8],
                             split[9], split[10], split[11],
-                            split[12], split[13] //date = [9], loc = [10], by = [11]
+                            split[12], split[13], split[14],
+                            split[15], split[16], split[17],
+                            split[18], split[19], split[20],
+                            split[21], split[22] //date = [19], rack = [20], shelf = [21], by = [22]
                         );
                             
                         if(split[0].equals(refId)) {
                             LOGGER.info(row + " : refId found...................." + data);
                             CSV csv = new CSV();
                             csv.open(new File(targetLocation));
-                            csv.put(10, row, "" + whInventory.getInventoryDate());
-                            csv.put(11, row, "" + whInventory.getInventoryLoc());
-                            csv.put(12, row, "" + whInventory.getInventoryBy());
+                            csv.put(19, row, "" + whInventory.getInventoryDate());
+                            csv.put(20, row, "" + whInventory.getInventoryRack());
+                            csv.put(21, row, "" + whInventory.getInventoryShelf());
+                            csv.put(22, row, "" + whInventory.getInventoryBy());
                             csv.save(new File(targetLocation)); 
                         } else {
                             LOGGER.info("refId not found........" + data);
@@ -228,15 +246,15 @@ public class WhInventoryController {
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-
+    
     @RequestMapping(value = "/viewWhInventoryPdf/{whInventoryId}", method = RequestMethod.GET)
     public ModelAndView viewWhInventoryPdf(
             Model model,
             @PathVariable("whInventoryId") String whInventoryId
-    ) {
-        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+    ) {        
         LOGGER.info("Masuk 1........");
-        WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrieve(whInventoryId);
+        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+        WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(whInventoryId);
         LOGGER.info("Masuk 2........");
         return new ModelAndView("whInventoryPdf", "whInventory", whInventory);
     }
@@ -247,7 +265,7 @@ public class WhInventoryController {
             HttpServletRequest request,
             @PathVariable("whInventoryId") String whInventoryId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");
+        LOGGER.info("Masuk view 1........");        
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whInventory/viewWhInventoryHistPdf/" + whInventoryId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
@@ -256,4 +274,6 @@ public class WhInventoryController {
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
+    
+    
 }

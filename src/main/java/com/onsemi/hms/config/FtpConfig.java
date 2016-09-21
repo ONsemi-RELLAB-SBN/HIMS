@@ -1,9 +1,11 @@
 package com.onsemi.hms.config;
 
+import com.onsemi.hms.dao.LogModuleDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhRetrieveDAO;
 import com.onsemi.hms.model.IonicFtpRequest;
 import com.onsemi.hms.model.IonicFtpRetrieve;
+import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.tools.QueryResult;
@@ -59,18 +61,32 @@ public class FtpConfig {
                                 ionicFtp[0], ionicFtp[1], ionicFtp[2],
                                 ionicFtp[3], ionicFtp[4], ionicFtp[5], 
                                 ionicFtp[6], ionicFtp[7], ionicFtp[8],
-                                ionicFtp[9], ionicFtp[10]);
+                                ionicFtp[9], ionicFtp[10], ionicFtp[11],
+                                ionicFtp[12], ionicFtp[13], ionicFtp[14],
+                                ionicFtp[15], ionicFtp[16], ionicFtp[17],
+                                ionicFtp[18], ionicFtp[19]
+                            );
                             requestList.add(request);
                         }
                         for (IonicFtpRequest r : requestList) {
                             WhRequest  ftp = new WhRequest();
                             ftp.setRefId(r.getRefId());
+                            String refId = r.getRefId();
                             ftp.setEquipmentType(r.getEquipmentType());
                             ftp.setEquipmentId(r.getEquipmentId());
+                            ftp.setPcbA(r.getPcbA());
+                            ftp.setPcbB(r.getPcbB());
+                            ftp.setPcbC(r.getPcbC());
+                            ftp.setPcbControl(r.getPcbControl());
+                            ftp.setQtyQualA(r.getQtyQualA());
+                            ftp.setQtyQualB(r.getQtyQualB());
+                            ftp.setQtyQualC(r.getQtyQualC());
+                            ftp.setQtyControl(r.getQtyControl());
                             ftp.setQuantity(r.getQuantity());
                             ftp.setMaterialPassNo(r.getMaterialPassNo());
                             ftp.setMaterialPassExpiry(r.getMaterialPassExpiry());
-                            ftp.setInventoryLoc(r.getInventoryLoc());
+                            ftp.setInventoryRack(r.getInventoryRack());
+                            ftp.setInventoryShelf(r.getInventoryShelf());
                             ftp.setRequestedBy(r.getRequestedBy());
                             ftp.setRequestedEmail(r.getRequestedEmail());
                             ftp.setRequestedDate(r.getRequestedDate());
@@ -84,6 +100,16 @@ public class FtpConfig {
                                 whRequestDAO = new WhRequestDAO();
                                 WhRequestDAO whRequestDAO1 = new WhRequestDAO();
                                 QueryResult queryResult1 = whRequestDAO.insertWhRequest(ftp);
+                                
+                                WhRequestDAO whRequestDAO2 = new WhRequestDAO();
+                                WhRequest query = whRequestDAO2.getWhRequest(refId);
+                                LogModule logModule = new LogModule();
+                                LogModuleDAO logModuleDAO = new LogModuleDAO();
+                                logModule.setReferenceId(query.getRefId());
+                                logModule.setModuleId(query.getId());
+                                logModule.setModuleName("hms_wh_request_list");
+                                logModule.setStatus(query.getStatus());
+                                QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
                             } else {
                                 LOGGER.info("data adeeeeee");
                             }
@@ -106,16 +132,29 @@ public class FtpConfig {
                                 ionicFtp[0], ionicFtp[1], ionicFtp[2],
                                 ionicFtp[3], ionicFtp[4], ionicFtp[5], 
                                 ionicFtp[6], ionicFtp[7], ionicFtp[8], 
-                                ionicFtp[9], ionicFtp[10]);
+                                ionicFtp[9], ionicFtp[10], ionicFtp[11],
+                                ionicFtp[12], ionicFtp[13], ionicFtp[14],
+                                ionicFtp[15], ionicFtp[16], ionicFtp[17],
+                                ionicFtp[18]
+                            );
                             retrieveList.add(retrieve);
                         }
                         for (IonicFtpRetrieve r : retrieveList) {
                             WhRetrieve ftp = new WhRetrieve();
                             ftp.setRefId(r.getRefId());
+                            String refId = r.getRefId();
                             ftp.setMaterialPassNo(r.getMaterialPassNo());
                             ftp.setMaterialPassExpiry(r.getMaterialPassExpiry());
                             ftp.setEquipmentType(r.getEquipmentType());
                             ftp.setEquipmentId(r.getEquipmentId());
+                            ftp.setPcbA(r.getPcbA());
+                            ftp.setPcbB(r.getPcbB());
+                            ftp.setPcbC(r.getPcbC());
+                            ftp.setPcbControl(r.getPcbControl());
+                            ftp.setQtyQualA(r.getQtyQualA());
+                            ftp.setQtyQualB(r.getQtyQualB());
+                            ftp.setQtyQualC(r.getQtyQualC());
+                            ftp.setQtyControl(r.getQtyControl());
                             ftp.setQuantity(r.getQuantity());
                             ftp.setRequestedBy(r.getRequestedBy());
                             ftp.setRequestedEmail(r.getRequestedEmail());
@@ -131,6 +170,16 @@ public class FtpConfig {
                                 whRetrieveDAO = new WhRetrieveDAO();
                                 WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
                                 QueryResult queryResult1 = whRetrieveDAO.insertWhRetrieve(ftp);
+                                
+                                WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
+                                WhRetrieve query = whRetrieveDAO2.getWhRetrieve(refId);
+                                LogModule logModule = new LogModule();
+                                LogModuleDAO logModuleDAO = new LogModuleDAO();
+                                logModule.setReferenceId(query.getRefId());
+                                logModule.setModuleId(query.getId());
+                                logModule.setModuleName("hms_wh_retrieval_list");
+                                logModule.setStatus(query.getStatus());
+                                QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
                             } else {
                                 LOGGER.info("data adeeeeee");
                             }

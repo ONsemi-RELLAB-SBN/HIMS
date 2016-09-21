@@ -57,7 +57,7 @@
                                             <td id="modal_delete_info_${whInventory.refId}"><c:out value="${whInventory.equipmentId}"/></td>
                                             <td><c:out value="${whInventory.materialPassNo}"/></td>
                                             <td><c:out value="${whInventory.quantity}"/></td>
-                                            <td><c:out value="${whInventory.inventoryLoc}"/></td>
+                                            <td><c:out value="${whInventory.inventoryRack}, ${whInventory.inventoryShelf}"/></td>
                                             <td><c:out value="${whInventory.inventoryDate}"/></td>
                                             <td align="center">
                                                 <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" title="Update">

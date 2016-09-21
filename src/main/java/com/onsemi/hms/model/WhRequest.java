@@ -8,8 +8,18 @@ public class WhRequest {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
+    private String pcbA;
+    private String pcbB;
+    private String pcbC;
+    private String pcbControl;
+    private String qtyQualA;
+    private String qtyQualB;
+    private String qtyQualC;
+    private String qtyControl;
     private String quantity;
-    private String inventoryLoc;
+//    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
     private String requestedBy;
     private String requestedEmail;
     private String requestedDate;
@@ -18,7 +28,9 @@ public class WhRequest {
     private String barcodeVerify;
     private String dateVerify;
     private String userVerify;
-    private String inventoryLocVerify;
+//    private String inventoryLocVerify;
+    private String inventoryRackVerify;
+    private String inventoryShelfVerify;
     private String inventoryUserVerify;
     private String inventoryDateVerify;
     private String status;
@@ -73,6 +85,70 @@ public class WhRequest {
         this.equipmentId = equipmentId;
     }
 
+    public String getPcbA() {
+        return pcbA;
+    }
+
+    public void setPcbA(String pcbA) {
+        this.pcbA = pcbA;
+    }
+
+    public String getPcbB() {
+        return pcbB;
+    }
+
+    public void setPcbB(String pcbB) {
+        this.pcbB = pcbB;
+    }
+
+    public String getPcbC() {
+        return pcbC;
+    }
+
+    public void setPcbC(String pcbC) {
+        this.pcbC = pcbC;
+    }
+
+    public String getPcbControl() {
+        return pcbControl;
+    }
+
+    public void setPcbControl(String pcbControl) {
+        this.pcbControl = pcbControl;
+    }
+
+    public String getQtyQualA() {
+        return qtyQualA;
+    }
+
+    public void setQtyQualA(String qtyQualA) {
+        this.qtyQualA = qtyQualA;
+    }
+
+    public String getQtyQualB() {
+        return qtyQualB;
+    }
+
+    public void setQtyQualB(String qtyQualB) {
+        this.qtyQualB = qtyQualB;
+    }
+
+    public String getQtyQualC() {
+        return qtyQualC;
+    }
+
+    public void setQtyQualC(String qtyQualC) {
+        this.qtyQualC = qtyQualC;
+    }
+
+    public String getQtyControl() {
+        return qtyControl;
+    }
+
+    public void setQtyControl(String qtyControl) {
+        this.qtyControl = qtyControl;
+    }
+
     public String getQuantity() {
         return quantity;
     }
@@ -81,12 +157,28 @@ public class WhRequest {
         this.quantity = quantity;
     }
 
-    public String getInventoryLoc() {
-        return inventoryLoc;
+//    public String getInventoryLoc() {
+//        return inventoryLoc;
+//    }
+//
+//    public void setInventoryLoc(String inventoryLoc) {
+//        this.inventoryLoc = inventoryLoc;
+//    }
+    
+    public String getInventoryRack() {
+        return inventoryRack;
     }
 
-    public void setInventoryLoc(String inventoryLoc) {
-        this.inventoryLoc = inventoryLoc;
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
     }
 
     public String getRequestedBy() {
@@ -153,12 +245,20 @@ public class WhRequest {
         this.userVerify = userVerify;
     }
 
-    public String getInventoryLocVerify() {
-        return inventoryLocVerify;
+    public String getInventoryRackVerify() {
+        return inventoryRackVerify;
     }
 
-    public void setInventoryLocVerify(String inventoryLocVerify) {
-        this.inventoryLocVerify = inventoryLocVerify;
+    public void setInventoryRackVerify(String inventoryRackVerify) {
+        this.inventoryRackVerify = inventoryRackVerify;
+    }
+    
+    public String getInventoryShelfVerify() {
+        return inventoryShelfVerify;
+    }
+
+    public void setInventoryShelfVerify(String inventoryShelfVerify) {
+        this.inventoryShelfVerify = inventoryShelfVerify;
     }
 
     public String getInventoryUserVerify() {

@@ -148,6 +148,7 @@ public class WhShippingDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whShipping = new WhShipping();
+                whShipping.setId(rs.getString("id"));
                 whShipping.setRequestId(rs.getString("request_id"));
                 whShipping.setMaterialPassNo(rs.getString("material_pass_no"));
                 whShipping.setShippingDate(rs.getString("shipping_date"));
@@ -175,7 +176,7 @@ public class WhShippingDAO {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
                    + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.request_id = RL.ref_id AND SL.request_id = '" + whShippingId + "' ";
+                   + "WHERE SL.request_id = RL.request_id AND SL.request_id = '" + whShippingId + "' ";
         WhShipping whShipping = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -192,7 +193,9 @@ public class WhShippingDAO {
                 whShipping.setRequestedBy(rs.getString("RL.requested_by"));
                 whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
                 whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+//                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
+                whShipping.setInventoryShelf(rs.getString("RL.inventory_shelf"));
                 whShipping.setRemarks(rs.getString("RL.remarks"));
                 whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));
@@ -222,7 +225,7 @@ public class WhShippingDAO {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
                    + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.request_id = RL.ref_id ";
+                   + "WHERE SL.request_id = RL.request_id ";
         List<WhShipping> whShippingList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -239,7 +242,9 @@ public class WhShippingDAO {
                 whShipping.setRequestedBy(rs.getString("RL.requested_by"));
                 whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
                 whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+//                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
+                whShipping.setInventoryShelf(rs.getString("RL.inventory_shelf"));
                 whShipping.setRemarks(rs.getString("RL.remarks"));
                 whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));
@@ -342,7 +347,9 @@ public class WhShippingDAO {
                 whShipping.setRequestedBy(rs.getString("RL.requested_by"));
                 whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
                 whShipping.setRequestedDate(rs.getString("requested_date_view"));
-                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+//                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
+                whShipping.setInventoryShelf(rs.getString("RL.inventory_shelf"));
                 whShipping.setRemarks(rs.getString("RL.remarks"));
                 whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
                 whShipping.setUserVerify(rs.getString("RL.user_verify"));

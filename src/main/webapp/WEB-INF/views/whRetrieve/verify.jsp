@@ -140,10 +140,16 @@
                                     <input type="hidden" name="flag" value="${whRetrieve.flag}" />
                                     <input type="hidden" name="tab" value="${hiActiveTab}" />
                                     <!--<input type="hidden" name="inventoryDate" value="${whInventory.inventoryDate}" />-->
-                                    
-                                    <label for=" inventoryLoc" class="col-lg-4 control-label">Hardware Location</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" autofocus="autofocus" value="${whInventory.inventoryLoc}" required/> 
+                                    <div class="form-group">
+                                        <label for="inventoryRack" class="col-lg-4 control-label">Rack Location</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="inventoryRack" name="inventoryRack" autofocus="autofocus" value="${whInventory.inventoryRack}" required/> 
+                                        </div>
+                                        <br><br>
+                                        <label for="inventoryShelf" class="col-lg-4 control-label">Shelf Location</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="inventoryShelf" name="inventoryShelf" autofocus="autofocus" value="${whInventory.inventoryShelf}" required/> 
+                                        </div>
                                     </div>
                                     <br><br><br>
                                     <div class="pull-right">
@@ -202,7 +208,10 @@
                 });
                 var validator1 = $("#hi_form").validate({
                     rules: {
-                        inventoryLoc: {
+                        inventoryRack: {
+                            required: true
+                        },
+                        inventoryShelf: {
                             required: true
                         }
                     }
@@ -214,11 +223,11 @@
                     $("#barcodeVerify").attr("readonly", true);
                 }
                 
-                var element = $('#inventoryLoc');
+                var element = $('#inventoryRack');
                 if (element.val() !== "" || "#barcodeVerify" === "#materialPassNo") {
                     $("#submit").attr("disabled", true);
                     $("#submit1").attr("disabled", true);
-                    $("#inventoryLoc").attr("readonly", true);
+                    $("#inventoryRack").attr("readonly", true);
                 }
 
                 $(".cancel").click(function () {

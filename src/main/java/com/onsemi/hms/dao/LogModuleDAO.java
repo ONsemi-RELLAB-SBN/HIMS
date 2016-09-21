@@ -26,17 +26,17 @@ public class LogModuleDAO {
         this.dataSource = db.getDataSource();
     }
 
-    
     public QueryResult insertLog(LogModule log) {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_wh_log (module_id, module_name, status, timestamp) "
-                  + "VALUES (?,?,?,NOW())", Statement.RETURN_GENERATED_KEYS
+                    "INSERT INTO hms_wh_log (reference_id, module_id, module_name, status, timestamp) "
+                  + "VALUES (?,?,?,?,NOW())", Statement.RETURN_GENERATED_KEYS
             );
-            ps.setString(1, log.getModuleId());
-            ps.setString(2, log.getModuleName());
-            ps.setString(3, log.getStatus());
+            ps.setString(1, log.getReferenceId());
+            ps.setString(2, log.getModuleId());
+            ps.setString(3, log.getModuleName());
+            ps.setString(4, log.getStatus());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -63,14 +63,15 @@ public class LogModuleDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_wh_log (module_id, module_name, status, timestamp, verified_by, verified_date) "
-                  + "VALUES (?,?,?,NOW())", Statement.RETURN_GENERATED_KEYS
+                    "INSERT INTO hms_wh_log (reference_id, module_id, module_name, status, timestamp, verified_by, verified_date) "
+                  + "VALUES (?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
             );
-            ps.setString(1, log.getModuleId());
-            ps.setString(2, log.getModuleName());
-            ps.setString(3, log.getStatus());
-            ps.setString(4, log.getVerifiedBy());
-            ps.setString(5, log.getVerifiedDate());
+            ps.setString(1, log.getReferenceId());
+            ps.setString(2, log.getModuleId());
+            ps.setString(3, log.getModuleName());
+            ps.setString(4, log.getStatus());
+            ps.setString(5, log.getVerifiedBy());
+            ps.setString(6, log.getVerifiedDate());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -93,17 +94,18 @@ public class LogModuleDAO {
         return queryResult;
     }
     
-    public LogModule getLogModule(String moduleId) {
+    public LogModule getLogModule(String referenceId) {
         String sql  = "SELECT * "
                     + "FROM hms_wh_log "
-                    + "WHERE module_id = '" + moduleId + "' ";
+                    + "WHERE reference_id = '" + referenceId + "' ";
         LogModule log = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 log = new LogModule();
-                log.setModuleId(moduleId);
+                log.setReferenceId(referenceId);
+                log.setModuleId(rs.getString("module_id"));
                 log.setModuleName(rs.getString("module_name"));
                 log.setStatus(rs.getString("status"));
                 log.setTimestamp(rs.getString("timestamp"));
@@ -126,10 +128,10 @@ public class LogModuleDAO {
         return log;
     }
 
-    public List<LogModule> getLogModuleList(String moduleId) {
+    public List<LogModule> getLogModuleList(String referenceId) {
         String sql = "SELECT * "
                    + "FROM hms_wh_log "
-                   + "WHERE module_id = '" + moduleId + "' "
+                   + "WHERE reference_id = '" + referenceId + "' "
                    + "ORDER BY timestamp ASC ";
         List<LogModule> logModuleList = new ArrayList<LogModule>();
         try {
@@ -138,7 +140,8 @@ public class LogModuleDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 log = new LogModule();
-                log.setModuleId(moduleId);
+                log.setReferenceId(referenceId);
+                log.setModuleId(rs.getString("module_id"));
                 log.setModuleName(rs.getString("module_name"));
                 log.setStatus(rs.getString("status"));
                 log.setTimestamp(rs.getString("timestamp"));
@@ -162,13 +165,13 @@ public class LogModuleDAO {
         return logModuleList;
     }
     
-      public Integer getCountExistingData(String moduleId) {
+      public Integer getCountExistingData(String referenceId) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
                 "SELECT COUNT(*) AS count "
               + "FROM hms_wh_log "
-              + "WHERE module_id = '" + moduleId + "' "
+              + "WHERE reference_id = '" + referenceId + "' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -190,5 +193,4 @@ public class LogModuleDAO {
         }
         return count;
     }
-    
 }

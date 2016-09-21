@@ -108,7 +108,7 @@ public class WhShippingPdf extends AbstractITextPdfViewPotrait {
         //5
         cellHeader.setPhrase(new Phrase("Inventory Location", fontHeader));
         table.addCell(cellHeader);
-        cellContent.setPhrase(new Phrase(whShipping.getInventoryLoc(), fontContent));
+        cellContent.setPhrase(new Phrase(whShipping.getInventoryRack() + ", " + whShipping.getInventoryShelf(), fontContent));
         table.addCell(cellContent);
         
         //6

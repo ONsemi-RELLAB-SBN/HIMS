@@ -3,6 +3,7 @@ package com.onsemi.hms.model;
 public class WhMpList {
 
     private String id;
+    private String requestId;
     private String shippingId;
     private String materialPassNo;
     private String materialPassExpiry;
@@ -28,6 +29,14 @@ public class WhMpList {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getShippingId() {

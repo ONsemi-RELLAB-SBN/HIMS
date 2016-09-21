@@ -49,7 +49,7 @@
                             <div class="form-group">
                                 <label for="inventoryLoc" class="col-lg-4 control-label">Hardware Inventory</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" value="${whRequest.inventoryLoc}" readonly>
+                                    <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -148,16 +148,23 @@
                                     <input type="hidden" name="materialPassNo" value="${whRequest.materialPassNo}" />
                                     <input type="hidden" name="status" value="${whRequest.status}" />
                                     <input type="hidden" name="flag" value="${whRequest.flag}" />
-                                    <input type="hidden" name="inventoryLoc" value="${whRequest.inventoryLoc}" />
+                                    <input type="hidden" id="inventoryRack" name="inventoryRack" value="${whRequest.inventoryRack}" />
+                                    <input type="hidden" id="inventoryShelf" name="inventoryShelf" value="${whRequest.inventoryShelf}" />
                                     <input type="hidden" name="tab" value="${hiActiveTab}" />
                                     <div class="form-group">
-                                        <label for=" inventoryLocVerify" class="col-lg-4 control-label">Scan Hardware's Location</label>
+                                        <label for=" inventoryRackVerify" class="col-lg-4 control-label">Scan Hardware's Rack Location</label>
                                         <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="inventoryLocVerify" name="inventoryLocVerify" autofocus="autofocus" value="${whRequest.inventoryLocVerify}" required/> 
+                                            <input type="text" class="form-control" id="inventoryRackVerify" name="inventoryRackVerify" autofocus="autofocus" value="${whRequest.inventoryRackVerify}" required/> 
                                         </div>
-                                        <!--<button type="submit" class="btn btn-secondary send">Send Email</button>-->
                                     </div>
                                     <div id = "alert_placeholder2"></div>
+                                    <div class="form-group">                                        
+                                        <label for=" inventoryShelfVerify" class="col-lg-4 control-label">Scan Hardware's Shelf Location</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="inventoryShelfVerify" name="inventoryShelfVerify" autofocus="autofocus" value="${whRequest.inventoryShelfVerify}" required/> 
+                                        </div>
+                                    </div>
+                                    <div id = "alert_placeholder3"></div>
                                     <br><br>
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel1">Reset</button>
@@ -190,7 +197,7 @@
                 
                 if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
                     bootstrap_alert.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
-                                        $("#barcodeVerify").effect("highlight", {}, 1000);
+                    $("#barcodeVerify").effect("highlight", {}, 1000);
                     $("#barcodeVerify").addClass('highlight');
                 }
                 
@@ -198,12 +205,23 @@
                 bootstrap_alert2.warning = function (message) {
                     $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 }
-                if ($('#inventoryLocVerify').val() !== "" && $('#inventoryLocVerify').val() !== $('#inventoryLoc').val()) {
-                    bootstrap_alert2.warning('Location Barcode NOT MATCH with Inventory Location! Please re-check and try again.');
-                                        $("#inventoryLocVerify").effect("highlight", {}, 1000);
-                    $("#inventoryLocVerify").addClass('highlight');
+                if ($('#inventoryRackVerify').val() !== "" && $('#inventoryRackVerify').val() !== $('#inventoryRack').val()) {
+                    bootstrap_alert2.warning('The Rack value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
+                    $("#inventoryRackVerify").effect("highlight", {}, 1000);
+                    $("#inventoryRackVerify").addClass('highlight');
                 }
                 
+                bootstrap_alert3 = function () {}
+                bootstrap_alert3.warning = function (message) {
+                    $('#alert_placeholder3').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                }
+                if ($('#inventoryShelfVerify').val() !== "" && $('#inventoryShelfVerify').val() !== $('#inventoryShelf').val()) {
+                    bootstrap_alert3.warning('The Shelf value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
+                    $("#inventoryShelfVerify").effect("highlight", {}, 1000);
+                    $("#inventoryShelfVerify").addClass('highlight');
+                }
+                
+               
                 var element = $('#equipmentType');
                 if (element.val() === "Motherboard") {
                     $("#quantitydiv").hide();
@@ -220,16 +238,17 @@
                 var validator = $("#mp_form").validate({
                     rules: {
                         barcodeVerify: {
-                            required: true,
-                            equalToBarcode: materialPassNo
+                            required: true
                         }
                     }
                 });
                 var validator1 = $("#hi_form").validate({
                     rules: {
-                        inventoryLocVerify: {
-                            required: true,
-                            equalToBarcode: inventoryLoc
+                        inventoryRackVerify: {
+                            required: true
+                        },
+                        inventoryShelfVerify: {
+                            required: true
                         }
                     }
                 });
@@ -240,11 +259,18 @@
                     $("#barcodeVerify").attr("readonly", true);
                 }
                 
-                var element = $('#inventoryLoc');
-                if (element.val() === "#inventoryLoc" && "#materialPassNo" === "#barcodeVerify") {
+                var element = $('#inventoryRack');
+                if (element.val() === "#inventoryRack" && "#materialPassNo" === "#barcodeVerify") {
                     $("#submit").attr("disabled", true);
                     $("#submit1").attr("disabled", true);
-                    $("#inventoryLoc").attr("readonly", true);
+                    $("#inventoryRack").attr("readonly", true);
+                }
+                
+                var element = $('#inventoryShelf');
+                if (element.val() === "#inventoryShelf" && "#materialPassNo" === "#barcodeVerify") {
+                    $("#submit").attr("disabled", true);
+                    $("#submit1").attr("disabled", true);
+                    $("#inventoryShelf").attr("readonly", true);
                 }
 
                 $(".cancel").click(function () {

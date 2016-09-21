@@ -7,6 +7,14 @@ public class IonicFtpRetrieve {
     private String refId;
     private String equipmentType;
     private String equipmentId;
+    private String pcbA;
+    private String qtyQualA;
+    private String pcbB;
+    private String qtyQualB;
+    private String pcbC;
+    private String qtyQualC;
+    private String pcbControl;
+    private String qtyControl;
     private String quantity;
     private String materialPassNo;
     private String materialPassExpiry;
@@ -20,10 +28,18 @@ public class IonicFtpRetrieve {
         
     }
 
-    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String quantity, String materialPassNo, String materialPassExpiry, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate) {
+    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate) {
         this.refId = refId;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
+        this.pcbA = pcbA;
+        this.qtyQualA = qtyQualA;
+        this.pcbB = pcbB;
+        this.qtyQualB = qtyQualB;
+        this.pcbC = pcbC;
+        this.qtyQualC = qtyQualC;
+        this.pcbControl = pcbControl;
+        this.qtyControl = qtyControl;
         this.quantity = quantity;
         this.materialPassNo = materialPassNo;
         this.materialPassExpiry = materialPassExpiry;
@@ -33,7 +49,7 @@ public class IonicFtpRetrieve {
         this.remarks = remarks;
         this.shippingDate = shippingDate;
     }
-
+    
     public String getRefId() {
         return refId;
     }
@@ -56,6 +72,70 @@ public class IonicFtpRetrieve {
 
     public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
+    }
+
+    public String getPcbA() {
+        return pcbA;
+    }
+
+    public void setPcbA(String pcbA) {
+        this.pcbA = pcbA;
+    }
+
+    public String getPcbB() {
+        return pcbB;
+    }
+
+    public void setPcbB(String pcbB) {
+        this.pcbB = pcbB;
+    }
+
+    public String getPcbC() {
+        return pcbC;
+    }
+
+    public void setPcbC(String pcbC) {
+        this.pcbC = pcbC;
+    }
+
+    public String getPcbControl() {
+        return pcbControl;
+    }
+
+    public void setPcbControl(String pcbControl) {
+        this.pcbControl = pcbControl;
+    }
+
+    public String getQtyQualA() {
+        return qtyQualA;
+    }
+
+    public void setQtyQualA(String qtyQualA) {
+        this.qtyQualA = qtyQualA;
+    }
+
+    public String getQtyQualB() {
+        return qtyQualB;
+    }
+
+    public void setQtyQualB(String qtyQualB) {
+        this.qtyQualB = qtyQualB;
+    }
+
+    public String getQtyQualC() {
+        return qtyQualC;
+    }
+
+    public void setQtyQualC(String qtyQualC) {
+        this.qtyQualC = qtyQualC;
+    }
+
+    public String getQtyControl() {
+        return qtyControl;
+    }
+
+    public void setQtyControl(String qtyControl) {
+        this.qtyControl = qtyControl;
     }
 
     public String getQuantity() {

@@ -64,7 +64,7 @@
                                             <td id="modal_delete_info_${whShipping.requestId}"><c:out value="${whShipping.equipmentId}"/></td>
                                             <td><c:out value="${whShipping.materialPassNo}"/></td>
                                             <td><c:out value="${whShipping.quantity}"/></td>
-                                            <td><c:out value="${whShipping.inventoryLoc}"/></td>
+                                            <td><c:out value="${whShipping.inventoryRack}, ${whShipping.inventoryShelf}"/></td>
                                             <td><c:out value="${whShipping.dateVerify}"/></td>
                                             <td><c:out value="${whShipping.status}"/></td>
                                             <td align="center">

@@ -30,18 +30,13 @@ public class WhMpListDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_mp_list (shipping_id, material_pass_no, created_by, created_date, status) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO hms_wh_mp_list (request_id, shipping_id, material_pass_no, created_by, created_date, status) VALUES (?,?,?,?,NOW(),?)", Statement.RETURN_GENERATED_KEYS
             );
             
-            System.out.println(whMpList.getShippingId());
-            System.out.println(whMpList.getMaterialPassNo());
-            System.out.println(whMpList.getCreatedBy());
-            System.out.println(whMpList.getStatus());
-            
-            ps.setString(1, whMpList.getShippingId());
-            ps.setString(2, whMpList.getMaterialPassNo());
-            ps.setString(3, whMpList.getCreatedBy());
-            ps.setString(4, whMpList.getCreatedDate());
+            ps.setString(1, whMpList.getRequestId());
+            ps.setString(2, whMpList.getShippingId());
+            ps.setString(3, whMpList.getMaterialPassNo());
+            ps.setString(4, whMpList.getCreatedBy());
             ps.setString(5, whMpList.getStatus());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
@@ -117,13 +112,14 @@ public class WhMpListDAO {
     public WhMpList getWhMpListMergeWithShippingAndRequest(String whMpListId) {
         String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view "
                    + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
-                   + "WHERE RL.ref_id = SL.request_id AND SL.request_id = ML.shipping_id AND ML.shipping_id = '" + whMpListId + "'";
+                   + "WHERE RL.request_id = SL.request_id AND SL.request_id = ML.shipping_id AND ML.shipping_id = '" + whMpListId + "'";
         WhMpList whMpList = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whMpList = new WhMpList();
+                whMpList.setRequestId(rs.getString("ML.request_id"));
                 whMpList.setShippingId(rs.getString("ML.shipping_id"));
                 whMpList.setMaterialPassNo(rs.getString("ML.material_pass_no"));
                 whMpList.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
@@ -163,7 +159,7 @@ public class WhMpListDAO {
         String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
                    + "DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
                    + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
-                   + "WHERE RL.ref_id = SL.request_id AND SL.request_id = ML.shipping_id " 
+                   + "WHERE RL.request_id = SL.request_id AND SL.request_id = ML.shipping_id " 
                    + "ORDER BY ML.shipping_id ASC ";
         List<WhMpList> whMpListList = new ArrayList<WhMpList>();
         try {
@@ -172,6 +168,7 @@ public class WhMpListDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whMpList = new WhMpList();
+                whMpList.setRequestId(rs.getString("ML.request_id"));
                 whMpList.setShippingId(rs.getString("ML.shipping_id"));
                 whMpList.setMaterialPassNo(rs.getString("ML.material_pass_no"));
                 whMpList.setMaterialPassExpiry(rs.getString("mp_expiry_view"));

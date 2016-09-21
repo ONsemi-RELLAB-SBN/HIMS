@@ -60,7 +60,7 @@
                                             <td><c:out value="${whRequest.equipmentType}"/></td>
                                             <td id="modal_delete_info_${whRequest.refId}"><c:out value="${whRequest.equipmentId}"/></td>
                                             <td><c:out value="${whRequest.materialPassNo}"/></td>
-                                            <td><c:out value="${whRequest.inventoryLoc}"/></td>
+                                            <td><c:out value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}" /></td>
                                             <!--td><c:out value="${whRequest.requestedBy}"/></td-->
                                             <td><c:out value="${whRequest.requestedDate}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>

@@ -36,14 +36,14 @@ public class MenuDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 menu = new Menu(
-                        rs.getString("parent_code"),
-                        rs.getString("code"),
-                        rs.getString("name"),
-                        rs.getString("url_path"),
-                        rs.getString("target"),
-                        rs.getString("icon"),
-                        rs.getString("label_key"),
-                        rs.getString("class_active")
+                    rs.getString("parent_code"),
+                    rs.getString("code"),
+                    rs.getString("name"),
+                    rs.getString("url_path"),
+                    rs.getString("target"),
+                    rs.getString("icon"),
+                    rs.getString("label_key"),
+                    rs.getString("class_active")
                 );
                 menuList.add(menu);
             }

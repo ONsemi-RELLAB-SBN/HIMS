@@ -118,7 +118,7 @@ public class FtpConfigRequest {
                 cell2_4.setCellValue(qty);
 
                 HSSFCell cell2_5 = contents.createCell(4);
-                cell2_5.setCellValue(whRequestList.get(i).getInventoryLoc());
+                cell2_5.setCellValue(whRequestList.get(i).getInventoryRack() + ", " + whRequestList.get(i).getInventoryShelf());
 
                 HSSFCell cell2_6 = contents.createCell(5);
                 cell2_6.setCellValue(whRequestList.get(i).getReceivedDate());

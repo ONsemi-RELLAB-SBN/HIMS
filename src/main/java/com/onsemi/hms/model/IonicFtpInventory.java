@@ -5,32 +5,51 @@ public class IonicFtpInventory {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
+    private String pcbA;
+    private String pcbB;
+    private String pcbC;
+    private String pcbControl;
+    private String qtyQualA;
+    private String qtyQualB;
+    private String qtyQualC;
+    private String qtyControl;
     private String quantity;
     private String requestedBy;
     private String requestedDate;
     private String remarks;
     private String dateVerify;
     private String inventoryDate;
-    private String inventoryLoc;
+//    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
     private String inventoryBy;
     private String status;
     
     public IonicFtpInventory() {
     }
 
-    public IonicFtpInventory(String refId, String materialPassNo, String materialPassExpiry, String equipmentType, String equipmentId, String quantity, String requestedBy, String requestedDate, String remarks, String dateVerify, String inventoryDate, String inventoryLoc, String inventoryBy, String status) {
+    public IonicFtpInventory(String refId, String materialPassNo, String materialPassExpiry, String equipmentType, String equipmentId, String pcbA, String pcbB, String pcbC, String pcbControl, String qtyQualA, String qtyQualB, String qtyQualC, String qtyControl, String quantity, String requestedBy, String requestedDate, String remarks, String dateVerify, String inventoryDate, String inventoryRack, String inventoryShelf, String inventoryBy, String status) {
         this.refId = refId;
         this.materialPassNo = materialPassNo;
         this.materialPassExpiry = materialPassExpiry;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
+        this.pcbA = pcbA;
+        this.pcbB = pcbB;
+        this.pcbC = pcbC;
+        this.pcbControl = pcbControl;
+        this.qtyQualA = qtyQualA;
+        this.qtyQualB = qtyQualB;
+        this.qtyQualC = qtyQualC;
+        this.qtyControl = qtyControl;
         this.quantity = quantity;
         this.requestedBy = requestedBy;
         this.requestedDate = requestedDate;
         this.remarks = remarks;
         this.dateVerify = dateVerify;
         this.inventoryDate = inventoryDate;
-        this.inventoryLoc = inventoryLoc;
+        this.inventoryRack = inventoryRack;
+        this.inventoryShelf = inventoryShelf;
         this.inventoryBy = inventoryBy;
         this.status = status;
     }
@@ -73,6 +92,38 @@ public class IonicFtpInventory {
 
     public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
+    }
+
+    public String getPcbA() {
+        return pcbA;
+    }
+
+    public void setPcbA(String pcbA) {
+        this.pcbA = pcbA;
+    }
+
+    public String getPcbB() {
+        return pcbB;
+    }
+
+    public void setPcbB(String pcbB) {
+        this.pcbB = pcbB;
+    }
+
+    public String getPcbC() {
+        return pcbC;
+    }
+
+    public void setPcbC(String pcbC) {
+        this.pcbC = pcbC;
+    }
+
+    public String getPcbControl() {
+        return pcbControl;
+    }
+
+    public void setPcbControl(String pcbControl) {
+        this.pcbControl = pcbControl;
     }
 
     public String getQuantity() {
@@ -122,15 +173,61 @@ public class IonicFtpInventory {
     public void setInventoryDate(String inventoryDate) {
         this.inventoryDate = inventoryDate;
     }
-
-    public String getInventoryLoc() {
-        return inventoryLoc;
-    }
-
-    public void setInventoryLoc(String inventoryLoc) {
-        this.inventoryLoc = inventoryLoc;
-    }
     
+    public String getQtyQualA() {
+        return qtyQualA;
+    }
+
+    public void setQtyQualA(String qtyQualA) {
+        this.qtyQualA = qtyQualA;
+    }
+
+    public String getQtyQualB() {
+        return qtyQualB;
+    }
+
+    public void setQtyQualB(String qtyQualB) {
+        this.qtyQualB = qtyQualB;
+    }
+
+    public String getQtyQualC() {
+        return qtyQualC;
+    }
+
+    public void setQtyQualC(String qtyQualC) {
+        this.qtyQualC = qtyQualC;
+    }
+
+    public String getQtyControl() {
+        return qtyControl;
+    }
+
+    public void setQtyControl(String qtyControl) {
+        this.qtyControl = qtyControl;
+    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
+    }
+
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
+    }
+//    public String getInventoryLoc() {
+//        return inventoryLoc;
+//    }
+//
+//    public void setInventoryLoc(String inventoryLoc) {
+//        this.inventoryLoc = inventoryLoc;
+//    }
     public String getInventoryBy() {
         return inventoryBy;
     }

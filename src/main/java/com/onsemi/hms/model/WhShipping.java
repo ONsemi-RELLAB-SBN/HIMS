@@ -11,7 +11,9 @@ public class WhShipping {
     private String requestedBy;
     private String requestedEmail;
     private String requestedDate;
-    private String inventoryLoc;
+//    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
     private String remarks;
     private String barcodeVerify;
     private String userVerify;
@@ -101,13 +103,29 @@ public class WhShipping {
         this.requestedDate = requestedDate;
     }
 
-    public String getInventoryLoc() {
-        return inventoryLoc;
+    public String getInventoryRack() {
+        return inventoryRack;
     }
 
-    public void setInventoryLoc(String inventoryLoc) {
-        this.inventoryLoc = inventoryLoc;
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
     }
+
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
+    }
+    
+//    public String getInventoryLoc() {
+//        return inventoryLoc;
+//    }
+//
+//    public void setInventoryLoc(String inventoryLoc) {
+//        this.inventoryLoc = inventoryLoc;
+//    }
 
     public String getRemarks() {
         return remarks;

@@ -154,13 +154,9 @@ public class FtpConfigExpiry {
 
                 HSSFCell cell2_10 = contents.createCell(10);
                 cell2_10.setCellValue(whInventoryList.get(i).getUserVerify());
-
-                String loc = whInventoryList.get(i).getInventoryLoc();
-                if(whInventoryList.get(i).getInventoryLoc()== null) {
-                    loc = SpmlUtil.nullToEmptyString(whInventoryList.get(i).getInventoryLoc());
-                }
+                
                 HSSFCell cell2_11 = contents.createCell(11);
-                cell2_11.setCellValue(loc);
+                cell2_11.setCellValue(whInventoryList.get(i).getInventoryRack() + ", " + whInventoryList.get(i).getInventoryShelf());
             }
             workbook.write(fileOut);
             workbook.close();

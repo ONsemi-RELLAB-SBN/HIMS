@@ -7,7 +7,14 @@ public class WhInventory {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
-    private String type;
+    private String pcbA;
+    private String pcbB;
+    private String pcbC;
+    private String pcbControl;
+    private String qtyQualA;
+    private String qtyQualB;
+    private String qtyQualC;
+    private String qtyControl;
     private String quantity;
     private String remarks;
     private String shippingDate;
@@ -16,7 +23,9 @@ public class WhInventory {
     private String dateVerify;
     private String userVerify;
     private String inventoryDate;
-    private String inventoryLoc;
+//    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
     private String inventoryBy;
     private String requestedDate;
     private String requestedEmail;
@@ -72,12 +81,68 @@ public class WhInventory {
         this.equipmentId = equipmentId;
     }
 
-    public String getType() {
-        return type;
+    public String getPcbA() {
+        return pcbA;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPcbA(String pcbA) {
+        this.pcbA = pcbA;
+    }
+
+    public String getPcbB() {
+        return pcbB;
+    }
+
+    public void setPcbB(String pcbB) {
+        this.pcbB = pcbB;
+    }
+
+    public String getPcbC() {
+        return pcbC;
+    }
+
+    public void setPcbC(String pcbC) {
+        this.pcbC = pcbC;
+    }
+
+    public String getPcbControl() {
+        return pcbControl;
+    }
+
+    public void setPcbControl(String pcbControl) {
+        this.pcbControl = pcbControl;
+    }
+
+    public String getQtyQualA() {
+        return qtyQualA;
+    }
+
+    public void setQtyQualA(String qtyQualA) {
+        this.qtyQualA = qtyQualA;
+    }
+
+    public String getQtyQualB() {
+        return qtyQualB;
+    }
+
+    public void setQtyQualB(String qtyQualB) {
+        this.qtyQualB = qtyQualB;
+    }
+
+    public String getQtyQualC() {
+        return qtyQualC;
+    }
+
+    public void setQtyQualC(String qtyQualC) {
+        this.qtyQualC = qtyQualC;
+    }
+
+    public String getQtyControl() {
+        return qtyControl;
+    }
+
+    public void setQtyControl(String qtyControl) {
+        this.qtyControl = qtyControl;
     }
 
     public String getQuantity() {
@@ -120,14 +185,30 @@ public class WhInventory {
         this.inventoryDate = inventoryDate;
     }
 
-    public String getInventoryLoc() {
-        return inventoryLoc;
+//    public String getInventoryLoc() {
+//        return inventoryLoc;
+//    }
+//
+//    public void setInventoryLoc(String inventoryLoc) {
+//        this.inventoryLoc = inventoryLoc;
+//    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
     }
 
-    public void setInventoryLoc(String inventoryLoc) {
-        this.inventoryLoc = inventoryLoc;
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
     }
 
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
+    }
+ 
     public String getInventoryBy() {
         return inventoryBy;
     }

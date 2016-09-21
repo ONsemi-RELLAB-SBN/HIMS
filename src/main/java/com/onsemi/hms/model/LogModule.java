@@ -2,12 +2,21 @@ package com.onsemi.hms.model;
 
 public class LogModule {
     private String id;
+    private String referenceId;
     private String moduleId;
     private String moduleName;
     private String status;
     private String timestamp;
     private String verifiedBy;
     private String verifiedDate;
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
 
     public String getId() {
         return id;

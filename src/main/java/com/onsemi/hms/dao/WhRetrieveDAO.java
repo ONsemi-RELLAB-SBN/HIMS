@@ -32,23 +32,32 @@ public class WhRetrieveDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_wh_retrieval_list (ref_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, quantity, "
+                    "INSERT INTO hms_wh_retrieval_list (retrieve_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, "
+                                                        + "pcb_a, pcb_b, pcb_c, pcb_control,qty_qual_a, qty_qual_b, qty_qual_c, qty_control, quantity, "
                                                         + "requested_by, requested_email, requested_date, remarks, shipping_date, received_date, status, flag) "
-                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
+                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRetrieve.getRefId());
             ps.setString(2, whRetrieve.getMaterialPassNo());
             ps.setString(3, whRetrieve.getMaterialPassExpiry());
             ps.setString(4, whRetrieve.getEquipmentType());
             ps.setString(5, whRetrieve.getEquipmentId());
-            ps.setString(6, whRetrieve.getQuantity());
-            ps.setString(7, whRetrieve.getRequestedBy());
-            ps.setString(8, whRetrieve.getRequestedEmail());
-            ps.setString(9, whRetrieve.getRequestedDate());
-            ps.setString(10, whRetrieve.getRemarks());
-            ps.setString(11, whRetrieve.getShippingDate());
-            ps.setString(12, whRetrieve.getStatus());
-            ps.setString(13, whRetrieve.getFlag());
+            ps.setString(6, whRetrieve.getPcbA());
+            ps.setString(7, whRetrieve.getPcbB());
+            ps.setString(8, whRetrieve.getPcbC());
+            ps.setString(9, whRetrieve.getPcbControl());
+            ps.setString(10, whRetrieve.getQtyQualA());
+            ps.setString(11, whRetrieve.getQtyQualB());
+            ps.setString(12, whRetrieve.getQtyQualC());
+            ps.setString(13, whRetrieve.getQtyControl());
+            ps.setString(14, whRetrieve.getQuantity());
+            ps.setString(15, whRetrieve.getRequestedBy());
+            ps.setString(16, whRetrieve.getRequestedEmail());
+            ps.setString(17, whRetrieve.getRequestedDate());
+            ps.setString(18, whRetrieve.getRemarks());
+            ps.setString(19, whRetrieve.getShippingDate());
+            ps.setString(20, whRetrieve.getStatus());
+            ps.setString(21, whRetrieve.getFlag());
 
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
@@ -77,7 +86,7 @@ public class WhRetrieveDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(
                 "UPDATE hms_wh_retrieval_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ? "
-                + "WHERE ref_id = ? AND material_pass_no = ? "
+                + "WHERE retrieve_id = ? AND material_pass_no = ? "
             );
             ps.setString(1, whRetrieve.getBarcodeVerify());
             ps.setString(2, whRetrieve.getDateVerify());
@@ -106,7 +115,7 @@ public class WhRetrieveDAO {
     public QueryResult updateWhRetrieveForInventory(WhRetrieve whRetrieve) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_retrieval_list SET status = ?, flag = ? "
-                   + "WHERE ref_id = ? AND material_pass_no = ? ";
+                   + "WHERE retrieve_id = ? AND material_pass_no = ? ";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRetrieve.getStatus());
@@ -133,7 +142,7 @@ public class WhRetrieveDAO {
     public QueryResult updateWhRetrieveForApproval(WhRetrieve whRetrieve) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_retrieval_list SET status = ?, flag = ?"
-                   + "WHERE ref_id = ?";
+                   + "WHERE retrieve_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRetrieve.getStatus());
@@ -160,7 +169,7 @@ public class WhRetrieveDAO {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_retrieval_list WHERE ref_id = '" + id + "' "
+                "SELECT COUNT(*) AS count FROM hms_wh_retrieval_list WHERE retrieve_id = '" + id + "' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -188,7 +197,7 @@ public class WhRetrieveDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM hms_wh_retrieval_list WHERE ref_id = '" + whRetrieveId + "'"
+                    "DELETE FROM hms_wh_retrieval_list WHERE retrieve_id = '" + whRetrieveId + "'"
             );
             queryResult.setResult(ps.executeUpdate());
             ps.close();
@@ -208,17 +217,18 @@ public class WhRetrieveDAO {
     }
     
     public WhRetrieve getWhRetrieve(String whRetrieveId) {
-        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y') AS requested_date_view, "
-                + "             DATE_FORMAT(date_verify,'%d %M %Y') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y') AS shipping_date_view "
+        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                + "             DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                     + "FROM hms_wh_retrieval_list "
-                    + "WHERE ref_id = '" + whRetrieveId + "' ";
+                    + "WHERE retrieve_id = '" + whRetrieveId + "' ";
         WhRetrieve whRetrieve = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whRetrieve = new WhRetrieve();
-                whRetrieve.setRefId(rs.getString("ref_id"));
+                whRetrieve.setId(rs.getString("id"));
+                whRetrieve.setRefId(rs.getString("retrieve_id"));
                 whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
                 whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
@@ -258,14 +268,15 @@ public class WhRetrieveDAO {
     public WhRetrieve getWhRet(String whRetrieveId) {
         String sql  = "SELECT * "
                     + "FROM hms_wh_retrieval_list "
-                    + "WHERE ref_id = '" + whRetrieveId + "' ";
+                    + "WHERE retrieve_id = '" + whRetrieveId + "' ";
         WhRetrieve whRetrieve = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whRetrieve = new WhRetrieve();
-                whRetrieve.setRefId(rs.getString("ref_id"));
+                whRetrieve.setId(rs.getString("id"));
+                whRetrieve.setRefId(rs.getString("retrieve_id"));
                 whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
                 whRetrieve.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
@@ -316,7 +327,7 @@ public class WhRetrieveDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whRetrieve = new WhRetrieve();
-                whRetrieve.setRefId(rs.getString("ref_id"));
+                whRetrieve.setRefId(rs.getString("retrieve_id"));
                 whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
                 whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
@@ -365,7 +376,7 @@ public class WhRetrieveDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 whRetrieve = new WhRetrieve();
-                whRetrieve.setRefId(rs.getString("ref_id"));
+                whRetrieve.setRefId(rs.getString("retrieve_id"));
                 whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
                 whRetrieve.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
