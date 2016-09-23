@@ -13,6 +13,7 @@ import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhInventory;
+import com.onsemi.hms.model.WhRetrieveLog;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import com.onsemi.hms.tools.SpmlUtil;
@@ -240,119 +241,213 @@ public class WhRetrieveController {
         whRetrieve.setRefId(refId);      
         whRetrieve.setMaterialPassNo(materialPassNo);
         
-        boolean cp = false;
-        if(status.equals("Verification Pass")) {
-            whRetrieve.setStatus("Move to Inventory");
-            whRetrieve.setFlag("1");
-            cp = true;
-            LOGGER.info("Inventory Pass");
-        } else {
-            whRetrieve.setStatus(status);
-            whRetrieve.setFlag(flag);
-            cp = false;
-            LOGGER.info("Inventory Fail");
+        boolean ck = false;
+        LOGGER.info("************************************ " + inventoryRack + " vs " + inventoryShelf.substring(0,6) + " ************************************");
+        if(inventoryShelf.substring(0,6).equals(inventoryRack)) {
+            ck = true;
         }
-        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-        QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
         
-        WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
-        WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
-        LogModule logModule2 = new LogModule();
-        LogModuleDAO logModuleDAO2 = new LogModuleDAO();
-        logModule2.setModuleId(query2.getId());
-        logModule2.setReferenceId(refId);
-        logModule2.setModuleName("hms_wh_retrieval_list");
-        logModule2.setStatus(query2.getStatus());
-        QueryResult queryResult2 = logModuleDAO2.insertLog(logModule2);
-        
-        if(whRetrieve.getFlag().equals("1")) {
-            //save id to table wh_inventory_list
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
-            
-            WhInventory whInventory = new WhInventory();
-            whInventory.setRefId(refId);
-            whInventory.setMaterialPassNo(materialPassNo);
-            whInventory.setStatus("Available");
-            whInventory.setInventoryBy(userSession.getFullname());
-            whInventory.setInventoryRack(inventoryRack);
-            whInventory.setInventoryShelf(inventoryShelf);
-            
-            WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
-            int count = whInventoryDAO.getCountExistingData(whInventory.getRefId());
-            if (count == 0) {
-                LOGGER.info("data xdeeeeee");
-                whInventoryDAO = new WhInventoryDAO();
-                QueryResult queryResult1 = whInventoryDAO.insertWhInventory(whInventory);
-                
-                WhInventoryDAO whInventoryDAO3 = new WhInventoryDAO();
-                WhInventory query3 = whInventoryDAO3.getWhInventory(refId);
-                LogModule logModule3 = new LogModule();
-                LogModuleDAO logModuleDAO3 = new LogModuleDAO();
-                logModule3.setModuleId(query3.getId());
-                logModule3.setReferenceId(refId);
-                logModule3.setModuleName("hms_wh_inventory_list");
-                logModule3.setStatus(query3.getStatus());
-                logModule3.setVerifiedBy(query3.getInventoryBy());
-                logModule3.setVerifiedDate(query3.getInventoryDate());
-                QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
-                
-                args = new String[1];
-                args[0] = materialPassNo;
-                if (queryResult.getResult() == 0 && cp == false) {
-                    //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-                } else {
-                    String username = System.getProperty("user.name");
-                    //SEND EMAIL
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
-                    if (file.exists()) {
-                        LOGGER.info("dh ada header");
-                        FileWriter fileWriter = null;
-                        FileReader fileReader = null;
-                        try {
-                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv", true);
-                            fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
-                            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
+        String url;
+        if(ck == true) {
+            boolean cp = false;
+            if(status.equals("Verification Pass")) {
+                whRetrieve.setStatus("Move to Inventory");
+                whRetrieve.setFlag("1");
+                cp = true;
+                LOGGER.info("Inventory Pass");
+            } else {
+                whRetrieve.setStatus(status);
+                whRetrieve.setFlag(flag);
+                cp = false;
+                LOGGER.info("Inventory Fail");
+            }
+            WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+            QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
 
-                            BufferedReader bufferedReader = new BufferedReader(fileReader); 
-                            String data = bufferedReader.readLine();
-                            StringBuilder buff = new StringBuilder();
+            WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
+            WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
+            LogModule logModule2 = new LogModule();
+            LogModuleDAO logModuleDAO2 = new LogModuleDAO();
+            logModule2.setModuleId(query2.getId());
+            logModule2.setReferenceId(refId);
+            logModule2.setModuleName("hms_wh_retrieval_list");
+            logModule2.setStatus(query2.getStatus());
+            QueryResult queryResult2 = logModuleDAO2.insertLog(logModule2);
 
-                            boolean check = false;
-                            int row = 0;
-                            while(data != null){
-                                LOGGER.info("start reading file..........");
-                                buff.append(data).append(System.getProperty("line.separator"));
-                                System.out.println("dataaaaaaaaa : \n" + data);
+            if(whRetrieve.getFlag().equals("1")) {
+                //save id to table wh_inventory_list
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
 
-                                String[] split = data.split(",");
-                                IonicFtpRetrieve2 retrieve = new IonicFtpRetrieve2(
-                                    split[0], split[1], split[2],
-                                    split[3], split[4], split[5], 
-                                    split[6], split[7], split[8],
-                                    split[9], split[10], split[11],
-                                    split[12], split[13]
-                                );
+                WhInventory whInventory = new WhInventory();
+                whInventory.setRefId(refId);
+                whInventory.setMaterialPassNo(materialPassNo);
+                whInventory.setStatus("Available");
+                whInventory.setInventoryBy(userSession.getFullname());
+                whInventory.setInventoryRack(inventoryRack);
+                whInventory.setInventoryShelf(inventoryShelf);
 
-                                if(split[0].equals(refId)) {
-                                    LOGGER.info(row + " : retrieve Id found...................." + data);
-                                    check = true;
-                                } else {
-                                    LOGGER.info("retrieve Id not found........" + data);
+                WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+                int count = whInventoryDAO.getCountExistingData(whInventory.getRefId());
+                if (count == 0) {
+                    LOGGER.info("data xdeeeeee");
+                    whInventoryDAO = new WhInventoryDAO();
+                    QueryResult queryResult1 = whInventoryDAO.insertWhInventory(whInventory);
+
+                    WhInventoryDAO whInventoryDAO3 = new WhInventoryDAO();
+                    WhInventory query3 = whInventoryDAO3.getWhInventory(refId);
+                    LogModule logModule3 = new LogModule();
+                    LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+                    logModule3.setModuleId(query3.getId());
+                    logModule3.setReferenceId(refId);
+                    logModule3.setModuleName("hms_wh_inventory_list");
+                    logModule3.setStatus(query3.getStatus());
+                    logModule3.setVerifiedBy(query3.getInventoryBy());
+                    logModule3.setVerifiedDate(query3.getInventoryDate());
+                    QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
+
+                    args = new String[1];
+                    args[0] = materialPassNo;
+                    if (queryResult.getResult() == 0 && cp == false) {
+                        //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+                    } else {
+                        String username = System.getProperty("user.name");
+                        //SEND EMAIL
+                        File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                        if (file.exists()) {
+                            LOGGER.info("dh ada header");
+                            FileWriter fileWriter = null;
+                            FileReader fileReader = null;
+                            try {
+                                fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv", true);
+                                fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                                String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
+
+                                BufferedReader bufferedReader = new BufferedReader(fileReader); 
+                                String data = bufferedReader.readLine();
+                                StringBuilder buff = new StringBuilder();
+
+                                boolean check = false;
+                                int row = 0;
+                                while(data != null){
+                                    LOGGER.info("start reading file..........");
+                                    buff.append(data).append(System.getProperty("line.separator"));
+                                    System.out.println("dataaaaaaaaa : \n" + data);
+
+                                    String[] split = data.split(",");
+                                    IonicFtpRetrieve2 retrieve = new IonicFtpRetrieve2(
+                                        split[0], split[1], split[2],
+                                        split[3], split[4], split[5], 
+                                        split[6], split[7], split[8],
+                                        split[9], split[10], split[11],
+                                        split[12], split[13]
+                                    );
+
+                                    if(split[0].equals(refId)) {
+                                        LOGGER.info(row + " : retrieve Id found...................." + data);
+                                        check = true;
+                                    } else {
+                                        LOGGER.info("retrieve Id not found........" + data);
+                                    }
+                                    data = bufferedReader.readLine();
+                                    row++;
                                 }
-                                data = bufferedReader.readLine();
-                                row++;
+                                bufferedReader.close();
+                                fileReader.close();
+
+                                if(check == false) {
+                                    //New Line after the header
+                                    fileWriter.append(LINE_SEPARATOR);
+                                    WhInventoryDAO whdao = new WhInventoryDAO();
+                                    WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
+
+                                    String pcbA = wh.getPcbA(), pcbB = wh.getPcbB(), pcbC = wh.getPcbC(), pcbControl = wh.getPcbControl();
+                                    if(!wh.getEquipmentType().equals("PCB")) {
+                                        if(wh.getPcbA() == null || wh.getPcbA().equals("null")) {
+                                            pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
+                                        }
+                                        if(wh.getPcbB() == null || wh.getPcbB().equals("null")) {
+                                            pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
+                                        }
+                                        if(wh.getPcbC() == null || wh.getPcbC().equals("null")) {
+                                            pcbC = SpmlUtil.nullToEmptyString(wh.getPcbC());
+                                        }
+                                        if(wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
+                                            pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
+                                        }
+                                    }
+
+                                    fileWriter.append(refId);
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getMaterialPassNo());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getMaterialPassExpiry());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getEquipmentType());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getEquipmentId());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(pcbA);
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getQtyQualA());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(pcbB);
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getQtyQualB());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(pcbC);
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getQtyQualC());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(pcbControl);
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getQtyControl());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getQuantity());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getRequestedBy());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getRequestedDate());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getRemarks());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getDateVerify());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getInventoryDate());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getInventoryRack());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getInventoryShelf());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(userSession.getFullname());
+                                    fileWriter.append(COMMA_DELIMITER);
+                                    fileWriter.append(wh.getStatus());
+        //                            fileWriter.append(COMMA_DELIMITER);
+                                    System.out.println("append to CSV file Succeed!!!");
+                                }
+                            } catch (Exception ee) {
+                                System.out.println("Error 1 occured while append the fileWriter");
+                            } finally {
+                                try {
+                                    fileWriter.close();
+                                } catch (IOException ie) {
+                                    System.out.println("Error 2 occured while closing the fileWriter");
+                                }
                             }
-                            bufferedReader.close();
-                            fileReader.close();
-                            
-                            if(check == false) {
+                        } else {
+                            FileWriter fileWriter = null;
+                            try {
+                                fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                                LOGGER.info("no file yet");
+                                //Adding the header
+                                fileWriter.append(HEADER);
+
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
                                 WhInventoryDAO whdao = new WhInventoryDAO();
                                 WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
 
-                                String pcbA = "", pcbB = "", pcbC = "", pcbControl = "";
+                                String pcbA = wh.getPcbA(), pcbB = wh.getPcbB(), pcbC = wh.getPcbC(), pcbControl = wh.getPcbControl();
                                 if(!wh.getEquipmentType().equals("PCB")) {
                                     if(wh.getPcbA() == null || wh.getPcbA().equals("null")) {
                                         pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
@@ -367,9 +462,9 @@ public class WhRetrieveController {
                                         pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
                                     }
                                 }
-                                
+
                                 fileWriter.append(refId);
-                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(COMMA_DELIMITER); 
                                 fileWriter.append(wh.getMaterialPassNo());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(wh.getMaterialPassExpiry());
@@ -413,186 +508,84 @@ public class WhRetrieveController {
                                 fileWriter.append(userSession.getFullname());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(wh.getStatus());
-    //                            fileWriter.append(COMMA_DELIMITER);
-                                System.out.println("append to CSV file Succeed!!!");
-                            }
-                        } catch (Exception ee) {
-                            System.out.println("Error 1 occured while append the fileWriter");
-                        } finally {
-                            try {
-                                fileWriter.close();
-                            } catch (IOException ie) {
-                                System.out.println("Error 2 occured while closing the fileWriter");
+    //                            fileWriter.append(COMMA_DELIMITER);              
+                            } catch (Exception ee) {
+                                System.out.println("Error 1 occured while append the fileWriter");
+                            } finally {
+                                try {
+                                    System.out.println("write new to CSV file Succeed!!!");
+                                    fileWriter.close();
+                                } catch (IOException ie) {
+                                    System.out.println("Error 2 occured while closing the fileWriter");
+                                    ie.printStackTrace();
+                                }
                             }
                         }
-                    } else {
-                        FileWriter fileWriter = null;
+
+                        //send email
+                        LOGGER.info("send email to warehouse");
+
+                        /*to get hostname*/
+                        InetAddress ip;
+                        String hostName ="";
                         try {
-                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
-                            LOGGER.info("no file yet");
-                            //Adding the header
-                            fileWriter.append(HEADER);
-
-                            //New Line after the header
-                            fileWriter.append(LINE_SEPARATOR);
-                            WhInventoryDAO whdao = new WhInventoryDAO();
-                            WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
-                            
-                            String pcbA = "", pcbB = "", pcbC = "", pcbControl = "";
-                            if(!wh.getEquipmentType().equals("PCB")) {
-                                if(wh.getPcbA() == null || wh.getPcbA().equals("null")) {
-                                    pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
-                                }
-                                if(wh.getPcbB() == null || wh.getPcbB().equals("null")) {
-                                    pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
-                                } 
-                                if(wh.getPcbC() == null || wh.getPcbC().equals("null")) {
-                                    pcbC = SpmlUtil.nullToEmptyString(wh.getPcbC());
-                                }
-                                if(wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
-                                    pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
-                                }
-                            }
-                                
-                            fileWriter.append(refId);
-                            fileWriter.append(COMMA_DELIMITER); 
-                            fileWriter.append(wh.getMaterialPassNo());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getMaterialPassExpiry());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getEquipmentType());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getEquipmentId());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(pcbA);
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getQtyQualA());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(pcbB);
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getQtyQualB());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(pcbC);
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getQtyQualC());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(pcbControl);
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getQtyControl());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getQuantity());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getRequestedBy());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getRequestedDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getRemarks());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getDateVerify());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryDate());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryRack());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getInventoryShelf());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(userSession.getFullname());
-                            fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(wh.getStatus());
-//                            fileWriter.append(COMMA_DELIMITER);              
-                        } catch (Exception ee) {
-                            System.out.println("Error 1 occured while append the fileWriter");
-                        } finally {
-                            try {
-                                System.out.println("write new to CSV file Succeed!!!");
-                                fileWriter.close();
-                            } catch (IOException ie) {
-                                System.out.println("Error 2 occured while closing the fileWriter");
-                                ie.printStackTrace();
-                            }
+                            ip = InetAddress.getLocalHost();
+                            hostName = ip.getHostName();
+                        } catch (UnknownHostException ex) {
+                            java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                         }
+
+                        System.out.println("******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
+
+                        EmailSender emailSender = new EmailSender();
+                        emailSender.htmlEmailWithAttachmentRetrieve(
+                            servletContext,
+                            "CDARS",                                                   //user name
+                            "cdarsrel@gmail.com",                                   //to
+                            "Status for Hardware Inventory from HMS",  //subject
+                            "Verification and inventory for Hardware has been made."    //msg
+                        );
+                        redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
                     }
-
-                    //send email
-                    LOGGER.info("send email to warehouse");
-
-                    /*to get hostname*/
-                    InetAddress ip;
-                    String hostName ="";
-                    try {
-                        ip = InetAddress.getLocalHost();
-                        hostName = ip.getHostName();
-                    } catch (UnknownHostException ex) {
-                        java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    System.out.println("******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
-                    
-                    EmailSender emailSender = new EmailSender();
-                    emailSender.htmlEmailWithAttachmentRetrieve(
-                        servletContext,
-                        "CDARS",                                                   //user name
-                        "cdarsrel@gmail.com",                                   //to
-                        "Status for Hardware Inventory from HMS",  //subject
-                        "Verification and inventory for Hardware has been made."    //msg
-                    );
-                    
-//                    WhInventoryDAO whdao = new WhInventoryDAO();
-//                    WhInventory wh = whdao.getWhInventoryMergeWithRetrievePdf(refId);
-//                    System.out.println(wh.getRequestedBy() + "******************* EMAIL REQUESTOR ******************* " + wh.getRequestedEmail());
-//                    //sent to requestor
-//                    EmailSender emailSender2 = new EmailSender();
-//                    com.onsemi.hms.model.User user2 = new com.onsemi.hms.model.User();
-//                    user2.setFullname(userSession.getFullname());
-//                    String emailTitle = "Status for Hardware Shipping from HMS";
-//                    
-//                    emailSender2.htmlEmail2(
-//                        servletContext,
-//                        wh.getRequestedBy(),                       //from
-//                        wh.getRequestedEmail(), //to
-//                        emailTitle,         
-//                        "Verification for Hardware Inventory has been made. Please go to this link " //msg
-//                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whInventory/" + "\">CDARS</a>"
-//                        + " for status checking."
-//                    );
-
-                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
+                } else {
+                    LOGGER.info("data adeeeeee");
                 }
-            } else {
-                LOGGER.info("data adeeeeee");
             }
+            url = "redirect:/wh/whInventory/";
+        } else {
+            url = "redirect:/wh/whRetrieve/verify/" + refId;
         }
-        return "redirect:/wh/whInventory/";
+        return url;
     }
-//    
-//    @RequestMapping(value = "/history/{whRetrieveId}", method = RequestMethod.GET)
-//    public String history(
-//            Model model,
-//            HttpServletRequest request,
-//            @PathVariable("whRetrieveId") String whRetrieveId
-//    ) throws UnsupportedEncodingException {
-//        LOGGER.info("Masuk view 1........");        
-//        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whRetrieve/viewWhRetrieveHistPdf/" + whRetrieveId, "UTF-8");
-//        String backUrl = servletContext.getContextPath() + "/wh/whRetrieve";
-//        model.addAttribute("pdfUrl", pdfUrl);
-//        model.addAttribute("backUrl", backUrl);
-//        model.addAttribute("pageTitle", "Warehouse Management - Hardware Retrieve History");
-//        LOGGER.info("Masuk view 2........");
-//        return "pdf/viewer";
-//    }
-//    
-//    @RequestMapping(value = "/viewWhRetrievePdf/{whRetrieveId}", method = RequestMethod.GET)
-//    public ModelAndView viewWhRetrieveHistPdf(
-//            Model model,
-//            @PathVariable("whInventoryId") String whRetrieveId
-//    ) {
-//        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-//        WhRetrieve whRetrieve = whRetrieveDAO.getWhRetrieve(whRetrieveId);
-//        String id = whRetrieve.getId();
-//        
-//        LOGGER.info("Masuk 1........");
-//        List<WhHistory> whHistoryList = whRetrieveDAO.getWhInventoryHistList(id);
-//        LOGGER.info("Masuk 2........");
-//        return new ModelAndView("whInventoryPdf", "whHistory", whHistoryList);
-//    }
+    
+    @RequestMapping(value = "/history/{whRetrieveId}", method = RequestMethod.GET)
+    public String history(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable("whRetrieveId") String whRetrieveId
+    ) throws UnsupportedEncodingException {
+        LOGGER.info("Masuk view 1........");        
+        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whRetrieve/viewWhRetrieveLogPdf/" + whRetrieveId, "UTF-8");
+        String backUrl = servletContext.getContextPath() + "/wh/whRetrieve";
+        model.addAttribute("pdfUrl", pdfUrl);
+        model.addAttribute("backUrl", backUrl);
+        model.addAttribute("pageTitle", "Warehouse Management - Hardware Retrieve History");
+        LOGGER.info("Masuk view 2........");
+        return "pdf/viewer";
+    }
+    
+    @RequestMapping(value = "/viewWhRetrieveLogPdf/{whRetrieveId}", method = RequestMethod.GET)
+    public ModelAndView viewWhRetrieveHistPdf(
+            Model model,
+            @PathVariable("whInventoryId") String whRetrieveId
+    ) {
+        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+        WhRetrieve whRetrieve = whRetrieveDAO.getWhRetrieve(whRetrieveId);
+        String retrieveId = whRetrieve.getRefId();
+        
+        LOGGER.info("Masuk 1........");
+        List<WhRetrieveLog> whHistoryList = whRetrieveDAO.getWhRetrieveLog(retrieveId);
+        LOGGER.info("Masuk 2........");
+        return new ModelAndView("whRetrieveLogPdf", "whRetrieve", whHistoryList);
+    }
 }

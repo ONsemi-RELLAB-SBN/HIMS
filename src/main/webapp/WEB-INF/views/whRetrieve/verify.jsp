@@ -11,61 +11,61 @@
         <div class="col-lg-12">
             <h1>Approval for Hardware Retrieve</h1>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Details</h2>
                         <form id="approval_hardwaretrieve_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRetrieve/approvalupdate" method="post">
                             <input type="hidden" name="refId" value="${whRetrieve.refId}" />
                             <div class="form-group">
-                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Type</label>
+                                <label for="equipmentType" class="col-lg-3 control-label">Hardware Type</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentType" name="equipmentType" value="${whRetrieve.equipmentType}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-4 control-label">Hardware ID</label>
+                                <label for="equipmentId" class="col-lg-3 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.equipmentId}" readonly>
                                 </div>
                             </div>  
                             <div class="form-group" id="quantitydiv" hidden>
-                                <label for="quantity" class="col-lg-4 control-label">Quantity *</label>
-                                <div class="col-lg-2">
+                                <label for="quantity" class="col-lg-3 control-label">Quantity *</label>
+                                <div class="col-lg-4">
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="${whRetrieve.quantity}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-4 control-label">Material Pass No.</label>
+                                <label for="materialPassNo" class="col-lg-3 control-label">Material Pass No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="${whRetrieve.materialPassNo}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="materialPassExpiry" class="col-lg-4 control-label">Material Pass Expiry Date</label>
+                                <label for="materialPassExpiry" class="col-lg-3 control-label">Material Pass Expiry Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="retrieveBy" class="col-lg-4 control-label">Requested By</label>
+                                <label for="retrieveBy" class="col-lg-3 control-label">Requested By</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Retrieve For" value="${whRetrieve.requestedBy}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="retrieveDate" class="col-lg-4 control-label">Requested Date</label>
+                                <label for="retrieveDate" class="col-lg-3 control-label">Requested Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="retrieveDate" name="retrieveDate" placeholder="Retrieve For" value="${whRetrieve.requestedDate}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="remarks" class="col-lg-4 control-label">Remarks </label>
+                                <label for="remarks" class="col-lg-3 control-label">Remarks </label>
                                 <div class="col-lg-8">
                                     <textarea class="form-control" rows="5" id="remarks" name="remarks" readonly>${whRetrieve.remarks}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="status" class="col-lg-4 control-label">Status</label>
+                                <label for="status" class="col-lg-3 control-label">Status</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="status" name="status" value="${whRetrieve.status}" readonly>
                                 </div>
@@ -93,7 +93,7 @@
                     <div id="mp" class="tab-pane fade ${mpActiveTab}">
 
                         <h6></h6>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <div class="main-box">
                                 <h2>Verify Barcode Label</h2>
                                 <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRetrieve/verifyMp" method="post">
@@ -104,7 +104,7 @@
                                     <input type="hidden" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
                                     <input type="hidden" name="tab" value="${mpActiveTab}" />
                                     <div class="form-group">
-                                        <label for=" barcodeVerify" class="col-lg-4 control-label">Scan Barcode Label</label>
+                                        <label for=" barcodeVerify" class="col-lg-3 control-label">Scan Barcode Label</label>
                                         <div class="col-lg-8" id="barcodeVerifyDiv">
                                             <input type="text" class="form-control" id="barcodeVerify" name="barcodeVerify" autofocus="autofocus" required='true' value="${whRetrieve.barcodeVerify}"/>
                                         </div>
@@ -124,7 +124,7 @@
                     <!--tab for inventory-->
                     <div id="hi" class="tab-pane fade ${hiActiveTab}">
                         <h6></h6>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <div class="main-box">
                                 <h2>Hardware Location</h2>
                                 <form id="hi_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRetrieve/setInventory" method="post">
@@ -141,17 +141,18 @@
                                     <input type="hidden" name="tab" value="${hiActiveTab}" />
                                     <!--<input type="hidden" name="inventoryDate" value="${whInventory.inventoryDate}" />-->
                                     <div class="form-group">
-                                        <label for="inventoryRack" class="col-lg-4 control-label">Rack Location</label>
+                                        <label for="inventoryRack" class="col-lg-3 control-label">Rack Location</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="inventoryRack" name="inventoryRack" autofocus="autofocus" value="${whInventory.inventoryRack}" required/> 
                                         </div>
                                         <br><br>
-                                        <label for="inventoryShelf" class="col-lg-4 control-label">Shelf Location</label>
+                                        <label for="inventoryShelf" class="col-lg-3 control-label">Shelf Location</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="inventoryShelf" name="inventoryShelf" autofocus="autofocus" value="${whInventory.inventoryShelf}" required/> 
                                         </div>
                                     </div>
-                                    <br><br><br>
+                                    <div id = "alert_placeholder2"></div>
+                                    <br><br>
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel1">Reset</button>
                                         <button type="submit" name="submit" id="submit" class="btn btn-primary">Save</button>
@@ -206,16 +207,23 @@
                         }
                     }
                 });
+                
+                var rack = $("#inventoryRack").val();
+                var subshelf = $("#inventoryShelf").val().substring(0,6);
                 var validator1 = $("#hi_form").validate({
                     rules: {
                         inventoryRack: {
-                            required: true
+                            required: true,
+                            maxlength: 6,
+                            equalToInventory: subshelf
                         },
                         inventoryShelf: {
-                            required: true
+                            required: true,
+                            maxlength: 10
                         }
                     }
                 });
+                
                 
                 var element = $('#barcodeVerify');
                 if (element.val() === "#materialPassNo") {

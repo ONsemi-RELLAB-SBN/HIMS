@@ -11,49 +11,49 @@
         <div class="col-lg-12">
             <h1>Update Hardware Inventory</h1>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Details</h2>
                         <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/wh/whInventory/update" method="post">
                             <input type="hidden" name="refId" value="${whInventory.refId}" />
                             <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-4 control-label">Material Pass No.</label>
+                                <label for="materialPassNo" class="col-lg-3 control-label">Material Pass No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="${whInventory.materialPassNo}" readonly>
                                 </div>
                             </div>
                                 <div class="form-group">
-                                <label for="materialPassExpiry" class="col-lg-4 control-label">Material Pass Expiry Date</label>
+                                <label for="materialPassExpiry" class="col-lg-3 control-label">Material Pass Expiry Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="${whInventory.materialPassExpiry}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Category</label>
+                                <label for="equipmentType" class="col-lg-3 control-label">Hardware Category</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentType" name="equipmentType" value="${whInventory.equipmentType}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-4 control-label">Equipment ID</label>
+                                <label for="equipmentId" class="col-lg-3 control-label">Equipment ID</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whInventory.equipmentId}" readonly>
                                 </div>
                             </div>
                             <div class="form-group" id="quantitydiv" hidden>
-                                <label for="quantity" class="col-lg-4 control-label">Quantity</label>
+                                <label for="quantity" class="col-lg-3 control-label">Quantity</label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="${whInventory.quantity}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inventoryRack" class="col-lg-4 control-label">Inventory Rack</label>
+                                <label for="inventoryRack" class="col-lg-3 control-label">Inventory Rack</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="inventoryRack" name="inventoryRack" placeholder="${whInventory.inventoryRack}" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inventoryShelf" class="col-lg-4 control-label">Inventory Shelf</label>
+                                <label for="inventoryShelf" class="col-lg-3 control-label">Inventory Shelf</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="inventoryShelf" name="inventoryShelf" placeholder="${whInventory.inventoryShelf}" required>
                                 </div>

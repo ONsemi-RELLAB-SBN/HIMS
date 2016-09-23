@@ -11,80 +11,80 @@
         <div class="col-lg-12">
             <h1>Verification for Hardware Request</h1>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Details</h2>
                         <form id="approval_hardwarequest_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/approvalupdate" method="post">
                             <input type="hidden" name="refId" value="${whRequest.refId}" />
                             <div class="form-group">
-                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Type</label>
+                                <label for="equipmentType" class="col-lg-3 control-label">Hardware Type</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentType" name="equipmentType" value="${whRequest.equipmentType}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-4 control-label">Hardware ID</label>
+                                <label for="equipmentId" class="col-lg-3 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.equipmentId}" readonly>
                                 </div>
                             </div>  
                             <div class="form-group" id="quantitydiv" hidden>
-                                <label for="quantity" class="col-lg-4 control-label">Quantity *</label>
-                                <div class="col-lg-2">
+                                <label for="quantity" class="col-lg-3 control-label">Quantity *</label>
+                                <div class="col-lg-3">
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="${whRequest.quantity}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-4 control-label">Material Pass No.</label>
+                                <label for="materialPassNo" class="col-lg-3 control-label">Material Pass No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="${whRequest.materialPassNo}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="materialPassExpiry" class="col-lg-4 control-label">Material Pass Expiry Date</label>
+                                <label for="materialPassExpiry" class="col-lg-3 control-label">Material Pass Expiry Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="${whRequest.materialPassExpiry}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inventoryLoc" class="col-lg-4 control-label">Hardware Inventory</label>
+                                <label for="inventoryLoc" class="col-lg-3 control-label">Hardware Inventory</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="retrieveBy" class="col-lg-4 control-label">Requested By</label>
+                                <label for="retrieveBy" class="col-lg-3 control-label">Requested By</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Request For" value="${whRequest.requestedBy}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="retrieveDate" class="col-lg-4 control-label">Requested Date</label>
+                                <label for="retrieveDate" class="col-lg-3 control-label">Requested Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="retrieveDate" name="retrieveDate" placeholder="Request For" value="${whRequest.requestedDate}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="requestedEmail" class="col-lg-4 control-label">Requestor Email</label>
+                                <label for="requestedEmail" class="col-lg-3 control-label">Requestor Email</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="requestedEmail" name="requestedEmail" placeholder="requestedEmail" value="${whRequest.requestedEmail}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="requestedDate" class="col-lg-4 control-label">Requested Date</label>
+                                <label for="requestedDate" class="col-lg-3 control-label">Requested Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="requestedDate" name="requestedDate" placeholder="Request For" value="${whRequest.requestedDate}" readonly>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="remarks" class="col-lg-4 control-label">Remarks </label>
+                                <label for="remarks" class="col-lg-3 control-label">Remarks </label>
                                 <div class="col-lg-8">
                                     <textarea class="form-control" rows="5" id="remarks" name="remarks" readonly>${whRequest.remarks}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="status" class="col-lg-4 control-label">Status</label>
+                                <label for="status" class="col-lg-3 control-label">Status</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="status" name="status" value="${whRequest.status}" readonly>
                                 </div>
@@ -110,7 +110,7 @@
                     <!--Tab for Scan Material Pass-->
                     <div id="mp" class="tab-pane fade ${mpActiveTab}">
                         <h6></h6>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <div class="main-box">
                                 <h2>Verify Barcode Label</h2>
                                 <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyMp" method="post">
@@ -120,7 +120,7 @@
                                     <input type="hidden" name="flag" value="${whRequest.flag}" />
                                     <input type="hidden" name="tab" value="${mpActiveTab}" />
                                     <div class="form-group">
-                                        <label for=" barcodeVerify" class="col-lg-4 control-label">Scan Barcode Label</label>
+                                        <label for=" barcodeVerify" class="col-lg-3 control-label">Scan Barcode Label</label>
                                         <div class="col-lg-8" id="barcodeVerifyDiv">
                                             <input type="text" class="form-control" id="barcodeVerify" name="barcodeVerify" autofocus="autofocus" required='true' value="${whRequest.barcodeVerify}"/>
                                         </div>
@@ -140,7 +140,7 @@
                     <!--tab for inventory-->
                     <div id="hi" class="tab-pane fade ${hiActiveTab}">
                         <h6></h6>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <div class="main-box">
                                 <h2>Hardware Location</h2>
                                 <form id="hi_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyInventory" method="post">
@@ -152,19 +152,19 @@
                                     <input type="hidden" id="inventoryShelf" name="inventoryShelf" value="${whRequest.inventoryShelf}" />
                                     <input type="hidden" name="tab" value="${hiActiveTab}" />
                                     <div class="form-group">
-                                        <label for=" inventoryRackVerify" class="col-lg-4 control-label">Scan Hardware's Rack Location</label>
+                                        <label for=" inventoryRackVerify" class="col-lg-3 control-label">Scan Hardware's Rack Location</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="inventoryRackVerify" name="inventoryRackVerify" autofocus="autofocus" value="${whRequest.inventoryRackVerify}" required/> 
                                         </div>
                                     </div>
                                     <div id = "alert_placeholder2"></div>
                                     <div class="form-group">                                        
-                                        <label for=" inventoryShelfVerify" class="col-lg-4 control-label">Scan Hardware's Shelf Location</label>
+                                        <label for=" inventoryShelfVerify" class="col-lg-3 control-label">Scan Hardware's Shelf Location</label>
                                         <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="inventoryShelfVerify" name="inventoryShelfVerify" autofocus="autofocus" value="${whRequest.inventoryShelfVerify}" required/> 
+                                            <input type="text" class="form-control" id="inventoryShelfVerify" name="inventoryShelfVerify" autofocus="autofocus" value="${whRequest.inventoryShelfVerify}" required/>
                                         </div>
                                     </div>
-                                    <div id = "alert_placeholder3"></div>
+                                    <div id = "alert_placeholder3"></div>                                        
                                     <br><br>
                                     <div class="pull-right">
                                         <button type="reset" class="btn btn-secondary cancel1">Reset</button>
@@ -190,6 +190,7 @@
         <script>
             $(document).ready(function () {
 
+                
                 bootstrap_alert = function () {}
                 bootstrap_alert.warning = function (message) {
                     $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')

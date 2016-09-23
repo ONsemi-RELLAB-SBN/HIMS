@@ -9,31 +9,31 @@
         <div class="col-lg-12">
             <h1>Edit User</h1>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="main-box">
                         <h2>User Information</h2>
                         <form id="edit_user_form" class="form-horizontal" role="form" action="${contextPath}/user/userProfile" method="post">
                             <input type="hidden" name="userId" value="${user.id}">
                             <div class="form-group">
-                                <label for="loginId" class="col-lg-4 control-label">Login ID *</label>
+                                <label for="loginId" class="col-lg-3 control-label">Login ID *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="loginId" name="loginId" placeholder="Login ID" value="${sessionScope.userSession.loginId}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="fullname" class="col-lg-4 control-label">Name *</label>
+                                <label for="fullname" class="col-lg-3 control-label">Name *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Name" value="${sessionScope.userSession.fullname}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="email" class="col-lg-4 control-label">Email *</label>
+                                <label for="email" class="col-lg-3 control-label">Email *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="${sessionScope.userSession.email}" readonly>
                                 </div>
                             </div>
                             <!--<div class="form-group">
-                                <label for="groupId" class="col-lg-4 control-label">Group *</label>
+                                <label for="groupId" class="col-lg-3 control-label">Group *</label>
                                 <div class="col-lg-8">
                                     <!--<input type="text" class="form-control" id="groupCode" name="groupCode" placeholder="Code" value="${user.groupCode}" readonly>-->
                                     <!--select id="groupId" name="groupId" class="form-control" disabled>
@@ -45,7 +45,7 @@
                                 </div>
                             </div>-->
                             <!--<div class="form-group">
-                                <label for="isActive" class="col-lg-4 control-label">Status *</label>
+                                <label for="isActive" class="col-lg-3 control-label">Status *</label>
                                 <div class="col-lg-8">
                                     <select id="isActive" name="isActive" class="form-control" disabled>
                                         <option value="0" <c:if test="${user.isActive == '0'}">selected=""</c:if>>Inactive</option>
@@ -62,25 +62,25 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Change Password</h2>
                          <form id="password_user_form" class="form-horizontal" role="form" action="${contextPath}/user/password" method="post">
                             <input type="hidden" name="userId" value="${sessionScope.userSession.id}">
                             <div class="form-group">
-                                <label for="currentPassword" class="col-lg-4 control-label">Current Password *</label>
+                                <label for="currentPassword" class="col-lg-3 control-label">Current Password *</label>
                                 <div class="col-lg-8">
                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Current Password">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="password" class="col-lg-4 control-label">Password *</label>
+                                <label for="password" class="col-lg-3 control-label">Password *</label>
                                 <div class="col-lg-8">
                                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="confirmPassword" class="col-lg-4 control-label">Confirm Password *</label>
+                                <label for="confirmPassword" class="col-lg-3 control-label">Confirm Password *</label>
                                 <div class="col-lg-8">
                                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
                                 </div>

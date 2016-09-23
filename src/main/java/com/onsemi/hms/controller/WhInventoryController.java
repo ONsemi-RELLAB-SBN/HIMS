@@ -168,17 +168,17 @@ public class WhInventoryController {
                             split[12], split[13], split[14],
                             split[15], split[16], split[17],
                             split[18], split[19], split[20],
-                            split[21], split[22] //date = [19], rack = [20], shelf = [21], by = [22]
+                            split[21], split[22] //date = [18], rack = [19], shelf = [20], by = [21]
                         );
                             
                         if(split[0].equals(refId)) {
                             LOGGER.info(row + " : refId found...................." + data);
                             CSV csv = new CSV();
                             csv.open(new File(targetLocation));
-                            csv.put(19, row, "" + whInventory.getInventoryDate());
-                            csv.put(20, row, "" + whInventory.getInventoryRack());
-                            csv.put(21, row, "" + whInventory.getInventoryShelf());
-                            csv.put(22, row, "" + whInventory.getInventoryBy());
+                            csv.put(18, row, "" + whInventory.getInventoryDate());
+                            csv.put(19, row, "" + whInventory.getInventoryRack());
+                            csv.put(20, row, "" + whInventory.getInventoryShelf());
+                            csv.put(21, row, "" + whInventory.getInventoryBy());
                             csv.save(new File(targetLocation)); 
                         } else {
                             LOGGER.info("refId not found........" + data);
