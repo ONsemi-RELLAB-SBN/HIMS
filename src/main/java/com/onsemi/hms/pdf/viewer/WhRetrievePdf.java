@@ -96,8 +96,28 @@ public class WhRetrievePdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(whRetrieve.getEquipmentId(), fontContent));
             table.addCell(cellContent);
 
+            cellHeader.setPhrase(new Phrase("Qual A", fontHeader));
+            table.addCell(cellHeader);
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbA() + " (" + whRetrieve.getQtyQualA() +  ")", fontContent));
+            table.addCell(cellContent);
+            
+            cellHeader.setPhrase(new Phrase("Qual B", fontHeader));
+            table.addCell(cellHeader);
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbB() + " (" + whRetrieve.getQtyQualB() +  ")", fontContent));
+            table.addCell(cellContent);
+            
+            cellHeader.setPhrase(new Phrase("Qual C", fontHeader));
+            table.addCell(cellHeader);
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbC() + " (" + whRetrieve.getQtyQualC() +  ")", fontContent));
+            table.addCell(cellContent);
+            
+            cellHeader.setPhrase(new Phrase("Qual Control", fontHeader));
+            table.addCell(cellHeader);
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbControl() + " (" + whRetrieve.getQtyControl()+  ")", fontContent));
+            table.addCell(cellContent);
+            
             //4
-            cellHeader.setPhrase(new Phrase("Quantity", fontHeader));
+            cellHeader.setPhrase(new Phrase("Total Quantity", fontHeader));
             table.addCell(cellHeader);
             cellContent.setPhrase(new Phrase(whRetrieve.getQuantity(), fontContent));
             table.addCell(cellContent);

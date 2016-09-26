@@ -141,7 +141,7 @@ public class WhRetrieveController {
             model.addAttribute("mpActive", mpActive);
             model.addAttribute("mpActiveTab", mpActiveTab);
         }
-        if (whRetrieve.getStatus().equals("Verification Pass")) {
+        if (whRetrieve.getStatus().equals("Verification Pass") || whRetrieve.getStatus().equals("Inventory Invalid")) {
             String hiActive = "active";
             String hiActiveTab = "in active";
             model.addAttribute("hiActive", hiActive);
@@ -247,23 +247,30 @@ public class WhRetrieveController {
             ck = true;
         }
         
-        String url;
-        if(ck == true) {
-            boolean cp = false;
-            if(status.equals("Verification Pass")) {
+        boolean cp = false;
+        if(status.equals("Verification Pass") || status.equals("Inventory Invalid")) {
+            if(ck == true) {
                 whRetrieve.setStatus("Move to Inventory");
                 whRetrieve.setFlag("1");
                 cp = true;
                 LOGGER.info("Inventory Pass");
             } else {
-                whRetrieve.setStatus(status);
-                whRetrieve.setFlag(flag);
+                whRetrieve.setStatus("Inventory Invalid");
+                whRetrieve.setFlag("1");
                 cp = false;
-                LOGGER.info("Inventory Fail");
+                LOGGER.info("Inventory Invalid");
             }
-            WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-            QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
-
+        } else {
+            whRetrieve.setStatus(status);
+            whRetrieve.setFlag(flag);
+            cp = false;
+            LOGGER.info("Inventory Not Stated");
+        }
+        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+        QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
+        
+        String url;
+        if(ck == true) {
             WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
             WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
             LogModule logModule2 = new LogModule();
@@ -553,6 +560,16 @@ public class WhRetrieveController {
             }
             url = "redirect:/wh/whInventory/";
         } else {
+            WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
+            WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
+            LogModule logModule2 = new LogModule();
+            LogModuleDAO logModuleDAO2 = new LogModuleDAO();
+            logModule2.setModuleId(query2.getId());
+            logModule2.setReferenceId(refId);
+            logModule2.setModuleName("hms_wh_retrieval_list");
+            logModule2.setStatus(query2.getStatus());
+            QueryResult queryResult2 = logModuleDAO2.insertLog(logModule2);
+            
             url = "redirect:/wh/whRetrieve/verify/" + refId;
         }
         return url;

@@ -234,6 +234,14 @@ public class WhRetrieveDAO {
                 whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRetrieve.setEquipmentType(rs.getString("equipment_type"));
                 whRetrieve.setEquipmentId(rs.getString("equipment_id"));
+                whRetrieve.setPcbA(rs.getString("pcb_a"));
+                whRetrieve.setQtyQualA(rs.getString("qty_qual_a"));
+                whRetrieve.setPcbB(rs.getString("pcb_b"));
+                whRetrieve.setQtyQualB(rs.getString("qty_qual_b"));
+                whRetrieve.setPcbC(rs.getString("pcb_c"));
+                whRetrieve.setQtyQualC(rs.getString("qty_qual_c"));
+                whRetrieve.setPcbControl(rs.getString("pcb_control"));
+                whRetrieve.setQtyControl(rs.getString("qty_control"));
                 whRetrieve.setQuantity(rs.getString("quantity"));
                 whRetrieve.setRequestedBy(rs.getString("requested_by"));
                 whRetrieve.setRequestedEmail(rs.getString("requested_email"));
