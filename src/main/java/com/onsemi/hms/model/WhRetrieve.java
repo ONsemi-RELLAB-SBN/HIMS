@@ -29,6 +29,8 @@ public class WhRetrieve {
     private String status;
     private String flag;
     private String duration;
+    private String tempRack;
+    private String tempShelf;
 
     public String getId() {
         return id;
@@ -244,5 +246,21 @@ public class WhRetrieve {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getTempRack() {
+        return tempRack;
+    }
+
+    public void setTempRack(String tempRack) {
+        this.tempRack = tempRack;
+    }
+
+    public String getTempShelf() {
+        return tempShelf;
+    }
+
+    public void setTempShelf(String tempShelf) {
+        this.tempShelf = tempShelf;
     }
 }

@@ -16,7 +16,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.pdf.AbstractITextPdfViewPotrait;
-import com.onsemi.hms.tools.SpmlUtil;
 
 public class WhRetrievePdf extends AbstractITextPdfViewPotrait {
 
@@ -98,22 +97,22 @@ public class WhRetrievePdf extends AbstractITextPdfViewPotrait {
 
             cellHeader.setPhrase(new Phrase("Qual A", fontHeader));
             table.addCell(cellHeader);
-            cellContent.setPhrase(new Phrase(whRetrieve.getPcbA() + " (" + whRetrieve.getQtyQualA() +  ")", fontContent));
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbA() + " (Qty: " + whRetrieve.getQtyQualA() +  ")", fontContent));
             table.addCell(cellContent);
             
             cellHeader.setPhrase(new Phrase("Qual B", fontHeader));
             table.addCell(cellHeader);
-            cellContent.setPhrase(new Phrase(whRetrieve.getPcbB() + " (" + whRetrieve.getQtyQualB() +  ")", fontContent));
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbB() + " (Qty: " + whRetrieve.getQtyQualB() +  ")", fontContent));
             table.addCell(cellContent);
             
             cellHeader.setPhrase(new Phrase("Qual C", fontHeader));
             table.addCell(cellHeader);
-            cellContent.setPhrase(new Phrase(whRetrieve.getPcbC() + " (" + whRetrieve.getQtyQualC() +  ")", fontContent));
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbC() + " (Qty: " + whRetrieve.getQtyQualC() +  ")", fontContent));
             table.addCell(cellContent);
             
             cellHeader.setPhrase(new Phrase("Qual Control", fontHeader));
             table.addCell(cellHeader);
-            cellContent.setPhrase(new Phrase(whRetrieve.getPcbControl() + " (" + whRetrieve.getQtyControl()+  ")", fontContent));
+            cellContent.setPhrase(new Phrase(whRetrieve.getPcbControl() + " (Qty: " + whRetrieve.getQtyControl()+  ")", fontContent));
             table.addCell(cellContent);
             
             //4

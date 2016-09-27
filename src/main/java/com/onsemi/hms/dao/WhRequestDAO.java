@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import com.onsemi.hms.model.WhRequest;
+import com.onsemi.hms.model.WhRequestLog;
 import com.onsemi.hms.tools.QueryResult;
 import com.onsemi.hms.tools.SpmlUtil;
 import org.slf4j.Logger;
@@ -490,5 +491,82 @@ public class WhRequestDAO {
             }
         }
         return count;
+    }
+    
+    public List<WhRequestLog> getWhReqLog(String whRequestId) {
+        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
+                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view "
+                    + "FROM hms_wh_log L, hms_wh_request_list R "
+                    + "WHERE L.reference_id = R.request_id AND R.request_id = '" + whRequestId + "' "
+                    + "ORDER BY timestamp DESC";
+        List<WhRequestLog> whRequestList = new ArrayList<WhRequestLog>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRequestLog whRequestLog;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRequestLog = new WhRequestLog();
+                //log
+                whRequestLog.setId(rs.getString("L.id"));
+                whRequestLog.setReferenceId(rs.getString("reference_id"));
+                whRequestLog.setModuleId(rs.getString("module_id"));
+                whRequestLog.setModuleName(rs.getString("module_name"));
+                whRequestLog.setLogStatus(rs.getString("L.status"));
+                whRequestLog.setTimestamp(rs.getString("timestamp_view"));
+                whRequestLog.setLogVerifyDate(rs.getString("verified_date_view"));
+                whRequestLog.setLogVerifyBy(rs.getString("verified_by"));
+                //request
+                whRequestLog.setRequestId(whRequestId);
+                whRequestLog.setMaterialPassNo(rs.getString("material_pass_no"));
+                whRequestLog.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whRequestLog.setEquipmentType(rs.getString("equipment_type"));
+                whRequestLog.setEquipmentId(rs.getString("equipment_id"));
+                whRequestLog.setPcbA(rs.getString("pcb_a"));
+                whRequestLog.setQtyQualA(rs.getString("qty_qual_a"));
+                whRequestLog.setPcbB(rs.getString("pcb_b"));
+                whRequestLog.setQtyQualB(rs.getString("qty_qual_b"));
+                whRequestLog.setPcbC(rs.getString("pcb_c"));
+                whRequestLog.setQtyQualC(rs.getString("qty_qual_c"));
+                whRequestLog.setPcbControl(rs.getString("pcb_control"));
+                whRequestLog.setQtyControl(rs.getString("qty_control"));
+                whRequestLog.setQuantity(rs.getString("quantity"));
+                whRequestLog.setRequestedBy(rs.getString("requested_by"));
+                whRequestLog.setRequestedEmail(rs.getString("requested_email"));
+                whRequestLog.setRequestedDate(rs.getString("requested_date_view"));
+                whRequestLog.setInventoryLoc(rs.getString("inventory_loc"));
+                whRequestLog.setInventoryRack(rs.getString("inventory_rack"));
+                whRequestLog.setInventoryShelf(rs.getString("inventory_shelf"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRequestLog.setRemarks(remarks);
+                whRequestLog.setReceivedDate(rs.getString("received_date"));
+                whRequestLog.setBarcodeVerify(rs.getString("barcode_verify"));
+                whRequestLog.setDateVerify(rs.getString("date_verify"));
+                whRequestLog.setUserVerify(rs.getString("user_verify"));
+                whRequestLog.setInventoryRackVerify(rs.getString("inventory_rack_verify"));
+                whRequestLog.setInventoryShelfVerify(rs.getString("inventory_shelf_verify"));
+                whRequestLog.setInventoryUserVerify(rs.getString("inventory_user_verify"));
+                whRequestLog.setInventoryDateVerify(rs.getString("inventory_date_verify"));
+                whRequestLog.setStatus(rs.getString("R.status"));
+                whRequestLog.setFlag(rs.getString("flag"));
+                whRequestList.add(whRequestLog);
+                System.out.println("*********************** LIST ************************" + whRequestList);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whRequestList;
     }
 }

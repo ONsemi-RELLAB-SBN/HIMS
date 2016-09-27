@@ -11,6 +11,7 @@ import com.onsemi.hms.dao.WhShippingDAO;
 import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.UserSession;
+import com.onsemi.hms.model.WhRequestLog;
 import com.onsemi.hms.model.WhShipping;
 import com.onsemi.hms.tools.QueryResult;
 import java.text.DateFormat;
@@ -292,5 +293,34 @@ public class WhRequestController {
             check = "redirect:/wh/whShipping/";
         }
         return check;
+    }
+    
+    @RequestMapping(value = "/history/{whRequestId}", method = RequestMethod.GET)
+    public String history(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable("whRequestId") String whRequestId
+    ) throws UnsupportedEncodingException {
+        LOGGER.info("Masuk view 1........");        
+        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whRequest/viewWhRequestLogPdf/" + whRequestId, "UTF-8");
+        String backUrl = servletContext.getContextPath() + "/wh/whRequest";
+        model.addAttribute("pdfUrl", pdfUrl);
+        model.addAttribute("backUrl", backUrl);
+        model.addAttribute("pageTitle", "Warehouse Management - Hardware Request History");
+        LOGGER.info("Masuk view 2........");
+        return "pdf/viewer";
+    }
+    
+    @RequestMapping(value = "/viewWhRequestLogPdf/{whRequestId}", method = RequestMethod.GET)
+    public ModelAndView viewWhRequestHistPdf(
+            Model model,
+            @PathVariable("whRequestId") String whRequestId
+    ) {
+        WhRequestDAO whRequestDAO = new WhRequestDAO();        
+        LOGGER.info("Masuk 1........");
+        List<WhRequestLog> whHistoryList = whRequestDAO.getWhReqLog(whRequestId);
+//        WhRequestLog whHistoryList = whRequestDAO.getWhRetLog(whRequestId);
+        LOGGER.info("Masuk 2........");
+        return new ModelAndView("whRequestLogPdf", "whRequestLog", whHistoryList);
     }
 }

@@ -9,18 +9,17 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.onsemi.hms.model.WhRetrieveLog;
+import com.onsemi.hms.model.WhInventoryLog;
 import com.onsemi.hms.pdf.AbstractITextPdfViewPotrait;
 import com.onsemi.hms.tools.SpmlUtil;
 import java.util.List;
 
-public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
+public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
 
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
@@ -65,7 +64,7 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
         PdfPCell cellContent = new PdfPCell();
         cellContent.setPadding(cellPadding);
         
-        List<WhRetrieveLog> whHistoryList = (List<WhRetrieveLog>) model.get("whRetrieveLog");
+        List<WhInventoryLog> whHistoryList = (List<WhInventoryLog>) model.get("whInventoryLog");
 
         int i = 0;
         while(i<whHistoryList.size()) {
@@ -163,6 +162,22 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getShippingDate(), fontContent));
                 table.addCell(cellContent);
+                
+                cellHeader.setPhrase(new Phrase("Inventory Date", fontHeader));
+                table.addCell(cellHeader);
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getInventoryDate(), fontContent));
+                table.addCell(cellContent);
+                
+                cellHeader.setPhrase(new Phrase("Inventory (Rack, Shelf)", fontHeader));
+                table.addCell(cellHeader);
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getInventoryRack() + ", " + whHistoryList.get(i).getInventoryShelf(), fontContent));
+                table.addCell(cellContent);
+                
+                cellHeader.setPhrase(new Phrase("Inventory By", fontHeader));
+                table.addCell(cellHeader);
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getInventoryBy(), fontContent));
+                table.addCell(cellContent);
+                
                 doc.add(table);
                 
                 

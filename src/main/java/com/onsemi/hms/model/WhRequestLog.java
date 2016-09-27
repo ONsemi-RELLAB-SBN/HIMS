@@ -1,6 +1,6 @@
 package com.onsemi.hms.model;
 
-public class WhRetrieveLog {
+public class WhRequestLog {
     //log
     private String id;
     private String referenceId;
@@ -11,8 +11,8 @@ public class WhRetrieveLog {
     private String logVerifyDate;
     private String logVerifyBy;
     
-    //retrieve
-    private String retrieveId;
+    //request
+    private String requestId;
     private String materialPassNo;
     private String materialPassExpiry;
     private String equipmentType;
@@ -29,12 +29,18 @@ public class WhRetrieveLog {
     private String requestedBy;
     private String requestedEmail;
     private String requestedDate;
-    private String shippingDate;
+    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
     private String remarks;
     private String receivedDate;
     private String barcodeVerify;
     private String userVerify;
     private String dateVerify;
+    private String inventoryRackVerify;
+    private String inventoryShelfVerify;
+    private String inventoryUserVerify;
+    private String inventoryDateVerify;
     private String status;
     private String flag;
 
@@ -102,12 +108,12 @@ public class WhRetrieveLog {
         this.logVerifyBy = logVerifyBy;
     }
 
-    public String getRetrieveId() {
-        return retrieveId;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setRetrieveId(String retrieveId) {
-        this.retrieveId = retrieveId;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getMaterialPassNo() {
@@ -238,12 +244,28 @@ public class WhRetrieveLog {
         this.requestedDate = requestedDate;
     }
 
-    public String getShippingDate() {
-        return shippingDate;
+    public String getInventoryLoc() {
+        return inventoryLoc;
     }
 
-    public void setShippingDate(String shippingDate) {
-        this.shippingDate = shippingDate;
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
+    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
+    }
+
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
     }
 
     public String getRemarks() {
@@ -270,6 +292,14 @@ public class WhRetrieveLog {
         this.barcodeVerify = barcodeVerify;
     }
 
+    public String getUserVerify() {
+        return userVerify;
+    }
+
+    public void setUserVerify(String userVerify) {
+        this.userVerify = userVerify;
+    }
+
     public String getDateVerify() {
         return dateVerify;
     }
@@ -278,12 +308,36 @@ public class WhRetrieveLog {
         this.dateVerify = dateVerify;
     }
 
-    public String getUserVerify() {
-        return userVerify;
+    public String getInventoryRackVerify() {
+        return inventoryRackVerify;
     }
 
-    public void setUserVerify(String userVerify) {
-        this.userVerify = userVerify;
+    public void setInventoryRackVerify(String inventoryRackVerify) {
+        this.inventoryRackVerify = inventoryRackVerify;
+    }
+
+    public String getInventoryShelfVerify() {
+        return inventoryShelfVerify;
+    }
+
+    public void setInventoryShelfVerify(String inventoryShelfVerify) {
+        this.inventoryShelfVerify = inventoryShelfVerify;
+    }
+
+    public String getInventoryUserVerify() {
+        return inventoryUserVerify;
+    }
+
+    public void setInventoryUserVerify(String inventoryUserVerify) {
+        this.inventoryUserVerify = inventoryUserVerify;
+    }
+
+    public String getInventoryDateVerify() {
+        return inventoryDateVerify;
+    }
+
+    public void setInventoryDateVerify(String inventoryDateVerify) {
+        this.inventoryDateVerify = inventoryDateVerify;
     }
 
     public String getStatus() {
@@ -301,4 +355,5 @@ public class WhRetrieveLog {
     public void setFlag(String flag) {
         this.flag = flag;
     }
+    
 }

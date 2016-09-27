@@ -1,6 +1,6 @@
 package com.onsemi.hms.model;
 
-public class WhRetrieveLog {
+public class WhInventoryLog {
     //log
     private String id;
     private String referenceId;
@@ -37,6 +37,16 @@ public class WhRetrieveLog {
     private String dateVerify;
     private String status;
     private String flag;
+    
+    //inventory
+    private String inRetrieveId;
+    private String inventoryDate;
+    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
+    private String inventoryBy;
+    private String inventoryStatus;
+    private String inventoryFlag;
 
     public String getId() {
         return id;
@@ -300,5 +310,69 @@ public class WhRetrieveLog {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public String getInRetrieveId() {
+        return inRetrieveId;
+    }
+
+    public void setInRetrieveId(String inRetrieveId) {
+        this.inRetrieveId = inRetrieveId;
+    }
+
+    public String getInventoryDate() {
+        return inventoryDate;
+    }
+
+    public void setInventoryDate(String inventoryDate) {
+        this.inventoryDate = inventoryDate;
+    }
+
+    public String getInventoryLoc() {
+        return inventoryLoc;
+    }
+
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
+    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
+    }
+
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
+    }
+
+    public String getInventoryBy() {
+        return inventoryBy;
+    }
+
+    public void setInventoryBy(String inventoryBy) {
+        this.inventoryBy = inventoryBy;
+    }
+
+    public String getInventoryStatus() {
+        return inventoryStatus;
+    }
+
+    public void setInventoryStatus(String inventoryStatus) {
+        this.inventoryStatus = inventoryStatus;
+    }
+
+    public String getInventoryFlag() {
+        return inventoryFlag;
+    }
+
+    public void setInventoryFlag(String inventoryFlag) {
+        this.inventoryFlag = inventoryFlag;
     }
 }

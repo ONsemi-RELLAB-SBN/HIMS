@@ -15,12 +15,12 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.onsemi.hms.model.WhRetrieveLog;
+import com.onsemi.hms.model.WhRequestLog;
 import com.onsemi.hms.pdf.AbstractITextPdfViewPotrait;
 import com.onsemi.hms.tools.SpmlUtil;
 import java.util.List;
 
-public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
+public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
 
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
@@ -65,7 +65,7 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
         PdfPCell cellContent = new PdfPCell();
         cellContent.setPadding(cellPadding);
         
-        List<WhRetrieveLog> whHistoryList = (List<WhRetrieveLog>) model.get("whRetrieveLog");
+        List<WhRequestLog> whHistoryList = (List<WhRequestLog>) model.get("whRequestLog");
 
         int i = 0;
         while(i<whHistoryList.size()) {
@@ -159,12 +159,11 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellContent);
 
                 //7
-                cellHeader.setPhrase(new Phrase("Shipping Date", fontHeader));
+                cellHeader.setPhrase(new Phrase("Inventory (Rack, Shelf)", fontHeader));
                 table.addCell(cellHeader);
-                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getShippingDate(), fontContent));
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getInventoryRack() + ", " + whHistoryList.get(i).getInventoryShelf(), fontContent));
                 table.addCell(cellContent);
-                doc.add(table);
-                
+
                 
                 /* START TABLE LOG */
                 //Header

@@ -115,14 +115,16 @@ public class WhRetrieveDAO {
     
     public QueryResult updateWhRetrieveForInventory(WhRetrieve whRetrieve) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_retrieval_list SET status = ?, flag = ? "
+        String sql = "UPDATE hms_wh_retrieval_list SET status = ?, flag = ?, temp_rack = ?, temp_shelf = ? "
                    + "WHERE retrieve_id = ? AND material_pass_no = ? ";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRetrieve.getStatus());
             ps.setString(2, whRetrieve.getFlag());
-            ps.setString(3, whRetrieve.getRefId());
-            ps.setString(4, whRetrieve.getMaterialPassNo());
+            ps.setString(3, whRetrieve.getTempRack());
+            ps.setString(4, whRetrieve.getTempShelf());
+            ps.setString(5, whRetrieve.getRefId());
+            ps.setString(6, whRetrieve.getMaterialPassNo());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -257,6 +259,8 @@ public class WhRetrieveDAO {
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setTempRack(rs.getString("temp_rack"));
+                whRetrieve.setTempShelf(rs.getString("temp_shelf"));
             }
             rs.close();
             ps.close();
@@ -306,6 +310,8 @@ public class WhRetrieveDAO {
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setTempRack(rs.getString("temp_rack"));
+                whRetrieve.setTempShelf(rs.getString("temp_shelf"));
             }
             rs.close();
             ps.close();
@@ -356,6 +362,8 @@ public class WhRetrieveDAO {
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setTempRack(rs.getString("temp_rack"));
+                whRetrieve.setTempShelf(rs.getString("temp_shelf"));
                 whRetrieveList.add(whRetrieve);
             }
             rs.close();
@@ -407,6 +415,8 @@ public class WhRetrieveDAO {
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
                 whRetrieve.setDuration(rs.getString("duration"));
+                whRetrieve.setTempRack(rs.getString("temp_rack"));
+                whRetrieve.setTempShelf(rs.getString("temp_shelf"));
                 whRetrieveList.add(whRetrieve);
             }
             rs.close();
@@ -481,30 +491,14 @@ public class WhRetrieveDAO {
                 whRetrieveLog.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
                 whRetrieveLog.setEquipmentType(rs.getString("equipment_type"));
                 whRetrieveLog.setEquipmentId(rs.getString("equipment_id"));
-                String pcbA = rs.getString("pcb_A");
-                if(pcbA == null || pcbA.equals("null")) {
-                    pcbA = SpmlUtil.nullToEmptyString(rs.getString("pcb_A"));
-                }
-                whRetrieveLog.setPcbA(pcbA);
-                whRetrieveLog.setQtyPcbA(rs.getString("qty_pcb_A"));
-                String pcbB = rs.getString("pcb_B");
-                if(pcbB == null || pcbB.equals("null")) {
-                    pcbB = SpmlUtil.nullToEmptyString(rs.getString("pcb_B"));
-                }
-                whRetrieveLog.setPcbB(pcbB);
-                whRetrieveLog.setQtyPcbB(rs.getString("qty_pcb_B"));
-                String pcbC = rs.getString("pcb_C");
-                if(pcbC == null || pcbC.equals("null")) {
-                    pcbC = SpmlUtil.nullToEmptyString(rs.getString("pcb_C"));
-                }
-                whRetrieveLog.setPcbC(pcbC);
-                whRetrieveLog.setQtyPcbC(rs.getString("qty_pcb_C"));
-                String pcbControl = rs.getString("pcb_Control");
-                if(pcbControl == null || pcbControl.equals("null")) {
-                    pcbControl = SpmlUtil.nullToEmptyString(rs.getString("pcb_Control"));
-                }
-                whRetrieveLog.setPcbControl(pcbControl);
-                whRetrieveLog.setQtyPcbControl(rs.getString("qty_pcb_Control"));
+                whRetrieveLog.setPcbA(rs.getString("pcb_a"));
+                whRetrieveLog.setQtyQualA(rs.getString("qty_qual_a"));
+                whRetrieveLog.setPcbB(rs.getString("pcb_b"));
+                whRetrieveLog.setQtyQualB(rs.getString("qty_qual_b"));
+                whRetrieveLog.setPcbC(rs.getString("pcb_c"));
+                whRetrieveLog.setQtyQualC(rs.getString("qty_qual_c"));
+                whRetrieveLog.setPcbControl(rs.getString("pcb_control"));
+                whRetrieveLog.setQtyControl(rs.getString("qty_control"));
                 whRetrieveLog.setQuantity(rs.getString("quantity"));
                 whRetrieveLog.setRequestedBy(rs.getString("requested_by"));
                 whRetrieveLog.setRequestedEmail(rs.getString("requested_email"));
@@ -522,6 +516,77 @@ public class WhRetrieveDAO {
                 whRetrieveLog.setStatus(rs.getString("R.status"));
                 whRetrieveLog.setFlag(rs.getString("flag"));
                 whRetrieveList.add(whRetrieveLog);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whRetrieveList;
+    }
+    
+    public List<WhRetrieveLog> getWhRetLog(String whRetrieveId) {
+        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
+                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                    + "FROM hms_wh_log L, hms_wh_retrieval_list R "
+                    + "WHERE L.reference_id = R.retrieve_id AND R.retrieve_id = '" + whRetrieveId + "' "
+                    + "ORDER BY timestamp DESC";
+        List<WhRetrieveLog> whRetrieveList = new ArrayList<WhRetrieveLog>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieveLog whRetrieveLog;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieveLog = new WhRetrieveLog();
+                //log
+                whRetrieveLog.setId(rs.getString("L.id"));
+                whRetrieveLog.setReferenceId(rs.getString("reference_id"));
+                whRetrieveLog.setModuleId(rs.getString("module_id"));
+                whRetrieveLog.setModuleName(rs.getString("module_name"));
+                whRetrieveLog.setLogStatus(rs.getString("L.status"));
+                whRetrieveLog.setTimestamp(rs.getString("timestamp_view"));
+                whRetrieveLog.setLogVerifyDate(rs.getString("verified_date_view"));
+                whRetrieveLog.setLogVerifyBy(rs.getString("verified_by"));
+                //retrieve
+                whRetrieveLog.setRetrieveId(whRetrieveId);
+                whRetrieveLog.setMaterialPassNo(rs.getString("material_pass_no"));
+                whRetrieveLog.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whRetrieveLog.setEquipmentType(rs.getString("equipment_type"));
+                whRetrieveLog.setEquipmentId(rs.getString("equipment_id"));
+                whRetrieveLog.setPcbA(rs.getString("pcb_a"));
+                whRetrieveLog.setQtyQualA(rs.getString("qty_qual_a"));
+                whRetrieveLog.setPcbB(rs.getString("pcb_b"));
+                whRetrieveLog.setQtyQualB(rs.getString("qty_qual_b"));
+                whRetrieveLog.setPcbC(rs.getString("pcb_c"));
+                whRetrieveLog.setQtyQualC(rs.getString("qty_qual_c"));
+                whRetrieveLog.setPcbControl(rs.getString("pcb_control"));
+                whRetrieveLog.setQtyControl(rs.getString("qty_control"));
+                whRetrieveLog.setQuantity(rs.getString("quantity"));
+                whRetrieveLog.setRequestedBy(rs.getString("requested_by"));
+                whRetrieveLog.setRequestedEmail(rs.getString("requested_email"));
+                whRetrieveLog.setRequestedDate(rs.getString("requested_date_view"));
+                whRetrieveLog.setShippingDate(rs.getString("shipping_date_view"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRetrieveLog.setRemarks(remarks);
+                whRetrieveLog.setReceivedDate(rs.getString("received_date"));
+                whRetrieveLog.setBarcodeVerify(rs.getString("barcode_verify"));
+                whRetrieveLog.setDateVerify(rs.getString("date_verify"));
+                whRetrieveLog.setUserVerify(rs.getString("user_verify"));
+                whRetrieveLog.setStatus(rs.getString("R.status"));
+                whRetrieveLog.setFlag(rs.getString("flag"));
+                whRetrieveList.add(whRetrieveLog);
+                System.out.println("*********************** LIST ************************" + whRetrieveList);
             }
             rs.close();
             ps.close();

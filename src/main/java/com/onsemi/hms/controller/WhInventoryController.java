@@ -11,6 +11,7 @@ import com.onsemi.hms.model.IonicFtpInventory;
 import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhInventory;
 import com.onsemi.hms.model.UserSession;
+import com.onsemi.hms.model.WhInventoryLog;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import java.io.BufferedReader;
@@ -266,7 +267,7 @@ public class WhInventoryController {
             @PathVariable("whInventoryId") String whInventoryId
     ) throws UnsupportedEncodingException {
         LOGGER.info("Masuk view 1........");        
-        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whInventory/viewWhInventoryHistPdf/" + whInventoryId, "UTF-8");
+        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whInventory/viewWhInventoryLogPdf/" + whInventoryId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
@@ -275,5 +276,15 @@ public class WhInventoryController {
         return "pdf/viewer";
     }
     
-    
+    @RequestMapping(value = "/viewWhInventoryLogPdf/{whInventoryId}", method = RequestMethod.GET)
+    public ModelAndView viewWhInventoryHistPdf(
+            Model model,
+            @PathVariable("whInventoryId") String whInventoryId
+    ) {
+        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();        
+        LOGGER.info("Masuk 1........");
+        List<WhInventoryLog> whHistoryList = whInventoryDAO.getWhInventoryRetLog(whInventoryId);
+        LOGGER.info("Masuk 2........");
+        return new ModelAndView("whInventoryLogPdf", "whInventoryLog", whHistoryList);
+    }
 }

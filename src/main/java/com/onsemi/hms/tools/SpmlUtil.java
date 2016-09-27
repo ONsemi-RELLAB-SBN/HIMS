@@ -21,6 +21,14 @@ public class SpmlUtil {
             return string;
         }
     }
+    
+    public static String nullToDashString(String string) {
+        if (string == null || string.equals("null")) {
+            return "-";
+        } else {
+            return string;
+        }
+    }
 
     public static String[] nullToEmptyString(String[] string) {
         if (string == null) {

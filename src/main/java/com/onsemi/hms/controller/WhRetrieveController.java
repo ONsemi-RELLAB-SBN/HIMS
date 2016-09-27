@@ -256,7 +256,7 @@ public class WhRetrieveController {
                 LOGGER.info("Inventory Pass");
             } else {
                 whRetrieve.setStatus("Inventory Invalid");
-                whRetrieve.setFlag("1");
+                whRetrieve.setFlag(flag);
                 cp = false;
                 LOGGER.info("Inventory Invalid");
             }
@@ -568,8 +568,11 @@ public class WhRetrieveController {
             logModule2.setReferenceId(refId);
             logModule2.setModuleName("hms_wh_retrieval_list");
             logModule2.setStatus(query2.getStatus());
-            QueryResult queryResult2 = logModuleDAO2.insertLog(logModule2);
-            
+            logModule2.setVerifiedBy(userSession.getFullname());
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();
+            logModule2.setVerifiedDate(dateFormat.format(date));
+            QueryResult queryResult2 = logModuleDAO2.insertLogForVerification(logModule2);          
             url = "redirect:/wh/whRetrieve/verify/" + refId;
         }
         return url;
@@ -594,15 +597,13 @@ public class WhRetrieveController {
     @RequestMapping(value = "/viewWhRetrieveLogPdf/{whRetrieveId}", method = RequestMethod.GET)
     public ModelAndView viewWhRetrieveHistPdf(
             Model model,
-            @PathVariable("whInventoryId") String whRetrieveId
+            @PathVariable("whRetrieveId") String whRetrieveId
     ) {
-        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-        WhRetrieve whRetrieve = whRetrieveDAO.getWhRetrieve(whRetrieveId);
-        String retrieveId = whRetrieve.getRefId();
-        
+        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();        
         LOGGER.info("Masuk 1........");
-        List<WhRetrieveLog> whHistoryList = whRetrieveDAO.getWhRetrieveLog(retrieveId);
+        List<WhRetrieveLog> whHistoryList = whRetrieveDAO.getWhRetLog(whRetrieveId);
+//        WhRetrieveLog whHistoryList = whRetrieveDAO.getWhRetLog(whRetrieveId);
         LOGGER.info("Masuk 2........");
-        return new ModelAndView("whRetrieveLogPdf", "whRetrieve", whHistoryList);
+        return new ModelAndView("whRetrieveLogPdf", "whRetrieveLog", whHistoryList);
     }
 }
