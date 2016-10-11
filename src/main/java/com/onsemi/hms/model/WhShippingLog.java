@@ -1,6 +1,6 @@
 package com.onsemi.hms.model;
 
-public class WhInventoryLog {
+public class WhShippingLog {
     //log
     private String id;
     private String referenceId;
@@ -11,8 +11,8 @@ public class WhInventoryLog {
     private String logVerifyDate;
     private String logVerifyBy;
     
-    //retrieve
-    private String retrieveId;
+    //request
+    private String requestId;
     private String materialPassNo;
     private String materialPassExpiry;
     private String equipmentType;
@@ -29,31 +29,37 @@ public class WhInventoryLog {
     private String requestedBy;
     private String requestedEmail;
     private String requestedDate;
-    private String shippingDate;
+    private String inventoryLoc;
+    private String inventoryRack;
+    private String inventoryShelf;
     private String remarks;
     private String receivedDate;
     private String barcodeVerify;
     private String userVerify;
     private String dateVerify;
+    private String inventoryRackVerify;
+    private String inventoryShelfVerify;
+    private String inventoryUserVerify;
+    private String inventoryDateVerify;
     private String status;
     private String flag;
     
-    //inventory
-    private String inRetrieveId;
-    private String inventoryDate;
-    private String inventoryLoc;
-    private String inventoryRack;
-    private String inventoryShelf;
-    private String inventoryBy;
-    private String inventoryStatus;
-    private String inventoryFlag;
+    //shipping
+    private String shippingId;
+    private String shippingDate;
+    private String shippingBy;
+    private String shippingStatus;
+    private String shippingFlag;
     
-    //timelapse
-    private String shipReceive;
-    private String receiveVerify;
-    private String verifyInventory;
-    private String receiveInventory;
-    private String shippingInventory;
+    //time
+    private String requestReceive;
+    private String receiveVerify1;
+    private String verify1Verify2;
+    private String receiveVerify2;
+    private String requestVerify2;
+    private String verify2Shipping;
+    private String receiveShipping;
+    private String requestShipping;
 
     public String getId() {
         return id;
@@ -119,12 +125,12 @@ public class WhInventoryLog {
         this.logVerifyBy = logVerifyBy;
     }
 
-    public String getRetrieveId() {
-        return retrieveId;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setRetrieveId(String retrieveId) {
-        this.retrieveId = retrieveId;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getMaterialPassNo() {
@@ -255,12 +261,28 @@ public class WhInventoryLog {
         this.requestedDate = requestedDate;
     }
 
-    public String getShippingDate() {
-        return shippingDate;
+    public String getInventoryLoc() {
+        return inventoryLoc;
     }
 
-    public void setShippingDate(String shippingDate) {
-        this.shippingDate = shippingDate;
+    public void setInventoryLoc(String inventoryLoc) {
+        this.inventoryLoc = inventoryLoc;
+    }
+
+    public String getInventoryRack() {
+        return inventoryRack;
+    }
+
+    public void setInventoryRack(String inventoryRack) {
+        this.inventoryRack = inventoryRack;
+    }
+
+    public String getInventoryShelf() {
+        return inventoryShelf;
+    }
+
+    public void setInventoryShelf(String inventoryShelf) {
+        this.inventoryShelf = inventoryShelf;
     }
 
     public String getRemarks() {
@@ -287,6 +309,14 @@ public class WhInventoryLog {
         this.barcodeVerify = barcodeVerify;
     }
 
+    public String getUserVerify() {
+        return userVerify;
+    }
+
+    public void setUserVerify(String userVerify) {
+        this.userVerify = userVerify;
+    }
+
     public String getDateVerify() {
         return dateVerify;
     }
@@ -295,12 +325,36 @@ public class WhInventoryLog {
         this.dateVerify = dateVerify;
     }
 
-    public String getUserVerify() {
-        return userVerify;
+    public String getInventoryRackVerify() {
+        return inventoryRackVerify;
     }
 
-    public void setUserVerify(String userVerify) {
-        this.userVerify = userVerify;
+    public void setInventoryRackVerify(String inventoryRackVerify) {
+        this.inventoryRackVerify = inventoryRackVerify;
+    }
+
+    public String getInventoryShelfVerify() {
+        return inventoryShelfVerify;
+    }
+
+    public void setInventoryShelfVerify(String inventoryShelfVerify) {
+        this.inventoryShelfVerify = inventoryShelfVerify;
+    }
+
+    public String getInventoryUserVerify() {
+        return inventoryUserVerify;
+    }
+
+    public void setInventoryUserVerify(String inventoryUserVerify) {
+        this.inventoryUserVerify = inventoryUserVerify;
+    }
+
+    public String getInventoryDateVerify() {
+        return inventoryDateVerify;
+    }
+
+    public void setInventoryDateVerify(String inventoryDateVerify) {
+        this.inventoryDateVerify = inventoryDateVerify;
     }
 
     public String getStatus() {
@@ -319,107 +373,107 @@ public class WhInventoryLog {
         this.flag = flag;
     }
 
-    public String getInRetrieveId() {
-        return inRetrieveId;
+    public String getRequestReceive() {
+        return requestReceive;
     }
 
-    public void setInRetrieveId(String inRetrieveId) {
-        this.inRetrieveId = inRetrieveId;
+    public void setRequestReceive(String requestReceive) {
+        this.requestReceive = requestReceive;
     }
 
-    public String getInventoryDate() {
-        return inventoryDate;
+    public String getReceiveVerify1() {
+        return receiveVerify1;
     }
 
-    public void setInventoryDate(String inventoryDate) {
-        this.inventoryDate = inventoryDate;
+    public void setReceiveVerify1(String receiveVerify1) {
+        this.receiveVerify1 = receiveVerify1;
     }
 
-    public String getInventoryLoc() {
-        return inventoryLoc;
+    public String getVerify1Verify2() {
+        return verify1Verify2;
     }
 
-    public void setInventoryLoc(String inventoryLoc) {
-        this.inventoryLoc = inventoryLoc;
+    public void setVerify1Verify2(String verify1Verify2) {
+        this.verify1Verify2 = verify1Verify2;
     }
 
-    public String getInventoryRack() {
-        return inventoryRack;
+    public String getReceiveVerify2() {
+        return receiveVerify2;
     }
 
-    public void setInventoryRack(String inventoryRack) {
-        this.inventoryRack = inventoryRack;
+    public void setReceiveVerify2(String receiveVerify2) {
+        this.receiveVerify2 = receiveVerify2;
     }
 
-    public String getInventoryShelf() {
-        return inventoryShelf;
+    public String getRequestVerify2() {
+        return requestVerify2;
     }
 
-    public void setInventoryShelf(String inventoryShelf) {
-        this.inventoryShelf = inventoryShelf;
+    public void setRequestVerify2(String requestVerify2) {
+        this.requestVerify2 = requestVerify2;
     }
 
-    public String getInventoryBy() {
-        return inventoryBy;
+    public String getShippingId() {
+        return shippingId;
     }
 
-    public void setInventoryBy(String inventoryBy) {
-        this.inventoryBy = inventoryBy;
+    public void setShippingId(String shippingId) {
+        this.shippingId = shippingId;
     }
 
-    public String getInventoryStatus() {
-        return inventoryStatus;
+    public String getShippingDate() {
+        return shippingDate;
     }
 
-    public void setInventoryStatus(String inventoryStatus) {
-        this.inventoryStatus = inventoryStatus;
+    public void setShippingDate(String shippingDate) {
+        this.shippingDate = shippingDate;
     }
 
-    public String getInventoryFlag() {
-        return inventoryFlag;
+    public String getShippingBy() {
+        return shippingBy;
     }
 
-    public void setInventoryFlag(String inventoryFlag) {
-        this.inventoryFlag = inventoryFlag;
+    public void setShippingBy(String shippingBy) {
+        this.shippingBy = shippingBy;
     }
 
-    public String getShipReceive() {
-        return shipReceive;
+    public String getShippingStatus() {
+        return shippingStatus;
     }
 
-    public void setShipReceive(String shipReceive) {
-        this.shipReceive = shipReceive;
+    public void setShippingStatus(String shippingStatus) {
+        this.shippingStatus = shippingStatus;
     }
 
-    public String getReceiveVerify() {
-        return receiveVerify;
+    public String getShippingFlag() {
+        return shippingFlag;
     }
 
-    public void setReceiveVerify(String receiveVerify) {
-        this.receiveVerify = receiveVerify;
+    public void setShippingFlag(String shippingFlag) {
+        this.shippingFlag = shippingFlag;
     }
 
-    public String getVerifyInventory() {
-        return verifyInventory;
+    public String getVerify2Shipping() {
+        return verify2Shipping;
     }
 
-    public void setVerifyInventory(String verifyInventory) {
-        this.verifyInventory = verifyInventory;
+    public void setVerify2Shipping(String verify2Shipping) {
+        this.verify2Shipping = verify2Shipping;
     }
 
-    public String getReceiveInventory() {
-        return receiveInventory;
+    public String getReceiveShipping() {
+        return receiveShipping;
     }
 
-    public void setReceiveInventory(String receiveInventory) {
-        this.receiveInventory = receiveInventory;
+    public void setReceiveShipping(String receiveShipping) {
+        this.receiveShipping = receiveShipping;
     }
 
-    public String getShippingInventory() {
-        return shippingInventory;
+    public String getRequestShipping() {
+        return requestShipping;
     }
 
-    public void setShippingInventory(String shippingInventory) {
-        this.shippingInventory = shippingInventory;
+    public void setRequestShipping(String requestShipping) {
+        this.requestShipping = requestShipping;
     }
 }

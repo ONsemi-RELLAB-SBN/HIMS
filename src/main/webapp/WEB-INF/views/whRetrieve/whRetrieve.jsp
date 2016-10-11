@@ -17,6 +17,12 @@
                             <h2 class="pull-left">Hardware Retrieve List</h2>
 
                             <div class="filter-block pull-right">
+                                <a href="${contextPath}/wh/whRetrieve/query" class="btn btn-primary pull-right">
+                                    <i class="fa fa-pencil-square-o fa-lg"></i> Query
+                                </a>
+                            </div>
+                                    
+                            <div class="filter-block pull-right">
                             </div>
                         </div>
                         <hr/>

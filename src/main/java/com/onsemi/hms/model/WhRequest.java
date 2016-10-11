@@ -36,6 +36,7 @@ public class WhRequest {
     private String status;
     private String flag;
     private String duration;
+    private String tempCount;
 
     public String getId() {
         return id;
@@ -299,5 +300,13 @@ public class WhRequest {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getTempCount() {
+        return tempCount;
+    }
+
+    public void setTempCount(String tempCount) {
+        this.tempCount = tempCount;
     }
 }

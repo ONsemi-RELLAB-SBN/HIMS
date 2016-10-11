@@ -9,7 +9,6 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -31,10 +30,8 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
 //        PageSize.A4.rotate();
         
         String title = "WAREHOUSE MANAGEMENT - HARDWARE RETRIEVAL INFORMATION";
-
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
-
         doc.add(viewTitle);
 
         Integer cellPadding = 10;
@@ -48,6 +45,11 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
         table2.setWidthPercentage(100.0f);
         table2.setWidths(new float[]{2.5f, 2.5f, 1.5f, 2.5f});
         table2.setSpacingBefore(15);
+        
+        PdfPTable table3 = new PdfPTable(2);
+        table3.setWidthPercentage(100.0f);
+        table3.setWidths(new float[]{2.5f, 2.5f});
+        table3.setSpacingBefore(15);
 
         Font fontHeader = fontOpenSans(8f, Font.BOLD);
         fontHeader.setColor(BaseColor.BLACK);
@@ -60,15 +62,38 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
         PdfPCell cellHeader2 = new PdfPCell();
         cellHeader2.setBackgroundColor(BaseColor.DARK_GRAY);
         cellHeader2.setPadding(cellPadding);
+        
+        Font fontHeader3 = fontOpenSans(7f, Font.BOLD);
+        fontHeader3.setColor(BaseColor.WHITE);
+        PdfPCell cellHeader3 = new PdfPCell();
+        cellHeader3.setBackgroundColor(BaseColor.GRAY);
+        cellHeader3.setPadding(cellPadding);
 
         Font fontContent = fontOpenSans(8f, Font.NORMAL);
         PdfPCell cellContent = new PdfPCell();
         cellContent.setPadding(cellPadding);
         
+        Font fontContent3 = fontOpenSans(6.5f, Font.NORMAL);
+        PdfPCell cellContent3 = new PdfPCell();
+        cellContent3.setPadding(cellPadding);
+        
         List<WhRetrieveLog> whHistoryList = (List<WhRetrieveLog>) model.get("whRetrieveLog");
 
+        boolean flag = false;
+        
         int i = 0;
         while(i<whHistoryList.size()) {
+            String moduleName = whHistoryList.get(i).getModuleName();
+            if(moduleName.equals("hms_wh_retrieval_list")) {
+                moduleName = "Retrieval";
+            } else if(moduleName.equals("hms_wh_request_list")) {
+                moduleName = "Request";
+            } else if(moduleName.equals("hms_wh_inventory_list")) {
+                moduleName = "Inventory";
+            } else if(moduleName.equals("hms_wh_shipping_list") || moduleName.equals("hms_wh_mp_list")) {
+                moduleName = "Shipping";
+            }
+            
             if(i==0) {
                 //1
                 cellHeader.setPhrase(new Phrase("Material Pass No.", fontHeader));
@@ -149,7 +174,7 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
                 //5
                 cellHeader.setPhrase(new Phrase("Requested By", fontHeader));
                 table.addCell(cellHeader);
-                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getRequestedBy(), fontContent));
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getRequestedBy() + ", " + whHistoryList.get(i).getRequestedEmail(), fontContent));
                 table.addCell(cellContent);
 
                 //6
@@ -163,11 +188,67 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getShippingDate(), fontContent));
                 table.addCell(cellContent);
+                
+                //8
+                cellHeader.setPhrase(new Phrase("HMS Received Date", fontHeader));
+                table.addCell(cellHeader);
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getReceivedDate(), fontContent));
+                table.addCell(cellContent);
+                
                 doc.add(table);
                 
+                /* START TABLE TIMELAPSE */
+                String title2 = "\n\n\n";
+                Paragraph viewTitle2 = new Paragraph(title2, fontOpenSans(8f, Font.BOLD));
+                viewTitle2.setAlignment(Element.ALIGN_LEFT);
+                doc.add(viewTitle2);
+                String title3 = "HARDWARE RETRIEVAL TIMELAPSE";
+                Paragraph viewTitle3 = new Paragraph(title3, fontOpenSans(8f, Font.BOLD));
+                viewTitle3.setAlignment(Element.ALIGN_LEFT);
+                doc.add(viewTitle3);
                 
+                //Header Timelapse
+                cellHeader3.setPhrase(new Phrase("Shipment - Received", fontHeader3));
+                table3.addCell(cellHeader3);
+                cellHeader3.setPhrase(new Phrase("Received - Verification", fontHeader3));
+                table3.addCell(cellHeader3);
+            }
+            
+            if(flag == false) {
+                if(whHistoryList.get(i).getShipReceive()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getShipReceive(), fontContent3));
+                    table3.addCell(cellContent3);
+                } else {
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getShipReceive());
+                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
+                    table3.addCell(cellContent3);
+                }
+                
+                if(whHistoryList.get(i).getReceiveVerify()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify(), fontContent3));
+                    table3.addCell(cellContent3);
+                } else {
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify());
+                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
+                    table3.addCell(cellContent3);
+                }
+                
+                doc.add(table3);
+                flag = true;
+            }             
+            
+            if(i==0) {
                 /* START TABLE LOG */
-                //Header
+                String title4 = "\n\n\n";
+                Paragraph viewTitle4 = new Paragraph(title4, fontOpenSans(8f, Font.BOLD));
+                viewTitle4.setAlignment(Element.ALIGN_LEFT);
+                doc.add(viewTitle4);
+                String title5 = "HARDWARE RETRIEVAL LOG";
+                Paragraph viewTitle5 = new Paragraph(title5, fontOpenSans(8f, Font.BOLD));
+                viewTitle5.setAlignment(Element.ALIGN_LEFT);
+                doc.add(viewTitle5);
+                
+                //Header Log
                 cellHeader2.setPhrase(new Phrase("Status", fontHeader2));
                 table2.addCell(cellHeader2);
                 cellHeader2.setPhrase(new Phrase("Timestamp", fontHeader2));
@@ -183,16 +264,6 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(whHistoryList.get(i).getTimestamp(), fontContent));
             table2.addCell(cellContent);
             
-            String moduleName = whHistoryList.get(i).getModuleName();
-            if(moduleName.equals("hms_wh_retrieval_list")) {
-                moduleName = "Retrieval";
-            } else if(moduleName.equals("hms_wh_request_list")) {
-                moduleName = "Request";
-            } else if(moduleName.equals("hms_wh_inventory_list")) {
-                moduleName = "Inventory";
-            } else if(moduleName.equals("hms_wh_shipping_list") || moduleName.equals("hms_wh_mp_list")) {
-                moduleName = "Shipping";
-            }
             cellContent.setPhrase(new Phrase(moduleName, fontContent));
             table2.addCell(cellContent);
             
@@ -203,7 +274,7 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(userVerify, fontContent));
             table2.addCell(cellContent);
             i++;
-        }
-        doc.add(table2);
+        }        
+        doc.add(table2);        
     }
 }

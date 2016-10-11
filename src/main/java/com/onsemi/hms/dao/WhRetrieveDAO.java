@@ -86,7 +86,7 @@ public class WhRetrieveDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "UPDATE hms_wh_retrieval_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ? "
+                "UPDATE hms_wh_retrieval_list SET barcode_verify = ?, date_verify = ?, user_verify = ?, status = ?, flag = ?, temp_count = ? "
                 + "WHERE retrieve_id = ? AND material_pass_no = ? "
             );
             ps.setString(1, whRetrieve.getBarcodeVerify());
@@ -94,8 +94,9 @@ public class WhRetrieveDAO {
             ps.setString(3, whRetrieve.getUserVerify());
             ps.setString(4, whRetrieve.getStatus());
             ps.setString(5, whRetrieve.getFlag());
-            ps.setString(6, whRetrieve.getRefId());
-            ps.setString(7, whRetrieve.getMaterialPassNo());
+            ps.setString(6, whRetrieve.getTempCount());
+            ps.setString(7, whRetrieve.getRefId());
+            ps.setString(8, whRetrieve.getMaterialPassNo());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -115,7 +116,7 @@ public class WhRetrieveDAO {
     
     public QueryResult updateWhRetrieveForInventory(WhRetrieve whRetrieve) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_retrieval_list SET status = ?, flag = ?, temp_rack = ?, temp_shelf = ? "
+        String sql = "UPDATE hms_wh_retrieval_list SET status = ?, flag = ?, temp_rack = ?, temp_shelf = ?, temp_date = now() "
                    + "WHERE retrieve_id = ? AND material_pass_no = ? ";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -179,7 +180,6 @@ public class WhRetrieveDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
-//            LOGGER.info("count id..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {
@@ -221,7 +221,7 @@ public class WhRetrieveDAO {
     
     public WhRetrieve getWhRetrieve(String whRetrieveId) {
         String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                + "             DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                    + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                     + "FROM hms_wh_retrieval_list "
                     + "WHERE retrieve_id = '" + whRetrieveId + "' ";
         WhRetrieve whRetrieve = null;
@@ -261,6 +261,7 @@ public class WhRetrieveDAO {
                 whRetrieve.setFlag(rs.getString("flag"));
                 whRetrieve.setTempRack(rs.getString("temp_rack"));
                 whRetrieve.setTempShelf(rs.getString("temp_shelf"));
+                whRetrieve.setTempCount(rs.getString("temp_count"));
             }
             rs.close();
             ps.close();
@@ -382,8 +383,9 @@ public class WhRetrieveDAO {
         return whRetrieveList;
     }
     
+    //yesterday
     public List<WhRetrieve> getWhRetrieveReportList() {
-        String sql = "SELECT *, CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, date_verify)) / 24), ' DAYS, ', MOD(HOUR(TIMEDIFF(shipping_date, date_verify)), 24), ' HOURS, ', MINUTE(TIMEDIFF(shipping_date, date_verify)), ' MINS') AS DURATION "
+        String sql = "SELECT *, CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, date_verify)), ' mins') AS DURATION "
                    + "FROM hms_wh_retrieval_list "
                    + "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) ";
         List<WhRetrieve> whRetrieveList = new ArrayList<WhRetrieve>();
@@ -534,8 +536,13 @@ public class WhRetrieveDAO {
     }
     
     public List<WhRetrieveLog> getWhRetLog(String whRetrieveId) {
-        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
-                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view,"
+                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, received_date)), ' mins') AS ship_receive, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, temp_date)), ' mins') AS verify_inventory, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, temp_date)), ' mins') AS receive_inventory, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, temp_date)), ' mins') AS shipping_inventory "
                     + "FROM hms_wh_log L, hms_wh_retrieval_list R "
                     + "WHERE L.reference_id = R.retrieve_id AND R.retrieve_id = '" + whRetrieveId + "' "
                     + "ORDER BY timestamp DESC";
@@ -579,12 +586,20 @@ public class WhRetrieveDAO {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRetrieveLog.setRemarks(remarks);
-                whRetrieveLog.setReceivedDate(rs.getString("received_date"));
+                whRetrieveLog.setReceivedDate(rs.getString("received_date_view"));
                 whRetrieveLog.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieveLog.setDateVerify(rs.getString("date_verify"));
                 whRetrieveLog.setUserVerify(rs.getString("user_verify"));
                 whRetrieveLog.setStatus(rs.getString("R.status"));
                 whRetrieveLog.setFlag(rs.getString("flag"));
+                whRetrieveLog.setTempRack(rs.getString("temp_rack"));
+                whRetrieveLog.setTempShelf(rs.getString("temp_shelf"));
+                whRetrieveLog.setTempDate(rs.getString("temp_date"));
+                whRetrieveLog.setShipReceive(rs.getString("ship_receive"));
+                whRetrieveLog.setReceiveVerify(rs.getString("receive_verify"));
+                whRetrieveLog.setVerifyInventory(rs.getString("verify_inventory"));
+                whRetrieveLog.setReceiveInventory(rs.getString("receive_inventory"));
+                whRetrieveLog.setShippingInventory(rs.getString("shipping_inventory"));
                 whRetrieveList.add(whRetrieveLog);
                 System.out.println("*********************** LIST ************************" + whRetrieveList);
             }

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhShippingDAO;
 import com.onsemi.hms.model.WhShipping;
+import com.onsemi.hms.model.WhShippingLog;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,5 +100,33 @@ public class WhShippingController {
         WhShipping whShipping = whShippingDAO.getWhShippingMergeWithRequest(whShippingId);
         LOGGER.info("Masuk 2........");
         return new ModelAndView("whShippingPdf", "whShipping", whShipping);
+    }
+    
+    @RequestMapping(value = "/history/{whShippingId}", method = RequestMethod.GET)
+    public String history(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable("whShippingId") String whShippingId
+    ) throws UnsupportedEncodingException {
+        LOGGER.info("Masuk view 1........");        
+        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewWhShippingLogPdf/" + whShippingId, "UTF-8");
+        String backUrl = servletContext.getContextPath() + "/wh/whShipping";
+        model.addAttribute("pdfUrl", pdfUrl);
+        model.addAttribute("backUrl", backUrl);
+        model.addAttribute("pageTitle", "Warehouse Management - Hardware Shipping History");
+        LOGGER.info("Masuk view 2........");
+        return "pdf/viewer";
+    }
+    
+    @RequestMapping(value = "/viewWhShippingLogPdf/{whShippingId}", method = RequestMethod.GET)
+    public ModelAndView viewWhShippingHistPdf(
+            Model model,
+            @PathVariable("whShippingId") String whShippingId
+    ) {
+        WhShippingDAO whShippingDAO = new WhShippingDAO();        
+        LOGGER.info("Masuk 1........");
+        List<WhShippingLog> whHistoryList = whShippingDAO.getWhShippingReqLog(whShippingId);
+        LOGGER.info("Masuk 2........");
+        return new ModelAndView("whShippingLogPdf", "whShippingLog", whHistoryList);
     }
 }

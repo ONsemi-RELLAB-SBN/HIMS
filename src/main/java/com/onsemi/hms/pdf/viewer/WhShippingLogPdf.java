@@ -14,12 +14,12 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.onsemi.hms.model.WhInventoryLog;
+import com.onsemi.hms.model.WhShippingLog;
 import com.onsemi.hms.pdf.AbstractITextPdfViewPotrait;
 import com.onsemi.hms.tools.SpmlUtil;
 import java.util.List;
 
-public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
+public class WhShippingLogPdf extends AbstractITextPdfViewPotrait {
 
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
@@ -29,7 +29,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
 //        doc = new Document(PageSize.A4);
 //        PageSize.A4.rotate();
         
-        String title = "WAREHOUSE MANAGEMENT - HARDWARE INVENTORY INFORMATION";
+        String title = "WAREHOUSE MANAGEMENT - HARDWARE REQUEST INFORMATION\n\n";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
@@ -46,9 +46,9 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
         table2.setWidths(new float[]{2.5f, 2.5f, 1.5f, 2.5f});
         table2.setSpacingBefore(15);
         
-        PdfPTable table3 = new PdfPTable(5);
+        PdfPTable table3 = new PdfPTable(6);
         table3.setWidthPercentage(100.0f);
-        table3.setWidths(new float[]{2.5f, 2.5f, 2.5f, 2.5f,2.5f});
+        table3.setWidths(new float[]{2.5f, 2.5f, 2.5f, 2.5f, 2.5f, 2.5f});
         table3.setSpacingBefore(15);
 
         Font fontHeader = fontOpenSans(8f, Font.BOLD);
@@ -77,12 +77,14 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
         PdfPCell cellContent3 = new PdfPCell();
         cellContent3.setPadding(cellPadding);
         
-        List<WhInventoryLog> whHistoryList = (List<WhInventoryLog>) model.get("whInventoryLog");
+        List<WhShippingLog> whHistoryList = (List<WhShippingLog>) model.get("whShippingLog");
 
         boolean flag = false;
-        
+        System.out.println("masuk 1");
         int i = 0;
+        System.out.println("whHistoryList.size() : " + whHistoryList.size());
         while(i<whHistoryList.size()) {
+            System.out.println("masuk 2");
             String moduleName = whHistoryList.get(i).getModuleName();
             if(moduleName.equals("hms_wh_retrieval_list")) {
                 moduleName = "Retrieval";
@@ -95,6 +97,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
             }
             
             if(i==0) {
+                System.out.println("masuk 3");
                 //1
                 cellHeader.setPhrase(new Phrase("Material Pass No.", fontHeader));
                 table.addCell(cellHeader);
@@ -165,7 +168,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                     table.addCell(cellContent);
                 } else {
                     //3
-                    cellHeader.setPhrase(new Phrase("Equipment ID", fontHeader));
+                    cellHeader.setPhrase(new Phrase("Hardware ID", fontHeader));
                     table.addCell(cellHeader);
                     cellContent.setPhrase(new Phrase(whHistoryList.get(i).getEquipmentId(), fontContent));
                     table.addCell(cellContent);
@@ -182,11 +185,11 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getRequestedDate(), fontContent));
                 table.addCell(cellContent);
-
+                
                 //7
-                cellHeader.setPhrase(new Phrase("Shipping Date", fontHeader));
+                cellHeader.setPhrase(new Phrase("Inventory", fontHeader));
                 table.addCell(cellHeader);
-                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getShippingDate(), fontContent));
+                cellContent.setPhrase(new Phrase("Rack : " + whHistoryList.get(i).getInventoryRack() + ", Shelf : " + whHistoryList.get(i).getInventoryShelf(), fontContent));
                 table.addCell(cellContent);
                 
                 //8
@@ -194,13 +197,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getReceivedDate(), fontContent));
                 table.addCell(cellContent);
-                
-                //9
-                cellHeader.setPhrase(new Phrase("Inventory", fontHeader));
-                table.addCell(cellHeader);
-                cellContent.setPhrase(new Phrase("Rack : " + whHistoryList.get(i).getInventoryRack() + ", Shelf : " + whHistoryList.get(i).getInventoryShelf(), fontContent));
-                table.addCell(cellContent);
-                
+
                 doc.add(table);
                 
                 /* START TABLE TIMELAPSE */
@@ -208,80 +205,119 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                 Paragraph viewTitle2 = new Paragraph(title2, fontOpenSans(8f, Font.BOLD));
                 viewTitle2.setAlignment(Element.ALIGN_LEFT);
                 doc.add(viewTitle2);
-                String title3 = "HARDWARE INVENTORY TIMELAPSE";
+                String title3 = "HARDWARE REQUEST TIMELAPSE";
                 Paragraph viewTitle3 = new Paragraph(title3, fontOpenSans(8f, Font.BOLD));
                 viewTitle3.setAlignment(Element.ALIGN_LEFT);
                 doc.add(viewTitle3);
                 
                 //Header Timelapse
-                cellHeader3.setPhrase(new Phrase("Shipment - Received", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Request - Received", fontHeader3));
                 table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Received - Verification", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Received - Verify Barcode", fontHeader3));
                 table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Verification - Inventory", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Verify Barcode - Verify Inventory", fontHeader3));
                 table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Received - Inventory", fontHeader3));
+//                cellHeader3.setPhrase(new Phrase("Received - Verify Inventory", fontHeader3));
+//                table3.addCell(cellHeader3);
+//                cellHeader3.setPhrase(new Phrase("Request - Verify Inventory", fontHeader3));
+//                table3.addCell(cellHeader3);
+                cellHeader3.setPhrase(new Phrase("Verify Inventory - Shipping Date", fontHeader3));
                 table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Shipment - Inventory", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Received - Shipping Date", fontHeader3));
+                table3.addCell(cellHeader3);
+                cellHeader3.setPhrase(new Phrase("Request - Shipping Date", fontHeader3));
                 table3.addCell(cellHeader3);
             }
             
+            System.out.println("masuk 4");
+            
             if(flag == false) {
-                if(whHistoryList.get(i).getShipReceive()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getShipReceive(), fontContent3));
+                System.out.println("masuk 5");
+                if(whHistoryList.get(i).getRequestReceive()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getRequestReceive(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getShipReceive());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getRequestReceive());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
                 
-                if(whHistoryList.get(i).getReceiveVerify()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify(), fontContent3));
+                if(whHistoryList.get(i).getReceiveVerify1()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify1(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify1());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
                 
-                if(whHistoryList.get(i).getVerifyInventory()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getVerifyInventory(), fontContent3));
+                if(whHistoryList.get(i).getVerify1Verify2()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getVerify1Verify2(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getVerifyInventory());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getVerify1Verify2());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
                 
-                if(whHistoryList.get(i).getReceiveInventory()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveInventory(), fontContent3));
+//                if(whHistoryList.get(i).getReceiveVerify2()!=null) {
+//                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify2(), fontContent3));
+//                    table3.addCell(cellContent3);
+//                } else {
+//                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify2());
+//                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
+//                    table3.addCell(cellContent3);
+//                }
+//                
+//                if(whHistoryList.get(i).getRequestVerify2()!=null) {
+//                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getRequestVerify2(), fontContent3));
+//                    table3.addCell(cellContent3);
+//                } else {
+//                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getRequestVerify2());
+//                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
+//                    table3.addCell(cellContent3);
+//                }
+
+                if(whHistoryList.get(i).getVerify2Shipping()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getVerify2Shipping(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveInventory());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getVerify2Shipping());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
                 
-                if(whHistoryList.get(i).getShippingInventory()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getShippingInventory(), fontContent3));
+                if(whHistoryList.get(i).getReceiveShipping()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveShipping(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getShippingInventory());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveShipping());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
+                
+                if(whHistoryList.get(i).getRequestShipping()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getRequestShipping(), fontContent3));
+                    table3.addCell(cellContent3);
+                } else {
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getRequestShipping());
+                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
+                    table3.addCell(cellContent3);
+                }
+                
                 doc.add(table3);
                 flag = true;
             }             
             
+            System.out.println("masuk 6");
             if(i==0) {
+                System.out.println("masuk 7");
                 /* START TABLE LOG */
                 String title4 = "\n\n\n";
                 Paragraph viewTitle4 = new Paragraph(title4, fontOpenSans(8f, Font.BOLD));
                 viewTitle4.setAlignment(Element.ALIGN_LEFT);
                 doc.add(viewTitle4);
-                String title5 = "HARDWARE INVENTORY LOG";
+                String title5 = "HARDWARE REQUEST LOG";
                 Paragraph viewTitle5 = new Paragraph(title5, fontOpenSans(8f, Font.BOLD));
                 viewTitle5.setAlignment(Element.ALIGN_LEFT);
                 doc.add(viewTitle5);
@@ -296,6 +332,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                 cellHeader2.setPhrase(new Phrase("Verified By", fontHeader2));
                 table2.addCell(cellHeader2);
             }
+            System.out.println("masuk 8");
             cellContent.setPhrase(new Phrase(whHistoryList.get(i).getLogStatus(), fontContent));
             table2.addCell(cellContent);
             
@@ -312,7 +349,9 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(userVerify, fontContent));
             table2.addCell(cellContent);
             i++;
+            System.out.println("masuk 9");
         }        
+        System.out.println("masuk 10");
         doc.add(table2);        
     }
 }

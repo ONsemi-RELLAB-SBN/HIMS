@@ -39,6 +39,9 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
+                $('#materialPassNo').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
 
                 var validator = $("#add_mp_list_form").validate({
                     rules: {
@@ -51,74 +54,6 @@
                     validator.resetForm();
                 });
             });
-            $('#equipmentType').on('change', function () {
-                if ($(this).val() === "Motherboard") {
-                $("#mblistdiv").show();
-                        $("#listdiv").hide();
-                        $("#stencillistdiv").hide();
-                        $("#traylistdiv").hide();
-                        $("#pcblistdiv").hide();
-                        $("#typediv").hide();
-                        $("#quantitydiv").hide();
-                        $("#equipmentIdStencil").val("");
-                        $("#equipmentIdTray").val("");
-                        $("#equipmentIdPcb").val("");
-                        $("#quantity").val("");
-                        $("#type").val("");
-                } else if ($(this).val() === "Stencil") {
-                $("#stencillistdiv").show();
-                        $("#listdiv").hide();
-                        $("#mblistdiv").hide();
-                        $("#traylistdiv").hide();
-                        $("#pcblistdiv").hide();
-                        $("#typediv").hide();
-                        $("#quantitydiv").hide();
-                        $("#equipmentIdMb").val("");
-                        $("#equipmentIdTray").val("");
-                        $("#equipmentIdPcb").val("");
-                        $("#quantity").val("");
-                        $("#type").val("");
-                } else if ($(this).val() === "Tray") {
-                $("#traylistdiv").show();
-                        $("#quantitydiv").show();
-                        $("#listdiv").hide();
-                        $("#stencillistdiv").hide();
-                        $("#mblistdiv").hide();
-                        $("#pcblistdiv").hide();
-                        $("#typediv").hide();
-                        $("#equipmentIdMb").val("");
-                        $("#equipmentIdStencil").val("");
-                        $("#equipmentIdPcb").val("");
-                        $("#type").val("");
-                } else if ($(this).val() === "PCB") {
-                $("#pcblistdiv").show();
-                        $("#typediv").hide();
-                        $("#quantitydiv").show();
-                        $("#listdiv").hide();
-                        $("#stencillistdiv").hide();
-                        $("#mblistdiv").hide();
-                        $("#traylistdiv").hide();
-                        $("#equipmentIdMb").val("");
-                        $("#equipmentIdStencil").val("");
-                        $("#equipmentIdTray").val("");
-                    }else {
-                        $("#listdiv").show();
-                         $("#pcblistdiv").hide();
-                        $("#mblistdiv").hide();
-                        $("#stencillistdiv").hide();
-                        $("#traylistdiv").hide();
-                        $("#typediv").hide();
-                        $("#quantitydiv").hide();
-                        $("#equipmentIdMb").val("");
-                        $("#equipmentIdStencil").val("");
-                        $("#equipmentIdTray").val("");
-                        $("#equipmentIdPcb").val("");
-                        $("#quantity").val("");
-                        $("#type").val("");
-                    }
-
-            });
-
         </script>
     </s:layout-component>
 </s:layout-render>

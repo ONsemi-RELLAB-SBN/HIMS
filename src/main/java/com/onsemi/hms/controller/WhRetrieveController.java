@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
+import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +104,6 @@ public class WhRetrieveController {
         return new ModelAndView("whRetrievePdf", "whRetrieve", whRetrieve);
     }
 
-    
     @RequestMapping(value = "/verify/{whRetrieveId}", method = RequestMethod.GET)
     public String verify(
             Model model,
@@ -111,7 +111,7 @@ public class WhRetrieveController {
     ) {
         WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
         WhRetrieve whRetrieve = whRetrieveDAO.getWhRetrieve(whRetrieveId);
-        
+
         String type = whRetrieve.getEquipmentType();
         if ("Motherboard".equals(type)) {
             String IdLabel = "Motherboard ID";
@@ -155,7 +155,7 @@ public class WhRetrieveController {
         model.addAttribute("whRetrieve", whRetrieve);
         return "whRetrieve/verify";
     }
-    
+
     @RequestMapping(value = "/verifyMp", method = RequestMethod.POST)
     public String verifyMp(
             Model model,
@@ -164,11 +164,43 @@ public class WhRetrieveController {
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String requestedEmail,
+            @RequestParam(required = false) String requestedBy,
+            @RequestParam(required = false) String equipmentId,
+            @RequestParam(required = false) String equipmentType,
             @RequestParam(required = false) String materialPassExpiry,
             @RequestParam(required = false) String barcodeVerify,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String flag
+            @RequestParam(required = false) String flag,
+            @RequestParam(required = false) int tempCount
     ) {
+        LOGGER.info("requestedEmail : " + requestedEmail);
+        WhRetrieveDAO wh = new WhRetrieveDAO();
+        WhRetrieve w = wh.getWhRet(refId);
+        LOGGER.info("w.getBarcodeVerify() : " + w.getBarcodeVerify());
+        
+        if (w.getBarcodeVerify() != null) {
+            LOGGER.info("data da ade");
+        } else {
+            LOGGER.info("data xde");
+//            EmailSender emailSender = new EmailSender();
+//            emailSender.htmlEmail2(
+//                    servletContext,
+//                    requestedBy, //user name
+//                    requestedEmail, //to
+//                    "Status for Hardware Shipment to HMS", //subject
+//                    "The hardware " + equipmentId + " (" + equipmentType + "), with material pass number: " + materialPassNo + " has been safely arrived in HMS." //msg
+//            );
+            
+            LogModule logModule = new LogModule();
+            LogModuleDAO logModuleDAO = new LogModuleDAO();
+            logModule.setModuleId(w.getId());
+            logModule.setReferenceId(refId);
+            logModule.setModuleName("hms_wh_retrieval_list");
+            logModule.setStatus("Hardware Arrival");
+            QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+        }
+
         WhRetrieve whRetrieve = new WhRetrieve();
         whRetrieve.setRefId(refId);
         whRetrieve.setBarcodeVerify(barcodeVerify);
@@ -176,11 +208,11 @@ public class WhRetrieveController {
         Date date = new Date();
         whRetrieve.setDateVerify(dateFormat.format(date));
         whRetrieve.setUserVerify(userSession.getFullname());
-        String barcodeVerified = whRetrieve.getBarcodeVerify();
+//        String barcodeVerified = whRetrieve.getBarcodeVerify();
         whRetrieve.setMaterialPassNo(materialPassNo);
-        LOGGER.info("barcodeVerified : " + barcodeVerified);
+        LOGGER.info("barcodeVerify : " + barcodeVerify);
         boolean cp = false;
-        if (materialPassNo.equals(barcodeVerified)) {
+        if (materialPassNo.equals(barcodeVerify)) {
             whRetrieve.setStatus("Verification Pass");
             whRetrieve.setFlag("0");
             cp = true;
@@ -191,9 +223,13 @@ public class WhRetrieveController {
             cp = false;
             LOGGER.info("Verification Fail");
         }
+        LOGGER.info("tempCount before : " + tempCount);
+        tempCount = tempCount + 1;
+        whRetrieve.setTempCount(Integer.toString(tempCount));
+        LOGGER.info("tempCount after : " + tempCount);
         WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
         QueryResult queryResult = whRetrieveDAO.updateWhRetrieveVerification(whRetrieve);
-        
+
         WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
         WhRetrieve query = whRetrieveDAO2.getWhRet(refId);
         LogModule logModule = new LogModule();
@@ -205,7 +241,7 @@ public class WhRetrieveController {
         logModule.setVerifiedBy(query.getUserVerify());
         logModule.setVerifiedDate(query.getDateVerify());
         QueryResult queryResult2 = logModuleDAO.insertLogForVerification(logModule);
-        
+
         args = new String[1];
         args[0] = barcodeVerify;
         if (queryResult.getResult() == 1 && cp == true) {
@@ -215,7 +251,7 @@ public class WhRetrieveController {
         }
         return "redirect:/wh/whRetrieve/verify/" + refId;
     }
-    
+
     @RequestMapping(value = "/setInventory", method = RequestMethod.POST)
     public String setInventory(
             Model model,
@@ -232,24 +268,54 @@ public class WhRetrieveController {
             @RequestParam(required = false) String quantity,
             @RequestParam(required = false) String barcodeVerify,
             @RequestParam(required = false) String dateVerify,
-            @RequestParam(required = false) String inventoryRack,
-            @RequestParam(required = false) String inventoryShelf,
+            @RequestParam(required = false) String tempRack,
+            @RequestParam(required = false) String tempShelf,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String flag
     ) {
         WhRetrieve whRetrieve = new WhRetrieve();
-        whRetrieve.setRefId(refId);      
+        whRetrieve.setRefId(refId);
         whRetrieve.setMaterialPassNo(materialPassNo);
-        
-        boolean ck = false;
-        LOGGER.info("************************************ " + inventoryRack + " vs " + inventoryShelf.substring(0,6) + " ************************************");
-        if(inventoryShelf.substring(0,6).equals(inventoryRack)) {
-            ck = true;
+        whRetrieve.setTempRack(tempRack);
+        whRetrieve.setTempShelf(tempShelf);
+
+        boolean checkLength = false;
+        if (tempRack.length() == 6 && tempShelf.length() == 10) {
+            checkLength = true;
         }
-        
+
+        boolean checkRack = false;
+        boolean ck = false;
         boolean cp = false;
-        if(status.equals("Verification Pass") || status.equals("Inventory Invalid")) {
-            if(ck == true) {
+
+        if (checkLength == true) {
+            LOGGER.info("************************************ " + tempRack + " vs " + tempShelf.substring(0, 6) + " ************************************");
+            if (equipmentType.equals("PCB")) {
+                if (tempRack.substring(0, 4).equals("S-PC")) {
+                    checkRack = true;
+                }
+            } else if (equipmentType.equals("Tray")) {
+                if (tempRack.substring(0, 4).equals("S-TJ") || tempRack.substring(0, 4).equals("S-TR")) {
+                    checkRack = true;
+                }
+            } else if (equipmentType.equals("Stencil")) {
+                if (tempRack.substring(0, 4).equals("S-ST")) {
+                    checkRack = true;
+                }
+            } else if (equipmentType.equals("Motherboard")) {
+                if (tempRack.substring(0, 4).equals("S-SY") || tempRack.substring(0, 4).equals("S-AC") || tempRack.substring(0, 4).equals("S-WF") || tempRack.substring(0, 4).equals("S-IO")
+                        || tempRack.substring(0, 4).equals("S-BB") || tempRack.substring(0, 4).equals("S-HA") || tempRack.substring(0, 4).equals("S-PT")) {
+                    checkRack = true;
+                }
+            }
+
+            if (checkRack == true && tempShelf.substring(0, 6).equals(tempRack)) {
+                ck = true;
+            }
+        }
+
+        if (status.equals("Verification Pass") || status.equals("Inventory Invalid")) {
+            if (ck == true) {
                 whRetrieve.setStatus("Move to Inventory");
                 whRetrieve.setFlag("1");
                 cp = true;
@@ -266,22 +332,30 @@ public class WhRetrieveController {
             cp = false;
             LOGGER.info("Inventory Not Stated");
         }
+
         WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
         QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
-        
+
         String url;
-        if(ck == true) {
+        if (ck == true && cp == true) {
             WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
             WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
-            LogModule logModule2 = new LogModule();
-            LogModuleDAO logModuleDAO2 = new LogModuleDAO();
-            logModule2.setModuleId(query2.getId());
-            logModule2.setReferenceId(refId);
-            logModule2.setModuleName("hms_wh_retrieval_list");
-            logModule2.setStatus(query2.getStatus());
-            QueryResult queryResult2 = logModuleDAO2.insertLog(logModule2);
+            if (query2.getFlag().equals("1")) {
+                LogModule logModule2 = new LogModule();
+                LogModuleDAO logModuleDAO2 = new LogModuleDAO();
+                logModule2.setModuleId(query2.getId());
+                logModule2.setReferenceId(refId);
+                logModule2.setModuleName("hms_wh_retrieval_list");
+                logModule2.setStatus(query2.getStatus());
+                logModule2.setVerifiedBy(userSession.getFullname());
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
+                logModule2.setVerifiedDate(dateFormat.format(date));
+                QueryResult queryResult2 = logModuleDAO2.insertLogForVerification(logModule2);
+            }
+            
+            if (whRetrieve.getFlag().equals("1")) {
 
-            if(whRetrieve.getFlag().equals("1")) {
                 //save id to table wh_inventory_list
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date();
@@ -289,11 +363,11 @@ public class WhRetrieveController {
                 WhInventory whInventory = new WhInventory();
                 whInventory.setRefId(refId);
                 whInventory.setMaterialPassNo(materialPassNo);
-                whInventory.setStatus("Available");
+                whInventory.setStatus("Available in Inventory");
                 whInventory.setInventoryBy(userSession.getFullname());
-                whInventory.setInventoryRack(inventoryRack);
-                whInventory.setInventoryShelf(inventoryShelf);
-
+                whInventory.setInventoryRack(tempRack);
+                whInventory.setInventoryShelf(tempShelf);
+                whInventory.setFlag("0");
                 WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
                 int count = whInventoryDAO.getCountExistingData(whInventory.getRefId());
                 if (count == 0) {
@@ -315,9 +389,7 @@ public class WhRetrieveController {
 
                     args = new String[1];
                     args[0] = materialPassNo;
-                    if (queryResult.getResult() == 0 && cp == false) {
-                        //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-                    } else {
+                    if (queryResult.getResult() != 0) {
                         String username = System.getProperty("user.name");
                         //SEND EMAIL
                         File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
@@ -330,27 +402,27 @@ public class WhRetrieveController {
                                 fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
                                 String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
 
-                                BufferedReader bufferedReader = new BufferedReader(fileReader); 
+                                BufferedReader bufferedReader = new BufferedReader(fileReader);
                                 String data = bufferedReader.readLine();
                                 StringBuilder buff = new StringBuilder();
 
                                 boolean check = false;
                                 int row = 0;
-                                while(data != null){
+                                while (data != null) {
                                     LOGGER.info("start reading file..........");
                                     buff.append(data).append(System.getProperty("line.separator"));
                                     System.out.println("dataaaaaaaaa : \n" + data);
 
                                     String[] split = data.split(",");
                                     IonicFtpRetrieve2 retrieve = new IonicFtpRetrieve2(
-                                        split[0], split[1], split[2],
-                                        split[3], split[4], split[5], 
-                                        split[6], split[7], split[8],
-                                        split[9], split[10], split[11],
-                                        split[12], split[13]
+                                            split[0], split[1], split[2],
+                                            split[3], split[4], split[5],
+                                            split[6], split[7], split[8],
+                                            split[9], split[10], split[11],
+                                            split[12], split[13]
                                     );
 
-                                    if(split[0].equals(refId)) {
+                                    if (split[0].equals(refId)) {
                                         LOGGER.info(row + " : retrieve Id found...................." + data);
                                         check = true;
                                     } else {
@@ -362,24 +434,24 @@ public class WhRetrieveController {
                                 bufferedReader.close();
                                 fileReader.close();
 
-                                if(check == false) {
+                                if (check == false) {
                                     //New Line after the header
                                     fileWriter.append(LINE_SEPARATOR);
                                     WhInventoryDAO whdao = new WhInventoryDAO();
                                     WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
 
                                     String pcbA = wh.getPcbA(), pcbB = wh.getPcbB(), pcbC = wh.getPcbC(), pcbControl = wh.getPcbControl();
-                                    if(!wh.getEquipmentType().equals("PCB")) {
-                                        if(wh.getPcbA() == null || wh.getPcbA().equals("null")) {
+                                    if (!wh.getEquipmentType().equals("PCB")) {
+                                        if (wh.getPcbA() == null || wh.getPcbA().equals("null")) {
                                             pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
                                         }
-                                        if(wh.getPcbB() == null || wh.getPcbB().equals("null")) {
+                                        if (wh.getPcbB() == null || wh.getPcbB().equals("null")) {
                                             pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
                                         }
-                                        if(wh.getPcbC() == null || wh.getPcbC().equals("null")) {
+                                        if (wh.getPcbC() == null || wh.getPcbC().equals("null")) {
                                             pcbC = SpmlUtil.nullToEmptyString(wh.getPcbC());
                                         }
-                                        if(wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
+                                        if (wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
                                             pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
                                         }
                                     }
@@ -429,7 +501,7 @@ public class WhRetrieveController {
                                     fileWriter.append(userSession.getFullname());
                                     fileWriter.append(COMMA_DELIMITER);
                                     fileWriter.append(wh.getStatus());
-        //                            fileWriter.append(COMMA_DELIMITER);
+                                    //                            fileWriter.append(COMMA_DELIMITER);
                                     System.out.println("append to CSV file Succeed!!!");
                                 }
                             } catch (Exception ee) {
@@ -455,23 +527,23 @@ public class WhRetrieveController {
                                 WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
 
                                 String pcbA = wh.getPcbA(), pcbB = wh.getPcbB(), pcbC = wh.getPcbC(), pcbControl = wh.getPcbControl();
-                                if(!wh.getEquipmentType().equals("PCB")) {
-                                    if(wh.getPcbA() == null || wh.getPcbA().equals("null")) {
+                                if (!wh.getEquipmentType().equals("PCB")) {
+                                    if (wh.getPcbA() == null || wh.getPcbA().equals("null")) {
                                         pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
                                     }
-                                    if(wh.getPcbB() == null || wh.getPcbB().equals("null")) {
+                                    if (wh.getPcbB() == null || wh.getPcbB().equals("null")) {
                                         pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
                                     }
-                                    if(wh.getPcbC() == null || wh.getPcbC().equals("null")) {
+                                    if (wh.getPcbC() == null || wh.getPcbC().equals("null")) {
                                         pcbC = SpmlUtil.nullToEmptyString(wh.getPcbC());
                                     }
-                                    if(wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
+                                    if (wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
                                         pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
                                     }
                                 }
 
                                 fileWriter.append(refId);
-                                fileWriter.append(COMMA_DELIMITER); 
+                                fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(wh.getMaterialPassNo());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(wh.getMaterialPassExpiry());
@@ -515,7 +587,7 @@ public class WhRetrieveController {
                                 fileWriter.append(userSession.getFullname());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(wh.getStatus());
-    //                            fileWriter.append(COMMA_DELIMITER);              
+                                //                            fileWriter.append(COMMA_DELIMITER);              
                             } catch (Exception ee) {
                                 System.out.println("Error 1 occured while append the fileWriter");
                             } finally {
@@ -534,7 +606,7 @@ public class WhRetrieveController {
 
                         /*to get hostname*/
                         InetAddress ip;
-                        String hostName ="";
+                        String hostName = "";
                         try {
                             ip = InetAddress.getLocalHost();
                             hostName = ip.getHostName();
@@ -546,11 +618,11 @@ public class WhRetrieveController {
 
                         EmailSender emailSender = new EmailSender();
                         emailSender.htmlEmailWithAttachmentRetrieve(
-                            servletContext,
-                            "CDARS",                                                   //user name
-                            "cdarsrel@gmail.com",                                   //to
-                            "Status for Hardware Inventory from HMS",  //subject
-                            "Verification and inventory for Hardware has been made."    //msg
+                                servletContext,
+                                "CDARS", //user name
+                                "cdarsrel@gmail.com", //to
+                                "Status for Hardware Inventory from HMS", //subject
+                                "Verification and inventory for Hardware has been made." //msg
                         );
                         redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success3", args, locale));
                     }
@@ -560,31 +632,33 @@ public class WhRetrieveController {
             }
             url = "redirect:/wh/whInventory/";
         } else {
-            WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
-            WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
-            LogModule logModule2 = new LogModule();
-            LogModuleDAO logModuleDAO2 = new LogModuleDAO();
-            logModule2.setModuleId(query2.getId());
-            logModule2.setReferenceId(refId);
-            logModule2.setModuleName("hms_wh_retrieval_list");
-            logModule2.setStatus(query2.getStatus());
-            logModule2.setVerifiedBy(userSession.getFullname());
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
-            logModule2.setVerifiedDate(dateFormat.format(date));
-            QueryResult queryResult2 = logModuleDAO2.insertLogForVerification(logModule2);          
+            WhRetrieveDAO whRetrieveDAO3 = new WhRetrieveDAO();
+            WhRetrieve query3 = whRetrieveDAO3.getWhRetrieve(refId);
+            if (query3.getFlag().equals("0")) {
+                LogModule logModule3 = new LogModule();
+                LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+                logModule3.setModuleId(query3.getId());
+                logModule3.setReferenceId(refId);
+                logModule3.setModuleName("hms_wh_retrieval_list");
+                logModule3.setStatus(query3.getStatus());
+                logModule3.setVerifiedBy(userSession.getFullname());
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
+                logModule3.setVerifiedDate(dateFormat.format(date));
+                QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
+            }
             url = "redirect:/wh/whRetrieve/verify/" + refId;
         }
         return url;
     }
-    
+
     @RequestMapping(value = "/history/{whRetrieveId}", method = RequestMethod.GET)
     public String history(
             Model model,
             HttpServletRequest request,
             @PathVariable("whRetrieveId") String whRetrieveId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");        
+        LOGGER.info("Masuk view 1........");
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whRetrieve/viewWhRetrieveLogPdf/" + whRetrieveId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whRetrieve";
         model.addAttribute("pdfUrl", pdfUrl);
@@ -593,17 +667,74 @@ public class WhRetrieveController {
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-    
+
     @RequestMapping(value = "/viewWhRetrieveLogPdf/{whRetrieveId}", method = RequestMethod.GET)
     public ModelAndView viewWhRetrieveHistPdf(
             Model model,
             @PathVariable("whRetrieveId") String whRetrieveId
     ) {
-        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();        
+        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
         LOGGER.info("Masuk 1........");
         List<WhRetrieveLog> whHistoryList = whRetrieveDAO.getWhRetLog(whRetrieveId);
 //        WhRetrieveLog whHistoryList = whRetrieveDAO.getWhRetLog(whRetrieveId);
         LOGGER.info("Masuk 2........");
         return new ModelAndView("whRetrieveLogPdf", "whRetrieveLog", whHistoryList);
+    }
+
+    @RequestMapping(value = "/error/{whRetrieveId}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String error(
+            Model model,
+            Locale locale,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @PathVariable("whRetrieveId") String whRetrieveId
+    ) throws UnsupportedEncodingException {
+        //send email
+        LOGGER.info("send email to warehouse");
+
+//        String url = "";
+        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+        int count = whRetrieveDAO.getCountExistingData(whRetrieveId);
+        if (count != 0) {
+            whRetrieveDAO = new WhRetrieveDAO();
+            WhRetrieve query = whRetrieveDAO.getWhRetrieve(whRetrieveId);
+
+            EmailSender emailSender = new EmailSender();
+            emailSender.htmlEmail2(
+                    servletContext,
+                    query.getRequestedBy(), //user name
+                    query.getRequestedEmail(), //to
+                    "Error in Hardware Retrieval Verification in HMS", //subject
+                    "Barcode Verification for hardware " + query.getEquipmentId() + " (" + query.getEquipmentType() + "), with material pass number: " + query.getMaterialPassNo() + " is INVALID. " +
+                    "\nPlease identify the problem that occur." //msg
+            );
+//            url = "redirect:/wh/whRetrieve/";
+            args = new String[1];
+            args[0] = query.getMaterialPassNo();
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success6", args, locale));
+            
+            LogModule logModule3 = new LogModule();
+            LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+            logModule3.setModuleId(query.getId());
+            logModule3.setReferenceId(query.getRefId());
+            logModule3.setModuleName("hms_wh_retrieval_list");
+            logModule3.setStatus("Sent Email to Requestor");
+            QueryResult queryResult3 = logModuleDAO3.insertLog(logModule3);
+            System.out.println("Email has been sent.");
+        }
+//        else {
+//            url = "redirect:/wh/whRetrieve/verify/" + whRetrieveId;
+//        }
+        
+        return "redirect:/wh/whRetrieve/verify/" + whRetrieveId;
+    }
+
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public String query(
+            Model model
+    ) {
+        System.out.println("masukkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk!!!!!!!!!!!!!!!");
+        return "whRetrieve/query";
     }
 }

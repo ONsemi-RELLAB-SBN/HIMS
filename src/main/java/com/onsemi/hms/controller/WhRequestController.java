@@ -13,6 +13,7 @@ import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhRequestLog;
 import com.onsemi.hms.model.WhShipping;
+import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -155,7 +156,8 @@ public class WhRequestController {
             @RequestParam(required = false) String refId,
             @RequestParam(required = false) String materialPassNo,
             @RequestParam(required = false) String barcodeVerify,
-            @RequestParam(required = false) String status
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) int tempCount
     ) {
         WhRequest whRequest = new WhRequest();
         whRequest.setRefId(refId);
@@ -180,6 +182,8 @@ public class WhRequestController {
             LOGGER.info("Barcode Verification Fail");
         }
         
+        tempCount = tempCount + 1;
+        whRequest.setTempCount(Integer.toString(tempCount));
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestVerification(whRequest);
         
@@ -322,5 +326,38 @@ public class WhRequestController {
 //        WhRequestLog whHistoryList = whRequestDAO.getWhRetLog(whRequestId);
         LOGGER.info("Masuk 2........");
         return new ModelAndView("whRequestLogPdf", "whRequestLog", whHistoryList);
+    }
+    
+    @RequestMapping(value = "/error/{whRequestId}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String error(
+            Model model,
+            Locale locale,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @PathVariable("whRequestId") String whRequestId
+    ) throws UnsupportedEncodingException {
+        //send email
+        LOGGER.info("send email to warehouse");
+        WhRequestDAO whRequestDAO = new WhRequestDAO();
+        int count = whRequestDAO.getCountExistingData(whRequestId);
+        if (count != 0) {
+            whRequestDAO = new WhRequestDAO();
+            WhRequest query = whRequestDAO.getWhRequest(whRequestId);
+
+            EmailSender emailSender = new EmailSender();
+            emailSender.htmlEmail2(
+                    servletContext,
+                    query.getRequestedBy(), //user name
+                    query.getRequestedEmail(), //to
+                    "Error in Hardware Retrieval Verification in HMS", //subject
+                    "Barcode Verification for hardware " + query.getEquipmentId() + " (" + query.getEquipmentType() + "), with material pass number: " + query.getMaterialPassNo() + " is INVALID." //msg
+            );
+            args = new String[1];
+            args[0] = query.getMaterialPassNo();
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success6", args, locale));
+            System.out.println("Email has been sent.");
+        }
+        return "redirect:/wh/whRequest/verify/" + whRequestId;
     }
 }

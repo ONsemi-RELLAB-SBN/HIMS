@@ -320,8 +320,6 @@ $.extend( $.validator, {
 		digits: "Please enter only digits.",
 		creditcard: "Please enter a valid credit card number.",
 		equalTo: "Please enter the same value again.",
-                equalToBarcode: "Please scan the barcode again.",
-                equalToInventory: "Inventory not valid. Please re-check and try again.",
 		maxlength: $.validator.format( "Please enter no more than {0} characters." ),
 		minlength: $.validator.format( "Please enter at least {0} characters." ),
 		rangelength: $.validator.format( "Please enter a value between {0} and {1} characters long." ),
@@ -1249,19 +1247,6 @@ $.extend( $.validator, {
 			return value === target.val();
 		},
                 
-                // http://jqueryvalidation.org/equalToInventory-method/
-		equalToInventory: function( value, element, param ) {
-			// bind to the blur event of the target in order to revalidate whenever the target field is updated
-			// TODO find a way to bind the event just once, avoiding the unbind-rebind overhead
-			var target = $( param );
-			if ( this.settings.onfocusout ) {
-				target.unbind( ".validate-equalToInventory" ).bind( "blur.validate-equalToInventory", function() {
-					$( element ).valid();
-				});
-			}
-			return value === target.val();
-		},
-
 		// http://jqueryvalidation.org/remote-method/
 		remote: function( value, element, param ) {
 			if ( this.optional( element ) ) {

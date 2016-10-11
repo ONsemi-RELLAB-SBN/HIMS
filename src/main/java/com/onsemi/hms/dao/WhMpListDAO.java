@@ -137,7 +137,7 @@ public class WhMpListDAO {
                 whMpList.setCreatedBy(rs.getString("ML.created_by"));
                 whMpList.setShippingDate(rs.getString("SL.shipping_date"));
                 whMpList.setShippingBy(rs.getString("SL.shipping_by"));
-                whMpList.setStatus(rs.getString("SL.status"));
+                whMpList.setStatus(rs.getString("SL.status"));                
             }
             rs.close();
             ps.close();
@@ -206,7 +206,7 @@ public class WhMpListDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM hms_wh_mp_list"
+                    "DELETE FROM hms_wh_mp_list "
             );
             queryResult.setResult(ps.executeUpdate());
             ps.close();

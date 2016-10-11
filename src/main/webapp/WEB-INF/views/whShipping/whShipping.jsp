@@ -80,7 +80,7 @@
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
-                                                <a href="${contextPath}/wh/whShipping/history/${whInventory.requestId}" class="table-link" title="History">
+                                                <a href="${contextPath}/wh/whShipping/history/${whShipping.requestId}" class="table-link" title="History">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-book fa-stack-1x fa-inverse"></i>

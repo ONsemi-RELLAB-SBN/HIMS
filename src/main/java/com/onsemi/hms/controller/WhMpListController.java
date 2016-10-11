@@ -101,8 +101,9 @@ public class WhMpListController {
                 whMpListDAO = new WhMpListDAO();
                 QueryResult queryResult = whMpListDAO.insertWhMpList(whMpList);
                 
+                
                 WhShippingDAO whShippingDAO1 = new WhShippingDAO();
-                 WhShipping query1 = whShippingDAO1.getWhShipping(refId);
+                WhShipping query1 = whShippingDAO1.getWhShipping(refId);
                 WhMpListDAO whMpListDAO3 = new WhMpListDAO();
                 WhMpList query2 = whMpListDAO3.getWhMpListMergeWithShippingAndRequest(refId);
                 LogModule logModule2 = new LogModule();
@@ -283,9 +284,13 @@ public class WhMpListController {
                     
                     WhShipping whShipping = new WhShipping();
                     whShipping.setRequestId(whship.getRequestId());
+                    whShipping.setMaterialPassNo(materialPassNo);
                     whShipping.setStatus("Ship");
+                    whShipping.setFlag("1");
+                    whShipping.setShippingBy(mplist.getCreatedBy());
+                    whShipping.setShippingDate(mplist.getCreatedDate());
                     WhShippingDAO whShippingDao = new WhShippingDAO();
-                    QueryResult queryResult2 = whShippingDao.updateWhShippingStatus(whShipping);
+                    QueryResult queryResult2 = whShippingDao.updateWhShipping(whShipping);
                     
                     WhRequest whReq = new WhRequest();
                     whReq.setRefId(whship.getRequestId());

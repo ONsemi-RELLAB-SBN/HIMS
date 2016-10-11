@@ -114,6 +114,6 @@
                 $("#delete_modal .modal-body").html(deleteMsg);
                 $("#modal_delete_button").attr("href", deleteUrl);
             }
-        </script>
+            </script>
     </s:layout-component>
 </s:layout-render>

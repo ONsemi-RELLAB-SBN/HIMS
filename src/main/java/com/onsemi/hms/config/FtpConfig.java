@@ -8,6 +8,7 @@ import com.onsemi.hms.model.IonicFtpRetrieve;
 import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhRetrieve;
+import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import com.opencsv.CSVReader;
 import java.io.File;
@@ -110,6 +111,8 @@ public class FtpConfig {
                                 logModule.setModuleName("hms_wh_request_list");
                                 logModule.setStatus(query.getStatus());
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+                                
+                                
                             } else {
                                 LOGGER.info("data adeeeeee");
                             }

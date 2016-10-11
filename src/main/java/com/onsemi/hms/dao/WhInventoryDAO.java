@@ -263,7 +263,8 @@ public class WhInventoryDAO {
         String sql = "SELECT IL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
                    + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(IL.inventory_date,'%d %M %Y %h:%i %p') AS inventory_date_view "
                    + "FROM hms_wh_inventory_list IL, hms_wh_retrieval_list RL "
-                   + "WHERE IL.retrieve_id = RL.retrieve_id AND IL.status = 'Available' ";
+                   + "WHERE IL.retrieve_id = RL.retrieve_id AND IL.flag = '0' "
+                   + "ORDER BY IL.inventory_date DESC";
         List<WhInventory> whInventoryList = new ArrayList<WhInventory>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -438,7 +439,7 @@ public class WhInventoryDAO {
         String sql = "SELECT RL.*, IL.* "
                    + "FROM hms_wh_retrieval_list RL, hms_wh_inventory_list IL "
                    + "WHERE DATE(RL.material_pass_expiry) >= DATE(NOW()) "
-                   + "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),3) "
+                   + "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),90) "
                    + "AND RL.retrieve_id = IL.retrieve_id "
                    + "ORDER BY RL.material_pass_expiry ASC ";
         List<WhInventory> whInventoryList = new ArrayList<WhInventory>();
@@ -501,7 +502,7 @@ public class WhInventoryDAO {
                 "SELECT COUNT(RL.material_pass_expiry) AS count " +
                 "FROM hms_wh_retrieval_list RL, hms_wh_inventory_list IL " +
                 "WHERE DATE(RL.material_pass_expiry) >= DATE(NOW()) " +
-                "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),3) " +
+                "AND DATE(RL.material_pass_expiry) <= ADDDATE(DATE(NOW()),90) " +
                 "AND RL.retrieve_id = IL.retrieve_id "
             );
 
@@ -527,8 +528,13 @@ public class WhInventoryDAO {
     }
     
     public List<WhInventoryLog> getWhInventoryRetLog(String whInventoryId) {
-        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
-                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view,"
+                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, received_date)), ' mins') AS ship_receive, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date)), ' mins') AS verify_inventory, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, inventory_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, inventory_date)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, inventory_date)), ' mins') AS receive_inventory, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, inventory_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, inventory_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, inventory_date)), ' mins') AS shipping_inventory "
                     + "FROM hms_wh_log L, hms_wh_retrieval_list R, hms_wh_inventory_list I "
                     + "WHERE L.reference_id = R.retrieve_id AND R.retrieve_id = I.retrieve_id AND I.retrieve_id = '" + whInventoryId + "' "
                     + "ORDER BY timestamp DESC";
@@ -549,7 +555,7 @@ public class WhInventoryDAO {
                 whInventoryLog.setLogVerifyDate(rs.getString("verified_date_view"));
                 whInventoryLog.setLogVerifyBy(rs.getString("verified_by"));
                 //retrieve
-                whInventoryLog.setRetrieveId(rs.getString("R.retrieve_id"));
+                whInventoryLog.setRetrieveId(whInventoryId);
                 whInventoryLog.setMaterialPassNo(rs.getString("material_pass_no"));
                 whInventoryLog.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whInventoryLog.setEquipmentType(rs.getString("equipment_type"));
@@ -572,21 +578,23 @@ public class WhInventoryDAO {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whInventoryLog.setRemarks(remarks);
-                whInventoryLog.setReceivedDate(rs.getString("received_date"));
+                whInventoryLog.setReceivedDate(rs.getString("received_date_view"));
                 whInventoryLog.setBarcodeVerify(rs.getString("barcode_verify"));
                 whInventoryLog.setDateVerify(rs.getString("date_verify"));
                 whInventoryLog.setUserVerify(rs.getString("user_verify"));
                 whInventoryLog.setStatus(rs.getString("R.status"));
                 whInventoryLog.setFlag(rs.getString("flag"));
+                whInventoryLog.setShipReceive(rs.getString("ship_receive"));
+                whInventoryLog.setReceiveVerify(rs.getString("receive_verify"));
+                whInventoryLog.setVerifyInventory(rs.getString("verify_inventory"));
+                whInventoryLog.setReceiveInventory(rs.getString("receive_inventory"));
+                whInventoryLog.setShippingInventory(rs.getString("shipping_inventory"));
                 //inventory
-                whInventoryLog.setInRetrieveId(whInventoryId);
-                whInventoryLog.setInventoryDate(rs.getString("inventory_date"));
                 whInventoryLog.setInventoryLoc(rs.getString("inventory_loc"));
                 whInventoryLog.setInventoryRack(rs.getString("inventory_rack"));
                 whInventoryLog.setInventoryShelf(rs.getString("inventory_shelf"));
                 whInventoryLog.setInventoryBy(rs.getString("inventory_by"));
-                whInventoryLog.setInventoryStatus(rs.getString("I.status"));
-                whInventoryLog.setInventoryFlag(rs.getString("flag"));
+                whInventoryLog.setInventoryDate(rs.getString("inventory_date"));
                 whInventoryList.add(whInventoryLog);
                 System.out.println("*********************** LIST ************************" + whInventoryList);
             }

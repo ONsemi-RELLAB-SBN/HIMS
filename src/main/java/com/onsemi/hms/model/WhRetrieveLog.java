@@ -37,6 +37,16 @@ public class WhRetrieveLog {
     private String dateVerify;
     private String status;
     private String flag;
+    private String tempRack;
+    private String tempShelf;
+    private String tempDate;
+    
+    //timelapse
+    private String shipReceive;
+    private String receiveVerify;
+    private String verifyInventory;
+    private String receiveInventory;
+    private String shippingInventory;
 
     public String getId() {
         return id;
@@ -300,5 +310,69 @@ public class WhRetrieveLog {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public String getTempRack() {
+        return tempRack;
+    }
+
+    public void setTempRack(String tempRack) {
+        this.tempRack = tempRack;
+    }
+
+    public String getTempShelf() {
+        return tempShelf;
+    }
+
+    public void setTempShelf(String tempShelf) {
+        this.tempShelf = tempShelf;
+    }
+
+    public String getTempDate() {
+        return tempDate;
+    }
+
+    public void setTempDate(String tempDate) {
+        this.tempDate = tempDate;
+    }
+
+    public String getShipReceive() {
+        return shipReceive;
+    }
+
+    public void setShipReceive(String shipReceive) {
+        this.shipReceive = shipReceive;
+    }
+
+    public String getReceiveVerify() {
+        return receiveVerify;
+    }
+
+    public void setReceiveVerify(String receiveVerify) {
+        this.receiveVerify = receiveVerify;
+    }
+
+    public String getVerifyInventory() {
+        return verifyInventory;
+    }
+
+    public void setVerifyInventory(String verifyInventory) {
+        this.verifyInventory = verifyInventory;
+    }
+
+    public String getReceiveInventory() {
+        return receiveInventory;
+    }
+
+    public void setReceiveInventory(String receiveInventory) {
+        this.receiveInventory = receiveInventory;
+    }
+
+    public String getShippingInventory() {
+        return shippingInventory;
+    }
+
+    public void setShippingInventory(String shippingInventory) {
+        this.shippingInventory = shippingInventory;
     }
 }

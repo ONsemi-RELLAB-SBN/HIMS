@@ -428,6 +428,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
         }).start();
     }
     
+//    public void htmlEmailWithAttachmentMpExpiry3(final ServletContext servletContext, final String user, final String to, final String subject, final String msg, final String header, final String content, final Integer col) {
     public void htmlEmailWithAttachmentMpExpiry3(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -463,9 +464,12 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     model.put("subject", subject);
                     model.put("message", msg);
                     model.put("logoCid", logoCid);
+//                    model.put("tableColumn", col);
+//                    model.put("tableHeader", header);
+//                    model.put("tableContent", content);
                     Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_22);
                     freemarkerConfiguration.setServletContextForTemplateLoading(servletContext, emailTemplate);
-                    String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("template.html"), model);
+                    String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("templateTable.html"), model);
                     htmlEmail.setHtmlMsg(msgContent);
                     String send = htmlEmail.send();
                     LOGGER.info("EMAIL SENDER: " + send);

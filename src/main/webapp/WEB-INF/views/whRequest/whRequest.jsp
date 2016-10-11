@@ -81,7 +81,7 @@
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a-->
-                                                <a href="${contextPath}/wh/whRequest/history/${whInventory.refId}" class="table-link" title="Details">
+                                                <a href="${contextPath}/wh/whRequest/history/${whRequest.refId}" class="table-link" title="Details">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-book fa-stack-1x fa-inverse"></i>
