@@ -501,14 +501,18 @@ public class WhRequestDAO {
     public List<WhRequestLog> getWhReqLog(String whRequestId) {
         String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
                     + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, received_date)), ' mins') AS request_receive, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify1, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins') AS verify1_verify2, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, inventory_date_verify)), ' mins') AS receive_verify2, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, inventory_date_verify)), ' mins') AS request_verify2 "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, date_verify)), ' mins, ', SECOND(TIMEDIFF(requested_date, date_verify)), ' secs') AS req_bar_verify, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins, ', SECOND(TIMEDIFF(date_verify, inventory_date_verify)), ' secs') AS bar_inv_verify "
                     + "FROM hms_wh_log L, hms_wh_request_list R "
                     + "WHERE L.reference_id = R.request_id AND R.request_id = '" + whRequestId + "' "
                     + "ORDER BY timestamp DESC";
+        
+//        + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, received_date)), ' mins') AS request_receive, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify1, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins') AS verify1_verify2, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, inventory_date_verify)), ' mins') AS receive_verify2, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, inventory_date_verify)), ' mins') AS request_verify2 "
+                
         List<WhRequestLog> whRequestList = new ArrayList<WhRequestLog>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -563,14 +567,73 @@ public class WhRequestDAO {
                 whRequestLog.setInventoryDateVerify(rs.getString("inventory_Date_verify"));
                 whRequestLog.setStatus(rs.getString("R.status"));
                 whRequestLog.setFlag(rs.getString("R.flag"));
-                whRequestLog.setRequestReceive(rs.getString("request_receive"));
-                whRequestLog.setReceiveVerify1(rs.getString("receive_verify1"));
-                whRequestLog.setVerify1Verify2(rs.getString("verify1_verify2"));
-                whRequestLog.setReceiveVerify2(rs.getString("receive_verify2"));
-                whRequestLog.setRequestVerify2(rs.getString("request_verify2"));
+                whRequestLog.setRequestBarVerify(rs.getString("req_bar_verify"));
+                whRequestLog.setBarVerifyInvVerify(rs.getString("bar_inv_verify"));
+//                whRequestLog.setRequestReceive(rs.getString("request_receive"));
+//                whRequestLog.setReceiveVerify1(rs.getString("receive_verify1"));
+//                whRequestLog.setVerify1Verify2(rs.getString("verify1_verify2"));
+//                whRequestLog.setReceiveVerify2(rs.getString("receive_verify2"));
+//                whRequestLog.setRequestVerify2(rs.getString("request_verify2"));
                 whRequestLog.setTempCount(rs.getString("temp_count"));
                 whRequestList.add(whRequestLog);
                 System.out.println("*********************** LIST ************************" + whRequestList);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whRequestList;
+    }
+    
+    public List<WhRequest> getQuery(String query) {
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
+                   + "FROM hms_wh_request_list "
+                   + "WHERE " + query;
+        List<WhRequest> whRequestList = new ArrayList<WhRequest>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRequest whRequest;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRequest = new WhRequest();
+                whRequest.setId(rs.getString("id"));
+                whRequest.setRefId(rs.getString("request_id"));
+                whRequest.setMaterialPassNo(rs.getString("material_pass_no"));
+                whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whRequest.setEquipmentType(rs.getString("equipment_type"));
+                whRequest.setEquipmentId(rs.getString("equipment_id"));
+                whRequest.setQuantity(rs.getString("quantity"));
+                whRequest.setRequestedBy(rs.getString("requested_by"));
+                whRequest.setRequestedEmail(rs.getString("requested_email"));
+                whRequest.setRequestedDate(rs.getString("requested_date_view"));
+                whRequest.setInventoryRack(rs.getString("inventory_rack"));
+                whRequest.setInventoryShelf(rs.getString("inventory_shelf"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRequest.setRemarks(remarks);
+                whRequest.setBarcodeVerify(rs.getString("barcode_verify"));
+                whRequest.setDateVerify(rs.getString("date_verify_view"));
+                whRequest.setUserVerify(rs.getString("user_verify"));
+                whRequest.setInventoryRackVerify(rs.getString("inventory_rack_verify"));
+                whRequest.setInventoryShelfVerify(rs.getString("inventory_shelf_verify"));
+                whRequest.setInventoryDateVerify(rs.getString("inventory_date_verify_view"));
+                whRequest.setInventoryUserVerify(rs.getString("inventory_user_verify"));
+                whRequest.setStatus(rs.getString("status"));
+                whRequest.setFlag(rs.getString("flag"));
+                whRequest.setTempCount(rs.getString("temp_count"));
+                whRequestList.add(whRequest);
             }
             rs.close();
             ps.close();

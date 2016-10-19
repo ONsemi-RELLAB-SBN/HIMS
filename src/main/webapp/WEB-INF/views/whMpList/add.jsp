@@ -10,12 +10,12 @@
         <div class="col-lg-12">
             <h1>Add Shipping Material Pass List</h1>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Material Pass Number</h2>
                         <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/wh/whShipping/whMpList/save" method="post">
                             <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-4 control-label">Material Pass Number *</label>
+                                <label for="materialPassNo" class="col-lg-3 control-label">Material Pass Number *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" placeholder="" value="" autofocus="autofocus">
                                 </div>

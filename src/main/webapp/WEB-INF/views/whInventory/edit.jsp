@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-3 control-label">Equipment ID</label>
+                                <label for="equipmentId" class="col-lg-3 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whInventory.equipmentId}" readonly>
                                 </div>

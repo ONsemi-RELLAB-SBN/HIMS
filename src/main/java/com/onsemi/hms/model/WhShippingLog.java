@@ -52,14 +52,18 @@ public class WhShippingLog {
     private String shippingFlag;
     
     //time
-    private String requestReceive;
-    private String receiveVerify1;
-    private String verify1Verify2;
-    private String receiveVerify2;
-    private String requestVerify2;
-    private String verify2Shipping;
-    private String receiveShipping;
-    private String requestShipping;
+    private String requestBarVerify;
+    private String barVerifyInvVerify;
+    private String invVerifyShip;
+    private String shipClose;
+//    private String requestReceive;
+//    private String receiveVerify1;
+//    private String verify1Verify2;
+//    private String receiveVerify2;
+//    private String requestVerify2;
+//    private String verify2Shipping;
+//    private String receiveShipping;
+//    private String requestShipping;
 
     public String getId() {
         return id;
@@ -372,47 +376,6 @@ public class WhShippingLog {
     public void setFlag(String flag) {
         this.flag = flag;
     }
-
-    public String getRequestReceive() {
-        return requestReceive;
-    }
-
-    public void setRequestReceive(String requestReceive) {
-        this.requestReceive = requestReceive;
-    }
-
-    public String getReceiveVerify1() {
-        return receiveVerify1;
-    }
-
-    public void setReceiveVerify1(String receiveVerify1) {
-        this.receiveVerify1 = receiveVerify1;
-    }
-
-    public String getVerify1Verify2() {
-        return verify1Verify2;
-    }
-
-    public void setVerify1Verify2(String verify1Verify2) {
-        this.verify1Verify2 = verify1Verify2;
-    }
-
-    public String getReceiveVerify2() {
-        return receiveVerify2;
-    }
-
-    public void setReceiveVerify2(String receiveVerify2) {
-        this.receiveVerify2 = receiveVerify2;
-    }
-
-    public String getRequestVerify2() {
-        return requestVerify2;
-    }
-
-    public void setRequestVerify2(String requestVerify2) {
-        this.requestVerify2 = requestVerify2;
-    }
-
     public String getShippingId() {
         return shippingId;
     }
@@ -453,27 +416,99 @@ public class WhShippingLog {
         this.shippingFlag = shippingFlag;
     }
 
-    public String getVerify2Shipping() {
-        return verify2Shipping;
+    public String getRequestBarVerify() {
+        return requestBarVerify;
     }
 
-    public void setVerify2Shipping(String verify2Shipping) {
-        this.verify2Shipping = verify2Shipping;
+    public void setRequestBarVerify(String requestBarVerify) {
+        this.requestBarVerify = requestBarVerify;
     }
 
-    public String getReceiveShipping() {
-        return receiveShipping;
+    public String getBarVerifyInvVerify() {
+        return barVerifyInvVerify;
     }
 
-    public void setReceiveShipping(String receiveShipping) {
-        this.receiveShipping = receiveShipping;
+    public void setBarVerifyInvVerify(String barVerifyInvVerify) {
+        this.barVerifyInvVerify = barVerifyInvVerify;
     }
 
-    public String getRequestShipping() {
-        return requestShipping;
+    public String getInvVerifyShip() {
+        return invVerifyShip;
     }
 
-    public void setRequestShipping(String requestShipping) {
-        this.requestShipping = requestShipping;
+    public void setInvVerifyShip(String invVerifyShip) {
+        this.invVerifyShip = invVerifyShip;
     }
+
+    public String getShipClose() {
+        return shipClose;
+    }
+
+    public void setShipClose(String shipClose) {
+        this.shipClose = shipClose;
+    }
+
+    //    public String getRequestReceive() {
+//        return requestReceive;
+//    }
+//
+//    public void setRequestReceive(String requestReceive) {
+//        this.requestReceive = requestReceive;
+//    }
+//
+//    public String getReceiveVerify1() {
+//        return receiveVerify1;
+//    }
+//
+//    public void setReceiveVerify1(String receiveVerify1) {
+//        this.receiveVerify1 = receiveVerify1;
+//    }
+//
+//    public String getVerify1Verify2() {
+//        return verify1Verify2;
+//    }
+//
+//    public void setVerify1Verify2(String verify1Verify2) {
+//        this.verify1Verify2 = verify1Verify2;
+//    }
+//
+//    public String getReceiveVerify2() {
+//        return receiveVerify2;
+//    }
+//
+//    public void setReceiveVerify2(String receiveVerify2) {
+//        this.receiveVerify2 = receiveVerify2;
+//    }
+//
+//    public String getRequestVerify2() {
+//        return requestVerify2;
+//    }
+//
+//    public void setRequestVerify2(String requestVerify2) {
+//        this.requestVerify2 = requestVerify2;
+//    }
+
+//    public String getVerify2Shipping() {
+//        return verify2Shipping;
+//    }
+//
+//    public void setVerify2Shipping(String verify2Shipping) {
+//        this.verify2Shipping = verify2Shipping;
+//    }
+//
+//    public String getReceiveShipping() {
+//        return receiveShipping;
+//    }
+//
+//    public void setReceiveShipping(String receiveShipping) {
+//        this.receiveShipping = receiveShipping;
+//    }
+//
+//    public String getRequestShipping() {
+//        return requestShipping;
+//    }
+//
+//    public void setRequestShipping(String requestShipping) {
+//        this.requestShipping = requestShipping;
+//    }
 }

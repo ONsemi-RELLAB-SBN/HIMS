@@ -28,6 +28,7 @@ public class WhRetrieve {
     private String userVerify;
     private String status;
     private String flag;
+    private String arrivalReceivedDate;
     private String duration;
     private String tempRack;
     private String tempShelf;
@@ -215,6 +216,14 @@ public class WhRetrieve {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public String getArrivalReceivedDate() {
+        return arrivalReceivedDate;
+    }
+
+    public void setArrivalReceivedDate(String arrivalReceivedDate) {
+        this.arrivalReceivedDate = arrivalReceivedDate;
     }
 
     public String getBarcodeVerify() {

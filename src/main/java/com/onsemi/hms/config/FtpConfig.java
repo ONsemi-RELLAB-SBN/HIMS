@@ -3,11 +3,14 @@ package com.onsemi.hms.config;
 import com.onsemi.hms.dao.LogModuleDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhRetrieveDAO;
+import com.onsemi.hms.dao.WhShippingDAO;
+import com.onsemi.hms.model.IonicFtpClose;
 import com.onsemi.hms.model.IonicFtpRequest;
 import com.onsemi.hms.model.IonicFtpRetrieve;
 import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhRetrieve;
+import com.onsemi.hms.model.WhShipping;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import com.opencsv.CSVReader;
@@ -190,8 +193,58 @@ public class FtpConfig {
                     } catch (Exception ee) {
                         ee.printStackTrace();
                     }
-                } else {
+                } else if (listOfFile.getName().equals("cdars_retrieval_status - Copy.csv")) {
                     fileLocation = targetLocation + listOfFile.getName();
+                    LOGGER.info("Close status file found : " + fileLocation);
+                    
+                    CSVReader csvReader = null;      
+                    try {
+                        csvReader = new CSVReader(new FileReader(fileLocation), ',', '"', 1);
+                        String[] ionicFtp = null;
+                        List<IonicFtpClose> closeList = new ArrayList<IonicFtpClose>();
+
+                        while ((ionicFtp = csvReader.readNext()) != null) {
+                            IonicFtpClose close = new IonicFtpClose(
+                                ionicFtp[0], ionicFtp[1], ionicFtp[2],
+                                ionicFtp[3], ionicFtp[4], ionicFtp[5], 
+                                ionicFtp[6]
+                            );
+                            closeList.add(close);
+                        }
+                        for (IonicFtpClose c : closeList) {
+                            WhShipping  ftp = new WhShipping();
+                            ftp.setRequestId(c.getRequestId());
+                            String refId = c.getRequestId();
+                            ftp.setEquipmentType(c.getHardwareType());
+                            ftp.setEquipmentId(c.getHardwareId());
+                            ftp.setQuantity(c.getQuantity());
+                            ftp.setInventoryRack(c.getRack());
+                            ftp.setInventoryShelf(c.getShelf());
+                            ftp.setStatus(c.getStatus());
+                            ftp.setFlag("1");
+                            WhShippingDAO whShippingDAO = new WhShippingDAO();
+                            int count = whShippingDAO.getCountExistingData(c.getRequestId());
+                            if (count != 0 && ftp.getFlag().equals("0")) {
+                                LOGGER.info("data adeeeeee");
+                                WhShippingDAO WhShippingDAO = new WhShippingDAO();
+                                QueryResult queryResult1 = WhShippingDAO.updateStatus(ftp);
+                                
+                                WhShippingDAO whShippingDAO2 = new WhShippingDAO();
+                                WhShipping query = whShippingDAO2.getWhShipping(refId);
+                                LogModule logModule = new LogModule();
+                                LogModuleDAO logModuleDAO = new LogModuleDAO();
+                                logModule.setReferenceId(query.getRequestId());
+                                logModule.setModuleId(query.getId());
+                                logModule.setModuleName("hms_wh_shipping_list");
+                                logModule.setStatus(query.getStatus());
+                                QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+                            } else {
+                                LOGGER.info("data xdeeeeee");
+                            }
+                        }
+                    } catch (Exception ee) {
+                        ee.printStackTrace();
+                    }
                 }
             }
         }

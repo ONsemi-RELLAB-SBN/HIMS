@@ -9,19 +9,13 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Hardware Retrieve</h1>
+            <h1>Warehouse Management - Inventory Management</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Hardware Retrieve List</h2>
+                            <h2 class="pull-left">Inventory Management List</h2>
 
-                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRetrieve/query" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Query
-                                </a>
-                            </div>
-                                    
                             <div class="filter-block pull-right">
                             </div>
                         </div>
@@ -50,47 +44,36 @@
                                     <tr>
                                         <th><span>No</span></th>
                                         <th><span>Hardware Type</span></th> 
-                                        <th><span>Hardware ID</span></th>
-                                        <th><span>Material Pass No.</span></th>
-                                        <!--th><span>Requested By</span></th-->
-                                        <th><span>Requested Date</span></th>
-                                        <th><span>Status</span></th>
+                                        <th><span>Rack Type</span></th>
+                                        <th><span>Location Code</span></th>
+                                        <th><span>Rack Code</span></th>
+                                        <th><span>Label Key</span></th>
+                                        <th><span>Created Date</span></th>
+                                        <th><span>Created By</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${whRetrieveList}" var="whRetrieve" varStatus="whRetrieveLoop">
+                                    <c:forEach items="${inventoryMgt}" var="inventoryMgt" varStatus="inventoryMgtLoop">
                                         <tr>
-                                            <td><c:out value="${whRetrieveLoop.index+1}"/></td>
-                                            <td><c:out value="${whRetrieve.equipmentType}"/></td>
-                                            <td id="modal_delete_info_${whRetrieve.refId}"><c:out value="${whRetrieve.equipmentId}"/></td>
-                                            <td><c:out value="${whRetrieve.materialPassNo}"/></td>
-                                            <!--td><c:out value="${whRetrieve.requestedBy}"/></td-->
-                                            <td><c:out value="${whRetrieve.requestedDate}"/></td>
-                                            <td><c:out value="${whRetrieve.status}"/></td>
+                                            <td><c:out value="${inventoryMgtLoop.index+1}"/></td>
+                                            <td><c:out value="${inventoryMgt.hardwareType}"/></td>
+                                            <td id="modal_delete_info_${inventoryMgt.id}"><c:out value="${inventoryMgt.rackType}"/></td>
+                                            <td><c:out value="${inventoryMgt.locCode}"/></td>
+                                            <td><c:out value="${whRequest.rackCode}" /></td>
+                                            <td><c:out value="${whRequest.labelKey}"/></td>
+                                            <td><c:out value="${whRequest.createdBy}"/></td>
+                                            <td><c:out value="${whRequest.createdDate}"/></td>
                                             
                                             <td align="center">
-                                                <c:if test="${groupId == '1' || groupId == '2' || groupId == '20'}">
-                                                    <a href="${contextPath}/wh/whRetrieve/verify/${whRetrieve.refId}" id="verify" name="verify" class="table-link" title="Verification">
+                                                <c:if test="${groupId == '1' || groupId == '2'}">
+                                                    <a href="${contextPath}/inventoryMgt/edit/${inventoryMgt.id}" id="edit" name="edit" class="table-link" title="Edit">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa fa-check fa-stack-1x fa-inverse"></i>
+                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                         </span>
                                                     </a>
                                                 </c:if>
-
-                                                <!--a href="${contextPath}/wh/whRetrieve/view/${whRetrieve.refId}" class="table-link" title="View">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a-->
-                                                <a href="${contextPath}/wh/whRetrieve/history/${whRetrieve.refId}" class="table-link" title="Details">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-book fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -114,11 +97,11 @@
                     "pageLength": 10,
                     "order": [],
                     "aoColumnDefs": [
-                        {"bSortable": false, "aTargets": [6]}
+                        {"bSortable": false, "aTargets": [7]}
                     ],
                     "sDom": "tp"
                 });
-                var exportTitle = "Hardware Retrieve List";
+                var exportTitle = "Inventory Management List";
                 var tt = new $.fn.dataTable.TableTools(oTable, {
                     "sSwfPath": "${contextPath}/resources/private/datatables/swf/copy_csv_xls_pdf.swf",
                     "aButtons": [
@@ -154,15 +137,6 @@
                     oTable.page.len($(this).val()).draw();
                 });
             });
-
-            function modalDelete(e) {
-                var deleteId = $(e).attr("modaldeleteid");
-                var deleteInfo = $("#modal_delete_info_" + deleteId).html();
-                var deleteUrl = "${contextPath}/wh/whRetrieve/delete/" + deleteId;
-                var deleteMsg = "<f:message key='general.label.delete.confirmation'><f:param value='" + deleteInfo + "'/></f:message>";
-                $("#delete_modal .modal-body").html(deleteMsg);
-                $("#modal_delete_button").attr("href", deleteUrl);
-            }
         </script>
     </s:layout-component>
 </s:layout-render>

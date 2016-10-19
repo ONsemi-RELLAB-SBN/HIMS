@@ -34,7 +34,7 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
 
-        Integer cellPadding = 10;
+        Integer cellPadding = 7;
 
         PdfPTable table = new PdfPTable(2);
         table.setWidthPercentage(100.0f);
@@ -46,9 +46,9 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
         table2.setWidths(new float[]{2.5f, 2.5f, 1.5f, 2.5f});
         table2.setSpacingBefore(15);
         
-        PdfPTable table3 = new PdfPTable(5);
+        PdfPTable table3 = new PdfPTable(2);
         table3.setWidthPercentage(100.0f);
-        table3.setWidths(new float[]{2.5f, 2.5f, 2.5f, 2.5f, 2.5f});
+        table3.setWidths(new float[]{2.5f, 2.5f});
         table3.setSpacingBefore(15);
 
         Font fontHeader = fontOpenSans(8f, Font.BOLD);
@@ -211,15 +211,9 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
                 doc.add(viewTitle3);
                 
                 //Header Timelapse
-                cellHeader3.setPhrase(new Phrase("Request - Received", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Request Time - Barcode Verification Time", fontHeader3));
                 table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Received - Verify Barcode", fontHeader3));
-                table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Verify Barcode - Verify Inventory", fontHeader3));
-                table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Received - Verify Inventory", fontHeader3));
-                table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Request - Verify Inventory", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Barcode Verification Time - Inventory Verification Time", fontHeader3));
                 table3.addCell(cellHeader3);
             }
             
@@ -227,51 +221,23 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
             
             if(flag == false) {
                 System.out.println("masuk 5");
-                if(whHistoryList.get(i).getRequestReceive()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getRequestReceive(), fontContent3));
+                if(whHistoryList.get(i).getRequestBarVerify()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getRequestBarVerify(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getRequestReceive());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getRequestBarVerify());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
                 
-                if(whHistoryList.get(i).getReceiveVerify1()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify1(), fontContent3));
+                if(whHistoryList.get(i).getBarVerifyInvVerify()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getBarVerifyInvVerify(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify1());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getBarVerifyInvVerify());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
-                }
-                
-                if(whHistoryList.get(i).getVerify1Verify2()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getVerify1Verify2(), fontContent3));
-                    table3.addCell(cellContent3);
-                } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getVerify1Verify2());
-                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
-                    table3.addCell(cellContent3);
-                }
-                
-                if(whHistoryList.get(i).getReceiveVerify2()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify2(), fontContent3));
-                    table3.addCell(cellContent3);
-                } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify2());
-                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
-                    table3.addCell(cellContent3);
-                }
-                
-                if(whHistoryList.get(i).getRequestVerify2()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getRequestVerify2(), fontContent3));
-                    table3.addCell(cellContent3);
-                } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getRequestVerify2());
-                    cellContent3.setPhrase(new Phrase(temp, fontContent3));
-                    table3.addCell(cellContent3);
-                }
-                
+                }                
                 doc.add(table3);
                 flag = true;
             }             

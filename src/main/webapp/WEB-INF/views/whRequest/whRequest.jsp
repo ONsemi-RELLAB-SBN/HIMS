@@ -17,6 +17,12 @@
                             <h2 class="pull-left">Hardware Request List</h2>
 
                             <div class="filter-block pull-right">
+                                <a href="${contextPath}/wh/whRequest/query" class="btn btn-primary pull-right">
+                                    <i class="fa fa-pencil-square-o fa-lg"></i> Query
+                                </a>
+                            </div>
+                                    
+                            <div class="filter-block pull-right">
                             </div>
                         </div>
                         <hr/>
@@ -66,7 +72,7 @@
                                             <td><c:out value="${whRequest.status}"/></td>
                                             
                                             <td align="center">
-                                                <c:if test="${groupId == '1' || groupId == '2' || groupId == '29'}">
+                                                <c:if test="${groupId == '1' || groupId == '2' || groupId == '20'}">
                                                     <a href="${contextPath}/wh/whRequest/verify/${whRequest.refId}" id="verify" name="verify" class="table-link" title="Verification">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>

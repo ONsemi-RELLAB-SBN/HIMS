@@ -3,7 +3,8 @@
 <s:layout-render name="/WEB-INF/base/base.jsp">
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
-        <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <!--<link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />-->
     </s:layout-component>
     <s:layout-component name="page_css_inline">
     </s:layout-component>
@@ -82,52 +83,28 @@
         </div>
     </s:layout-component>
     <s:layout-component name="page_js">
+        <!--<script src="${contextPath}/resources/private/datatables/js/dataTables.tableTools.js"></script>-->
+        <!--print-->
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
-        <script src="${contextPath}/resources/private/datatables/js/dataTables.tableTools.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
                 oTable = $('#dt_spml').DataTable({
-                    "pageLength": 10,
-                    "order": [],
-                    "aoColumnDefs": [
-                        {"bSortable": false, "aTargets": [0]}
-                    ],
-                    "sDom": "tp"
-                });
-                var exportTitle = "Material Pass List";
-                var tt = new $.fn.dataTable.TableTools(oTable, {
-                    "sSwfPath": "${contextPath}/resources/private/datatables/swf/copy_csv_xls_pdf.swf",
-                    "aButtons": [
-                        {
-                            "sExtends": "copy",
-                            "sButtonText": "Copy",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4]
-                        },
-                        {
-                            "sExtends": "xls",
-                            "sButtonText": "Excel",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4]
-                        },
-                        {
-                            "sExtends": "pdf",
-                            "sButtonText": "PDF",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4]
-                        },
-                        {
-                            "sExtends": "print",
-                            "sButtonText": "Print"
-                        }
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'print'
                     ]
                 });
-                $(tt.fnContainer()).appendTo("#dt_spml_tt");
+                
+                oTable.buttons().container().appendTo($("#dt_spml_tt", oTable.table().container() ) );
+                
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });
+                
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });

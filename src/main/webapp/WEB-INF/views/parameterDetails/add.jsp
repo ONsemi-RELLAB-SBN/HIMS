@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="form-group" hidden>
-                                <label for=" masterCode" class="col-lg-4 control-label">master Code</label>
+                                <label for=" masterCode" class="col-lg-4 control-label">Master Code</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="masterCode" name="masterCode" value="${masterCode}">
                                 </div>

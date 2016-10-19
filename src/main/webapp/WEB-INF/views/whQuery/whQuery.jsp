@@ -11,55 +11,94 @@
         <div class="col-lg-12">
             <h1>Query Search</h1>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="main-box">
-                        <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/wh/whQuery/edit" method="post">
-                            <input type="hidden" name="refId" value="" />
-                            <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-4 control-label">Material Pass No.</label>
-                                <div class="col-lg-8">
+                        <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/wh/whQuery" method="post" style="width: 100%">
+                            <div class="form-group col-lg-12" >
+                                <label for="materialPassNo" class="col-lg-2 control-label">Material Pass No.</label>
+                                <div class="col-lg-4">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="">
                                 </div>
-                            </div>
-                                <div class="form-group">
-                                <label for="materialPassExpiry" class="col-lg-4 control-label">Material Pass Expiry Date</label>
-                                <div class="col-lg-8">
+                                <!--<div class="col-lg-2"></div>-->
+                                <label for="materialPassExpiry" class="col-lg-2 control-label">Material Pass Expiry Date</label>
+                                <div class="col-lg-4">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="equipmentType" class="col-lg-4 control-label">Hardware Category</label>
-                                <div class="col-lg-8">
+                            
+                            <div class="form-group col-lg-12">
+                                <label for="equipmentType" class="col-lg-2 control-label">Hardware Category</label>
+                                <div class="col-lg-4">
                                     <input type="text" class="form-control" id="equipmentType" name="equipmentType" value="" >
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="equipmentId" class="col-lg-4 control-label">Equipment ID</label>
-                                <div class="col-lg-8">
+                                <!--<div class="col-lg-2"></div>-->
+                                <label for="equipmentId" class="col-lg-2 control-label">Hardware ID</label>
+                                <div class="col-lg-4">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="" >
                                 </div>
-                            </div>  
-                            <div class="form-group" id="quantitydiv" hidden>
-                                <label for="quantity" class="col-lg-4 control-label">Quantity</label>
-                                <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="">
+                            </div>
+                            
+                            <div class="form-group col-lg-12">
+                                <label for="requestedBy" class="col-lg-2 control-label">Requested By</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="requestedBy" name="requestedBy" value="">
+                                </div>
+                                <!--<div class="col-lg-2"></div>-->
+                                <label for="requestedDate" class="col-lg-2 control-label">Requested Date</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="requestedDate" name="requestedDate" value="">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="inventoryLoc" class="col-lg-4 control-label">Inventory Location</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="inventoryLoc" name="inventoryLoc" placeholder="" >
+                            
+                            <div class="form-group col-lg-12">
+                                <label for="inventoryRack" class="col-lg-2 control-label">Inventory Rack</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="inventoryRack" name="inventoryRack">
+                                </div>
+                                <!--<div class="col-lg-2"></div>-->
+                                <label for="inventoryShelf" class="col-lg-2 control-label">Inventory Shelf</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="inventoryShelf" name="inventoryShelf">
                                 </div>
                             </div>
-                            <!--a href="${contextPath}/wh/whQuery" class="btn btn-info pull-left"><i class="fa fa-reply"></i>Back</a-->
-                            <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <button type="submit" class="btn btn-primary">Save</button>
+                            
+                            <div class="form-group col-lg-12">
+                                <label for="fromTable" class="col-lg-2 control-label">Module</label>
+                                <div class="col-lg-4">
+                                    <input type="checkbox" name="fromTable" value="Retrieve"> Retrieve 
+                                    <input type="checkbox" name="fromTable" value="Inventory"> Inventory 
+                                    <input type="checkbox" name="fromTable" value="Request"> Request 
+                                    <input type="checkbox" name="fromTable" value="Shipping"> Shipping 
+                                </div>
+<!--                                <div class="col-lg-2"></div>-->
+                                <label for="whereRelation" class="col-lg-2 control-label">WHERE Clause Relation</label>
+                                <div class="col-lg-4">
+                                    <select id="whereRelation" name="whereRelation" class="js-example-basic-single" style="width: 100%">
+                                                <option value="0" selected=></option>
+                                                <option value="1">AND</option>
+                                                <option value="2">OR</option>
+                                                <option value="3">NOT</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12"></div>
+                            <div class="col-lg-12">
+                                <a href="/" class="btn btn-info pull-left" id="cancel"><i class="fa fa-reply"></i>Back</a>
+                                <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" >View Data</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
                     </div>
-                </div>	
+                </div>
+                <div class="col-lg-12">
+                    <table id="data">
+                        <tr>
+                            <td>A</td>
+                            <td>A</td>
+                            <td>A</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </s:layout-component>
@@ -71,39 +110,17 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-
-                var element = $('#equipmentType');
-                if (element.val() === "Motherboard") {
-                    $("#typediv").hide();
-                    $("#quantitydiv").hide();
-                } else if (element.val() === "Stencil") {
-                    $("#typediv").hide();
-                    $("#quantitydiv").hide();
-                } else if (element.val() === "Tray") {
-                    $("#quantitydiv").show();
-                    $("#typediv").hide();
-                } else if (element.val() === "PCB") {
-                    $("#typediv").hide();
-                    $("#quantitydiv").show();
-                } else {
-                    $("#typediv").hide();
-                    $("#quantitydiv").hide();
-                }
-                
                 var validator = $("#update_hardwareinventory_form").validate({
-                    rules: {
-                        inventoryLoc: {
-                            required: true
-                        }
-                    }
+                    //do nothing yet
                 });
                 
                 $(".cancel").click(function () {
                     validator.resetForm();
-                });  
+                });
                 
-                
-                
+                $(".submit").click(function () {
+                    $("#data").show();
+                });
             });
         </script>
     </s:layout-component>

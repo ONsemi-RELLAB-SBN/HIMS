@@ -360,4 +360,112 @@ public class WhRequestController {
         }
         return "redirect:/wh/whRequest/verify/" + whRequestId;
     }
+    
+    @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
+    public String query(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String equipmentId,
+            @RequestParam(required = false) String materialPassExpiry1,
+            @RequestParam(required = false) String materialPassExpiry2,
+            @RequestParam(required = false) String equipmentType,
+            @RequestParam(required = false) String requestedDate1,
+            @RequestParam(required = false) String requestedDate2,
+            @RequestParam(required = false) String requestedBy,
+            @RequestParam(required = false) String receivedDate1,
+            @RequestParam(required = false) String receivedDate2,
+            @RequestParam(required = false) String status
+    ) {
+        System.out.println("masukkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk!!!!!!!!!!!!!!!");
+        
+        String query = "";
+        int count = 0;
+        
+        if(materialPassNo!=null) {
+            if(!materialPassNo.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " material_pass_no = \'" + materialPassNo + "\' ";
+                else if(count>1)
+                    query = query + " AND material_pass_no = \'" + materialPassNo + "\' ";
+            }
+        }
+        if(equipmentId!=null) {
+            if(!equipmentId.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " equipment_id = \'" + equipmentId + "\' ";
+                else if(count>1)
+                    query = query + " AND equipment_id = \'" + equipmentId + "\' ";
+            }
+        }
+        if(materialPassExpiry1!=null &&  materialPassExpiry2!=null) {
+            if(!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
+                count++;
+                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 +"\' AS DATE) ";
+                if(count == 1)
+                    query = materialPassExpiry;
+                else if(count>1)
+                    query = query + " AND " + materialPassExpiry;
+            }
+        }
+        if(equipmentType!=null) {
+//            if(!equipmentType.equals("") !("").equals(equipmentType)) {
+              if(!("").equals(equipmentType)) {
+                count++;
+                if(count == 1)
+                    query = " equipment_type = \'" + equipmentType + "\' ";
+                else if(count>1)
+                    query = query + " AND equipment_type = \'" + equipmentType + "\' ";
+            }
+        }
+        if(requestedDate1!=null &&  requestedDate2!=null) {
+            if(!requestedDate1.equals("") && !requestedDate2.equals("")) {
+                count++;
+                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 +"\' AS DATE) ";
+                if(count == 1)
+                    query = requestedDate;
+                else if(count>1)
+                    query = query + " AND " + requestedDate;
+            }
+        }
+        if(requestedBy!=null) {
+            if(!requestedBy.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " requested_by = \'" + requestedBy + "\' ";
+                else if(count>1)
+                    query = query + " AND requested_by = \'" + requestedBy + "\' ";
+            }
+        }
+        if(receivedDate1!=null &&  receivedDate2!=null) {
+            if(!receivedDate1.equals("") && !receivedDate2.equals("")) {
+                count++;
+                String receivedDate = " arrival_received_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 +"\' AS DATE) ";
+                if(count == 1)
+                    query = receivedDate;
+                else if(count>1)
+                    query = query + " AND " + receivedDate;
+            }
+        }
+        if(status!=null) {
+            if(!("").equals(status)) {
+                count++;
+                if(count == 1)
+                    query = " status = \'" + status + "\' ";
+                else if(count>1)
+                    query = query + " AND status = \'" + status + "\' ";
+            }
+        }
+        
+        System.out.println("Query: " + query);
+        WhRequestDAO wh = new WhRequestDAO();
+        List<WhRequest> requestQueryList = wh.getQuery(query);
+        
+        model.addAttribute("requestQueryList", requestQueryList);
+        return "whRequest/query";
+    }
 }

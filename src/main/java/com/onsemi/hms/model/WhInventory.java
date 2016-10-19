@@ -32,6 +32,7 @@ public class WhInventory {
     private String requestedBy;
     private String status;
     private String flag;
+    private String arrivalReceivedDate;
 
     public String getId() {
         return id;
@@ -279,5 +280,13 @@ public class WhInventory {
 
     public void setReceivedDate(String receivedDate) {
         this.receivedDate = receivedDate;
+    }
+
+    public String getArrivalReceivedDate() {
+        return arrivalReceivedDate;
+    }
+
+    public void setArrivalReceivedDate(String arrivalReceivedDate) {
+        this.arrivalReceivedDate = arrivalReceivedDate;
     }
 }

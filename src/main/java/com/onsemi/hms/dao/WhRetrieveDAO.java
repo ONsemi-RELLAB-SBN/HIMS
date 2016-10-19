@@ -142,6 +142,31 @@ public class WhRetrieveDAO {
         }
         return queryResult;
     }
+    
+    public QueryResult updateWhRetrieveReceivalTime(WhRetrieve whRetrieve) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_retrieval_list SET arrival_received_date = ? "
+                   + "WHERE retrieve_id = ? ";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, whRetrieve.getArrivalReceivedDate());
+            ps.setString(2, whRetrieve.getRefId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
 
     public QueryResult updateWhRetrieveForApproval(WhRetrieve whRetrieve) {
         QueryResult queryResult = new QueryResult();
@@ -221,7 +246,8 @@ public class WhRetrieveDAO {
     
     public WhRetrieve getWhRetrieve(String whRetrieveId) {
         String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                    + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                    + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view, "
+                    + "DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, DATE_FORMAT(arrival_received_date,'%d %M %Y %h:%i %p') AS arrival_received_date_view "
                     + "FROM hms_wh_retrieval_list "
                     + "WHERE retrieve_id = '" + whRetrieveId + "' ";
         WhRetrieve whRetrieve = null;
@@ -254,11 +280,13 @@ public class WhRetrieveDAO {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRetrieve.setRemarks(remarks);
+                whRetrieve.setReceivedDate(rs.getString("received_date_view"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify_view"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setArrivalReceivedDate(rs.getString("arrival_received_date_view"));
                 whRetrieve.setTempRack(rs.getString("temp_rack"));
                 whRetrieve.setTempShelf(rs.getString("temp_shelf"));
                 whRetrieve.setTempCount(rs.getString("temp_count"));
@@ -311,6 +339,7 @@ public class WhRetrieveDAO {
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setArrivalReceivedDate(rs.getString("arrival_received_date"));
                 whRetrieve.setTempRack(rs.getString("temp_rack"));
                 whRetrieve.setTempShelf(rs.getString("temp_shelf"));
             }
@@ -332,7 +361,8 @@ public class WhRetrieveDAO {
 
     public List<WhRetrieve> getWhRetrieveList() {
         String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view , "
+                   + "DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, DATE_FORMAT(arrival_received_date,'%d %M %Y %h:%i %p') AS arrival_received_date_view "
                    + "FROM hms_wh_retrieval_list "
                    + "WHERE flag = 0 "
                    + "ORDER BY id DESC ";
@@ -358,11 +388,13 @@ public class WhRetrieveDAO {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRetrieve.setRemarks(remarks);
+                whRetrieve.setReceivedDate(rs.getString("received_date_view"));
                 whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
                 whRetrieve.setDateVerify(rs.getString("date_verify_view"));
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setArrivalReceivedDate(rs.getString("arrival_received_date_view"));
                 whRetrieve.setTempRack(rs.getString("temp_rack"));
                 whRetrieve.setTempShelf(rs.getString("temp_shelf"));
                 whRetrieveList.add(whRetrieve);
@@ -416,6 +448,7 @@ public class WhRetrieveDAO {
                 whRetrieve.setUserVerify(rs.getString("user_verify"));
                 whRetrieve.setStatus(rs.getString("status"));
                 whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setArrivalReceivedDate(rs.getString("arrival_received_date"));
                 whRetrieve.setDuration(rs.getString("duration"));
                 whRetrieve.setTempRack(rs.getString("temp_rack"));
                 whRetrieve.setTempShelf(rs.getString("temp_shelf"));
@@ -517,6 +550,7 @@ public class WhRetrieveDAO {
                 whRetrieveLog.setUserVerify(rs.getString("user_verify"));
                 whRetrieveLog.setStatus(rs.getString("R.status"));
                 whRetrieveLog.setFlag(rs.getString("flag"));
+                whRetrieveLog.setArrivalReceivedDate(rs.getString("arrival_received_date"));
                 whRetrieveList.add(whRetrieveLog);
             }
             rs.close();
@@ -538,14 +572,18 @@ public class WhRetrieveDAO {
     public List<WhRetrieveLog> getWhRetLog(String whRetrieveId) {
         String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view,"
                     + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, received_date)), ' mins') AS ship_receive, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, temp_date)), ' mins') AS verify_inventory, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, temp_date)), ' mins') AS receive_inventory, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, temp_date)), ' mins') AS shipping_inventory "
+                    + "DATE_FORMAT(arrival_received_date,'%d %M %Y %h:%i %p') AS arrival_received_date_view, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, arrival_received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, arrival_received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, arrival_received_date)), ' mins, ', SECOND(TIMEDIFF(shipping_date, arrival_received_date)), ' secs') AS ship_arr_rec, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(arrival_received_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(arrival_received_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(arrival_received_date, temp_date)), ' mins, ', SECOND(TIMEDIFF(arrival_received_date, temp_date)), ' secs') AS arr_rec_inv "
                     + "FROM hms_wh_log L, hms_wh_retrieval_list R "
                     + "WHERE L.reference_id = R.retrieve_id AND R.retrieve_id = '" + whRetrieveId + "' "
                     + "ORDER BY timestamp DESC";
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, received_date)), ' mins') AS ship_receive, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, temp_date)), ' mins') AS verify_inventory, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, temp_date)), ' mins') AS receive_inventory, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, temp_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, temp_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, temp_date)), ' mins') AS shipping_inventory "
+                    
         List<WhRetrieveLog> whRetrieveList = new ArrayList<WhRetrieveLog>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -592,15 +630,75 @@ public class WhRetrieveDAO {
                 whRetrieveLog.setUserVerify(rs.getString("user_verify"));
                 whRetrieveLog.setStatus(rs.getString("R.status"));
                 whRetrieveLog.setFlag(rs.getString("flag"));
+                whRetrieveLog.setArrivalReceivedDate(rs.getString("arrival_received_date_view"));
                 whRetrieveLog.setTempRack(rs.getString("temp_rack"));
                 whRetrieveLog.setTempShelf(rs.getString("temp_shelf"));
                 whRetrieveLog.setTempDate(rs.getString("temp_date"));
-                whRetrieveLog.setShipReceive(rs.getString("ship_receive"));
-                whRetrieveLog.setReceiveVerify(rs.getString("receive_verify"));
-                whRetrieveLog.setVerifyInventory(rs.getString("verify_inventory"));
-                whRetrieveLog.setReceiveInventory(rs.getString("receive_inventory"));
-                whRetrieveLog.setShippingInventory(rs.getString("shipping_inventory"));
+                whRetrieveLog.setShipArrReceive(rs.getString("ship_arr_rec"));
+                whRetrieveLog.setArrReceiveInventory(rs.getString("arr_rec_inv"));
+//                whRetrieveLog.setShipReceive(rs.getString("ship_receive"));
+//                whRetrieveLog.setReceiveVerify(rs.getString("receive_verify"));
+//                whRetrieveLog.setVerifyInventory(rs.getString("verify_inventory"));
+//                whRetrieveLog.setReceiveInventory(rs.getString("receive_inventory"));
+//                whRetrieveLog.setShippingInventory(rs.getString("shipping_inventory"));
                 whRetrieveList.add(whRetrieveLog);
+                System.out.println("*********************** LIST ************************" + whRetrieveList);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whRetrieveList;
+    }
+    
+    public List<WhRetrieve> getQuery(String query) {
+        String sql  = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view , "
+                   + "DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, DATE_FORMAT(arrival_received_date,'%d %M %Y %h:%i %p') AS arrival_received_date_view "
+                   + "FROM hms_wh_retrieval_list "
+                   + "WHERE " + query;
+                    
+        List<WhRetrieve> whRetrieveList = new ArrayList<WhRetrieve>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieve whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setRefId(rs.getString("retrieve_id"));
+                whRetrieve.setMaterialPassNo(rs.getString("material_pass_no"));
+                whRetrieve.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whRetrieve.setEquipmentType(rs.getString("equipment_type"));
+                whRetrieve.setEquipmentId(rs.getString("equipment_id"));
+                whRetrieve.setQuantity(rs.getString("quantity"));
+                whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                whRetrieve.setRequestedEmail(rs.getString("requested_email"));
+                whRetrieve.setRequestedDate(rs.getString("requested_date_view"));
+                whRetrieve.setShippingDate(rs.getString("shipping_date_view"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whRetrieve.setRemarks(remarks);
+                whRetrieve.setReceivedDate(rs.getString("received_date_view"));
+                whRetrieve.setBarcodeVerify(rs.getString("barcode_verify"));
+                whRetrieve.setDateVerify(rs.getString("date_verify_view"));
+                whRetrieve.setUserVerify(rs.getString("user_verify"));
+                whRetrieve.setStatus(rs.getString("status"));
+                whRetrieve.setFlag(rs.getString("flag"));
+                whRetrieve.setArrivalReceivedDate(rs.getString("arrival_received_date_view"));
+                whRetrieve.setTempRack(rs.getString("temp_rack"));
+                whRetrieve.setTempShelf(rs.getString("temp_shelf"));
+                whRetrieveList.add(whRetrieve);
                 System.out.println("*********************** LIST ************************" + whRetrieveList);
             }
             rs.close();

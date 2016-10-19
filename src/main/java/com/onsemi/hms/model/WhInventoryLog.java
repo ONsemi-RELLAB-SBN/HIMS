@@ -37,6 +37,7 @@ public class WhInventoryLog {
     private String dateVerify;
     private String status;
     private String flag;
+    private String arrivalReceivedDate;
     
     //inventory
     private String inRetrieveId;
@@ -49,11 +50,14 @@ public class WhInventoryLog {
     private String inventoryFlag;
     
     //timelapse
-    private String shipReceive;
-    private String receiveVerify;
-    private String verifyInventory;
-    private String receiveInventory;
-    private String shippingInventory;
+    private String shipArrReceive;
+    private String arrReceiveInventory;
+    private String shipInventory;
+//    private String shipReceive;
+//    private String receiveVerify;
+//    private String verifyInventory;
+//    private String receiveInventory;
+//    private String shippingInventory;
 
     public String getId() {
         return id;
@@ -319,6 +323,14 @@ public class WhInventoryLog {
         this.flag = flag;
     }
 
+    public String getArrivalReceivedDate() {
+        return arrivalReceivedDate;
+    }
+
+    public void setArrivalReceivedDate(String arrivalReceivedDate) {
+        this.arrivalReceivedDate = arrivalReceivedDate;
+    }
+
     public String getInRetrieveId() {
         return inRetrieveId;
     }
@@ -382,44 +394,68 @@ public class WhInventoryLog {
     public void setInventoryFlag(String inventoryFlag) {
         this.inventoryFlag = inventoryFlag;
     }
-
-    public String getShipReceive() {
-        return shipReceive;
+    
+    public String getShipArrReceive() {
+        return shipArrReceive;
     }
 
-    public void setShipReceive(String shipReceive) {
-        this.shipReceive = shipReceive;
+    public void setShipArrReceive(String shipArrReceive) {
+        this.shipArrReceive = shipArrReceive;
     }
 
-    public String getReceiveVerify() {
-        return receiveVerify;
+    public String getArrReceiveInventory() {
+        return arrReceiveInventory;
     }
 
-    public void setReceiveVerify(String receiveVerify) {
-        this.receiveVerify = receiveVerify;
+    public void setArrReceiveInventory(String arrReceiveInventory) {
+        this.arrReceiveInventory = arrReceiveInventory;
     }
 
-    public String getVerifyInventory() {
-        return verifyInventory;
+    public String getShipInventory() {
+        return shipInventory;
     }
 
-    public void setVerifyInventory(String verifyInventory) {
-        this.verifyInventory = verifyInventory;
+    public void setShipInventory(String shipInventory) {
+        this.shipInventory = shipInventory;
     }
 
-    public String getReceiveInventory() {
-        return receiveInventory;
-    }
-
-    public void setReceiveInventory(String receiveInventory) {
-        this.receiveInventory = receiveInventory;
-    }
-
-    public String getShippingInventory() {
-        return shippingInventory;
-    }
-
-    public void setShippingInventory(String shippingInventory) {
-        this.shippingInventory = shippingInventory;
-    }
+//    public String getShipReceive() {
+//        return shipReceive;
+//    }
+//
+//    public void setShipReceive(String shipReceive) {
+//        this.shipReceive = shipReceive;
+//    }
+//
+//    public String getReceiveVerify() {
+//        return receiveVerify;
+//    }
+//
+//    public void setReceiveVerify(String receiveVerify) {
+//        this.receiveVerify = receiveVerify;
+//    }
+//
+//    public String getVerifyInventory() {
+//        return verifyInventory;
+//    }
+//
+//    public void setVerifyInventory(String verifyInventory) {
+//        this.verifyInventory = verifyInventory;
+//    }
+//
+//    public String getReceiveInventory() {
+//        return receiveInventory;
+//    }
+//
+//    public void setReceiveInventory(String receiveInventory) {
+//        this.receiveInventory = receiveInventory;
+//    }
+//
+//    public String getShippingInventory() {
+//        return shippingInventory;
+//    }
+//
+//    public void setShippingInventory(String shippingInventory) {
+//        this.shippingInventory = shippingInventory;
+//    }
 }

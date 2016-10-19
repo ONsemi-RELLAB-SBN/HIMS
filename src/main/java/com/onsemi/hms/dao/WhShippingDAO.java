@@ -115,6 +115,33 @@ public class WhShippingDAO {
         }
         return queryResult;
     }
+    
+    public QueryResult updateStatus(WhShipping whShipping) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_shipping_list "
+                   + "SET status = ?, flag = ?, close_date = NOW() "
+                   + "WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, whShipping.getStatus());
+            ps.setString(2, whShipping.getFlag());
+            ps.setString(3, whShipping.getRequestId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
 
     public QueryResult deleteWhShipping(String whShippingId) {
         QueryResult queryResult = new QueryResult();
@@ -379,17 +406,22 @@ public class WhShippingDAO {
     public List<WhShippingLog> getWhShippingReqLog(String whShippingId) {
         String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
                     + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, received_date)), ' mins') AS request_receive, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify1, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins') AS verify1_verify2, "
-//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, inventory_date_verify)), ' mins') AS receive_verify2, "
-//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, inventory_date_verify)), ' mins') AS request_verify2, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(inventory_date_verify, shipping_date)), ' mins') AS verify2_shipping, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, shipping_date)), ' mins') AS receive_shipping, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, shipping_date)), ' mins') AS request_shipping "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, date_verify)), ' mins, ', SECOND(TIMEDIFF(requested_date, date_verify)), ' secs') AS req_bar_verify, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins, ', SECOND(TIMEDIFF(date_verify, inventory_date_verify)), ' secs') AS bar_inv_verify, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(inventory_date_verify, shipping_date)), ' mins, ', SECOND(TIMEDIFF(inventory_date_verify, shipping_date)), ' secs') AS inv_verify_ship, "
+                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, close_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, close_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, close_date)), ' mins, ', SECOND(TIMEDIFF(shipping_date, close_date)), ' secs') AS ship_close "
                     + "FROM hms_wh_log L, hms_wh_request_list R, hms_wh_shipping_list S "
                     + "WHERE L.reference_id = R.request_id AND R.request_id = S.request_id AND S.request_id = '" + whShippingId + "' "
                     + "ORDER BY timestamp DESC";
+        
+//        + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, received_date)), ' mins') AS request_receive, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify1, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins') AS verify1_verify2, "
+////                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, inventory_date_verify)), ' mins') AS receive_verify2, "
+////                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, inventory_date_verify)), ' mins') AS request_verify2, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(inventory_date_verify, shipping_date)), ' mins') AS verify2_shipping, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, shipping_date)), ' mins') AS receive_shipping, "
+//                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, shipping_date)), ' mins') AS request_shipping "
         List<WhShippingLog> whShippingList = new ArrayList<WhShippingLog>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -451,14 +483,18 @@ public class WhShippingDAO {
                 whShippingLog.setShippingStatus(rs.getString("S.status"));
                 whShippingLog.setShippingFlag(rs.getString("S.flag"));
                 //duration
-                whShippingLog.setRequestReceive(rs.getString("request_receive"));
-                whShippingLog.setReceiveVerify1(rs.getString("receive_verify1"));
-                whShippingLog.setVerify1Verify2(rs.getString("verify1_verify2"));
-//                whShippingLog.setReceiveVerify2(rs.getString("receive_verify2"));
-//                whShippingLog.setRequestVerify2(rs.getString("request_verify2"));
-                whShippingLog.setVerify2Shipping(rs.getString("verify2_shipping"));
-                whShippingLog.setReceiveShipping(rs.getString("receive_shipping"));
-                whShippingLog.setRequestShipping(rs.getString("request_shipping"));
+                whShippingLog.setRequestBarVerify(rs.getString("req_bar_verify"));
+                whShippingLog.setBarVerifyInvVerify(rs.getString("bar_inv_verify"));
+                whShippingLog.setInvVerifyShip(rs.getString("inv_verify_ship"));
+                whShippingLog.setShipClose(rs.getString("ship_close"));
+//                whShippingLog.setRequestReceive(rs.getString("request_receive"));
+//                whShippingLog.setReceiveVerify1(rs.getString("receive_verify1"));
+//                whShippingLog.setVerify1Verify2(rs.getString("verify1_verify2"));
+////                whShippingLog.setReceiveVerify2(rs.getString("receive_verify2"));
+////                whShippingLog.setRequestVerify2(rs.getString("request_verify2"));
+//                whShippingLog.setVerify2Shipping(rs.getString("verify2_shipping"));
+//                whShippingLog.setReceiveShipping(rs.getString("receive_shipping"));
+//                whShippingLog.setRequestShipping(rs.getString("request_shipping"));
                 
                 whShippingList.add(whShippingLog);
                 System.out.println("*********************** LIST ************************" + whShippingList);

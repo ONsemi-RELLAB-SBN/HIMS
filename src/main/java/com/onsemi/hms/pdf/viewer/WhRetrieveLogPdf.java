@@ -34,7 +34,7 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
 
-        Integer cellPadding = 10;
+        Integer cellPadding = 7;
 
         PdfPTable table = new PdfPTable(2);
         table.setWidthPercentage(100.0f);
@@ -208,27 +208,27 @@ public class WhRetrieveLogPdf extends AbstractITextPdfViewPotrait {
                 doc.add(viewTitle3);
                 
                 //Header Timelapse
-                cellHeader3.setPhrase(new Phrase("Shipment - Received", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Shipment Time - Received Time", fontHeader3));
                 table3.addCell(cellHeader3);
-                cellHeader3.setPhrase(new Phrase("Received - Verification", fontHeader3));
+                cellHeader3.setPhrase(new Phrase("Received Time - Inventory Time", fontHeader3));
                 table3.addCell(cellHeader3);
             }
             
             if(flag == false) {
-                if(whHistoryList.get(i).getShipReceive()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getShipReceive(), fontContent3));
+                if(whHistoryList.get(i).getShipArrReceive()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getShipArrReceive(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getShipReceive());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getShipArrReceive());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }
                 
-                if(whHistoryList.get(i).getReceiveVerify()!=null) {
-                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getReceiveVerify(), fontContent3));
+                if(whHistoryList.get(i).getArrReceiveInventory()!=null) {
+                    cellContent3.setPhrase(new Phrase(whHistoryList.get(i).getArrReceiveInventory(), fontContent3));
                     table3.addCell(cellContent3);
                 } else {
-                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getReceiveVerify());
+                    String temp = SpmlUtil.nullToDashString(whHistoryList.get(i).getArrReceiveInventory());
                     cellContent3.setPhrase(new Phrase(temp, fontContent3));
                     table3.addCell(cellContent3);
                 }

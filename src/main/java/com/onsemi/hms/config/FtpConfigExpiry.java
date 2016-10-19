@@ -36,7 +36,7 @@ public class FtpConfigExpiry {
     @Autowired
     ServletContext servletContext;
 
-    @Scheduled(cron = "0 0 8 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 21 17 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() throws FileNotFoundException, IOException {
         LOGGER.info("Method Expiry executed at everyday on 8:00 am. Current time is : " + new Date());
         
@@ -160,19 +160,59 @@ public class FtpConfigExpiry {
             }
             workbook.write(fileOut);
             workbook.close();
-
             //send email
             LOGGER.info("send email to person in charge");
             EmailSender emailSender = new EmailSender();
-            emailSender.htmlEmailWithAttachmentMpExpiry(
+            emailSender.htmlEmailTableWithAttachmentMonth(
                 servletContext,
-                "All",                                                   //user name
-                "cdarsrel@gmail.com",                                   //to
-                "Material Pass Expiry Date within ONE Month",   //subject
-                "Report for Material Pass Expiry Date from CDARS has been made. " + 
-                "This report will shows the expired date for each material pass within ONE (1) month durations. " + 
-                "Hence, attached is the report file for your view and perusal. Thank you." //msg
+                "Requestor",                                                   //user name requestor
+                "zbczmg@onsemi.com",                                   //to
+                "Material Pass Expiry Date within ONE(1) MONTH",   //subject
+                "Report for Material Pass Expiry Date from CDARS has been made. <br />" + 
+                "This report will shows the expired date for each material pass within ONE (1) month durations. <br />" +
+                "Hence, attached is the report file for your view and perusal. <br /><br />" + 
+                
+                "<br /><br /> " +
+                "<style>table, th, td {border: 1px solid black;} </style>" +
+                "<table style=\"width:100%\">" //tbl
+                + "<tr>"
+                    + "<th>MATERIAL PASS NO</th> "
+                    + "<th>MATERIAL PASS EXPIRY DATE</th> "
+                    + "<th>HARDWARE TYPE</th>"
+                    + "<th>HARDWARE ID</th>"
+                    + "<th>INVENTORY</th>"
+                + "</tr>"
+                + table()
+              + "</table>"
+              + "<br />Thank you." //msg
             );
         }
+    }
+    
+    private String table() {
+        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+        List<WhInventory> whInventoryList = whInventoryDAO.getWhInventoryMpExpiryList();
+        String materialPassNo = "";
+        String materialPassExp = "";
+        String hardwareId = "";
+        String hardwareType = "";
+        String inventory = "";
+        String text = "";
+        
+        for(int i=0; i<whInventoryList.size(); i++) { 
+            materialPassNo = whInventoryList.get(i).getMaterialPassNo();
+            materialPassExp = whInventoryList.get(i).getMaterialPassExpiry();
+            hardwareId = whInventoryList.get(i).getEquipmentId();
+            hardwareType = whInventoryList.get(i).getEquipmentType();
+            inventory = whInventoryList.get(i).getInventoryRack() + ", " + whInventoryList.get(i).getInventoryShelf();
+            text = text + "<tr align = \"center\">";
+            text = text + "<td>" + materialPassNo + "</td>";
+            text = text + "<td>" + materialPassExp + "</td>";
+            text = text + "<td>" + hardwareType + "</td>";
+            text = text + "<td>" + hardwareId + "</td>";
+            text = text + "<td>" + inventory + "</td>";
+            text = text + "</tr>";
+        }            
+        return text;
     }
 }

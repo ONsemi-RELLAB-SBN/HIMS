@@ -45,11 +45,16 @@ public class WhRequestLog {
     private String flag;
     private String tempCount;
     //time
-    private String requestReceive;
-    private String receiveVerify1;
-    private String verify1Verify2;
-    private String receiveVerify2;
-    private String requestVerify2;
+    private String requestBarVerify;
+    private String barVerifyInvVerify;
+//    private String invVerifyShip;
+    
+    
+//    private String requestReceive;
+//    private String receiveVerify1;
+//    private String verify1Verify2;
+//    private String receiveVerify2;
+//    private String requestVerify2;
 
     public String getId() {
         return id;
@@ -371,44 +376,58 @@ public class WhRequestLog {
         this.tempCount = tempCount;
     }
 
-    public String getRequestReceive() {
-        return requestReceive;
+    public String getRequestBarVerify() {
+        return requestBarVerify;
     }
 
-    public void setRequestReceive(String requestReceive) {
-        this.requestReceive = requestReceive;
+    public void setRequestBarVerify(String requestBarVerify) {
+        this.requestBarVerify = requestBarVerify;
     }
 
-    public String getReceiveVerify1() {
-        return receiveVerify1;
+    public String getBarVerifyInvVerify() {
+        return barVerifyInvVerify;
     }
 
-    public void setReceiveVerify1(String receiveVerify1) {
-        this.receiveVerify1 = receiveVerify1;
+    public void setBarVerifyInvVerify(String barVerifyInvVerify) {
+        this.barVerifyInvVerify = barVerifyInvVerify;
     }
-
-    public String getVerify1Verify2() {
-        return verify1Verify2;
-    }
-
-    public void setVerify1Verify2(String verify1Verify2) {
-        this.verify1Verify2 = verify1Verify2;
-    }
-
-    public String getReceiveVerify2() {
-        return receiveVerify2;
-    }
-
-    public void setReceiveVerify2(String receiveVerify2) {
-        this.receiveVerify2 = receiveVerify2;
-    }
-
-    public String getRequestVerify2() {
-        return requestVerify2;
-    }
-
-    public void setRequestVerify2(String requestVerify2) {
-        this.requestVerify2 = requestVerify2;
-    }
-    
+//    public String getRequestReceive() {
+//        return requestReceive;
+//    }
+//
+//    public void setRequestReceive(String requestReceive) {
+//        this.requestReceive = requestReceive;
+//    }
+//
+//    public String getReceiveVerify1() {
+//        return receiveVerify1;
+//    }
+//
+//    public void setReceiveVerify1(String receiveVerify1) {
+//        this.receiveVerify1 = receiveVerify1;
+//    }
+//
+//    public String getVerify1Verify2() {
+//        return verify1Verify2;
+//    }
+//
+//    public void setVerify1Verify2(String verify1Verify2) {
+//        this.verify1Verify2 = verify1Verify2;
+//    }
+//
+//    public String getReceiveVerify2() {
+//        return receiveVerify2;
+//    }
+//
+//    public void setReceiveVerify2(String receiveVerify2) {
+//        this.receiveVerify2 = receiveVerify2;
+//    }
+//
+//    public String getRequestVerify2() {
+//        return requestVerify2;
+//    }
+//
+//    public void setRequestVerify2(String requestVerify2) {
+//        this.requestVerify2 = requestVerify2;
+//    }
 }

@@ -1,6 +1,7 @@
 package com.onsemi.hms.controller;
 
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.WhInventoryDAO;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import com.onsemi.hms.model.IonicFtpShipping;
 import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.UserSession;
+import com.onsemi.hms.model.WhInventory;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhShipping;
 import com.onsemi.hms.tools.EmailSender;
@@ -275,7 +277,7 @@ public class WhMpListController {
                         whship.getRequestedBy(),                       //from
                         whship.getRequestedEmail(), //to
                         emailTitle,         
-                        "Hardware has been ready to shipping. Please go to this link " //msg
+                        "Hardware ID: " + whship.getEquipmentId() + " with material pass no: " + whship.getMaterialPassNo() + " has been ready to shipping. Please go to this link " //msg
                         + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
                         + " for status checking."
                     );
@@ -297,6 +299,13 @@ public class WhMpListController {
                     whReq.setStatus("Ship");
                     WhRequestDAO whRequestDao = new WhRequestDAO();
                     QueryResult queryResult3 = whRequestDao.updateWhRequestStatus(whReq);
+                    
+                    WhInventory wi = new WhInventory();
+                    wi.setFlag("1");
+                    wi.setStatus("Unavailable in Inventory");
+                    wi.setMaterialPassNo(materialPassNo);
+                    WhInventoryDAO widao = new WhInventoryDAO();
+                    QueryResult querywi = widao.updateWhInventoryStatus(wi);
                     
                     if(queryResult3.getResult() == 1){
                         redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success5", args, locale));

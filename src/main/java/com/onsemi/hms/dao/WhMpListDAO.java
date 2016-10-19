@@ -159,7 +159,7 @@ public class WhMpListDAO {
         String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view, "
                    + "DATE_FORMAT(ML.created_date,'%d %M %Y') AS created_date_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y') AS shipping_date_view "
                    + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
-                   + "WHERE RL.request_id = SL.request_id AND SL.request_id = ML.shipping_id " 
+                   + "WHERE RL.request_id = SL.request_id AND SL.request_id = ML.shipping_id AND SL.status NOT LIKE 'Closed' " 
                    + "ORDER BY ML.shipping_id ASC ";
         List<WhMpList> whMpListList = new ArrayList<WhMpList>();
         try {
