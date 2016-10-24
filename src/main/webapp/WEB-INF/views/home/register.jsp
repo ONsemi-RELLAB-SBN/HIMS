@@ -68,7 +68,7 @@
                             <a href="${contextPath}/">
                                 <img src="${contextPath}/resources/img/cdars_logo.png" alt="FTC" width="35%" />
                             </a>
-                            <legend>Register to <span class="blue">HMS</span></legend>
+                            <legend>Register to <span class="blue">HIMS-SF</span></legend>
 
                             <div class="body">
                                 <!-- full name -->

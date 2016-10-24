@@ -18,6 +18,7 @@ public class IonicFtpInventory {
     private String requestedDate;
     private String remarks;
     private String dateVerify;
+    private String arrivalReceivedDate;
     private String inventoryDate;
 //    private String inventoryLoc;
     private String inventoryRack;
@@ -28,7 +29,7 @@ public class IonicFtpInventory {
     public IonicFtpInventory() {
     }
 
-    public IonicFtpInventory(String refId, String materialPassNo, String materialPassExpiry, String equipmentType, String equipmentId, String pcbA, String pcbB, String pcbC, String pcbControl, String qtyQualA, String qtyQualB, String qtyQualC, String qtyControl, String quantity, String requestedBy, String requestedDate, String remarks, String dateVerify, String inventoryDate, String inventoryRack, String inventoryShelf, String inventoryBy, String status) {
+    public IonicFtpInventory(String refId, String materialPassNo, String materialPassExpiry, String equipmentType, String equipmentId, String pcbA, String pcbB, String pcbC, String pcbControl, String qtyQualA, String qtyQualB, String qtyQualC, String qtyControl, String quantity, String requestedBy, String requestedDate, String remarks, String dateVerify, String arrivalReceivedDate, String inventoryDate, String inventoryRack, String inventoryShelf, String inventoryBy, String status) {
         this.refId = refId;
         this.materialPassNo = materialPassNo;
         this.materialPassExpiry = materialPassExpiry;
@@ -47,6 +48,7 @@ public class IonicFtpInventory {
         this.requestedDate = requestedDate;
         this.remarks = remarks;
         this.dateVerify = dateVerify;
+        this.arrivalReceivedDate = arrivalReceivedDate;
         this.inventoryDate = inventoryDate;
         this.inventoryRack = inventoryRack;
         this.inventoryShelf = inventoryShelf;
@@ -242,6 +244,14 @@ public class IonicFtpInventory {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getArrivalReceivedDate() {
+        return arrivalReceivedDate;
+    }
+
+    public void setArrivalReceivedDate(String arrivalReceivedDate) {
+        this.arrivalReceivedDate = arrivalReceivedDate;
     }
     
 }

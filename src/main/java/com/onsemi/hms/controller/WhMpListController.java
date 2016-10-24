@@ -264,18 +264,19 @@ public class WhMpListController {
                         servletContext,
                         "CDARS",                                                   //user name
                         "cdarsrel@gmail.com",                                   //to
-                        "Status for Hardware Shipping from HMS",  //subject
+                        "Status for Hardware Shipping from HIMS-SF",  //subject
                         "Verification and status for Hardware Shipping has been made."    //msg
                     );
                     
                     System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
                     //sent to requestor
                     EmailSender emailSender2 = new EmailSender();
-                    String emailTitle = "Status for Hardware Shipping from HMS";
+                    String emailTitle = "Status for Hardware Shipping from HIMS-SF";
                     emailSender2.htmlEmail2(
                         servletContext,
                         whship.getRequestedBy(),                       //from
                         whship.getRequestedEmail(), //to
+//                        "muhdfaizal@onsemi.com", //to
                         emailTitle,         
                         "Hardware ID: " + whship.getEquipmentId() + " with material pass no: " + whship.getMaterialPassNo() + " has been ready to shipping. Please go to this link " //msg
                         + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
@@ -346,5 +347,67 @@ public class WhMpListController {
             redirectAttrs.addFlashAttribute("error", error);
         }
         return "redirect:/wh/whShipping/whMpList";
+    }
+    
+    @RequestMapping(value = "/email", method = {RequestMethod.GET, RequestMethod.POST})
+    public String email(
+            Model model,
+            HttpServletRequest request,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession
+    ) throws IOException {
+        LOGGER.info("send email to person in charge");
+        EmailSender emailSender = new EmailSender();
+        emailSender.htmlEmailTable(
+            servletContext,
+            "",                                                   //user name requestor
+            "zbczmg@onsemi.com",
+//                "muhdfaizal@onsemi.com",                                   //to
+            "List of Hardware(s) Ready for Shipment",   //subject
+            "The list of hardware(s) that have been ready for shipment has been made.<br />" + 
+            "This table will shows the details of each hardware in a material pass shipping list from Seremban Factory. <br /><br />" + 
+            "<br /><br /> " +
+            "<style>table, th, td {border: 1px solid black;} </style>" +
+            "<table style=\"width:100%\">" //tbl
+            + "<tr>"
+            + "<th>MATERIAL PASS NO</th> "
+            + "<th>MATERIAL PASS EXPIRY DATE</th> "
+            + "<th>HARDWARE TYPE</th>"
+            + "<th>HARDWARE ID</th>"
+            + "<th>QUANTITY</th>"
+            + "</tr>"
+            + table()
+          + "</table>"
+          + "<br />Thank you." //msg
+        );
+        return "redirect:/wh/whShipping/whMpList";
+    }
+    
+    private String table() {
+        WhMpListDAO whMpListDAO = new WhMpListDAO();
+        List<WhMpList> whMpListList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
+        String materialPassNo = "";
+        String materialPassExp = "";
+        String hardwareType = "";
+        String hardwareId = "";
+        String quantity = "";
+        String text = "";
+        
+        for(int i=0; i<whMpListList.size(); i++) { 
+            materialPassNo = whMpListList.get(i).getMaterialPassNo();
+            materialPassExp = whMpListList.get(i).getMaterialPassExpiry();
+            hardwareId = whMpListList.get(i).getEquipmentId();
+            hardwareType = whMpListList.get(i).getEquipmentType();
+            quantity = whMpListList.get(i).getQuantity();
+            text = text + "<tr align = \"center\">";
+            text = text + "<td>" + materialPassNo + "</td>";
+            text = text + "<td>" + materialPassExp + "</td>";
+            text = text + "<td>" + hardwareType + "</td>";
+            text = text + "<td>" + hardwareId + "</td>";
+            text = text + "<td>" + quantity + "</td>";
+            text = text + "</tr>";
+        }            
+        return text;
     }
 }

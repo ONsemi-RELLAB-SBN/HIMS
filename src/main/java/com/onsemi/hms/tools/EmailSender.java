@@ -531,4 +531,49 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
+    
+    public void htmlEmailTable(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HtmlEmail htmlEmail = new HtmlEmail();
+                    EmailDAO emailDAO = new EmailDAO();
+                    Email email = emailDAO.getEmail();
+
+                    htmlEmail.setHostName(email.getHost());
+                    htmlEmail.setSmtpPort(email.getPort());
+                    htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
+                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setDebug(true);
+                    
+                    htmlEmail.setFrom(email.getSender());
+                    htmlEmail.addTo(to);
+                    htmlEmail.setSubject(subject);
+
+                    String logo = servletContext.getRealPath(logoPath);
+                    File logoFile = new File(logo);
+                    String logoCid = htmlEmail.embed(logoFile);
+
+                    Map model = new HashMap();
+                    model.put("user", user);
+                    model.put("subject", subject);
+                    model.put("message", msg);
+                    model.put("logoCid", logoCid);
+                    Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_22);
+                    freemarkerConfiguration.setServletContextForTemplateLoading(servletContext, emailTemplate);
+                    String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("template.html"), model);
+                    htmlEmail.setHtmlMsg(msgContent);
+                    String send = htmlEmail.send();
+                    LOGGER.info("EMAIL SENDER: " + send);
+                } catch (EmailException e) {
+                    LOGGER.error(e.getMessage());
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                } catch (TemplateException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }).start();
+    }
 }

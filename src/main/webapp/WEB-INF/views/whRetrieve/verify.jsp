@@ -199,17 +199,18 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                $('#barcodeVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
-                
-                $('#tempRack').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
-                
-                $('#tempShelf').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
+                //temporary disabled.
+//                $('#barcodeVerify').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
+//                
+//                $('#tempRack').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
+//                
+//                $('#tempShelf').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
                 
                 var validator = $("#mp_form").validate({
                     rules: {
@@ -260,7 +261,6 @@
                 };
                 if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
                     bootstrap_alert2.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
-                    //                    $("#hardwareBarcode2").effect("highlight", {}, 1000);
                     $("#hardwareBarcode2").addClass('highlight');
                 }
                 
@@ -271,7 +271,6 @@
                 if ($('#tempRack').val() !== $('#tempShelf').val().substring(0,6) || $('#tempRack').val().length !== 6 && $('#tempShelf').val().length !== 10 
                     && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
                     bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
-                    //$("#hardwareBarcode2").effect("highlight", {}, 1000);
                     $("#tempRack").addClass('highlight');
                     $("#tempShelf").addClass('highlight');
                 } else {
@@ -317,17 +316,14 @@
 
                 var element2 = $('#tempCount');
                 if (element2.val() === "0" || element2.val() === "1" || element2.val() === "2") {
-//                    alert("less");
                     $("#emaildiv").hide();
                 } else {
-//                    alert("more");
                     $("#emaildiv").show();
                 }
                 
                 var element1 = $('#barcodeVerify');
                 var element11 = $('#materialPassNo');
                 if (element1.val() === element11.val()) {
-//                    alert("1");
                     $("#submit1").attr("disabled", true);
                     $("#reset1").attr("disabled", true);
                     $("#barcodeVerify").attr("readonly", true);
@@ -339,14 +335,6 @@
                     $("#tempShelf").attr("readonly", true);
                 }
             });
-            
-//            function modalEmail(e) {
-//                alert("Email has been successfully sent to the requestor.");
-//                var emailUrl = "${contextPath}/wh/whRetrieve/error/${whRetrieve.refId}";
-//                var emailMsg = "Are you sure you want to send an email to the requestor?";
-//                $("#email_modal .modal-body").html(emailMsg);
-//                $("#modal_email_button").attr("href", emailUrl);
-//            }
         </script>
     </s:layout-component>
 </s:layout-render>

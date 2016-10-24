@@ -3,9 +3,25 @@
 <s:layout-render name="/WEB-INF/base/base.jsp">
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
-        <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
+        <style>
+            @media print {
+                table thead {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+                table tbody {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+            }
+            .dataTables_wrapper .dt-buttons {
+                float:none;  
+                text-align:right;
+            }
+        </style>
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
@@ -74,12 +90,12 @@
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>-->
-                                                <a href="${contextPath}/wh/whShipping/view/${whShipping.requestId}" class="table-link" title="View">
+<!--                                                <a href="${contextPath}/wh/whShipping/view/${whShipping.requestId}" class="table-link" title="View">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                                     </span>
-                                                </a>
+                                                </a>-->
                                                 <a href="${contextPath}/wh/whShipping/history/${whShipping.requestId}" class="table-link" title="History">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
@@ -104,52 +120,63 @@
         </div>
     </s:layout-component>
     <s:layout-component name="page_js">
+        <!--print-->
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
-        <script src="${contextPath}/resources/private/datatables/js/dataTables.tableTools.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
                 oTable = $('#dt_spml').DataTable({
-                    "pageLength": 10,
-                    "order": [],
-                    "aoColumnDefs": [
-                        {"bSortable": false, "aTargets": [8]}
-                    ],
-                    "sDom": "tp"
-                });
-                var exportTitle = "Hardware Shipping List";
-                var tt = new $.fn.dataTable.TableTools(oTable, {
-                    "sSwfPath": "${contextPath}/resources/private/datatables/swf/copy_csv_xls_pdf.swf",
-                    "aButtons": [
+                    dom: 'Brtip',
+                    columnDefs : [{
+                        sortable : false,
+                        targets : [ 8 ]
+                    }],
+                    buttons: [
                         {
-                            "sExtends": "copy",
-                            "sButtonText": "Copy",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4, 5, 6]
+                            extend: 'copy',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            }
                         },
                         {
-                            "sExtends": "xls",
-                            "sButtonText": "Excel",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4, 5, 6]
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            }
                         },
                         {
-                            "sExtends": "pdf",
-                            "sButtonText": "PDF",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4, 5, 6]
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            }
                         },
                         {
-                            "sExtends": "print",
-                            "sButtonText": "Print"
+                            extend: 'print',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            },
+                            customize: function (win) {
+                                $(win.document.body)
+                                    .css('font-size', '10pt')
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                            }
                         }
                     ]
                 });
-                $(tt.fnContainer()).appendTo("#dt_spml_tt");
+                
+//                oTable.buttons().container().appendTo($("#dt_spml_tt", oTable.table().container() ) );
+                
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });
+                
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });

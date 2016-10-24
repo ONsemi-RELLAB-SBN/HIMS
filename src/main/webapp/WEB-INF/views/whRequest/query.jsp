@@ -8,7 +8,28 @@
         <!--<link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />-->
     </s:layout-component>
     <s:layout-component name="page_css_inline">
-
+        <style>
+            @media print {
+/*                table  {
+                    border-top: #000 solid 1px;
+                    border-bottom: #000 solid 1px;
+                    border-left: #000 solid 1px;
+                    border-right: #000 solid 1px;
+                }*/
+                table thead {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+                table tbody {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+            }
+            .dataTables_wrapper .dt-buttons {
+                float:none;  
+                text-align:right;
+            }
+        </style>
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
@@ -90,6 +111,8 @@
                                         <option value="Barcode Verification Fail">Barcode Verification Fail</option>
                                         <option value="Wrong Inventory">Wrong Inventory</option>
                                         <option value="Queue for Shipping">Queue for Shipping</option>
+                                        <option value="Ship">Ship</option>
+                                        <option value="Closed">Closed</option>
                                     </select>
                                 </div>
                             </div>                            
@@ -145,7 +168,7 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
-                                        <th><span>HMS Received Date</span></th>
+                                        <th><span>HIMS-SF Received Date</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>
@@ -180,6 +203,8 @@
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
@@ -286,10 +311,34 @@
                     $("#data").show();
                 });
                 
+//                oTable = $('#dt_spml').DataTable({
+//                    dom: 'Bfrtip',
+//                    buttons: [
+//                        'print'
+//                    ]
+//                });
                 oTable = $('#dt_spml').DataTable({
-                    dom: 'Bfrtip',
+                    dom: 'Brtip',
                     buttons: [
-                        'print'
+                        {
+                            extend: 'copy'
+                        },
+                        {
+                            extend: 'excel'
+                        },
+                        {
+                            extend: 'pdf'
+                        },
+                        {
+                            extend: 'print',
+                            customize: function (win) {
+                                $(win.document.body)
+                                    .css('font-size', '10pt')
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                            }
+                        }
                     ]
                 });
                 

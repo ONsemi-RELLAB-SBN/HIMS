@@ -36,7 +36,7 @@ public class FtpConfigRequest {
     @Autowired
     ServletContext servletContext;
 
-    @Scheduled(cron = "0 0 8 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 30 9 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() throws FileNotFoundException, IOException {
         LOGGER.info("Method REQUEST executed at everyday on 8:00 am. Current time is : " + new Date());
         String username = System.getProperty("user.name");
@@ -86,7 +86,7 @@ public class FtpConfigRequest {
             cell1_5.setCellValue("INVENTORY");
             HSSFCell cell1_6 = rowhead.createCell(5);
             cell1_6.setCellStyle(style);
-            cell1_6.setCellValue("HMS RECEIVED DATE");
+            cell1_6.setCellValue("HIMS RECEIVED DATE");
             HSSFCell cell1_7 = rowhead.createCell(6);
             cell1_7.setCellStyle(style);
             cell1_7.setCellValue("BARCODE VERIFICATION DATE");
@@ -138,10 +138,11 @@ public class FtpConfigRequest {
             emailSender.htmlEmailWithAttachmentRequest2(
                 servletContext,
                 "All",                                                   //user name
-                "cdarsrel@gmail.com",                                   //to
-                "Hardware Shipping from HMS Report",   //subject
-                "Report for Hardware Shipping from HMS has been made. " + 
-                "This report will shows the time for HMS to read the request for ON semi delivering to warehouse and the time for the verification process on every item(s) that have been delivered yesterday. " + 
+//                "muhdfaizal@onsemi.com",                                   //to
+                "zbczmg@onsemi.com",
+                "Hardware Shipping from HIMS-SF Report",   //subject
+                "Report for Hardware Shipping from HIMS-SF has been made. " + 
+                "This report will shows the time for HIMS-SF to read the request for ON semi delivering to warehouse and the time for the verification process on every item(s) that have been delivered yesterday. " + 
                 "Hence, attached is the report file for your view and perusal. Thank you." //msg
             );
         }

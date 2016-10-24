@@ -39,9 +39,10 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                $('#materialPassNo').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
+                //temporary disabled
+//                $('#materialPassNo').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
 
                 var validator = $("#add_mp_list_form").validate({
                     rules: {

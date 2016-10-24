@@ -350,7 +350,7 @@ public class WhRequestController {
                     servletContext,
                     query.getRequestedBy(), //user name
                     query.getRequestedEmail(), //to
-                    "Error in Hardware Retrieval Verification in HMS", //subject
+                    "Error in Hardware Retrieval Verification in HIMS-SF", //subject
                     "Barcode Verification for hardware " + query.getEquipmentId() + " (" + query.getEquipmentType() + "), with material pass number: " + query.getMaterialPassNo() + " is INVALID." //msg
             );
             args = new String[1];

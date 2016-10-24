@@ -221,10 +221,10 @@ public class FtpConfig {
                             ftp.setInventoryRack(c.getRack());
                             ftp.setInventoryShelf(c.getShelf());
                             ftp.setStatus(c.getStatus());
-                            ftp.setFlag("1");
+                            ftp.setFlag("2");
                             WhShippingDAO whShippingDAO = new WhShippingDAO();
                             int count = whShippingDAO.getCountExistingData(c.getRequestId());
-                            if (count != 0 && ftp.getFlag().equals("0")) {
+                            if (count != 0 && (!ftp.getFlag().equals("0") || !ftp.getFlag().equals("2"))) {
                                 LOGGER.info("data adeeeeee");
                                 WhShippingDAO WhShippingDAO = new WhShippingDAO();
                                 QueryResult queryResult1 = WhShippingDAO.updateStatus(ftp);

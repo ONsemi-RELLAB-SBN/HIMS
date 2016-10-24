@@ -206,37 +206,34 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                $('#barcodeVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
-                
-                $('#inventoryRackVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
-                
-                $('#inventoryShelfVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
+                //temporary disabled
+//                $('#barcodeVerify').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
+//                
+//                $('#inventoryRackVerify').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
+//                
+//                $('#inventoryShelfVerify').bind('copy paste cut', function (e)  {
+//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                });
 
                 var element2 = $('#tempCount');
                 if (element2.val() === "0" || element2.val() === "1" || element2.val() === "2") {
-//                    alert("less");
                     $("#emaildiv").hide();
                 } else {
-//                    alert("more");
                     $("#emaildiv").show();
                 }
                 
                 var element1 = $('#barcodeVerify');
                 var element11 = $('#materialPassNo');
                 if (element1.val() === element11.val()) {
-//                    alert("1");
                     $("#submit1").attr("disabled", true);
                     $("#reset1").attr("disabled", true);
                     $("#barcodeVerify").attr("readonly", true);
                     $("#emaildiv").hide();
                 } else {
-//                    alert("11");
                     $("#submit2").attr("disabled", true);
                     $("#reset2").attr("disabled", true);
                     $("#inventoryRackVerify").attr("readonly", true);
@@ -280,7 +277,6 @@
                     $("#quantitydiv").hide();
                 } else if (element.val() === "Stencil") {
                     $("#quantitydiv").hide();
-//                    alert("A");
                 } else if (element.val() === "Tray") {
                     $("#quantitydiv").show();
                 } else if (element.val() === "PCB") {
@@ -293,7 +289,6 @@
                 bootstrap_alert.warning = function (message) {
                     $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 }
-//                alert("B");
                 if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
                     bootstrap_alert.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
                     $("#barcodeVerify").effect("highlight", {}, 1000);
@@ -304,7 +299,6 @@
                 bootstrap_alert2.warning = function (message) {
                     $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 }
-//                alert("C");
                 if ($('#inventoryRackVerify').val() !== "" && $('#inventoryRackVerify').val() !== $('#inventoryRack').val()) {
                     bootstrap_alert2.warning('The Rack value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
                     $("#inventoryRackVerify").effect("highlight", {}, 1000);
@@ -315,7 +309,6 @@
                 bootstrap_alert3.warning = function (message) {
                     $('#alert_placeholder3').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 }
-//                alert("D");
                 if ($('#inventoryShelfVerify').val() !== "" && $('#inventoryShelfVerify').val() !== $('#inventoryShelf').val()) {
                     bootstrap_alert3.warning('The Shelf value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
                     $("#inventoryShelfVerify").effect("highlight", {}, 1000);

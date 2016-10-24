@@ -35,7 +35,7 @@ public class FtpConfigExpiryAlert {
     @Autowired
     ServletContext servletContext;
 
-    @Scheduled(cron = "0 21 17 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 30 9 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() throws FileNotFoundException, IOException {
         LOGGER.info("Method Expiry executed at everyday on 8:00 am. Current time is : " + new Date());
 
@@ -166,7 +166,8 @@ public class FtpConfigExpiryAlert {
             emailSender.htmlEmailTableWithAttachment(
                 servletContext,
                 "Requestor",                                                   //user name requestor
-                "zbczmg@onsemi.com",                                   //to
+                "zbczmg@onsemi.com",
+//                "muhdfaizal@onsemi.com",                                   //to
                 "Material Pass Expiry Date within THREE(3) DAYS",   //subject
                 "Report for Material Pass Expiry Date from CDARS has been made. <br />" + 
                 "This report will shows the expired date for each material pass within THREE (3) days durations. <br />" +

@@ -188,8 +188,8 @@ public class WhRetrieveController {
 //                    servletContext,
 //                    requestedBy, //user name
 //                    requestedEmail, //to
-//                    "Status for Hardware Shipment to HMS", //subject
-//                    "The hardware " + equipmentId + " (" + equipmentType + "), with material pass number: " + materialPassNo + " has been safely arrived in HMS." //msg
+//                    "Status for Hardware Shipment to HIMS-SF", //subject
+//                    "The hardware " + equipmentId + " (" + equipmentType + "), with material pass number: " + materialPassNo + " has been safely arrived in HIMS-SF." //msg
 //            );
             
             LogModule logModule = new LogModule();
@@ -639,7 +639,7 @@ public class WhRetrieveController {
                                 servletContext,
                                 "CDARS", //user name
                                 "cdarsrel@gmail.com", //to
-                                "Status for Hardware Inventory from HMS", //subject
+                                "Status for Hardware Inventory from HIMS-SF", //subject
                                 "Verification and inventory for Hardware has been made." //msg
                         );
                         
@@ -653,7 +653,8 @@ public class WhRetrieveController {
                                 servletContext,
                                 whi2.getRequestedBy(), //user name
                                 whi2.getRequestedEmail(), //to
-                                "Status for Hardware Inventory from HMS", //subject
+//                                "muhdfaizal@onsemi.com", //to
+                                "Status for Hardware Inventory from HIMS-SF", //subject
                                 "Verification and inventory has been made. The new inventory for Hardware ID: " + whi2.getEquipmentId() + " with material pass no. : " + whi.getMaterialPassNo() 
                                 + " are at rack: " + whi2.getInventoryRack() + ", shelf: " + whi2.getInventoryShelf() + "." //msg
                         );
@@ -740,7 +741,8 @@ public class WhRetrieveController {
                     servletContext,
                     query.getRequestedBy(), //user name
                     query.getRequestedEmail(), //to
-                    "Error in Hardware Retrieval Verification in HMS", //subject
+//                    "muhdfaizal@onsemi.com",
+                    "Error in Hardware Retrieval Verification in HIMS-SF", //subject
                     "Barcode Verification for hardware " + query.getEquipmentId() + " (" + query.getEquipmentType() + "), with material pass number: " + query.getMaterialPassNo() + " is INVALID. " +
                     "\nPlease identify the problem that occur." //msg
             );

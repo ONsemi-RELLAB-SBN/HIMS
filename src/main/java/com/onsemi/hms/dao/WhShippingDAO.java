@@ -303,7 +303,9 @@ public class WhShippingDAO {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE request_id = '" + id + "' "
+                "SELECT COUNT(*) AS count "
+                + "FROM hms_wh_shipping_list "
+                + "WHERE request_id = '" + id + "' "
             );
 
             ResultSet rs = ps.executeQuery();

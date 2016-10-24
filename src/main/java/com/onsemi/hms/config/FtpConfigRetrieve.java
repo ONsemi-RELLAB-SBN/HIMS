@@ -37,7 +37,7 @@ public class FtpConfigRetrieve {
     @Autowired
     ServletContext servletContext;
 
-    @Scheduled(cron = "0 0 8 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
+    @Scheduled(cron = "0 30 9 * * ?") //every 8:00 AM - cron (sec min hr daysOfMth month daysOfWeek year(optional))
     public void cronRun() throws FileNotFoundException, IOException {
         LOGGER.info("Method RETRIEVE executed at everyday on 8:00 am. Current time is : " + new Date());
         
@@ -140,9 +140,10 @@ public class FtpConfigRetrieve {
             emailSender.htmlEmailWithAttachmentRetrieve2(
                 servletContext,
                 "All",                                                   //user name
-                "cdarsrel@gmail.com",                                   //to
-                "Hardware Arrival from HMS Report",   //subject
-                "Report for Hardware Arrival from HMS has been made. " + 
+//                "muhdfaizal@onsemi.com",                                   //to
+                "zbczmg@onsemi.com",
+                "Hardware Arrival from HIMS-SF Report",   //subject
+                "Report for Hardware Arrival from HIMS-SF has been made. " + 
                 "This report will shows the time for ON Semi delivering hardware to warehouse date and the time for verification process on every item(s) that have been . " + 
                 "Hence, attached is the report file for your view and perusal. Thank you." //msg
             );

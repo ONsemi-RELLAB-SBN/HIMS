@@ -3,11 +3,33 @@
 <s:layout-render name="/WEB-INF/base/base.jsp">
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/css/libs/datepicker.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
-        <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />
+        <!--<link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />-->
     </s:layout-component>
     <s:layout-component name="page_css_inline">
-
+        <style>
+            @media print {
+/*                table  {
+                    border-top: #000 solid 1px;
+                    border-bottom: #000 solid 1px;
+                    border-left: #000 solid 1px;
+                    border-right: #000 solid 1px;
+                }*/
+                table thead {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+                table tbody {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+            }
+            .dataTables_wrapper .dt-buttons {
+                float:none;  
+                text-align:right;
+            }
+        </style>
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
@@ -21,20 +43,21 @@
                                 *Please insert the requirement(s) accordingly.</font
                                 <br /><br /><br />
                             </div>
-                            
+
+                            <div class="form-group col-lg-12" id = "alert_placeholder"></div>
                             <div class="form-group col-lg-12" >
-                                <label for="materialPassNo" class="col-lg-2 control-label">Material Pass No.</label>
-                                <div class="col-lg-5">
-                                    <input type="text" class="form-control" id="materialPassNo" name="materialPassNo">
-                                </div>
                                 <label for="equipmentId" class="col-lg-2 control-label">Hardware ID</label>
-                                <div class="col-lg-3">
+                                <div class="col-lg-5">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId">
+                                </div>
+                                <label for="materialPassNo" class="col-lg-2 control-label">Material Pass No.</label>
+                                <div class="col-lg-3">
+                                    <input type="text" class="form-control" id="materialPassNo" name="materialPassNo">
                                 </div>
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="materialPassExpiry1" class="col-lg-2 control-label">M/Pass Expiry Date between </label>
+                                <label for="materialPassExpiry1" class="col-lg-2 control-label">M/Pass Expiry Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="materialPassExpiry1" name="materialPassExpiry1">
                                 </div>
@@ -44,7 +67,7 @@
                                 </div>
                                 <label for="equipmentType" class="col-lg-2 control-label">Hardware Category</label>
                                 <div class="col-lg-3">
-<!--                                    <input type="text" class="form-control" id="equipmentType" name="equipmentType">-->
+                                    <!--                                    <input type="text" class="form-control" id="equipmentType" name="equipmentType">-->
                                     <select id="equipmentType" name="equipmentType" class="form-control">
                                         <option value=""></option>
                                         <option value="Motherboard">Motherboard</option>
@@ -56,7 +79,7 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="requestedDate1" class="col-lg-2 control-label">Requested Date between </label>
+                                <label for="requestedDate1" class="col-lg-2 control-label">Requested Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="requestedDate1" name="requestedDate1">
                                 </div>
@@ -71,7 +94,7 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="receivedDate1" class="col-lg-2 control-label">Received Date between </label>
+                                <label for="receivedDate1" class="col-lg-2 control-label">Box Receival Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="receivedDate1" name="receivedDate1">
                                 </div>
@@ -84,8 +107,9 @@
                                     <select id="status" name="status" class="form-control">
                                         <option value="" selected></option>
                                         <option value="New Inventory Request">New Inventory Request</option>
-                                        <option value="Verification Pass">Verification Pass</option>
-                                        <option value="Verification Fail">Verification Fail</option>
+                                        <option value="Verification Pass">Barcode Verification Pass</option>
+                                        <option value="Verification Fail">Barcode Verification Fail</option>
+                                        <option value="Inventory Valid">Inventory Valid</option>
                                         <option value="Inventory Invalid">Inventory Invalid</option>
                                         <option value="Move to Inventory">Move to Inventory</option>
                                     </select>
@@ -104,7 +128,7 @@
                 </div>
             </div>
         </div>
-                                
+
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-lg-12">
@@ -123,14 +147,14 @@
                                 </select>
                             </div>
                             <div class="filter-block pull-right">
-                                <div id="dt_spml_tt" class="form-group pull-left" style="margin-right: 5px;">
-                                </div>
+                                <div id="dt_spml_tt" class="form-group pull-left" style="margin-right: 5px;"></div>
                                 <div class="form-group pull-left" style="margin-right: 0px;">
                                     <input id="dt_spml_search" type="text" class="form-control" placeholder="<f:message key="general.label.search"/>">
                                     <i class="fa fa-search search-icon"></i>
                                 </div>
                             </div>
                         </div>
+                        <div><br/></div>
                         <div class="table-responsive">            
                             <table id="dt_spml" class="table" style="font-size: 10px;">
                                 <thead>
@@ -143,26 +167,24 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
-                                        <th><span>HMS Received Date</span></th>
-                                        <th><span>Arrival Date</span></th>
+                                        <th><span>HIMS-SF Received Date</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${retrieveQueryList}" var="whRetrieve" varStatus="whRetrieveLoop">
-                                    <tr>
-                                        <td><c:out value="${whRetrieveLoop.index+1}"/></td>
-                                        <td><c:out value="${whRetrieve.materialPassNo}"/></td>
-                                        <td><c:out value="${whRetrieve.materialPassExpiry}"/></td>
-                                        <td><c:out value="${whRetrieve.equipmentType}"/></td>
-                                        <td><c:out value="${whRetrieve.equipmentId}"/></td>
-                                        <td><c:out value="${whRetrieve.quantity}"/></td>
-                                        <td><c:out value="${whRetrieve.requestedBy}"/></td>
-                                        <td><c:out value="${whRetrieve.requestedDate}"/></td>
-                                        <td><c:out value="${whRetrieve.receivedDate}"/></td>
-                                        <td><c:out value="${whRetrieve.arrivalReceivedDate}"/></td>
-                                        <td><c:out value="${whRetrieve.status}"/></td>
-                                    </tr>
+                                        <tr>
+                                            <td><c:out value="${whRetrieveLoop.index+1}"/></td>
+                                            <td><c:out value="${whRetrieve.materialPassNo}"/></td>
+                                            <td><c:out value="${whRetrieve.materialPassExpiry}"/></td>
+                                            <td><c:out value="${whRetrieve.equipmentType}"/></td>
+                                            <td><c:out value="${whRetrieve.equipmentId}"/></td>
+                                            <td><c:out value="${whRetrieve.quantity}"/></td>
+                                            <td><c:out value="${whRetrieve.requestedBy}"/></td>
+                                            <td><c:out value="${whRetrieve.requestedDate}"/></td>
+                                            <td><c:out value="${whRetrieve.receivedDate}"/></td>
+                                            <td><c:out value="${whRetrieve.status}"/></td>
+                                        </tr>
                                     </c:forEach>
                                 </tbody>
                             </table>
@@ -176,12 +198,16 @@
         <script src="${contextPath}/resources/validation/jquery.validate.min.js"></script>
         <script src="${contextPath}/resources/validation/additional-methods.js"></script>
         <script src="${contextPath}/resources/private/js/bootstrap-datepicker.js"></script>
+        <!--print-->
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
-        <script src="${contextPath}/resources/private/datatables/js/dataTables.tableTools.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
-            $(document).ready(function () {                
+            $(document).ready(function () {
                 $('#requestedDate1').datepicker({
                     format: 'yyyy-mm-dd',
                     autoclose: true
@@ -212,8 +238,70 @@
                 });
                 
                 var validator = $("#update_hardwareinventory_form").validate({
-                    //do nothing yet
+                    rules: {
+                        requestedDate1: { 
+                            required: function (element) {
+                                if($('#requestedDate1').val() === "" && $('#requestedDate2').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        requestedDate2: { 
+                            required: function (element) {
+                                if($('#requestedDate2').val() === "" && $('#requestedDate1').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        materialPassExpiry1: { 
+                            required: function (element) {
+                                if($('#materialPassExpiry1').val() === "" && $('#materialPassExpiry2').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        materialPassExpiry2: { 
+                            required: function (element) {
+                                if($('#materialPassExpiry2').val() === "" && $('#materialPassExpiry1').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        receivedDate1: { 
+                            required: function (element) {
+                                if($('#receivedDate1').val() === "" && $('#receivedDate2').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        receivedDate2: { 
+                            required: function (element) {
+                                if($('#receivedDate2').val() === "" && $('#receivedDate1').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
                 });
+                
                 $(".cancel").click(function () {
                     validator.resetForm();
                 });
@@ -222,57 +310,39 @@
                     $("#data").show();
                 });
                 
-//                bootstrap_alert = function () {};
-//                bootstrap_alert.warning = function (message) {
-//                    $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
-//                };
-//                if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
-//                    bootstrap_alert.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
-//                    //                    $("#hardwareBarcode2").effect("highlight", {}, 1000);
-//                    $("#hardwareBarcode2").addClass('highlight');
-//                }
-                
-                
-//                
+//                oTable = $('#dt_spml').DataTable({
+//                    dom: 'Bfrtip',
+//                    buttons: [
+//                        'print'
+//                    ]
+//                });
                 oTable = $('#dt_spml').DataTable({
-                    "pageLength": 10,
-                    "order": [],
-                    "aoColumnDefs": [],
-                    "sDom": "tp"
-                });
-                
-                var exportTitle = "Query Search List";
-                var tt = new $.fn.dataTable.TableTools(oTable, {
-                    "sSwfPath": "${contextPath}/resources/private/datatables/swf/copy_csv_xls_pdf.swf",
-                    "aButtons": [
+                    dom: 'Brtip',
+                    buttons: [
                         {
-                            "sExtends": "copy",
-                            "sButtonText": "Copy",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                            extend: 'copy'
                         },
                         {
-                            "sExtends": "xls",
-                            "sButtonText": "Excel",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                            extend: 'excel'
                         },
                         {
-                            "sExtends": "pdf",
-                            "sButtonText": "PDF", 
-                            "sPdfOrientation": "landscape",
-                            "sTitle": exportTitle,
-                            "mColumns": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                            extend: 'pdf'
                         },
                         {
-                            "sExtends": "print",
-                            "sButtonText": "Print",
-                            "bShowAll": true
+                            extend: 'print',
+                            customize: function (win) {
+                                $(win.document.body)
+                                        .css('font-size', '10pt')
+                                $(win.document.body).find('table')
+                                        .addClass('compact')
+                                        .css('font-size', 'inherit');
+                            }
                         }
                     ]
                 });
                 
-                $(tt.fnContainer()).appendTo("#dt_spml_tt");
+//                oTable.buttons().container().appendTo($("#dt_spml_tt", oTable.table().container() ) );
+                
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });

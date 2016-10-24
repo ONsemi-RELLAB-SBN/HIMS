@@ -7,6 +7,28 @@
         <!--<link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/dataTables.tableTools.css" type="text/css" />-->
     </s:layout-component>
     <s:layout-component name="page_css_inline">
+        <style>
+            @media print {
+                /*                table  {
+                                    border-top: #000 solid 1px;
+                                    border-bottom: #000 solid 1px;
+                                    border-left: #000 solid 1px;
+                                    border-right: #000 solid 1px;
+                                }*/
+                table thead {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+                table tbody {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+            }
+            .dataTables_wrapper .dt-buttons {
+                float:none;  
+                text-align:right;
+            }
+        </style>
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
@@ -57,10 +79,10 @@
                                     <tr>
                                         <th><span>No</span></th>
                                         <th><span>Material Pass Number</span></th>
+                                        <th><span>Material Pass Expiry Date</span></th>
                                         <th><span>Hardware Type</span></th>
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Quantity</span></th>
-                                        <th><span>Status</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -68,10 +90,10 @@
                                         <tr>
                                             <td><c:out value="${whMpListLoop.index+1}"/></td>
                                             <td><c:out value="${whMpList.materialPassNo}"/></td>
+                                            <td><c:out value="${whMpList.materialPassExpiry}"/></td>
                                             <td><c:out value="${whMpList.equipmentType}"/></td>
                                             <td><c:out value="${whMpList.equipmentId}"/></td>
                                             <td><c:out value="${whMpList.quantity}"/></td>
-                                            <td><c:out value="${whMpList.status}"/></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -88,23 +110,50 @@
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
                 oTable = $('#dt_spml').DataTable({
                     dom: 'Bfrtip',
+//                    dom: '<"top"i>rt<"bottom"flp><"clear">',
                     buttons: [
-                        'print'
+                        {
+                            extend: 'copy'
+                        },
+                        {
+                            extend: 'excel'
+                        },
+                        {
+                            extend: 'pdf'
+                        },
+                        {
+                            extend: 'print',
+//                            fnClick: '',
+                            autoPrint: true,
+                            customize: function (win) {
+                                $(win.document.body)
+                                        .css('font-size', '10pt')
+                                $(win.document.body).find('table')
+                                        .addClass('compact')
+                                        .css('font-size', 'inherit');
+
+                                window.location = '${contextPath}/wh/whShipping/whMpList/email/';
+                            }
+//                            ,
+//                            action: function (e, dt, node, config) {
+//                                alert('Activated!');
+//                            }
+                        }
                     ]
                 });
-                
-                oTable.buttons().container().appendTo($("#dt_spml_tt", oTable.table().container() ) );
-                
+
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });
-                
+
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });

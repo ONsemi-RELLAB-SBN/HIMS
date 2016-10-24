@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/base/taglibs.jsp" %>
 <s:layout-render name="/WEB-INF/base/landing.jsp">
     <s:layout-component name="page_title">
-        HMS - Edit User
+        HIMS-SF - Edit User
     </s:layout-component>
     <s:layout-component name="page_body">
         <h1><spring:message code="page.label.user.add"/></h1>

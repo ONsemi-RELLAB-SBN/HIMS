@@ -177,7 +177,7 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
                 //5
                 cellHeader.setPhrase(new Phrase("Requested By", fontHeader));
                 table.addCell(cellHeader);
-                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getRequestedBy() + ", " + whHistoryList.get(i).getRequestedEmail(), fontContent));
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getRequestedBy(), fontContent));
                 table.addCell(cellContent);
 
                 //6
@@ -193,7 +193,7 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellContent);
                 
                 //8
-                cellHeader.setPhrase(new Phrase("HMS Received Date", fontHeader));
+                cellHeader.setPhrase(new Phrase("HIMS-SF Received Date", fontHeader));
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getReceivedDate(), fontContent));
                 table.addCell(cellContent);

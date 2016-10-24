@@ -58,6 +58,7 @@
                                     <input type="text" class="form-control" id="inventoryShelf" name="inventoryShelf" placeholder="${whInventory.inventoryShelf}" required>
                                 </div>
                             </div>
+                            <div id = "alert_placeholder2"></div>
                             <a href="${contextPath}/wh/whInventory" class="btn btn-info pull-left"><i class="fa fa-reply"></i>Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>
@@ -92,13 +93,67 @@
                     $("#quantitydiv").hide();
                 }
                 
+                bootstrap_alert = function () {};
+                bootstrap_alert.warning = function (message) {
+                    $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                };
+                if ($('#inventoryRack').val() !== $('#inventoryShelf').val().substring(0,6) || $('#inventoryRack').val().length !== 6 && $('#inventoryShelf').val().length !== 10 
+                    && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
+                    bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
+                    $("#inventoryRack").addClass('highlight');
+                    $("#inventoryShelf").addClass('highlight');
+                } else {
+                    if ($('#equipmentType').val() === 'Motherboard' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
+                        if($('#inventoryRack').val().substring(0,4) === "S-SY" || $('#inventoryRack').val().substring(0,4) === "S-AC" || $('#inventoryRack').val().substring(0,4) === "S-WF" || $('#inventoryRack').val().substring(0,4) !== "S-IO"
+                        || $('#inventoryRack').val().substring(0,4) === "S-BB" || $('#inventoryRack').val().substring(0,4) === "S-HA" || $('#inventoryRack').val().substring(0,4) === "S-PT") {
+                            //do nothing
+                        } else {
+                            bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
+                            //$("#hardwareBarcode2").effect("highlight", {}, 1000);
+                            $("#inventoryRack").addClass('highlight');
+                            $("#inventoryShelf").addClass('highlight');
+                        }
+                    } else if ($('#equipmentType').val() === 'Stencil' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
+                        if($('#inventoryRack').val().substring(0,4) === "S-ST") {
+                            //do nothing
+                        } else {
+                            bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
+                            //$("#hardwareBarcode2").effect("highlight", {}, 1000);
+                            $("#inventoryRack").addClass('highlight');
+                            $("#inventoryShelf").addClass('highlight');
+                        }
+                    } else if ($('#equipmentType').val() === 'Tray' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
+                        if($('#inventoryRack').val().substring(0,4) === "S-TJ" || $('#inventoryRack').val().substring(0,4) === "S-TR") {
+                            //do nothing
+                        } else {
+                            bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
+                            //$("#hardwareBarcode2").effect("highlight", {}, 1000);
+                            $("#inventoryRack").addClass('highlight');
+                            $("#inventoryShelf").addClass('highlight');
+                        }
+                    } else if ($('#equipmentType').val() === 'PCB' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
+                        if($('#inventoryRack').val().substring(0,4) === "S-PC") {
+                            //do nothing
+                        } else {
+                            bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
+                            //$("#hardwareBarcode2").effect("highlight", {}, 1000);
+                            $("#inventoryRack").addClass('highlight');
+                            $("#inventoryShelf").addClass('highlight');
+                        }
+                    }
+                }
+                
                 var validator = $("#update_hardwareinventory_form").validate({
                     rules: {
                         inventoryRack: {
-                            required: true
+                            required: true,
+                            minlength: 6,
+                            maxlength: 6
                         },
                         inventoryShelf: {
-                            required: true
+                            required: true,
+                            minlength: 10,
+                            maxlength: 10
                         }
                     }
                 });
