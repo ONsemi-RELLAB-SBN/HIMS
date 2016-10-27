@@ -32,18 +32,41 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Material Pass List</h1>
+            <h1>Warehouse Management - Hardware for Shipment to Rel Lab</h1>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="main-box">
+                        <h2>Add New Material Pass Number</h2>
+                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/wh/whShipping/whMpList/save" method="post">
+                            <div class="form-group">
+                                <label for="materialPassNo" class="col-lg-3 control-label">Material Pass Number *</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" placeholder="" value="" autofocus="autofocus">
+                                </div>
+                            </div>
+                            <a href="${contextPath}/wh/whRequest/ship" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
+                            <div class="pull-right">
+                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>	
+            </div>
+        </div>
+        <div class="col-lg-12">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Material Pass List</h2>
+                            <h2 class="pull-left">Packing List</h2>
 
-                            <div class="filter-block pull-right">
+<!--                            <div class="filter-block pull-right">
                                 <a href="${contextPath}/wh/whShipping/whMpList/add" class="btn btn-primary pull-right">
-                                    <i class="fa fa-plus-circle fa-lg"></i> Add New Material Pass Number
+                                    <i class="fa fa-plus-circle fa-lg"></i> Add New Box
                                 </a>
-                            </div>
+                            </div>-->
                             <div class="filter-block pull-right">
                                 <a href="#delete_modal" data-toggle="modal" class="btn btn-danger danger group_delete pull-right" onclick="modalDelete(this);">
                                     <i class="fa fa-trash-o fa-lg"></i> Delete All
@@ -53,6 +76,7 @@
                         <!--<div class="alert_placeholder col-lg-4" >-->
                         <div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             *Please delete all data after print the shipping material pass number list.
+                            <!--<button>print</button>-->
                         </div>    
                         <hr/>
                         <div class="clearfix">
@@ -72,6 +96,9 @@
                                     <i class="fa fa-search search-icon"></i>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <a href="${contextPath}/wh/whShipping/whMpList/email" class="btn btn-info pull-right" id="print">Print</a>
                         </div>
                         <div class="table-responsive">
                             <table id="dt_spml" class="table">
@@ -116,38 +143,44 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                oTable = $('#dt_spml').DataTable({
-                    dom: 'Bfrtip',
-//                    dom: '<"top"i>rt<"bottom"flp><"clear">',
-                    buttons: [
-                        {
-                            extend: 'copy'
-                        },
-                        {
-                            extend: 'excel'
-                        },
-                        {
-                            extend: 'pdf'
-                        },
-                        {
-                            extend: 'print',
-//                            fnClick: '',
-                            autoPrint: true,
-                            customize: function (win) {
-                                $(win.document.body)
-                                        .css('font-size', '10pt')
-                                $(win.document.body).find('table')
-                                        .addClass('compact')
-                                        .css('font-size', 'inherit');
-
-                                window.location = '${contextPath}/wh/whShipping/whMpList/email/';
-                            }
-//                            ,
-//                            action: function (e, dt, node, config) {
-//                                alert('Activated!');
-//                            }
+                var validator = $("#add_mp_list_form").validate({
+                    rules: {
+                        materialPassNo: {
+                            required: true
                         }
-                    ]
+                    }
+                });
+                $(".cancel").click(function () {
+                    validator.resetForm();
+                });
+                
+                oTable = $('#dt_spml').DataTable({
+                    dom: 'Bfrtip'
+//                    ,
+//                    buttons: [
+//                        {
+//                            extend: 'copy'
+//                        },
+//                        {
+//                            extend: 'excel'
+//                        },
+//                        {
+//                            extend: 'pdf'
+//                        },
+//                        {
+//                            extend: 'print',
+//                            autoPrint: true,
+//                            customize: function (win) {
+//                                $(win.document.body)
+//                                        .css('font-size', '10pt')
+//                                $(win.document.body).find('table')
+//                                        .addClass('compact')
+//                                        .css('font-size', 'inherit');
+//
+//                                window.location = '${contextPath}/wh/whShipping/whMpList/email/';
+//                            }
+//                        }
+//                    ]
                 });
 
                 $('#dt_spml_search').keyup(function () {
@@ -158,15 +191,50 @@
                     oTable.page.len($(this).val()).draw();
                 });
             });
+            
+
+//            function printData()
+//            {
+//                var divToPrint = document.getElementById("dt_spml");
+//                newWin = window.open("");
+//                newWin.document.write(divToPrint.innerHTML);
+//                newWin.print();
+//                newWin.close();
+////                location.href = 'http://localhost:8080/HMS/wh/whShipping/whMpList/email';
+//            }
+
+            function printDiv() {
+                var divToPrint = document.getElementById("dt_spml");
+                var htmlToPrint = '' +
+                        '<style type="text/css">' +
+                        'table th, table td {' +
+                        'font-size: 12px;' +
+                        'text-align: left;' +
+                        'padding;0.5em;' +
+                        '}' +
+                        '</style>';
+                htmlToPrint += divToPrint.outerHTML;
+                newWin = window.open("");
+                newWin.document.write(htmlToPrint);
+                newWin.print();
+                newWin.close();
+                location.href = 'http://fg79cj-l1:8080/HMS/wh/whShipping/whMpList/email';
+            }
+
+
+            $('#print').on('click', function () {
+//                printData();
+                printDiv();
+            })
 
             function modalDelete(e) {
-                //var deleteId = $(e).attr("modaldeleteid");
-                //var deleteInfo = $("#modal_delete_info_" + deleteId).html();
                 var deleteUrl = "${contextPath}/wh/whShipping/whMpList/deleteAll";
                 var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
                 $("#delete_modal .modal-body").html(deleteMsg);
                 $("#modal_delete_button").attr("href", deleteUrl);
             }
+
+                                    
         </script>
     </s:layout-component>
 </s:layout-render>

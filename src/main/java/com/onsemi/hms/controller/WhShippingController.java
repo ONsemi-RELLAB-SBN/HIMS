@@ -5,8 +5,10 @@ import java.net.URLEncoder;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import com.onsemi.hms.dao.WhShippingDAO;
+import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhShipping;
 import com.onsemi.hms.model.WhShippingLog;
+import java.util.Locale;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping(value = "/wh/whShipping")
@@ -85,7 +90,7 @@ public class WhShippingController {
         String backUrl = servletContext.getContextPath() + "/wh/whShipping";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Shipping");
+        model.addAttribute("pageTitle", "Hardware Shipping");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
@@ -113,7 +118,7 @@ public class WhShippingController {
         String backUrl = servletContext.getContextPath() + "/wh/whShipping";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Shipping History");
+        model.addAttribute("pageTitle", "Hardware Shipping History");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
@@ -128,5 +133,129 @@ public class WhShippingController {
         List<WhShippingLog> whHistoryList = whShippingDAO.getWhShippingReqLog(whShippingId);
         LOGGER.info("Masuk 2........");
         return new ModelAndView("whShippingLogPdf", "whShippingLog", whHistoryList);
+    }
+    
+    @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
+    public String query(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String equipmentId,
+            @RequestParam(required = false) String materialPassExpiry1,
+            @RequestParam(required = false) String materialPassExpiry2,
+            @RequestParam(required = false) String equipmentType,
+            @RequestParam(required = false) String requestedDate1,
+            @RequestParam(required = false) String requestedDate2,
+            @RequestParam(required = false) String requestedBy,
+            @RequestParam(required = false) String inventoryRack,
+            @RequestParam(required = false) String inventoryShelf,
+            @RequestParam(required = false) String status
+    ) {
+        String query = "";
+        int count = 0;
+        
+        if(materialPassNo!=null) {
+            if(!materialPassNo.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " material_pass_no = \'" + materialPassNo + "\' ";
+                else if(count>1)
+                    query = query + " AND material_pass_no = \'" + materialPassNo + "\' ";
+            }
+        }
+        if(equipmentId!=null) {
+            if(!equipmentId.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " equipment_id = \'" + equipmentId + "\' ";
+                else if(count>1)
+                    query = query + " AND equipment_id = \'" + equipmentId + "\' ";
+            }
+        }
+        if(materialPassExpiry1!=null &&  materialPassExpiry2!=null) {
+            if(!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
+                count++;
+                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 +"\' AS DATE) ";
+                if(count == 1)
+                    query = materialPassExpiry;
+                else if(count>1)
+                    query = query + " AND " + materialPassExpiry;
+            }
+        }
+        if(equipmentType!=null) {
+//            if(!equipmentType.equals("") !("").equals(equipmentType)) {
+              if(!("").equals(equipmentType)) {
+                count++;
+                if(count == 1)
+                    query = " equipment_type = \'" + equipmentType + "\' ";
+                else if(count>1)
+                    query = query + " AND equipment_type = \'" + equipmentType + "\' ";
+            }
+        }
+        if(requestedDate1!=null &&  requestedDate2!=null) {
+            if(!requestedDate1.equals("") && !requestedDate2.equals("")) {
+                count++;
+                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 +"\' AS DATE) ";
+                if(count == 1)
+                    query = requestedDate;
+                else if(count>1)
+                    query = query + " AND " + requestedDate;
+            }
+        }
+        if(requestedBy!=null) {
+            if(!requestedBy.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " requested_by = \'" + requestedBy + "\' ";
+                else if(count>1)
+                    query = query + " AND requested_by = \'" + requestedBy + "\' ";
+            }
+        }
+        if(inventoryRack!=null) {
+            if(!inventoryRack.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " inventory_rack = \'" + inventoryRack + "\' ";
+                else if(count>1)
+                    query = query + " AND inventory_rack = \'" + inventoryRack + "\' ";
+            }
+        }
+        if(inventoryShelf!=null) {
+            if(!inventoryShelf.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " inventory_shelf = \'" + inventoryShelf + "\' ";
+                else if(count>1)
+                    query = query + " AND inventory_shelf = \'" + inventoryShelf + "\' ";
+            }
+        }
+        if(status!=null) {
+            if(!("").equals(status)) {
+                count++;
+                if(count == 1) {
+                    if(status.equals("Closed")) {
+                        query = " (S.status = \'" + status + "\' OR S.status = \'Closed. Verified By Supervisor\') ";
+                    } else {
+                        query = " S.status = \'" + status + "\' ";
+                    }
+                }
+                else if(count>1) {
+                    if(status.equals("Closed")) {
+                        query = query + " AND (S.status = \'" + status + "\' OR S.status = \'Closed. Verified By Supervisor\' ) ";
+                    } else {
+                        query = query + " AND S.status = \'" + status + "\' ";
+                    }
+                }
+            }
+        }
+        
+        System.out.println("Query: " + query);
+        WhShippingDAO wh = new WhShippingDAO();
+        List<WhShipping> shippingQueryList = wh.getQuery(query);
+        
+        model.addAttribute("shippingQueryList", shippingQueryList);
+        return "whShipping/query";
     }
 }

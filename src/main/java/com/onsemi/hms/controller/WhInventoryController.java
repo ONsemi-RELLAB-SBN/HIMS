@@ -290,7 +290,7 @@ public class WhInventoryController {
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Inventory");
+        model.addAttribute("pageTitle", "Hardware in SBN Factory");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
@@ -318,7 +318,7 @@ public class WhInventoryController {
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Inventory History");
+        model.addAttribute("pageTitle", "Hardware in SBN Factory History");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }

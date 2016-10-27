@@ -29,7 +29,7 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
 //        doc = new Document(PageSize.A4);
 //        PageSize.A4.rotate();
         
-        String title = "WAREHOUSE MANAGEMENT - HARDWARE REQUEST INFORMATION\n\n";
+        String title = "HARDWARE FOR SHIPMENT TO REL LAB INFORMATION\n\n";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);

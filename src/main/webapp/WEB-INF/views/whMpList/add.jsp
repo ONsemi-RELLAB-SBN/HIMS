@@ -1,4 +1,4 @@
-<%@page contentType="text/html;charset=UTF-8" %>
+<%--<%@page contentType="text/html;charset=UTF-8" %>
 <%@include file="/WEB-INF/base/taglibs.jsp" %>
 <s:layout-render name="/WEB-INF/base/base.jsp">
     <s:layout-component name="page_css">
@@ -57,4 +57,4 @@
             });
         </script>
     </s:layout-component>
-</s:layout-render>
+</s:layout-render>--%>

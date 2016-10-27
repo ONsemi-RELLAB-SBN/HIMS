@@ -116,9 +116,7 @@ public class FtpConfig {
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
                                 
                                 
-                            } else {
-                                LOGGER.info("data adeeeeee");
-                            }
+                            } 
                         }
                     } catch (Exception ee) {
                         ee.printStackTrace();
@@ -186,14 +184,12 @@ public class FtpConfig {
                                 logModule.setModuleName("hms_wh_retrieval_list");
                                 logModule.setStatus(query.getStatus());
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
-                            } else {
-                                LOGGER.info("data adeeeeee");
                             }
                         }
                     } catch (Exception ee) {
                         ee.printStackTrace();
                     }
-                } else if (listOfFile.getName().equals("cdars_retrieval_status - Copy.csv")) {
+                } else if (listOfFile.getName().equals("cdars_retrieval_status.csv")) {
                     fileLocation = targetLocation + listOfFile.getName();
                     LOGGER.info("Close status file found : " + fileLocation);
                     
@@ -229,6 +225,13 @@ public class FtpConfig {
                                 WhShippingDAO WhShippingDAO = new WhShippingDAO();
                                 QueryResult queryResult1 = WhShippingDAO.updateStatus(ftp);
                                 
+                                WhRequest whReq = new WhRequest();
+                                whReq.setStatus(ftp.getStatus());
+                                whReq.setFlag("2");
+                                whReq.setRefId(refId);
+                                WhRequestDAO whReqDao = new WhRequestDAO();
+                                QueryResult que = whReqDao.updateWhRequestStatus(whReq);
+                                
                                 WhShippingDAO whShippingDAO2 = new WhShippingDAO();
                                 WhShipping query = whShippingDAO2.getWhShipping(refId);
                                 LogModule logModule = new LogModule();
@@ -236,10 +239,8 @@ public class FtpConfig {
                                 logModule.setReferenceId(query.getRequestId());
                                 logModule.setModuleId(query.getId());
                                 logModule.setModuleName("hms_wh_shipping_list");
-                                logModule.setStatus(query.getStatus());
+                                logModule.setStatus(ftp.getStatus());
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
-                            } else {
-                                LOGGER.info("data xdeeeeee");
                             }
                         }
                     } catch (Exception ee) {

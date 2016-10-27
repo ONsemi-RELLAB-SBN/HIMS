@@ -71,10 +71,10 @@ public class WhMpListController {
         return "whMpList/whMpList";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String add(Model model) {
-        return "whMpList/add";
-    }
+//    @RequestMapping(value = "/add", method = RequestMethod.GET)
+//    public String add(Model model) {
+//        return "whMpList/add";
+//    }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(
@@ -102,8 +102,7 @@ public class WhMpListController {
                 whMpList.setStatus("Ship");
                 whMpListDAO = new WhMpListDAO();
                 QueryResult queryResult = whMpListDAO.insertWhMpList(whMpList);
-                
-                
+
                 WhShippingDAO whShippingDAO1 = new WhShippingDAO();
                 WhShipping query1 = whShippingDAO1.getWhShipping(refId);
                 WhMpListDAO whMpListDAO3 = new WhMpListDAO();
@@ -117,7 +116,7 @@ public class WhMpListController {
                 logModule2.setVerifiedBy(query2.getCreatedBy());
                 logModule2.setVerifiedDate(query2.getCreatedDate());
                 QueryResult queryResult1 = logModuleDAO2.insertLogForVerification(logModule2);
-                
+
                 args = new String[1];
                 args[0] = materialPassNo;
                 if (queryResult.getGeneratedKey().equals("0")) {
@@ -140,32 +139,32 @@ public class WhMpListController {
                             fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
                             String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv";
 
-                            BufferedReader bufferedReader = new BufferedReader(fileReader); 
+                            BufferedReader bufferedReader = new BufferedReader(fileReader);
                             String data = bufferedReader.readLine();
                             StringBuilder buff = new StringBuilder();
 
                             boolean check = false;
                             int row = 0;
-                            while(data != null){
+                            while (data != null) {
                                 LOGGER.info("start reading file..........");
                                 buff.append(data).append(System.getProperty("line.separator"));
                                 System.out.println("dataaaaaaaaa : \n" + data);
 
                                 String[] split = data.split(",");
                                 IonicFtpShipping shipping = new IonicFtpShipping(
-                                    split[0], split[1], split[2],
-                                    split[3], split[4], split[5], 
-                                    split[6] //date = [4], by = [5], status = [6]
+                                        split[0], split[1], split[2],
+                                        split[3], split[4], split[5],
+                                        split[6] //date = [4], by = [5], status = [6]
                                 );
 
-                                if(split[0].equals(mplist.getShippingId())) {
+                                if (split[0].equals(mplist.getShippingId())) {
                                     LOGGER.info(row + " : request Id found...................." + data);
                                     CSV csv = new CSV();
                                     csv.open(new File(targetLocation));
                                     csv.put(4, row, "" + mplist.getCreatedDate());
                                     csv.put(5, row, "" + mplist.getCreatedBy());
                                     csv.save(new File(targetLocation));
-                                    
+
                                     check = true;
                                 } else {
                                     LOGGER.info("refId not found........" + data);
@@ -175,8 +174,8 @@ public class WhMpListController {
                             }
                             bufferedReader.close();
                             fileReader.close();
-                            
-                            if(check == false) {
+
+                            if (check == false) {
                                 fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
@@ -187,7 +186,7 @@ public class WhMpListController {
                                 fileWriter.append(mplist.getDateVerify());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(mplist.getUserVerify());
-                                fileWriter.append(COMMA_DELIMITER);                            
+                                fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(mplist.getCreatedDate());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(mplist.getCreatedBy());
@@ -223,7 +222,7 @@ public class WhMpListController {
                             fileWriter.append(mplist.getDateVerify());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(mplist.getUserVerify());
-                            fileWriter.append(COMMA_DELIMITER);                            
+                            fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(mplist.getCreatedDate());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(mplist.getCreatedBy());
@@ -248,7 +247,7 @@ public class WhMpListController {
 
                     //to get hostname
                     InetAddress ip;
-                    String hostName ="";
+                    String hostName = "";
                     try {
                         ip = InetAddress.getLocalHost();
                         hostName = ip.getHostName();
@@ -261,30 +260,30 @@ public class WhMpListController {
                     //sent to cdars
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentShipping(
-                        servletContext,
-                        "CDARS",                                                   //user name
-                        "cdarsrel@gmail.com",                                   //to
-                        "Status for Hardware Shipping from HIMS-SF",  //subject
-                        "Verification and status for Hardware Shipping has been made."    //msg
+                            servletContext,
+                            "CDARS", //user name
+                            "cdarsrel@gmail.com", //to
+                            "Status for Hardware Shipping from HIMS-SF", //subject
+                            "Verification and status for Hardware Shipping has been made." //msg
                     );
-                    
-                    System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
-                    //sent to requestor
-                    EmailSender emailSender2 = new EmailSender();
-                    String emailTitle = "Status for Hardware Shipping from HIMS-SF";
-                    emailSender2.htmlEmail2(
-                        servletContext,
-                        whship.getRequestedBy(),                       //from
-                        whship.getRequestedEmail(), //to
-//                        "muhdfaizal@onsemi.com", //to
-                        emailTitle,         
-                        "Hardware ID: " + whship.getEquipmentId() + " with material pass no: " + whship.getMaterialPassNo() + " has been ready to shipping. Please go to this link " //msg
-                        + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
-                        + " for status checking."
-                    );
-                    
+
+//                    System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
+//                    //sent to requestor
+//                    EmailSender emailSender2 = new EmailSender();
+//                    String emailTitle = "Status for Hardware Shipping from HIMS-SF";
+//                    emailSender2.htmlEmail2(
+//                            servletContext,
+//                            whship.getRequestedBy(), //from
+//                            whship.getRequestedEmail(), //to
+//                            //                        "muhdfaizal@onsemi.com", //to
+//                            emailTitle,
+//                            "Hardware ID: " + whship.getEquipmentId() + " with material pass no: " + whship.getMaterialPassNo() + " has been ready to shipping. Please go to this link " //msg
+//                            + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
+//                            + " for status checking."
+//                    );
+
                     System.out.println("######################### END EMAIL PROCESS ########################### ");
-                    
+
                     WhShipping whShipping = new WhShipping();
                     whShipping.setRequestId(whship.getRequestId());
                     whShipping.setMaterialPassNo(materialPassNo);
@@ -294,38 +293,38 @@ public class WhMpListController {
                     whShipping.setShippingDate(mplist.getCreatedDate());
                     WhShippingDAO whShippingDao = new WhShippingDAO();
                     QueryResult queryResult2 = whShippingDao.updateWhShipping(whShipping);
-                    
+
                     WhRequest whReq = new WhRequest();
                     whReq.setRefId(whship.getRequestId());
                     whReq.setStatus("Ship");
                     WhRequestDAO whRequestDao = new WhRequestDAO();
                     QueryResult queryResult3 = whRequestDao.updateWhRequestStatus(whReq);
-                    
+
                     WhInventory wi = new WhInventory();
                     wi.setFlag("1");
                     wi.setStatus("Unavailable in Inventory");
                     wi.setMaterialPassNo(materialPassNo);
                     WhInventoryDAO widao = new WhInventoryDAO();
                     QueryResult querywi = widao.updateWhInventoryStatus(wi);
-                    
-                    if(queryResult3.getResult() == 1){
+
+                    if (queryResult3.getResult() == 1) {
                         redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success5", args, locale));
-                    return "redirect:/wh/whShipping/whMpList";  
-                    }else{
+                        return "redirect:/wh/whShipping/whMpList";
+                    } else {
                         LOGGER.info("Data failed to update");
-                        return "whMpList/add";  
+                        return "whMpList";
                     }
-                    
+
                 }
             } else {
                 String messageError = "Material Pass Number " + materialPassNo + " already added to the list!";
                 model.addAttribute("error", messageError);
-                return "whMpList/add";
+                return "whMpList";
             }
         } else {
             String messageError = "Material Pass Number " + materialPassNo + " Not Exist!";
             model.addAttribute("error", messageError);
-            return "whMpList/add";
+            return "whMpList";
         }
 
     }
@@ -348,7 +347,7 @@ public class WhMpListController {
         }
         return "redirect:/wh/whShipping/whMpList";
     }
-    
+
     @RequestMapping(value = "/email", method = {RequestMethod.GET, RequestMethod.POST})
     public String email(
             Model model,
@@ -360,30 +359,30 @@ public class WhMpListController {
         LOGGER.info("send email to person in charge");
         EmailSender emailSender = new EmailSender();
         emailSender.htmlEmailTable(
-            servletContext,
-            "",                                                   //user name requestor
-            "zbczmg@onsemi.com",
-//                "muhdfaizal@onsemi.com",                                   //to
-            "List of Hardware(s) Ready for Shipment",   //subject
-            "The list of hardware(s) that have been ready for shipment has been made.<br />" + 
-            "This table will shows the details of each hardware in a material pass shipping list from Seremban Factory. <br /><br />" + 
-            "<br /><br /> " +
-            "<style>table, th, td {border: 1px solid black;} </style>" +
-            "<table style=\"width:100%\">" //tbl
-            + "<tr>"
-            + "<th>MATERIAL PASS NO</th> "
-            + "<th>MATERIAL PASS EXPIRY DATE</th> "
-            + "<th>HARDWARE TYPE</th>"
-            + "<th>HARDWARE ID</th>"
-            + "<th>QUANTITY</th>"
-            + "</tr>"
-            + table()
-          + "</table>"
-          + "<br />Thank you." //msg
+                servletContext,
+                "", //user name requestor
+                "fg79cj@onsemi.com",
+                //                "muhdfaizal@onsemi.com",                                   //to
+                "List of Hardware(s) Ready for Shipment", //subject
+                "The list of hardware(s) that have been ready for shipment has been made.<br />"
+                + "This table will shows the details of each hardware in a material pass shipping list from Seremban Factory. <br /><br />"
+                + "<br /><br /> "
+                + "<style>table, th, td {border: 1px solid black;} </style>"
+                + "<table style=\"width:100%\">" //tbl
+                + "<tr>"
+                + "<th>MATERIAL PASS NO</th> "
+                + "<th>MATERIAL PASS EXPIRY DATE</th> "
+                + "<th>HARDWARE TYPE</th>"
+                + "<th>HARDWARE ID</th>"
+                + "<th>QUANTITY</th>"
+                + "</tr>"
+                + table()
+                + "</table>"
+                + "<br />Thank you." //msg
         );
         return "redirect:/wh/whShipping/whMpList";
     }
-    
+
     private String table() {
         WhMpListDAO whMpListDAO = new WhMpListDAO();
         List<WhMpList> whMpListList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
@@ -393,8 +392,8 @@ public class WhMpListController {
         String hardwareId = "";
         String quantity = "";
         String text = "";
-        
-        for(int i=0; i<whMpListList.size(); i++) { 
+
+        for (int i = 0; i < whMpListList.size(); i++) {
             materialPassNo = whMpListList.get(i).getMaterialPassNo();
             materialPassExp = whMpListList.get(i).getMaterialPassExpiry();
             hardwareId = whMpListList.get(i).getEquipmentId();
@@ -407,7 +406,7 @@ public class WhMpListController {
             text = text + "<td>" + hardwareId + "</td>";
             text = text + "<td>" + quantity + "</td>";
             text = text + "</tr>";
-        }            
+        }
         return text;
     }
 }

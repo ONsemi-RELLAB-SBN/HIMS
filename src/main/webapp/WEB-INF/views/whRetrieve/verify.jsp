@@ -275,8 +275,7 @@
                     $("#tempShelf").addClass('highlight');
                 } else {
                     if ($('#equipmentType2').val() === 'Motherboard' && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
-                        if($('#tempRack').val().substring(0,4) === "S-SY" || $('#tempRack').val().substring(0,4) === "S-AC" || $('#tempRack').val().substring(0,4) === "S-WF" || $('#tempRack').val().substring(0,4) !== "S-IO"
-                        || $('#tempRack').val().substring(0,4) === "S-BB" || $('#tempRack').val().substring(0,4) === "S-HA" || $('#tempRack').val().substring(0,4) === "S-PT") {
+                        if($('#tempRack').val().substring(0,4) === "S-SY" || $('#tempRack').val().substring(0,4) === "S-AC" || $('#tempRack').val().substring(0,4) === "S-WF" || $('#tempRack').val().substring(0,4) === "S-SY" || $('#tempRack').val().substring(0,4) === "S-IO" || $('#tempRack').val().substring(0,4) === "S-BB" || $('#tempRack').val().substring(0,4) === "S-HA" || $('#tempRack').val().substring(0,4) === "S-PT") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');

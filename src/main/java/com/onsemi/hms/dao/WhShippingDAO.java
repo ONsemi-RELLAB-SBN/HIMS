@@ -253,7 +253,7 @@ public class WhShippingDAO {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
                    + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
                    + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.request_id = RL.request_id ";
+                   + "WHERE SL.request_id = RL.request_id AND SL.flag NOT LIKE '2' ";
         List<WhShipping> whShippingList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -500,6 +500,60 @@ public class WhShippingDAO {
                 
                 whShippingList.add(whShippingLog);
                 System.out.println("*********************** LIST ************************" + whShippingList);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whShippingList;
+    }
+    
+    public List<WhShipping> getQuery(String query) {
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_verify_view "
+                   + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                   + "WHERE R.request_id = S.request_id AND " + query;
+        List<WhShipping> whShippingList = new ArrayList<WhShipping>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhShipping whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhShipping();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setMaterialPassNo(rs.getString("S.material_pass_no"));
+                whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whShipping.setEquipmentType(rs.getString("equipment_type"));
+                whShipping.setEquipmentId(rs.getString("equipment_id"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setRequestedBy(rs.getString("requested_by"));
+                whShipping.setRequestedEmail(rs.getString("requested_email"));
+                whShipping.setRequestedDate(rs.getString("requested_date_view"));
+                whShipping.setInventoryRack(rs.getString("inventory_rack"));
+                whShipping.setInventoryShelf(rs.getString("inventory_shelf"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whShipping.setRemarks(remarks);
+                whShipping.setBarcodeVerify(rs.getString("barcode_verify"));
+                whShipping.setDateVerify(rs.getString("date_verify_view"));
+                whShipping.setUserVerify(rs.getString("user_verify"));
+                whShipping.setShippingBy(rs.getString("shipping_by"));
+                whShipping.setShippingDate(rs.getString("shipping_date_view"));
+                whShipping.setStatus(rs.getString("S.status"));
+                whShipping.setFlag(rs.getString("S.flag"));
+                whShippingList.add(whShipping);
             }
             rs.close();
             ps.close();

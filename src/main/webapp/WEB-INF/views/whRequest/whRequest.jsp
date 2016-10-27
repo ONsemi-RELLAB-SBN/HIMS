@@ -25,16 +25,21 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Hardware Request</h1>
+            <h1>Warehouse Management - Hardware for Shipment to Rel Lab</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Hardware Request List</h2>
+                            <h2 class="pull-left">Hardware for Shipment to Rel Lab List</h2>
 
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/wh/whRequest/query" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Query
+                                </a>
+                            </div>
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/wh/whRequest/ship" data-toggle="modal" class="btn btn-primary pull-right">
+                                    <i class="fa fa-bars fa-lg"></i> View Hardware Queue for Shipment
                                 </a>
                             </div>
                                     

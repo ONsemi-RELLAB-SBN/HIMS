@@ -38,7 +38,7 @@
                 <div class="col-lg-12">
                     <div class="main-box">
                         <h2>Query Requirements Search</h2>
-                        <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/wh/whQuery" method="post" style="width: 100%">
+                        <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/wh/whShipping/query" method="post" style="width: 100%">
                             <div class="form-group col-lg-12" style="font-style: italic; color: red;" >
                                 *Please insert the requirement(s) accordingly.</font
                                 <br /><br /><br />
@@ -120,7 +120,7 @@
                                 <br/>
                             </div>
                             <div class="col-lg-12">
-                                <a href="${contextPath}/wh/whRequest" class="btn btn-info pull-left" id="cancel"><i class="fa fa-reply"></i>Back</a>
+                                <a href="${contextPath}/wh/whShipping" class="btn btn-info pull-left" id="cancel"><i class="fa fa-reply"></i>Back</a>
                                 <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" >View Data</button>
                             </div>
                             <div class="clearfix"><br/></div>
@@ -173,16 +173,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${requestQueryList}" var="whRequest" varStatus="whRequestLoop">
+                                    <c:forEach items="${shippingQueryList}" var="whShipping" varStatus="whShippingLoop">
                                         <tr>
-                                            <td><c:out value="${whRequestLoop.index+1}"/></td>
-                                            <td><c:out value="${whRequest.materialPassNo}"/></td>
-                                            <td><c:out value="${whRequest.materialPassExpiry}"/></td>
-                                            <td><c:out value="${whRequest.equipmentType}"/></td>
-                                            <td><c:out value="${whRequest.equipmentId}"/></td>
-                                            <td><c:out value="${whRequest.quantity}"/></td>
-                                            <td><c:out value="${whRequest.requestedBy}"/></td>
-                                            <td><c:out value="${whRequest.requestedDate}"/></td>
+                                            <td><c:out value="${whShippingLoop.index+1}"/></td>
+                                            <td><c:out value="${whShipping.materialPassNo}"/></td>
+                                            <td><c:out value="${whShipping.materialPassExpiry}"/></td>
+                                            <td><c:out value="${whShipping.equipmentType}"/></td>
+                                            <td><c:out value="${whShipping.equipmentId}"/></td>
+                                            <td><c:out value="${whShipping.quantity}"/></td>
+                                            <td><c:out value="${whShipping.requestedBy}"/></td>
+                                            <td><c:out value="${whShipping.requestedDate}"/></td>
                                             <td><c:out value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>
                                         </tr>

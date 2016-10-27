@@ -174,12 +174,13 @@ public class WhRequestDAO {
     
     public QueryResult updateWhRequestStatus(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_request_list SET status = ?"
+        String sql = "UPDATE hms_wh_request_list SET status = ?, flag = ?"
                    + "WHERE request_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRequest.getStatus());
-            ps.setString(2, whRequest.getRefId());
+            ps.setString(2, whRequest.getFlag());
+            ps.setString(3, whRequest.getRefId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {

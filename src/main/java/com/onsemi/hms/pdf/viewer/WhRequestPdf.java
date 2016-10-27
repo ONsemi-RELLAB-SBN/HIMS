@@ -24,7 +24,7 @@ public class WhRequestPdf extends AbstractITextPdfViewPotrait {
             PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        String title = "WAREHOUSE MANAGEMENT - HARDWARE REQUEST INFORMATION";
+        String title = "HARDWARE FOR SHIPMENT TO REL LAB INFORMATION";
 
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);

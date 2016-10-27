@@ -46,13 +46,13 @@
 
                             <div class="form-group col-lg-12" id = "alert_placeholder"></div>
                             <div class="form-group col-lg-12" >
-                                <label for="materialPassNo" class="col-lg-2 control-label">Material Pass No.</label>
-                                <div class="col-lg-5">
-                                    <input type="text" class="form-control" id="materialPassNo" name="materialPassNo">
-                                </div>
                                 <label for="equipmentId" class="col-lg-2 control-label">Hardware ID</label>
-                                <div class="col-lg-3">
+                                <div class="col-lg-5">
                                     <input type="text" class="form-control" id="equipmentId" name="equipmentId">
+                                </div>
+                                <label for="materialPassNo" class="col-lg-2 control-label">Material Pass No.</label>
+                                <div class="col-lg-3">
+                                    <input type="text" class="form-control" id="materialPassNo" name="materialPassNo">
                                 </div>
                             </div>
                             <div class="form-group col-lg-12" ></div>
@@ -94,13 +94,13 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="receivedDate1" class="col-lg-2 control-label">Received Date between </label>
+                                <label for="inventoryRack" class="col-lg-2 control-label">Inventory:  Rack </label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="receivedDate1" name="receivedDate1">
+                                    <input type="text" class="form-control" id="inventoryRack" name="inventoryRack">
                                 </div>
-                                <label for="receivedDate2" class="col-lg-1 control-label" style="text-align: center;">AND</label>
+                                <label for="inventoryShelf" class="col-lg-1 control-label" style="text-align: center;"> Shelf </label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="receivedDate2" name="receivedDate2">
+                                    <input type="text" class="form-control" id="inventoryShelf" name="inventoryShelf">
                                 </div>
                                 <label for="status" class="col-lg-2 control-label">Status</label>
                                 <div class="col-lg-3">
@@ -110,12 +110,12 @@
                                         <option value="Barcode Verification Pass">Barcode Verification Pass</option>
                                         <option value="Barcode Verification Fail">Barcode Verification Fail</option>
                                         <option value="Wrong Inventory">Wrong Inventory</option>
-                                        <option value="Queue for Shipping">Queue for Shipping</option>
+                                        <option value="Ready for Shipment">Ready for Shipment</option>
                                         <option value="Ship">Ship</option>
                                         <option value="Closed">Closed</option>
                                     </select>
                                 </div>
-                            </div>                            
+                            </div>  
                             <div class="col-lg-12">
                                 <br/>
                             </div>
@@ -168,7 +168,7 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
-                                        <th><span>HIMS-SF Received Date</span></th>
+                                        <th><span>Inventory</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>
@@ -183,7 +183,7 @@
                                             <td><c:out value="${whRequest.quantity}"/></td>
                                             <td><c:out value="${whRequest.requestedBy}"/></td>
                                             <td><c:out value="${whRequest.requestedDate}"/></td>
-                                            <td><c:out value="${whRequest.receivedDate}"/></td>
+                                            <td><c:out value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>
                                         </tr>
                                     </c:forEach>
@@ -228,15 +228,6 @@
                     format: 'yyyy-mm-dd',
                     autoclose: true
                 });
-                $('#receivedDate1').datepicker({
-                    format: 'yyyy-mm-dd',
-                    autoclose: true
-                });
-                
-                $('#receivedDate2').datepicker({
-                    format: 'yyyy-mm-dd',
-                    autoclose: true
-                });
                 
                 var validator = $("#update_hardwareinventory_form").validate({
                     rules: {
@@ -273,26 +264,6 @@
                         materialPassExpiry2: { 
                             required: function (element) {
                                 if($('#materialPassExpiry2').val() === "" && $('#materialPassExpiry1').val() !== "") {
-                                    return true;                            
-                                }
-                                else {
-                                    return false;
-                                }
-                            }
-                        },
-                        receivedDate1: { 
-                            required: function (element) {
-                                if($('#receivedDate1').val() === "" && $('#receivedDate2').val() !== "") {
-                                    return true;                            
-                                }
-                                else {
-                                    return false;
-                                }
-                            }
-                        },
-                        receivedDate2: { 
-                            required: function (element) {
-                                if($('#receivedDate2').val() === "" && $('#receivedDate1').val() !== "") {
                                     return true;                            
                                 }
                                 else {

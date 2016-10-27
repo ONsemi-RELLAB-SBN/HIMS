@@ -23,7 +23,7 @@ public class WhInventoryPdf extends AbstractITextPdfViewPotrait {
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
             PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {        
-        String title = "WAREHOUSE MANAGEMENT - HARDWARE INVENTORY INFORMATION";
+        String title = "WAREHOUSE MANAGEMENT - HARDWARE IN SBN FACTORY INFORMATION";
 
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);

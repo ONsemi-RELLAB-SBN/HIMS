@@ -25,12 +25,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Hardware Inventory</h1>
+            <h1>Warehouse Management - Hardware in SBN Factory</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Hardware Inventory List</h2>
+                            <h2 class="pull-left">Hardware in SBN Factory List</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">

@@ -90,7 +90,7 @@ public class WhRetrieveController {
         String backUrl = servletContext.getContextPath() + "/wh/whRetrieve";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Retrieve");
+        model.addAttribute("pageTitle", "Hardware for Shipment from Rel Lab");
         return "pdf/viewer";
     }
 
@@ -699,7 +699,7 @@ public class WhRetrieveController {
         String backUrl = servletContext.getContextPath() + "/wh/whRetrieve";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Retrieve History");
+        model.addAttribute("pageTitle", "Hardware for Shipment from Rel Lab History");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
@@ -767,6 +767,12 @@ public class WhRetrieveController {
         return "redirect:/wh/whRetrieve/verify/" + whRetrieveId;
     }
 
+    
+    /*
+    *
+    *   QUERY FOR EVERY SUBMODULE
+    *
+    */
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -785,8 +791,6 @@ public class WhRetrieveController {
             @RequestParam(required = false) String receivedDate2,
             @RequestParam(required = false) String status
     ) {
-        System.out.println("masukkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk!!!!!!!!!!!!!!!");
-        
         String query = "";
         int count = 0;
         

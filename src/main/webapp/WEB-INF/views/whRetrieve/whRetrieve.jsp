@@ -25,12 +25,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Hardware Retrieve</h1>
+            <h1>Warehouse Management - Hardware for Shipment from Rel Lab</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Hardware Retrieve List</h2>
+                            <h2 class="pull-left">Hardware for Shipment from Rel Lab List</h2>
 
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/wh/whRetrieve/query" class="btn btn-primary pull-right">

@@ -79,7 +79,7 @@ public class WhRequestController {
         String backUrl = servletContext.getContextPath() + "/wh/whRequest";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Request");
+        model.addAttribute("pageTitle", "Hardware for Shipment to Rel Lab");
         return "pdf/viewer";
     }
 
@@ -310,7 +310,7 @@ public class WhRequestController {
         String backUrl = servletContext.getContextPath() + "/wh/whRequest";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
-        model.addAttribute("pageTitle", "Warehouse Management - Hardware Request History");
+        model.addAttribute("pageTitle", "Hardware for Shipment to Rel Lab History");
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
@@ -361,6 +361,13 @@ public class WhRequestController {
         return "redirect:/wh/whRequest/verify/" + whRequestId;
     }
     
+    
+    
+    /*
+    *
+    *   QUERY FOR EVERY SUBMODULE
+    *
+    */
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -375,12 +382,10 @@ public class WhRequestController {
             @RequestParam(required = false) String requestedDate1,
             @RequestParam(required = false) String requestedDate2,
             @RequestParam(required = false) String requestedBy,
-            @RequestParam(required = false) String receivedDate1,
-            @RequestParam(required = false) String receivedDate2,
+            @RequestParam(required = false) String inventoryRack,
+            @RequestParam(required = false) String inventoryShelf,
             @RequestParam(required = false) String status
     ) {
-        System.out.println("masukkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk!!!!!!!!!!!!!!!");
-        
         String query = "";
         int count = 0;
         
@@ -441,23 +446,41 @@ public class WhRequestController {
                     query = query + " AND requested_by = \'" + requestedBy + "\' ";
             }
         }
-        if(receivedDate1!=null &&  receivedDate2!=null) {
-            if(!receivedDate1.equals("") && !receivedDate2.equals("")) {
+        if(inventoryRack!=null) {
+            if(!inventoryRack.equals("")) {
                 count++;
-                String receivedDate = " arrival_received_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 +"\' AS DATE) ";
                 if(count == 1)
-                    query = receivedDate;
+                    query = " inventory_rack = \'" + inventoryRack + "\' ";
                 else if(count>1)
-                    query = query + " AND " + receivedDate;
+                    query = query + " AND inventory_rack = \'" + inventoryRack + "\' ";
+            }
+        }
+        if(inventoryShelf!=null) {
+            if(!inventoryShelf.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " inventory_shelf = \'" + inventoryShelf + "\' ";
+                else if(count>1)
+                    query = query + " AND inventory_shelf = \'" + inventoryShelf + "\' ";
             }
         }
         if(status!=null) {
             if(!("").equals(status)) {
                 count++;
-                if(count == 1)
-                    query = " status = \'" + status + "\' ";
-                else if(count>1)
-                    query = query + " AND status = \'" + status + "\' ";
+                if(count == 1) {
+                    if(status.equals("Closed")) {
+                        query = " status = \'" + status + "\' OR status = \'Closed. Verified By Supervisor\' ";
+                    } else {
+                        query = " status = \'" + status + "\' ";
+                    }
+                }
+                else if(count>1) {
+                    if(status.equals("Closed")) {
+                        query = " AND (status = \'" + status + "\' OR status = \'Closed. Verified By Supervisor\') ";
+                    } else {
+                        query = query + " AND status = \'" + status + "\' ";
+                    }
+                }
             }
         }
         
@@ -467,5 +490,15 @@ public class WhRequestController {
         
         model.addAttribute("requestQueryList", requestQueryList);
         return "whRequest/query";
+    }
+    
+    @RequestMapping(value = "/ship", method = RequestMethod.GET)
+    public String whShip(
+            Model model
+    ) {
+        WhShippingDAO whShippingDAO = new WhShippingDAO();
+        List<WhShipping> whShippingList = whShippingDAO.getWhShippingListMergeRequest();
+        model.addAttribute("whShippingList", whShippingList);
+        return "whShipping/whShipping";
     }
 }
