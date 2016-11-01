@@ -312,7 +312,35 @@ public class WhShippingDAO {
             while (rs.next()) {
                 count = rs.getInt("count");
             }
-            LOGGER.info("count id..........." + count.toString());
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+    
+    public Integer getCountDone(String id) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) AS count "
+                + "FROM hms_wh_shipping_list "
+                + "WHERE request_id = '" + id + "' AND flag = '1' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
             rs.close();
             ps.close();
         } catch (SQLException e) {
@@ -333,14 +361,13 @@ public class WhShippingDAO {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE material_pass_no = '" + mpno + "' "
+                "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE material_pass_no = '" + mpno + "' AND flag NOT LIKE '2' "
             );
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 count = rs.getInt("count");
             }
-            LOGGER.info("count mpno..........." + count.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {
@@ -499,7 +526,6 @@ public class WhShippingDAO {
 //                whShippingLog.setRequestShipping(rs.getString("request_shipping"));
                 
                 whShippingList.add(whShippingLog);
-                System.out.println("*********************** LIST ************************" + whShippingList);
             }
             rs.close();
             ps.close();

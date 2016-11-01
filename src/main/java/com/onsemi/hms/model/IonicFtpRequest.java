@@ -4,6 +4,7 @@ public class IonicFtpRequest {
     private String refId;
     private String equipmentType;
     private String equipmentId;
+    private String reasonRetrieval;
     private String pcbA;
     private String qtyQualA;
     private String pcbB;
@@ -26,10 +27,11 @@ public class IonicFtpRequest {
     public IonicFtpRequest() {
     }
 
-    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks) {
+    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String reasonRetrieval, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks) {
         this.refId = refId;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
+        this.reasonRetrieval = reasonRetrieval;
         this.pcbA = pcbA;
         this.qtyQualA = qtyQualA;
         this.pcbB = pcbB;
@@ -73,6 +75,14 @@ public class IonicFtpRequest {
         this.equipmentId = equipmentId;
     }
 
+    public String getReasonRetrieval() {
+        return reasonRetrieval;
+    }
+
+    public void setReasonRetrieval(String reasonRetrieval) {
+        this.reasonRetrieval = reasonRetrieval;
+    }
+    
     public String getPcbA() {
         return pcbA;
     }

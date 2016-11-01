@@ -80,10 +80,15 @@
                             <div class="form-group">
                                 <label for="requestedDate" class="col-lg-3 control-label">Requested Date</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="requestedDate" name="requestedDate" placeholder="Request For" value="${whRequest.requestedDate}" readonly>
+                                    <input type="text" class="form-control" id="requestedDate" name="requestedDate" value="${whRequest.requestedDate}" readonly>
                                 </div>
                             </div>
-                            
+                            <div class="form-group">
+                                <label for="reasonRetrieval" class="col-lg-3 control-label">Reason Retrieval</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="reasonRetrieval" name="reasonRetrieval" value="${whRequest.reasonRetrieval}" readonly>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="remarks" class="col-lg-3 control-label">Remarks </label>
                                 <div class="col-lg-8">

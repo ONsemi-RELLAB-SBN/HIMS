@@ -653,7 +653,6 @@ public class WhInventoryDAO {
                 whInventoryLog.setInventoryDate(rs.getString("inventory_date"));
                 whInventoryLog.setArrivalReceivedDate(rs.getString("arrival_received_date_view"));
                 whInventoryList.add(whInventoryLog);
-                System.out.println("*********************** LIST ************************" + whInventoryList);
             }
             rs.close();
             ps.close();

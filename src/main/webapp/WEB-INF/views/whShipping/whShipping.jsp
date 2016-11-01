@@ -38,7 +38,7 @@
                             </div>
                             <div class="filter-block pull-right">
 <!--                                <a href="${contextPath}/wh/whShipping/whMpList" class="btn btn-primary pull-right">-->
-                                <a href="${contextPath}/wh/whShipping/whMpList" data-toggle="modal" class="btn btn-primary pull-right" onclick="modalDelete(this);">
+                                <a href="${contextPath}/wh/whShipping/packingList" data-toggle="modal" class="btn btn-primary pull-right" onclick="modalDelete(this);">
                                     <i class="fa fa-bars fa-lg"></i> Create Packing List
                                 </a>
                             </div>

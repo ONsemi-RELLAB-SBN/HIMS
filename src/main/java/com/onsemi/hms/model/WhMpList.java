@@ -8,6 +8,7 @@ public class WhMpList {
     private String materialPassNo;
     private String materialPassExpiry;
     private String equipmentId;
+    private String reasonRetrieval;
     private String equipmentType;
     private String quantity;
     private String requestedBy;
@@ -79,6 +80,14 @@ public class WhMpList {
         this.equipmentId = equipmentId;
     }
 
+    public String getReasonRetrieval() {
+        return reasonRetrieval;
+    }
+
+    public void setReasonRetrieval(String reasonRetrieval) {
+        this.reasonRetrieval = reasonRetrieval;
+    }
+    
     public String getQuantity() {
         return quantity;
     }

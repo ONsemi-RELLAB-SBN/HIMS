@@ -17,6 +17,7 @@ public class WhShippingLog {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
+    private String reasonRetrieval;
     private String pcbA;
     private String qtyQualA;
     private String pcbB;
@@ -169,6 +170,14 @@ public class WhShippingLog {
         this.equipmentId = equipmentId;
     }
 
+    public String getReasonRetrieval() {
+        return reasonRetrieval;
+    }
+
+    public void setReasonRetrieval(String reasonRetrieval) {
+        this.reasonRetrieval = reasonRetrieval;
+    }
+    
     public String getPcbA() {
         return pcbA;
     }

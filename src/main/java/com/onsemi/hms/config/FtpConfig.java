@@ -11,7 +11,6 @@ import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.model.WhShipping;
-import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import com.opencsv.CSVReader;
 import java.io.File;
@@ -68,7 +67,7 @@ public class FtpConfig {
                                 ionicFtp[9], ionicFtp[10], ionicFtp[11],
                                 ionicFtp[12], ionicFtp[13], ionicFtp[14],
                                 ionicFtp[15], ionicFtp[16], ionicFtp[17],
-                                ionicFtp[18], ionicFtp[19]
+                                ionicFtp[18], ionicFtp[19], ionicFtp[20]
                             );
                             requestList.add(request);
                         }
@@ -78,6 +77,7 @@ public class FtpConfig {
                             String refId = r.getRefId();
                             ftp.setEquipmentType(r.getEquipmentType());
                             ftp.setEquipmentId(r.getEquipmentId());
+                            ftp.setReasonRetrieval(r.getReasonRetrieval());
                             ftp.setPcbA(r.getPcbA());
                             ftp.setPcbB(r.getPcbB());
                             ftp.setPcbC(r.getPcbC());
@@ -114,8 +114,6 @@ public class FtpConfig {
                                 logModule.setModuleName("hms_wh_request_list");
                                 logModule.setStatus(query.getStatus());
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
-                                
-                                
                             } 
                         }
                     } catch (Exception ee) {
@@ -219,8 +217,10 @@ public class FtpConfig {
                             ftp.setStatus(c.getStatus());
                             ftp.setFlag("2");
                             WhShippingDAO whShippingDAO = new WhShippingDAO();
-                            int count = whShippingDAO.getCountExistingData(c.getRequestId());
-                            if (count != 0 && (!ftp.getFlag().equals("0") || !ftp.getFlag().equals("2"))) {
+                            int count = whShippingDAO.getCountDone(c.getRequestId());
+                            WhRequestDAO whRequestDAO = new WhRequestDAO();
+                            int count2 = whRequestDAO.getCountDone(c.getRequestId());
+                            if (count != 0 &&  count2 != 0) {
                                 LOGGER.info("data adeeeeee");
                                 WhShippingDAO WhShippingDAO = new WhShippingDAO();
                                 QueryResult queryResult1 = WhShippingDAO.updateStatus(ftp);

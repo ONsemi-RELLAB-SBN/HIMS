@@ -642,7 +642,6 @@ public class WhRetrieveDAO {
 //                whRetrieveLog.setReceiveInventory(rs.getString("receive_inventory"));
 //                whRetrieveLog.setShippingInventory(rs.getString("shipping_inventory"));
                 whRetrieveList.add(whRetrieveLog);
-                System.out.println("*********************** LIST ************************" + whRetrieveList);
             }
             rs.close();
             ps.close();
@@ -699,7 +698,6 @@ public class WhRetrieveDAO {
                 whRetrieve.setTempRack(rs.getString("temp_rack"));
                 whRetrieve.setTempShelf(rs.getString("temp_shelf"));
                 whRetrieveList.add(whRetrieve);
-                System.out.println("*********************** LIST ************************" + whRetrieveList);
             }
             rs.close();
             ps.close();

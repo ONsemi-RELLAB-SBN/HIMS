@@ -43,7 +43,7 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
         
         PdfPTable table2 = new PdfPTable(4);
         table2.setWidthPercentage(100.0f);
-        table2.setWidths(new float[]{2.5f, 2.5f, 1.5f, 2.5f});
+        table2.setWidths(new float[]{2.0f, 2.5f, 3.0f, 2.5f});
         table2.setSpacingBefore(15);
         
         PdfPTable table3 = new PdfPTable(2);
@@ -87,13 +87,11 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
             System.out.println("masuk 2");
             String moduleName = whHistoryList.get(i).getModuleName();
             if(moduleName.equals("hms_wh_retrieval_list")) {
-                moduleName = "Retrieval";
-            } else if(moduleName.equals("hms_wh_request_list")) {
-                moduleName = "Request";
+                moduleName = "Shipment from Rel Lab ";
+            } else if(moduleName.equals("hms_wh_request_list") || moduleName.equals("hms_wh_shipping_list") || moduleName.equals("hms_wh_mp_list")) {
+                moduleName = "Shipment to Rel Lab";
             } else if(moduleName.equals("hms_wh_inventory_list")) {
-                moduleName = "Inventory";
-            } else if(moduleName.equals("hms_wh_shipping_list") || moduleName.equals("hms_wh_mp_list")) {
-                moduleName = "Shipping";
+                moduleName = "Hardware in SBN Factory";
             }
             
             if(i==0) {
@@ -184,6 +182,11 @@ public class WhRequestLogPdf extends AbstractITextPdfViewPotrait {
                 cellHeader.setPhrase(new Phrase("Requested Date", fontHeader));
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getRequestedDate(), fontContent));
+                table.addCell(cellContent);
+                
+                cellHeader.setPhrase(new Phrase("Reason for Retrieval", fontHeader));
+                table.addCell(cellHeader);
+                cellContent.setPhrase(new Phrase(whHistoryList.get(i).getReasonRetrieval(), fontContent));
                 table.addCell(cellContent);
                 
                 //7

@@ -33,33 +33,34 @@ public class WhRequestDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_wh_request_list (request_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, "
+                    "INSERT INTO hms_wh_request_list (request_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, reason_retrieval, "
                                                     + "pcb_a, qty_qual_a, pcb_b, qty_qual_b, pcb_c, qty_qual_c, pcb_control, qty_control, quantity, "
                                                     + "requested_by, requested_email, requested_date, inventory_rack, inventory_shelf, remarks, received_date, status, flag) "
-                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
+                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRequest.getRefId());
             ps.setString(2, whRequest.getMaterialPassNo());
             ps.setString(3, whRequest.getMaterialPassExpiry());
             ps.setString(4, whRequest.getEquipmentType());
             ps.setString(5, whRequest.getEquipmentId());
-            ps.setString(6, whRequest.getPcbA());
-            ps.setString(7, whRequest.getQtyQualA());
-            ps.setString(8, whRequest.getPcbB());
-            ps.setString(9, whRequest.getQtyQualB());
-            ps.setString(10, whRequest.getPcbC());
-            ps.setString(11, whRequest.getQtyQualC());
-            ps.setString(12, whRequest.getPcbControl());
-            ps.setString(13, whRequest.getQtyControl());
-            ps.setString(14, whRequest.getQuantity());
-            ps.setString(15, whRequest.getRequestedBy());
-            ps.setString(16, whRequest.getRequestedEmail());
-            ps.setString(17, whRequest.getRequestedDate());
-            ps.setString(18, whRequest.getInventoryRack());
-            ps.setString(19, whRequest.getInventoryShelf());
-            ps.setString(20, whRequest.getRemarks());
-            ps.setString(21, whRequest.getStatus());
-            ps.setString(22, whRequest.getFlag());
+            ps.setString(6, whRequest.getReasonRetrieval());
+            ps.setString(7, whRequest.getPcbA());
+            ps.setString(8, whRequest.getQtyQualA());
+            ps.setString(9, whRequest.getPcbB());
+            ps.setString(10, whRequest.getQtyQualB());
+            ps.setString(11, whRequest.getPcbC());
+            ps.setString(12, whRequest.getQtyQualC());
+            ps.setString(13, whRequest.getPcbControl());
+            ps.setString(14, whRequest.getQtyControl());
+            ps.setString(15, whRequest.getQuantity());
+            ps.setString(16, whRequest.getRequestedBy());
+            ps.setString(17, whRequest.getRequestedEmail());
+            ps.setString(18, whRequest.getRequestedDate());
+            ps.setString(19, whRequest.getInventoryRack());
+            ps.setString(20, whRequest.getInventoryShelf());
+            ps.setString(21, whRequest.getRemarks());
+            ps.setString(22, whRequest.getStatus());
+            ps.setString(23, whRequest.getFlag());
 
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
@@ -225,6 +226,33 @@ public class WhRequestDAO {
         return count;
     }
     
+    public Integer getCountDone(String id) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) AS count FROM hms_wh_request_list WHERE request_id = '" + id + "' AND flag = '1' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+    
     public QueryResult deleteWhRequest(String whRequestId) {
         QueryResult queryResult = new QueryResult();
         try {
@@ -264,6 +292,7 @@ public class WhRequestDAO {
                 whRequest.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
                 whRequest.setEquipmentType(rs.getString("equipment_type"));
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
+                whRequest.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedEmail(rs.getString("requested_email"));
@@ -319,6 +348,7 @@ public class WhRequestDAO {
                 whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequest.setEquipmentType(rs.getString("equipment_type"));
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
+                whRequest.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedEmail(rs.getString("requested_email"));
@@ -376,6 +406,7 @@ public class WhRequestDAO {
                 whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequest.setEquipmentType(rs.getString("equipment_type"));
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
+                whRequest.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedEmail(rs.getString("requested_email"));
@@ -432,6 +463,7 @@ public class WhRequestDAO {
                 whRequest.setMaterialPassExpiry(rs.getString("material_pass_expiry"));
                 whRequest.setEquipmentType(rs.getString("equipment_type"));
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
+                whRequest.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedEmail(rs.getString("requested_email"));
@@ -536,6 +568,7 @@ public class WhRequestDAO {
                 whRequestLog.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequestLog.setEquipmentType(rs.getString("equipment_type"));
                 whRequestLog.setEquipmentId(rs.getString("equipment_id"));
+                whRequestLog.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whRequestLog.setPcbA(rs.getString("pcb_a"));
                 whRequestLog.setQtyQualA(rs.getString("qty_qual_a"));
                 whRequestLog.setPcbB(rs.getString("pcb_b"));
@@ -577,7 +610,6 @@ public class WhRequestDAO {
 //                whRequestLog.setRequestVerify2(rs.getString("request_verify2"));
                 whRequestLog.setTempCount(rs.getString("temp_count"));
                 whRequestList.add(whRequestLog);
-                System.out.println("*********************** LIST ************************" + whRequestList);
             }
             rs.close();
             ps.close();
@@ -613,6 +645,7 @@ public class WhRequestDAO {
                 whRequest.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
                 whRequest.setEquipmentType(rs.getString("equipment_type"));
                 whRequest.setEquipmentId(rs.getString("equipment_id"));
+                whRequest.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whRequest.setQuantity(rs.getString("quantity"));
                 whRequest.setRequestedBy(rs.getString("requested_by"));
                 whRequest.setRequestedEmail(rs.getString("requested_email"));

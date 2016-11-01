@@ -8,6 +8,7 @@ public class WhRequest {
     private String materialPassExpiry;
     private String equipmentType;
     private String equipmentId;
+    private String reasonRetrieval;
     private String pcbA;
     private String pcbB;
     private String pcbC;
@@ -86,6 +87,16 @@ public class WhRequest {
         this.equipmentId = equipmentId;
     }
 
+    public String getReasonRetrieval() {
+        return reasonRetrieval;
+    }
+
+    public void setReasonRetrieval(String reasonRetrieval) {
+        this.reasonRetrieval = reasonRetrieval;
+    }
+
+    
+    
     public String getPcbA() {
         return pcbA;
     }
