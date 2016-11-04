@@ -480,14 +480,14 @@ public class WhShippingController {
                             servletContext,
                             "CDARS", //user name
                             "cdarsrel@gmail.com", //to
-                            "Status for Hardware Shipping from HIMS-SF", //subject
+                            "Status for Hardware Shipping from HIMS SF", //subject
                             "Verification and status for Hardware Shipping has been made." //msg
                     );
 
 //                    System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
 //                    //sent to requestor
 //                    EmailSender emailSender2 = new EmailSender();
-//                    String emailTitle = "Status for Hardware Shipping from HIMS-SF";
+//                    String emailTitle = "Status for Hardware Shipping from HIMS SF";
 //                    emailSender2.htmlEmail2(
 //                            servletContext,
 //                            whship.getRequestedBy(), //from

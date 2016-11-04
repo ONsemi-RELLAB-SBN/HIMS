@@ -392,7 +392,7 @@ public class WhRequestDAO {
                    + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
                    + "FROM hms_wh_request_list "
                    + "WHERE flag = '0' "
-                   + "ORDER BY id DESC";
+                   + "ORDER BY requested_date DESC";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

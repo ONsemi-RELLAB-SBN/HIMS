@@ -174,7 +174,7 @@ public class UserController {
         EmailSender emailSender = new EmailSender();
         com.onsemi.hms.model.User user = new com.onsemi.hms.model.User();
         user.setFullname(userSession.getFullname());
-        String emailTitle = "HIMS-SF Login Information";
+        String emailTitle = "HIMS SF Login Information";
         String emailContent = "Login ID: " + userSession.getLoginId() + "<br/>"
                 + "Password: ********<br/><br/>"
                 + "Please login and complete your Profile Information.<br/><br/>"

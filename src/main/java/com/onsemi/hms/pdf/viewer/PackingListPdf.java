@@ -15,13 +15,13 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.onsemi.hms.model.WhMpList;
-import com.onsemi.hms.pdf.AbstractITextPdfViewPotrait;
+import com.onsemi.hms.pdf.AbstractITextPdfViewPotraitPrint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class PackingListPdf extends AbstractITextPdfViewPotrait {
+public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
 
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
@@ -35,7 +35,7 @@ public class PackingListPdf extends AbstractITextPdfViewPotrait {
         viewTitle2.setAlignment(Element.ALIGN_RIGHT);
         doc.add(viewTitle2);
         
-        String title = "\nSHIPPING PACKING LIST";
+        String title = "\nHIMS SF Shipping List ";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
@@ -61,7 +61,6 @@ public class PackingListPdf extends AbstractITextPdfViewPotrait {
         
         int i = 0;
         while(i<packingList.size()) {
-            System.out.println("HOOIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
             if(i==0) {
                 //Header
                 cellHeader.setPhrase(new Phrase("No", fontHeader));
@@ -94,9 +93,7 @@ public class PackingListPdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(packingList.get(i).getReasonRetrieval(), fontContent));
             table.addCell(cellContent);
             i++;
-            System.out.println("HUUUUUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
         }        
-        doc.add(table);     
-        System.out.println("HeeeIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+        doc.add(table);
     }
 }

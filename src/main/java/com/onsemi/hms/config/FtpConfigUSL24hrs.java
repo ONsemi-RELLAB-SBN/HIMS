@@ -3,7 +3,6 @@
 //import com.onsemi.hms.dao.WhInventoryDAO;
 //import com.onsemi.hms.model.WhInventory;
 //import com.onsemi.hms.tools.EmailSender;
-//import com.onsemi.hms.tools.SpmlUtil;
 //import java.io.FileNotFoundException;
 //import java.io.FileOutputStream;
 //import java.io.IOException;
@@ -45,7 +44,7 @@
 //        Date date = new Date();
 //        String todayDate = dateFormat.format(date);
 //        
-//        String reportName = "C:\\Users\\" + username + "\\Documents\\CDARS\\Upper Specs Limit Report Exceed 24 Hours (" + todayDate + ").xls";
+//        String reportName = "C:\\Users\\" + username + "\\Documents\\CDARS\\HIMS Upper Specs Limit Report (" + todayDate + ").xls";
 //        WhInventoryDAO whInventoryDAO1 = new WhInventoryDAO();
 //        int count = whInventoryDAO1.getCountMpExpiry();
 //        LOGGER.info("count is ~~~~~~~~~~~~~~~~~~~~~~ " + count);

@@ -167,7 +167,7 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
-                                        <th><span>HIMS-SF Received Date</span></th>
+                                        <th><span>HIMS SF Received Date</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>

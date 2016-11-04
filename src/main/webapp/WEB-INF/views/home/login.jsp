@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>HIMS-SF - Login</title>
+        <title>HIMS SF - Login</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Hardware Management System">
         <meta name="author" content="FTC">
@@ -47,7 +47,7 @@
                     <a href="${contextPath}/">
                         <img src="${contextPath}/resources/img/warehouse.png" alt="FTC" width="35%" />
                     </a>
-                    <legend>Sign in to <span class="blue">HIMS-SF</span></legend>
+                    <legend>Sign in to <span class="blue">HIMS SF</span></legend>
 
                     <c:if test="${not empty error}">
                         <div class="alert alert-danger">

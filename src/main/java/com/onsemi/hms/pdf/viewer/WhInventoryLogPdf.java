@@ -43,7 +43,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
         
         PdfPTable table2 = new PdfPTable(4);
         table2.setWidthPercentage(100.0f);
-        table2.setWidths(new float[]{2.0f, 2.5f, 3.0f, 2.5f});
+        table2.setWidths(new float[]{2.5f, 2.5f, 1.2f, 3.8f});
         table2.setSpacingBefore(15);
         
         PdfPTable table3 = new PdfPTable(3);
@@ -83,13 +83,15 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
         
         int i = 0;
         while(i<whHistoryList.size()) {
-            String moduleName = whHistoryList.get(i).getModuleName();
-            if(moduleName.equals("hms_wh_retrieval_list")) {
-                moduleName = "Shipment from Rel Lab ";
-            } else if(moduleName.equals("hms_wh_request_list") || moduleName.equals("hms_wh_shipping_list") || moduleName.equals("hms_wh_mp_list")) {
-                moduleName = "Shipment to Rel Lab";
-            } else if(moduleName.equals("hms_wh_inventory_list")) {
-                moduleName = "Hardware in SBN Factory";
+            String moduleStage = whHistoryList.get(i).getModuleName();
+            if(moduleStage.equals("hms_wh_retrieval_list")) {
+                moduleStage = "Retrieval";
+            } else if(moduleStage.equals("hms_wh_request_list")) {
+                moduleStage = "Request";
+            } else if(moduleStage.equals("hms_wh_inventory_list")) {
+                moduleStage = "Inventory";
+            } else if(moduleStage.equals("hms_wh_shipping_list") || moduleStage.equals("hms_wh_mp_list")) {
+                moduleStage = "Shipping";
             }
             
             if(i==0) {
@@ -188,7 +190,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                 table.addCell(cellContent);
                 
                 //8
-                cellHeader.setPhrase(new Phrase("HIMS-SF Received Date", fontHeader));
+                cellHeader.setPhrase(new Phrase("HIMS SF Received Date", fontHeader));
                 table.addCell(cellHeader);
                 cellContent.setPhrase(new Phrase(whHistoryList.get(i).getReceivedDate(), fontContent));
                 table.addCell(cellContent);
@@ -267,7 +269,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
                 table2.addCell(cellHeader2);
                 cellHeader2.setPhrase(new Phrase("Timestamp", fontHeader2));
                 table2.addCell(cellHeader2);
-                cellHeader2.setPhrase(new Phrase("Module Name", fontHeader2));
+                cellHeader2.setPhrase(new Phrase("Module Stage", fontHeader2));
                 table2.addCell(cellHeader2);
                 cellHeader2.setPhrase(new Phrase("Verified By", fontHeader2));
                 table2.addCell(cellHeader2);
@@ -278,7 +280,7 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
             cellContent.setPhrase(new Phrase(whHistoryList.get(i).getTimestamp(), fontContent));
             table2.addCell(cellContent);
             
-            cellContent.setPhrase(new Phrase(moduleName, fontContent));
+            cellContent.setPhrase(new Phrase(moduleStage, fontContent));
             table2.addCell(cellContent);
             
             String userVerify = whHistoryList.get(i).getLogVerifyBy();

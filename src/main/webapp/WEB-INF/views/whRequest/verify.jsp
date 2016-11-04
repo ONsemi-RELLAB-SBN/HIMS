@@ -212,17 +212,17 @@
         <script>
             $(document).ready(function () {
                 //temporary disabled
-//                $('#barcodeVerify').bind('copy paste cut', function (e)  {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
-//                
-//                $('#inventoryRackVerify').bind('copy paste cut', function (e)  {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
-//                
-//                $('#inventoryShelfVerify').bind('copy paste cut', function (e)  {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
+                $('#barcodeVerify').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
+                $('#inventoryRackVerify').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
+                $('#inventoryShelfVerify').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
 
                 var element2 = $('#tempCount');
                 if (element2.val() === "0" || element2.val() === "1" || element2.val() === "2") {

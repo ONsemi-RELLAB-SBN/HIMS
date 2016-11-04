@@ -79,7 +79,15 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-
+                //temporary disabled
+                $('#inventoryRack').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
+                $('#inventoryShelf').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
                 var element = $('#equipmentType');
                 if (element.val() === "Motherboard") {
                     $("#quantitydiv").hide();

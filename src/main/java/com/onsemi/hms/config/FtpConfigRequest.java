@@ -140,9 +140,9 @@
 //                "All",                                                   //user name
 ////                "muhdfaizal@onsemi.com",                                   //to
 //                "zbczmg@onsemi.com",
-//                "Hardware Shipping from HIMS-SF Report",   //subject
-//                "Report for Hardware Shipping from HIMS-SF has been made. " + 
-//                "This report will shows the time for HIMS-SF to read the request for ON semi delivering to warehouse and the time for the verification process on every item(s) that have been delivered yesterday. " + 
+//                "Hardware Shipping from HIMS SF Report",   //subject
+//                "Report for Hardware Shipping from HIMS SF has been made. " + 
+//                "This report will shows the time for HIMS SF to read the request for ON semi delivering to warehouse and the time for the verification process on every item(s) that have been delivered yesterday. " + 
 //                "Hence, attached is the report file for your view and perusal. Thank you." //msg
 //            );
 //        }

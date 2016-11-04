@@ -33,7 +33,7 @@
 
             <div id="logo" style="background-color: #B6B1B0;">
                 <a href="${contextPath}/">
-                    <img src="${contextPath}/resources/img/ftc.png" alt="Logo" width="90%" />
+                    <img src="${contextPath}/resources/img/warehouse.png" alt="Logo" width="90%" />
                 </a>
             </div>
 

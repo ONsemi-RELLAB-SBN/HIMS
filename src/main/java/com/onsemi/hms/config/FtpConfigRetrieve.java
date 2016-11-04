@@ -142,8 +142,8 @@
 //                "All",                                                   //user name
 ////                "muhdfaizal@onsemi.com",                                   //to
 //                "zbczmg@onsemi.com",
-//                "Hardware Arrival from HIMS-SF Report",   //subject
-//                "Report for Hardware Arrival from HIMS-SF has been made. " + 
+//                "Hardware Arrival from HIMS SF Report",   //subject
+//                "Report for Hardware Arrival from HIMS SF has been made. " + 
 //                "This report will shows the time for ON Semi delivering hardware to warehouse date and the time for verification process on every item(s) that have been . " + 
 //                "Hence, attached is the report file for your view and perusal. Thank you." //msg
 //            );

@@ -21,7 +21,7 @@
 //    protected void buildPdfDocument(Map<String, Object> model, Document doc,
 //            PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
 //            throws Exception {        
-//        String title = "WAREHOUSE MANAGEMENT - HARDWARE SHIPPING INFORMATION";
+//        String title = "WAREHOUSE MANAGEMENT - HARDWARE FOR SHIPMENT TO REL LAB INFORMATION";
 //
 //        Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
 //        viewTitle.setAlignment(Element.ALIGN_CENTER);

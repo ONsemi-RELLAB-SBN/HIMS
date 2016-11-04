@@ -188,17 +188,9 @@ public class WhRetrieveController {
 //                    servletContext,
 //                    requestedBy, //user name
 //                    requestedEmail, //to
-//                    "Status for Hardware Shipment to HIMS-SF", //subject
-//                    "The hardware " + equipmentId + " (" + equipmentType + "), with material pass number: " + materialPassNo + " has been safely arrived in HIMS-SF." //msg
+//                    "Status for Hardware Shipment to HIMS SF", //subject
+//                    "The hardware " + equipmentId + " (" + equipmentType + "), with material pass number: " + materialPassNo + " has been safely arrived in HIMS SF." //msg
 //            );
-            
-            LogModule logModule = new LogModule();
-            LogModuleDAO logModuleDAO = new LogModuleDAO();
-            logModule.setModuleId(w.getId());
-            logModule.setReferenceId(refId);
-            logModule.setModuleName("hms_wh_retrieval_list");
-            logModule.setStatus("Hardware Arrival");
-            QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
         }
 
         WhRetrieve whRetrieve = new WhRetrieve();
@@ -217,6 +209,13 @@ public class WhRetrieveController {
             whRetrieve.setFlag("0");
             cp = true;
             LOGGER.info("Verification Pass");
+            LogModule logModule = new LogModule();
+            LogModuleDAO logModuleDAO = new LogModuleDAO();
+            logModule.setModuleId(w.getId());
+            logModule.setReferenceId(refId);
+            logModule.setModuleName("hms_wh_retrieval_list");
+            logModule.setStatus("Hardware Arrival");
+            QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
         } else {
             whRetrieve.setStatus("Verification Fail");
             whRetrieve.setFlag("0");
@@ -639,7 +638,7 @@ public class WhRetrieveController {
                                 servletContext,
                                 "CDARS", //user name
                                 "cdarsrel@gmail.com", //to
-                                "Status for Hardware Inventory from HIMS-SF", //subject
+                                "Status for Hardware Inventory from HIMS SF", //subject
                                 "Verification and inventory for Hardware has been made." //msg
                         );
                         
@@ -654,7 +653,7 @@ public class WhRetrieveController {
                                 whi2.getRequestedBy(), //user name
                                 whi2.getRequestedEmail(), //to
 //                                "muhdfaizal@onsemi.com", //to
-                                "Status for Hardware Inventory from HIMS-SF", //subject
+                                "Status for Hardware Inventory from HIMS SF", //subject
                                 "Verification and inventory has been made. The new inventory for Hardware ID: " + whi2.getEquipmentId() + " with material pass no. : " + whi.getMaterialPassNo() 
                                 + " are at rack: " + whi2.getInventoryRack() + ", shelf: " + whi2.getInventoryShelf() + "." //msg
                         );
@@ -710,10 +709,7 @@ public class WhRetrieveController {
             @PathVariable("whRetrieveId") String whRetrieveId
     ) {
         WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-        LOGGER.info("Masuk 1........");
         List<WhRetrieveLog> whHistoryList = whRetrieveDAO.getWhRetLog(whRetrieveId);
-//        WhRetrieveLog whHistoryList = whRetrieveDAO.getWhRetLog(whRetrieveId);
-        LOGGER.info("Masuk 2........");
         return new ModelAndView("whRetrieveLogPdf", "whRetrieveLog", whHistoryList);
     }
 
@@ -742,7 +738,7 @@ public class WhRetrieveController {
                     query.getRequestedBy(), //user name
                     query.getRequestedEmail(), //to
 //                    "muhdfaizal@onsemi.com",
-                    "Error in Hardware Retrieval Verification in HIMS-SF", //subject
+                    "Error in Hardware Retrieval Verification in HIMS SF", //subject
                     "Barcode Verification for hardware " + query.getEquipmentId() + " (" + query.getEquipmentType() + "), with material pass number: " + query.getMaterialPassNo() + " is INVALID. " +
                     "\nPlease identify the problem that occur." //msg
             );

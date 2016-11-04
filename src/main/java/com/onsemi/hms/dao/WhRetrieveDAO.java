@@ -365,7 +365,7 @@ public class WhRetrieveDAO {
                    + "DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, DATE_FORMAT(arrival_received_date,'%d %M %Y %h:%i %p') AS arrival_received_date_view "
                    + "FROM hms_wh_retrieval_list "
                    + "WHERE flag = 0 "
-                   + "ORDER BY id DESC ";
+                   + "ORDER BY requested_date DESC ";
         List<WhRetrieve> whRetrieveList = new ArrayList<WhRetrieve>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

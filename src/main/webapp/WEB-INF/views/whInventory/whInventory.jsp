@@ -25,12 +25,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Hardware in SBN Factory</h1>
+            <h1>Warehouse Management - HW in  SBN Factory</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Hardware in SBN Factory List</h2>
+                            <h2 class="pull-left">HW in  SBN Factory List</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -76,7 +76,9 @@
                                             <td><c:out value="${whInventory.inventoryRack}, ${whInventory.inventoryShelf}"/></td>
                                             <td><c:out value="${whInventory.inventoryDate}"/></td>
                                             <td align="center">
-                                                <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" title="Update">
+                                                <input type="hidden" id="userSession" name="userSession" value="${userSession.group}" />
+                                                <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" id="edit" title="Update" hidden>
+                                                    
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -164,6 +166,13 @@
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });
+                
+                var element2 = $('#userSession');
+                if (element2.val() === "20") {
+                    $("#edit").hide();
+                } else if (element2.val() === "1") {
+                    $("#edit").show();
+                }
             });
 
             function modalDelete(e) {

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.onsemi.hms.controller;
+package com.onsemi.hms.model;
 
 /**
  *
  * @author zbczmg
  */
-public class WhHistoryController {
+public class LogModel {
     
 }

@@ -32,7 +32,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - Hardware for Shipment to Rel Lab</h1>
+            <h1>Warehouse Management - HW for Shipment to Rel Lab</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
@@ -60,7 +60,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Packing List</h2>
+                            <h2 class="pull-left">HIMS–SF Shipping List</h2>
                             <div class="filter-block pull-right">
                                 <a href="#delete_modal" data-toggle="modal" class="btn btn-danger danger group_delete pull-right" onclick="modalDelete(this);">
                                     <i class="fa fa-trash-o fa-lg"></i> Delete All
@@ -134,6 +134,11 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
+                //temporary disabled
+                $('#materialPassNo').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
                 var validator = $("#add_mp_list_form").validate({
                     rules: {
                         materialPassNo: {

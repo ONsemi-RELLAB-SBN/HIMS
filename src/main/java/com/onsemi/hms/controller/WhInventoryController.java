@@ -57,10 +57,12 @@ public class WhInventoryController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String whInventory(
-            Model model
+            Model model,
+            @ModelAttribute UserSession userSession
     ) {
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         List<WhInventory> whInventoryList = whInventoryDAO.getWhInventoryListMergeRetrieve();
+        model.addAttribute("userSession", userSession);
         model.addAttribute("whInventoryList", whInventoryList);
         return "whInventory/whInventory";
     }
@@ -261,7 +263,7 @@ public class WhInventoryController {
                     servletContext,
                     "CDARS",                                                   //user name
                     "cdarsrel@gmail.com",                                   //to
-                    "Status for Hardware Inventory from HIMS-SF",  //subject
+                    "Status for Hardware Inventory from HIMS SF",  //subject
                     "Verification and inventory for Hardware has been made."    //msg
                 );
 

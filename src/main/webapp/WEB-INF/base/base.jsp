@@ -8,7 +8,7 @@
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            <title>HIMS-SF</title>
+            <title>HIMS SF</title>
 
             <!-- bootstrap -->
             <link href="${contextPath}/resources/private/css/bootstrap/bootstrap.css" rel="stylesheet" />

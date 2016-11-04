@@ -200,17 +200,17 @@
         <script>
             $(document).ready(function () {
                 //temporary disabled.
-//                $('#barcodeVerify').bind('copy paste cut', function (e)  {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
-//                
-//                $('#tempRack').bind('copy paste cut', function (e)  {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
-//                
-//                $('#tempShelf').bind('copy paste cut', function (e)  {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
+                $('#barcodeVerify').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
+                $('#tempRack').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
+                $('#tempShelf').bind('copy paste cut', function (e)  {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
                 
                 var validator = $("#mp_form").validate({
                     rules: {
