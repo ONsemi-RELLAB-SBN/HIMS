@@ -635,7 +635,7 @@ public class WhRetrieveController {
                         
                         String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
                         EmailSender emailSender = new EmailSender();
-                        emailSender.htmlEmailWithAttachmentTest(
+                        emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,
                             "CDARS", //user name
                             to, //to
