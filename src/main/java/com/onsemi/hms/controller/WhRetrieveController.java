@@ -633,13 +633,14 @@ public class WhRetrieveController {
                         WhInventoryDAO whidao = new WhInventoryDAO();
                         WhInventory whi = whidao.getWhInventoryMergeWithRetrieve(refId);
                         
+                        String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
                         EmailSender emailSender = new EmailSender();
-                        emailSender.htmlEmailWithAttachmentRetrieve(
-                                servletContext,
-                                "CDARS", //user name
-                                "cdarsrel@gmail.com", //to
-                                "Status for Hardware Inventory from HIMS SF", //subject
-                                "Verification and inventory for Hardware has been made." //msg
+                        emailSender.htmlEmailWithAttachmentTest(
+                            servletContext,
+                            "CDARS", //user name
+                            to, //to
+                            "Status for Hardware Inventory from HIMS SF", //subject
+                            "Verification and inventory for Hardware has been made." //msg
                         );
                         
                         System.out.println("******************* EMAIL REQUESTOR *******************");

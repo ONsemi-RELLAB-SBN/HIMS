@@ -75,7 +75,7 @@
             </s:layout-component>
 
             <!-- Favicon -->
-            <link type="image/x-icon" href="${contextPath}/resources/img/favicon.ico" rel="shortcut icon"/>
+            <link type="image/x-icon" href="${contextPath}/resources/img/warehouse.ico" rel="shortcut icon"/>
 
             <!-- google font libraries -->
             <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400' rel='stylesheet' type='text/css'>

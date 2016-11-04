@@ -475,11 +475,12 @@ public class WhShippingController {
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
                     System.out.println("\n******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
                     //sent to cdars
+                    String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
                     EmailSender emailSender = new EmailSender();
-                    emailSender.htmlEmailWithAttachmentShipping(
+                    emailSender.htmlEmailWithAttachmentTest(
                             servletContext,
                             "CDARS", //user name
-                            "cdarsrel@gmail.com", //to
+                            to, //to
                             "Status for Hardware Shipping from HIMS SF", //subject
                             "Verification and status for Hardware Shipping has been made." //msg
                     );

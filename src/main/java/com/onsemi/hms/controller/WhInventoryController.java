@@ -258,11 +258,12 @@ public class WhInventoryController {
                     java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
+                String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
                 EmailSender emailSender = new EmailSender();
-                emailSender.htmlEmailWithAttachmentRetrieve(
+                emailSender.htmlEmailWithAttachmentTest2(
                     servletContext,
-                    "CDARS",                                                   //user name
-                    "cdarsrel@gmail.com",                                   //to
+                    "CDARS", //user name
+                    to, //to
                     "Status for Hardware Inventory from HIMS SF",  //subject
                     "Verification and inventory for Hardware has been made."    //msg
                 );
