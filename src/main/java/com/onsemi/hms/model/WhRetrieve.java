@@ -33,6 +33,7 @@ public class WhRetrieve {
     private String tempRack;
     private String tempShelf;
     private String tempCount;
+    private String csvStatus;
 
     public String getId() {
         return id;
@@ -281,4 +282,13 @@ public class WhRetrieve {
     public void setTempCount(String tempCount) {
         this.tempCount = tempCount;
     }
+
+    public String getCsvStatus() {
+        return csvStatus;
+    }
+
+    public void setCsvStatus(String csvStatus) {
+        this.csvStatus = csvStatus;
+    }
+    
 }

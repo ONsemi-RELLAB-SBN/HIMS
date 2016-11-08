@@ -67,7 +67,8 @@ public class FtpConfig {
                                 ionicFtp[9], ionicFtp[10], ionicFtp[11],
                                 ionicFtp[12], ionicFtp[13], ionicFtp[14],
                                 ionicFtp[15], ionicFtp[16], ionicFtp[17],
-                                ionicFtp[18], ionicFtp[19], ionicFtp[20]
+                                ionicFtp[18], ionicFtp[19], ionicFtp[20],
+                                ionicFtp[21]
                             );
                             requestList.add(request);
                         }
@@ -95,15 +96,20 @@ public class FtpConfig {
                             ftp.setRequestedEmail(r.getRequestedEmail());
                             ftp.setRequestedDate(r.getRequestedDate());
                             ftp.setRemarks(r.getRemarks());
-                            ftp.setStatus("New Shipping Request");
-                            ftp.setFlag("0");
+                            ftp.setCsvStatus(r.getCsvStatus());
+                            if(r.getCsvStatus().equals("Cancelled")) {
+                                ftp.setStatus("Shipping Canceled");
+                                ftp.setFlag("1");
+                            } else {
+                                ftp.setStatus("New Shipping Request");
+                                ftp.setFlag("0");
+                            }
                             WhRequestDAO whRequestDAO = new WhRequestDAO();
                             int count = whRequestDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
                                 LOGGER.info("data xdeeeeee");
-                                whRequestDAO = new WhRequestDAO();
                                 WhRequestDAO whRequestDAO1 = new WhRequestDAO();
-                                QueryResult queryResult1 = whRequestDAO.insertWhRequest(ftp);
+                                QueryResult queryResult1 = whRequestDAO1.insertWhRequest(ftp);
                                 
                                 WhRequestDAO whRequestDAO2 = new WhRequestDAO();
                                 WhRequest query = whRequestDAO2.getWhRequest(refId);
@@ -114,7 +120,25 @@ public class FtpConfig {
                                 logModule.setModuleName("hms_wh_request_list");
                                 logModule.setStatus(query.getStatus());
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
-                            } 
+                            } else {
+                                WhRequestDAO whReqDAO = new WhRequestDAO();
+                                WhRequest que = whReqDAO.getWhRequest(refId);
+                                if(r.getCsvStatus().equals("Cancelled") && que.getFlag().equals("0")) {
+                                    WhRequestDAO whRequestDAO1 = new WhRequestDAO();
+                                    QueryResult queryResult1 = whRequestDAO1.updateWhRequestForApproval(ftp);
+
+                                    WhRequestDAO whRequestDAO2 = new WhRequestDAO();
+                                    WhRequest query = whRequestDAO2.getWhRequest(refId);
+                                    LogModule logModule = new LogModule();
+                                    LogModuleDAO logModuleDAO = new LogModuleDAO();
+                                    logModule.setReferenceId(query.getRefId());
+                                    logModule.setModuleId(query.getId());
+                                    logModule.setModuleName("hms_wh_request_list");
+                                    logModule.setStatus(query.getStatus());
+                                    QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+                                    LOGGER.info("data cancel");
+                                }
+                            }
                         }
                     } catch (Exception ee) {
                         ee.printStackTrace();
@@ -137,7 +161,7 @@ public class FtpConfig {
                                 ionicFtp[9], ionicFtp[10], ionicFtp[11],
                                 ionicFtp[12], ionicFtp[13], ionicFtp[14],
                                 ionicFtp[15], ionicFtp[16], ionicFtp[17],
-                                ionicFtp[18]
+                                ionicFtp[18], ionicFtp[19]
                             );
                             retrieveList.add(retrieve);
                         }
@@ -163,15 +187,20 @@ public class FtpConfig {
                             ftp.setRequestedDate(r.getRequestedDate());
                             ftp.setRemarks(r.getRemarks());
                             ftp.setShippingDate(r.getShippingDate());
-                            ftp.setStatus("New Inventory Request");
-                            ftp.setFlag("0");
+                            ftp.setCsvStatus(r.getCsvStatus());
+                            if(r.getCsvStatus().equals("Cancelled")) {
+                                ftp.setStatus("Inventory Canceled");
+                                ftp.setFlag("1");
+                            } else {
+                                ftp.setStatus("New Inventory Request");
+                                ftp.setFlag("0");
+                            }
                             WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
                             int count = whRetrieveDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
                                 LOGGER.info("data xdeeeeee");
-                                whRetrieveDAO = new WhRetrieveDAO();
                                 WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
-                                QueryResult queryResult1 = whRetrieveDAO.insertWhRetrieve(ftp);
+                                QueryResult queryResult1 = whRetrieveDAO1.insertWhRetrieve(ftp);
                                 
                                 WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
                                 WhRetrieve query = whRetrieveDAO2.getWhRetrieve(refId);
@@ -182,6 +211,24 @@ public class FtpConfig {
                                 logModule.setModuleName("hms_wh_retrieval_list");
                                 logModule.setStatus(query.getStatus());
                                 QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+                            } else {
+                                WhRetrieveDAO whRetDAO = new WhRetrieveDAO();
+                                WhRetrieve que = whRetDAO.getWhRetrieve(refId);
+                                if(r.getCsvStatus().equals("Cancelled") && que.getFlag().equals("0")) {
+                                    WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
+                                    QueryResult queryResult1 = whRetrieveDAO1.updateWhRetrieveForApproval(ftp);
+
+                                    WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
+                                    WhRetrieve query = whRetrieveDAO2.getWhRetrieve(refId);
+                                    LogModule logModule = new LogModule();
+                                    LogModuleDAO logModuleDAO = new LogModuleDAO();
+                                    logModule.setReferenceId(query.getRefId());
+                                    logModule.setModuleId(query.getId());
+                                    logModule.setModuleName("hms_wh_retrieval_list");
+                                    logModule.setStatus(query.getStatus());
+                                    QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+                                    LOGGER.info("data cancel");
+                                }
                             }
                         }
                     } catch (Exception ee) {

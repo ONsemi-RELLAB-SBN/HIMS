@@ -23,11 +23,12 @@ public class IonicFtpRequest {
     private String requestedEmail;
     private String requestedDate;
     private String remarks;
+    private String csvStatus;
     
     public IonicFtpRequest() {
     }
 
-    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String reasonRetrieval, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks) {
+    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String reasonRetrieval, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks, String csvStatus) {
         this.refId = refId;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
@@ -49,6 +50,7 @@ public class IonicFtpRequest {
         this.requestedEmail = requestedEmail;
         this.requestedDate = requestedDate;
         this.remarks = remarks;
+        this.csvStatus = csvStatus;
     }
 
     public String getRefId() {
@@ -226,4 +228,12 @@ public class IonicFtpRequest {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }    
+
+    public String getCsvStatus() {
+        return csvStatus;
+    }
+
+    public void setCsvStatus(String csvStatus) {
+        this.csvStatus = csvStatus;
+    }
 }

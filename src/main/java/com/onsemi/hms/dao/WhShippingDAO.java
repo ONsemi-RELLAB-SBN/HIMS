@@ -477,6 +477,7 @@ public class WhShippingDAO {
                 whShippingLog.setRequestedBy(rs.getString("requested_by"));
                 whShippingLog.setRequestedEmail(rs.getString("requested_email"));
                 whShippingLog.setRequestedDate(rs.getString("requested_date_view"));
+                whShippingLog.setReasonRetrieval(rs.getString("reason_retrieval"));
                 whShippingLog.setInventoryLoc(rs.getString("inventory_loc"));
                 whShippingLog.setInventoryRack(rs.getString("inventory_rack"));
                 whShippingLog.setInventoryShelf(rs.getString("inventory_shelf"));

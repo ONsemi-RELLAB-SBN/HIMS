@@ -1,4 +1,4 @@
-package com.onsemi.hms.controller;
+package com.onsemi.hms.tools;
 
 import java.io.*;
 import java.awt.Point;
@@ -45,19 +45,20 @@ public class CSV {
         FileWriter fw = new FileWriter(file);
         BufferedWriter bw = new BufferedWriter(fw);
  
-        for (int row = 0; row < _rows; row++) {
+        for (int row = 0; row < _rows ; row++) {
             for (int col = 0; col < _cols; col++) {
                 Point key = new Point(col, row);
                 if (_map.containsKey(key)) {
                     bw.write(_map.get(key));
                 }
- 
-                
+
                 if ((col + 1) < _cols) {
                     bw.write(delimiter);
                 }
             }
-            bw.newLine();
+            if( row != _rows -1) {
+                bw.newLine();
+            }
         }
         bw.flush();
         bw.close();

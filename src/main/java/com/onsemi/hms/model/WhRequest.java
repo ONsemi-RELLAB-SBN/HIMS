@@ -38,6 +38,7 @@ public class WhRequest {
     private String flag;
     private String duration;
     private String tempCount;
+    private String csvStatus;
 
     public String getId() {
         return id;
@@ -319,5 +320,13 @@ public class WhRequest {
 
     public void setTempCount(String tempCount) {
         this.tempCount = tempCount;
+    }
+
+    public String getCsvStatus() {
+        return csvStatus;
+    }
+
+    public void setCsvStatus(String csvStatus) {
+        this.csvStatus = csvStatus;
     }
 }

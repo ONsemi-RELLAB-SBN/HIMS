@@ -23,12 +23,13 @@ public class IonicFtpRetrieve {
     private String requestedDate;
     private String remarks;
     private String shippingDate;
+    private String csvStatus;
     
     public IonicFtpRetrieve() {
         
     }
 
-    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate) {
+    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate, String csvStatus) {
         this.refId = refId;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
@@ -48,6 +49,7 @@ public class IonicFtpRetrieve {
         this.requestedDate = requestedDate;
         this.remarks = remarks;
         this.shippingDate = shippingDate;
+        this.csvStatus = csvStatus;
     }
     
     public String getRefId() {
@@ -202,5 +204,11 @@ public class IonicFtpRetrieve {
         this.shippingDate = shippingDate;
     }
 
-    
+    public String getCsvStatus() {
+        return csvStatus;
+    }
+
+    public void setCsvStatus(String csvStatus) {
+        this.csvStatus = csvStatus;
+    }
 }
