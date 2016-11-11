@@ -257,13 +257,13 @@ public class WhMpListController {
                     }
 
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
-                    System.out.println("\n******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
+                    System.out.println("\n******************* EMAIL CDARS ******************* cdarsreltest@gmail.com");
                     //sent to cdars
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentShipping(
                             servletContext,
                             "CDARS", //user name
-                            "cdarsrel@gmail.com", //to
+                            "cdarsreltest@gmail.com", //to
                             "Status for Hardware Shipping from HIMS SF", //subject
                             "Verification and status for Hardware Shipping has been made." //msg
                     );

@@ -669,4 +669,72 @@ public class WhInventoryDAO {
         }
         return whInventoryList;
     }
+    
+    public List<WhInventory> getQuery(String query) {
+        String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, " +
+                    "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date,'%d %M %Y %h:%i %p') AS inventory_date_view, " +
+                    "DATE_FORMAT(arrival_received_date,'%d %M %Y %h:%i %p') AS arrival_received_date_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view, " +
+                    "DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view " +
+                    "FROM hms_wh_retrieval_list R, hms_wh_inventory_list I " +
+                    "WHERE R.retrieve_id = I.retrieve_id AND " + query;
+        List<WhInventory> whInventoryList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whInventory;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whInventory = new WhInventory();
+                whInventory.setId(rs.getString("I.id"));
+                whInventory.setRefId(rs.getString("I.retrieve_id"));
+                whInventory.setMaterialPassNo(rs.getString("I.material_pass_no"));
+                whInventory.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whInventory.setEquipmentType(rs.getString("equipment_type"));
+                whInventory.setEquipmentId(rs.getString("equipment_id"));
+                whInventory.setPcbA(rs.getString("pcb_a"));
+                whInventory.setQtyQualA(rs.getString("qty_qual_a"));
+                whInventory.setPcbB(rs.getString("pcb_b"));
+                whInventory.setQtyQualB(rs.getString("qty_qual_b"));
+                whInventory.setPcbC(rs.getString("pcb_c"));
+                whInventory.setQtyQualC(rs.getString("qty_qual_c"));
+                whInventory.setPcbControl(rs.getString("pcb_control"));
+                whInventory.setQtyControl(rs.getString("qty_control"));
+                whInventory.setQuantity(rs.getString("quantity"));
+                String remarks = rs.getString("remarks");
+                if(remarks == null || remarks.equals("null")) {
+                    remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
+                }
+                whInventory.setRemarks(remarks);
+                whInventory.setShippingDate(rs.getString("shipping_date_view"));
+                whInventory.setReceivedDate(rs.getString("arrival_received_date_view"));
+                whInventory.setRequestedBy(rs.getString("requested_by"));
+                whInventory.setRequestedEmail(rs.getString("requested_email"));
+                whInventory.setRequestedDate(rs.getString("requested_date_view"));
+                whInventory.setShippingDate(rs.getString("shipping_date_view"));
+                whInventory.setReceivedDate(rs.getString("received_date_view"));
+                whInventory.setBarcodeVerify(rs.getString("barcode_verify"));
+                whInventory.setDateVerify(rs.getString("date_verify_view"));
+                whInventory.setUserVerify(rs.getString("user_verify"));
+                whInventory.setInventoryDate(rs.getString("inventory_date_view"));
+                whInventory.setInventoryRack(rs.getString("inventory_rack"));
+                whInventory.setInventoryShelf(rs.getString("inventory_shelf"));
+                whInventory.setInventoryBy(rs.getString("inventory_by"));
+                whInventory.setStatus(rs.getString("I.status"));
+                whInventory.setFlag(rs.getString("I.flag"));
+                whInventoryList.add(whInventory);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whInventoryList;
+    }
 }

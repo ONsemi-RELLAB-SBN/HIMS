@@ -633,7 +633,8 @@ public class WhRetrieveController {
                         WhInventoryDAO whidao = new WhInventoryDAO();
                         WhInventory whi = whidao.getWhInventoryMergeWithRetrieve(refId);
                         
-                        String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
+//                        String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
+                        String[] to = {"cdarsreltest@gmail.com"};
                         EmailSender emailSender = new EmailSender();
                         emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,

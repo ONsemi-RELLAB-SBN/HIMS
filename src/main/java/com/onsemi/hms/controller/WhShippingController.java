@@ -476,7 +476,8 @@ public class WhShippingController {
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
                     System.out.println("\n******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
                     //sent to cdars
-                    String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
+                    String[] to = {"cdarsreltest@gmail.com"};
+//                    String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest(
                             servletContext,

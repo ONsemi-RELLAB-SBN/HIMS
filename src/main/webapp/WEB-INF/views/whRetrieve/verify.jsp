@@ -57,7 +57,7 @@
                             <div class="form-group">
                                 <label for="retrieveBy" class="col-lg-3 control-label">Requested By</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Retrieve For" value="${whRetrieve.requestedBy} (${whRetrieve.requestedEmail})" readonly>
+                                    <input type="text" class="form-control" id="retrieveBy" name="retrieveBy" placeholder="Retrieve For" value="${whRetrieve.requestedBy}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
