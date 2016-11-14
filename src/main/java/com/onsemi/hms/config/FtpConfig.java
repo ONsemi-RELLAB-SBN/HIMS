@@ -198,25 +198,12 @@ public class FtpConfig {
                             WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
                             int count = whRetrieveDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
-                                LOGGER.info("data xdeeeeee");
-                                WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
-                                QueryResult queryResult1 = whRetrieveDAO1.insertWhRetrieve(ftp);
-                                
-                                WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
-                                WhRetrieve query = whRetrieveDAO2.getWhRetrieve(refId);
-                                LogModule logModule = new LogModule();
-                                LogModuleDAO logModuleDAO = new LogModuleDAO();
-                                logModule.setReferenceId(query.getRefId());
-                                logModule.setModuleId(query.getId());
-                                logModule.setModuleName("hms_wh_retrieval_list");
-                                logModule.setStatus(query.getStatus());
-                                QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
-                            } else {
-                                WhRetrieveDAO whRetDAO = new WhRetrieveDAO();
-                                WhRetrieve que = whRetDAO.getWhRetrieve(refId);
-                                if(r.getCsvStatus().equals("Cancelled") && que.getFlag().equals("0")) {
+                                if("0".equals(refId)){
+                                    LOGGER.info("xperlu masuk1");
+                                }else{
+                                    LOGGER.info("data xdeeeeee");
                                     WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
-                                    QueryResult queryResult1 = whRetrieveDAO1.updateWhRetrieveForApproval(ftp);
+                                    QueryResult queryResult1 = whRetrieveDAO1.insertWhRetrieve(ftp);
 
                                     WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
                                     WhRetrieve query = whRetrieveDAO2.getWhRetrieve(refId);
@@ -227,7 +214,28 @@ public class FtpConfig {
                                     logModule.setModuleName("hms_wh_retrieval_list");
                                     logModule.setStatus(query.getStatus());
                                     QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
-                                    LOGGER.info("data cancel");
+                                }
+                            } else {
+                                WhRetrieveDAO whRetDAO = new WhRetrieveDAO();
+                                WhRetrieve que = whRetDAO.getWhRetrieve(refId);
+                                if(r.getCsvStatus().equals("Cancelled") && que.getFlag().equals("0")) {
+                                    if("0".equals(refId)){
+                                        LOGGER.info("xperlu masuk2");
+                                    } else {
+                                        WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
+                                        QueryResult queryResult1 = whRetrieveDAO1.updateWhRetrieveForApproval(ftp);
+
+                                        WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
+                                        WhRetrieve query = whRetrieveDAO2.getWhRetrieve(refId);
+                                        LogModule logModule = new LogModule();
+                                        LogModuleDAO logModuleDAO = new LogModuleDAO();
+                                        logModule.setReferenceId(query.getRefId());
+                                        logModule.setModuleId(query.getId());
+                                        logModule.setModuleName("hms_wh_retrieval_list");
+                                        logModule.setStatus(query.getStatus());
+                                        QueryResult queryResult2 = logModuleDAO.insertLog(logModule);
+                                        LOGGER.info("data cancel");
+                                    }
                                 }
                             }
                         }

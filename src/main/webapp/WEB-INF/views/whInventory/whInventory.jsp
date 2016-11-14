@@ -32,6 +32,9 @@
                         <div class="clearfix">
                             <h2 class="pull-left">HW in  SBN Factory List</h2>
                             <div class="filter-block pull-right">
+                                <!--<a id = "viewInventory" class="btn btn-primary pull-right" title="View Inventory">
+                                    <i class="fa fa-list-alt fa-lg"></i> View Inventory
+                                </a>-->
                                 <a href="${contextPath}/wh/whInventory/query" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Query
                                 </a>
@@ -79,9 +82,9 @@
                                             <td><c:out value="${whInventory.materialPassNo}"/></td>
                                             <td><c:out value="${whInventory.quantity}"/></td>
                                             <td><c:out value="${whInventory.inventoryRack}, ${whInventory.inventoryShelf}"/></td>
-                                            <%--<td><c:out value="${whInventory.inventoryDate}"/></td>--%>
+                                            <td><c:out value="${whInventory.inventoryDate}"/></td>
 <!--                                            <td id="tddum" _dum="s"><input id="dum"></td>-->
-                                            <td><input id="dum"><input id="refId" type="text" value="${whInventory.refId}"></td>
+                                            <!--<td><input id="dum"><input id="refId" type="text" value="${whInventory.refId}"></td>-->
                                             <td align="center">
                                                 <input type="hidden" id="userSession" name="userSession" value="${userSession.group}" />
                                                 <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" id="edit" title="Update" hidden>
@@ -91,12 +94,12 @@
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
-                                                <a class="table-link" id = "dummy" title="Dummy">
+<!--                                                <a class="table-link" id = "dummy" title="Dummy">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i>
                                                     </span>
-                                                </a>
+                                                </a>-->
                                                 <a href="${contextPath}/wh/whInventory/history/${whInventory.refId}" class="table-link" title="Details">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
@@ -182,16 +185,15 @@
                 }
             });
             
-//            function printDiv() {
+//            $('#viewInventory').on('click', function () {
+//                window.open('http://zbczmg-l1:8080/HMS/wh/whInventory/viewInventory');
+//            })
+
+//            $('#dummy').on('click', function () {
+////                printDiv();
 //                var dum = $('#dum').val();
 //                location.href = 'http://zbczmg-l1:8080/HMS/wh/whInventory/dummy/' + dum;
-//            }
-
-            $('#dummy').on('click', function () {
-//                printDiv();
-                var dum = $('#dum').val();
-                location.href = 'http://zbczmg-l1:8080/HMS/wh/whInventory/dummy/' + dum;
-            })
+//            })
 
             function modalDelete(e) {
                 var deleteId = $(e).attr("modaldeleteid");

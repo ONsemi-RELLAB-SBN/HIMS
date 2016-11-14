@@ -453,6 +453,15 @@ public class WhInventoryController {
         return "whInventory/query";
     }
     
+    @RequestMapping(value = "/viewInventory", method = RequestMethod.GET)
+    public String viewInventory(
+            Model model,
+            @ModelAttribute UserSession userSession
+    ) {
+        return "whInventory/viewInventory";
+    }
+    
+    //test utk fg79cj
     @RequestMapping(value = "/dummy/{dum}", method = {RequestMethod.GET, RequestMethod.POST})
     public String email(
             Model model,

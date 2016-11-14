@@ -115,12 +115,6 @@
                                             <td><c:out value="${packingList.equipmentId}"/></td>
                                             <td><c:out value="${packingList.quantity}"/></td>
                                             <td align="center">
-                                                <a href="${contextPath}/wh/whShipping/updateSpts/${packingList.requestId}" class="table-link" title="Update SPTS">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-exchange fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
                                                 <a modaldeleteid="${packingList.requestId}" data-toggle="modal" href="#delete_modal" class="table-link danger group_delete" onclick="modalDelete(this);">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
