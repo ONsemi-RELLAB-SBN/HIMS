@@ -52,8 +52,6 @@ public class UserController {
     ) {
         UserDAO userDAO = new UserDAO();
         UserAccess user = userDAO.getUserDetails(loginId);
-        LOGGER.info(loginId + " ************************** ");
-        LOGGER.info("MASUKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK 11111111111111111111111");
         model.addAttribute("user", user);
         return "user/profile";
     }

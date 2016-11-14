@@ -32,9 +32,9 @@
                         <div class="clearfix">
                             <h2 class="pull-left">HW in  SBN Factory List</h2>
                             <div class="filter-block pull-right">
-                                <!--<a id = "viewInventory" class="btn btn-primary pull-right" title="View Inventory">
+                                <a id = "viewInventory" class="btn btn-primary pull-right" title="View Inventory">
                                     <i class="fa fa-list-alt fa-lg"></i> View Inventory
-                                </a>-->
+                                </a>
                                 <a href="${contextPath}/wh/whInventory/query" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Query
                                 </a>
@@ -185,9 +185,9 @@
                 }
             });
             
-//            $('#viewInventory').on('click', function () {
-//                window.open('http://zbczmg-l1:8080/HMS/wh/whInventory/viewInventory');
-//            })
+            $('#viewInventory').on('click', function () {
+                location.href='http://zbczmg-l1:8080/HMS/wh/whInventory/viewInventory';
+            })
 
 //            $('#dummy').on('click', function () {
 ////                printDiv();

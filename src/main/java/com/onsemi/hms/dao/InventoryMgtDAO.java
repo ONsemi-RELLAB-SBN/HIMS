@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
-import com.onsemi.hms.model.InventoryDetails;
+import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.tools.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +26,15 @@ public class InventoryMgtDAO {
         this.dataSource = db.getDataSource();
     }
 
-    public QueryResult insertInventoryDetails(InventoryDetails inventoryDetails) {
+    public QueryResult insertInventoryDetails(WhInventoryMgt whInventoryMgt) {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_inventory_management (hardware_type, rack_type, loc_code, rack_code, label_key, created_by, created_date) VALUES (?,?,?,?,?,?,NOW())", Statement.RETURN_GENERATED_KEYS
+                    "INSERT INTO hms_inventory_mgt (rack_id, shelf_id, hardware_id, modified_date, date_created) VALUES (?,?,?,NOW(),NOW())", Statement.RETURN_GENERATED_KEYS
             );
-            ps.setString(1, inventoryDetails.getHardwareType());
-            ps.setString(2, inventoryDetails.getRackType());
-            ps.setString(3, inventoryDetails.getLocCode());
-            ps.setString(4, inventoryDetails.getRackCode());
-            ps.setString(5, inventoryDetails.getLabelKey());
-            ps.setString(6, inventoryDetails.getCreatedBy());
+            ps.setString(1, whInventoryMgt.getRackId());
+            ps.setString(2, whInventoryMgt.getShelfId());
+            ps.setString(3, whInventoryMgt.getHardwareId());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -60,20 +57,18 @@ public class InventoryMgtDAO {
         return queryResult;
     }
 
-    public QueryResult updateInventoryDetails(InventoryDetails inventoryDetails) {
+    public QueryResult updateInventoryDetails(WhInventoryMgt whInventoryMgt) {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE hms_inventory_management " +
-                    "SET loc_code = ?, rack_code = ?, label_key = ?, modified_by = ?, modified_date = NOW() " +
-                    "WHERE hardware_type = ? AND rack_type = ? "
+                    "UPDATE hms_inventory_mgt " +
+                    "SET hardware_id = ?, modified_date = NOW() " +
+                    "WHERE rack_id = ? AND shelf_id = ? "
             );
-            ps.setString(1, inventoryDetails.getLocCode());
-            ps.setString(2, inventoryDetails.getRackCode());
-            ps.setString(3, inventoryDetails.getLabelKey());
-            ps.setString(4, inventoryDetails.getModifiedBy());
-            ps.setString(5, inventoryDetails.getHardwareType());
-            ps.setString(6, inventoryDetails.getRackType());
+            ps.setString(1, whInventoryMgt.getHardwareId());
+            ps.setString(2, whInventoryMgt.getModifiedDate());
+            ps.setString(3, whInventoryMgt.getRackId());
+            ps.setString(4, whInventoryMgt.getShelfId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -91,11 +86,11 @@ public class InventoryMgtDAO {
         return queryResult;
     }
 
-    public QueryResult deleteInventoryDetails(String inventoryDetailsId) {
+    public QueryResult deleteInventoryDetails(String shelfId) {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM hms_inventory_management WHERE id = '" + inventoryDetailsId + "'"
+                    "DELETE FROM hms_inventory_mgt WHERE shelf_id = '" + shelfId + "'"
             );
             queryResult.setResult(ps.executeUpdate());
             ps.close();
@@ -114,26 +109,22 @@ public class InventoryMgtDAO {
         return queryResult;
     }
 
-    public InventoryDetails getInventoryDetails(String labelKey) {
+    public WhInventoryMgt getInventoryDetails(String rackId) {
         String sql = "SELECT * "
-                   + "FROM hms_inventory_management "
-                   + "WHERE label_key = '" + labelKey + "' ";
-        InventoryDetails inventoryDetails = null;
+                   + "FROM hms_inventory_mgt "
+                   + "WHERE rack_id = '" + rackId + "' ";
+        WhInventoryMgt whInventoryMgt = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                inventoryDetails = new InventoryDetails();
-                inventoryDetails.setId(rs.getString("id"));
-                inventoryDetails.setHardwareType(rs.getString("hardware_type"));
-                inventoryDetails.setRackType(rs.getString("rack_type"));
-                inventoryDetails.setLocCode(rs.getString("loc_code"));
-                inventoryDetails.setRackCode(rs.getString("rack_code"));
-                inventoryDetails.setLabelKey(rs.getString("label_key"));
-                inventoryDetails.setCreatedBy(rs.getString("created_by"));
-                inventoryDetails.setCreatedDate(rs.getString("created_date"));
-                inventoryDetails.setModifiedBy(rs.getString("modified_by"));
-                inventoryDetails.setModifiedDate(rs.getString("modified_date"));
+                whInventoryMgt = new WhInventoryMgt();
+                whInventoryMgt.setId(rs.getString("id"));
+                whInventoryMgt.setRackId(rs.getString("rack_id"));
+                whInventoryMgt.setShelfId(rs.getString("shelf_id"));
+                whInventoryMgt.setHardwareId(rs.getString("hardware_id"));
+                whInventoryMgt.setDateCreated(rs.getString("date_created"));
+                whInventoryMgt.setModifiedDate(rs.getString("modified_date"));
             }
             rs.close();
             ps.close();
@@ -148,29 +139,25 @@ public class InventoryMgtDAO {
                 }
             }
         }
-        return inventoryDetails;
+        return whInventoryMgt;
     }
 
-    public List<InventoryDetails> getInventoryDetailsList() {
-        String sql = "SELECT * FROM hms_inventory_management ORDER BY id ASC";
-        List<InventoryDetails> inventoryDetailsList = new ArrayList<InventoryDetails>();
+    public List<WhInventoryMgt> getInventoryDetailsList(String query) {
+        String sql = "SELECT * FROM hms_inventory_mgt " + query + " ORDER BY id ASC";
+        List<WhInventoryMgt> whInventoryMgtList = new ArrayList<WhInventoryMgt>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            InventoryDetails inventoryDetails;
+            WhInventoryMgt whInventoryMgt;
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                inventoryDetails = new InventoryDetails();
-                inventoryDetails.setId(rs.getString("id"));
-                inventoryDetails.setHardwareType(rs.getString("hardware_type"));
-                inventoryDetails.setRackType(rs.getString("rack_type"));
-                inventoryDetails.setLocCode(rs.getString("loc_code"));
-                inventoryDetails.setRackCode(rs.getString("rack_code"));
-                inventoryDetails.setLabelKey(rs.getString("label_key"));
-                inventoryDetails.setCreatedBy(rs.getString("created_by"));
-                inventoryDetails.setCreatedDate(rs.getString("created_date"));
-                inventoryDetails.setModifiedBy(rs.getString("modified_by"));
-                inventoryDetails.setModifiedDate(rs.getString("modified_date"));
-                inventoryDetailsList.add(inventoryDetails);
+                whInventoryMgt = new WhInventoryMgt();
+                whInventoryMgt.setId(rs.getString("id"));
+                whInventoryMgt.setRackId(rs.getString("rack_id"));
+                whInventoryMgt.setShelfId(rs.getString("shelf_id"));
+                whInventoryMgt.setHardwareId(rs.getString("hardware_id"));
+                whInventoryMgt.setDateCreated(rs.getString("date_created"));
+                whInventoryMgt.setModifiedDate(rs.getString("modified_date"));
+                whInventoryMgtList.add(whInventoryMgt);
             }
             rs.close();
             ps.close();
@@ -185,6 +172,33 @@ public class InventoryMgtDAO {
                 }
             }
         }
-        return inventoryDetailsList;
+        return whInventoryMgtList;
+    }
+    
+    public Integer getCountExistingData(String shelfId) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE rack_id = '" + shelfId + "' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
     }
 }

@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.InventoryMgtDAO;
 import com.onsemi.hms.tools.CSV;
 import com.onsemi.hms.dao.LogModuleDAO;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +14,7 @@ import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhInventory;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhInventoryLog;
+import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
 import java.io.BufferedReader;
@@ -456,8 +458,16 @@ public class WhInventoryController {
     @RequestMapping(value = "/viewInventory", method = RequestMethod.GET)
     public String viewInventory(
             Model model,
+            @RequestParam(required = false) String rackId,
             @ModelAttribute UserSession userSession
     ) {
+        String query = "";
+        if(!rackId.equals("All")) {
+            query = "WHERE rackId= '" + rackId + "' ";
+        }
+        InventoryMgtDAO wh = new InventoryMgtDAO();
+        List<WhInventoryMgt> inventoryMgtList = wh.getInventoryDetailsList(query);
+        model.addAttribute("inventoryMgtList", inventoryMgtList);
         return "whInventory/viewInventory";
     }
     
