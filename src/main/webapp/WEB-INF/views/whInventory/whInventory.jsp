@@ -94,7 +94,9 @@
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
-<!--                                                <a class="table-link" id = "dummy" title="Dummy">
+                                                
+<!--                                            utk fg79cj    
+                                                <a class="table-link" id = "dummy" title="Dummy">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i>
@@ -185,9 +187,8 @@
                 }
             });
             
-     
+     //utk fg79cj
 //            $('#dummy').on('click', function () {
-////                printDiv();
 //                var dum = $('#dum').val();
 //                location.href = 'http://zbczmg-l1:8080/HMS/wh/whInventory/dummy/' + dum;
 //            })

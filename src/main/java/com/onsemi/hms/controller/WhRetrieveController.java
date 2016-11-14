@@ -308,11 +308,13 @@ public class WhRetrieveController {
         WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(tempShelf);
         
         boolean checkShelf = false;
-        if(whInventoryMgt.getHardwareId().equals("Empty")) {
-            checkShelf = true;
-        }
+        
         
         if(countRack != 0 && countShelf != 0) {
+            if(whInventoryMgt.getHardwareId().equals("Empty")) {
+                checkShelf = true;
+                LOGGER.info("Shelf empty. Enter.");
+            }
             if(checkShelf == true) {
                 if (checkLength == true) {
                     LOGGER.info("************************************ " + tempRack + " vs " + tempShelf.substring(0, 6) + " ************************************");
@@ -361,6 +363,8 @@ public class WhRetrieveController {
                 WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
                 QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
             }
+        } else {
+            LOGGER.info("Rack or shelf invalid. Exit.");
         }
         
         String url;
