@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.InventoryMgtDAO;
 import com.onsemi.hms.dao.LogModuleDAO;
 import com.onsemi.hms.dao.WhInventoryDAO;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +14,7 @@ import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhInventory;
+import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.model.WhRetrieveLog;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
@@ -295,54 +297,72 @@ public class WhRetrieveController {
         boolean ck = false;
         boolean cp = false;
 
-        if (checkLength == true) {
-            LOGGER.info("************************************ " + tempRack + " vs " + tempShelf.substring(0, 6) + " ************************************");
-            if (equipmentType.equals("PCB")) {
-                if (tempRack.substring(0, 4).equals("S-PC")) {
-                    checkRack = true;
-                }
-            } else if (equipmentType.equals("Tray")) {
-                if (tempRack.substring(0, 4).equals("S-TJ") || tempRack.substring(0, 4).equals("S-TR")) {
-                    checkRack = true;
-                }
-            } else if (equipmentType.equals("Stencil")) {
-                if (tempRack.substring(0, 4).equals("S-ST")) {
-                    checkRack = true;
-                }
-            } else if (equipmentType.equals("Motherboard")) {
-                if (tempRack.substring(0, 4).equals("S-SY") || tempRack.substring(0, 4).equals("S-AC") || tempRack.substring(0, 4).equals("S-WF") || tempRack.substring(0, 4).equals("S-IO")
-                        || tempRack.substring(0, 4).equals("S-BB") || tempRack.substring(0, 4).equals("S-HA") || tempRack.substring(0, 4).equals("S-PT")) {
-                    checkRack = true;
-                }
-            }
+        
+        InventoryMgtDAO inventoryMgtDao = new InventoryMgtDAO();
+        int countShelf = inventoryMgtDao.getCountShelf(tempShelf);
+        
+        InventoryMgtDAO inventoryMgtDao2 = new InventoryMgtDAO();
+        int countRack = inventoryMgtDao2.getCountRack(tempRack);
+        
+        InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
+        WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(tempShelf);
+        
+        boolean checkShelf = false;
+        if(whInventoryMgt.getHardwareId().equals("Empty")) {
+            checkShelf = true;
+        }
+        
+        if(countRack != 0 && countShelf != 0) {
+            if(checkShelf == true) {
+                if (checkLength == true) {
+                    LOGGER.info("************************************ " + tempRack + " vs " + tempShelf.substring(0, 6) + " ************************************");
+                    if (equipmentType.equals("PCB")) {
+                        if (tempRack.substring(0, 4).equals("S-PC")) {
+                            checkRack = true;
+                        }
+                    } else if (equipmentType.equals("Tray")) {
+                        if (tempRack.substring(0, 4).equals("S-TJ") || tempRack.substring(0, 4).equals("S-TR")) {
+                            checkRack = true;
+                        }
+                    } else if (equipmentType.equals("Stencil")) {
+                        if (tempRack.substring(0, 4).equals("S-ST")) {
+                            checkRack = true;
+                        }
+                    } else if (equipmentType.equals("Motherboard")) {
+                        if (tempRack.substring(0, 4).equals("S-SY") || tempRack.substring(0, 4).equals("S-AC") || tempRack.substring(0, 4).equals("S-WF") || tempRack.substring(0, 4).equals("S-IO")
+                                || tempRack.substring(0, 4).equals("S-BB") || tempRack.substring(0, 4).equals("S-HA") || tempRack.substring(0, 4).equals("S-PT")) {
+                            checkRack = true;
+                        }
+                    }
 
-            if (checkRack == true && tempShelf.substring(0, 6).equals(tempRack)) {
-                ck = true;
+                    if (checkRack == true && tempShelf.substring(0, 6).equals(tempRack)) {
+                        ck = true;
+                    }
+                }
+
+                if (status.equals("Verification Pass") || status.equals("Inventory Invalid")) {
+                    if (ck == true) {
+                        whRetrieve.setStatus("Move to Inventory");
+                        whRetrieve.setFlag("1");
+                        cp = true;
+                        LOGGER.info("Inventory Pass");
+                    } else {
+                        whRetrieve.setStatus("Inventory Invalid");
+                        whRetrieve.setFlag(flag);
+                        cp = false;
+                        LOGGER.info("Inventory Invalid");
+                    }
+                } else {
+                    whRetrieve.setStatus(status);
+                    whRetrieve.setFlag(flag);
+                    cp = false;
+                    LOGGER.info("Inventory Not Stated");
+                }
+                WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+                QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
             }
         }
-
-        if (status.equals("Verification Pass") || status.equals("Inventory Invalid")) {
-            if (ck == true) {
-                whRetrieve.setStatus("Move to Inventory");
-                whRetrieve.setFlag("1");
-                cp = true;
-                LOGGER.info("Inventory Pass");
-            } else {
-                whRetrieve.setStatus("Inventory Invalid");
-                whRetrieve.setFlag(flag);
-                cp = false;
-                LOGGER.info("Inventory Invalid");
-            }
-        } else {
-            whRetrieve.setStatus(status);
-            whRetrieve.setFlag(flag);
-            cp = false;
-            LOGGER.info("Inventory Not Stated");
-        }
-
-        WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-        QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
-
+        
         String url;
         if (ck == true && cp == true) {
             WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
@@ -399,7 +419,7 @@ public class WhRetrieveController {
 
                     args = new String[1];
                     args[0] = materialPassNo;
-                    if (queryResult.getResult() != 0) {
+                    if (queryResult1.getResult() != 0) {
                         String username = System.getProperty("user.name");
                         //SEND EMAIL
                         File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");

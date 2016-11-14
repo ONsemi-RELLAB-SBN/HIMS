@@ -455,19 +455,30 @@ public class WhInventoryController {
         return "whInventory/query";
     }
     
-    @RequestMapping(value = "/viewInventory", method = RequestMethod.GET)
+    @RequestMapping(value = "/viewInventory", method = {RequestMethod.GET, RequestMethod.POST})
     public String viewInventory(
             Model model,
-            @RequestParam(required = false) String rackId,
-            @ModelAttribute UserSession userSession
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String rackId
     ) {
         String query = "";
-        if(!rackId.equals("All")) {
-            query = "WHERE rackId= '" + rackId + "' ";
+        if(rackId == null) {
+            LOGGER.debug("nullllllllllllllllllll~~~~");
+        } else {
+            if(!rackId.equals("All")) {
+                query = "WHERE rack_id= '" + rackId + "' ";
+            } else {
+                query = "";
+            }
         }
         InventoryMgtDAO wh = new InventoryMgtDAO();
         List<WhInventoryMgt> inventoryMgtList = wh.getInventoryDetailsList(query);
+        InventoryMgtDAO wh2 = new InventoryMgtDAO();
+        List<WhInventoryMgt> inventoryMgtList2 = wh2.getInventoryDetailsList2();
         model.addAttribute("inventoryMgtList", inventoryMgtList);
+        model.addAttribute("inventoryMgtList2", inventoryMgtList2);
         return "whInventory/viewInventory";
     }
     

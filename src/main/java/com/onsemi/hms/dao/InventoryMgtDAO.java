@@ -109,10 +109,10 @@ public class InventoryMgtDAO {
         return queryResult;
     }
 
-    public WhInventoryMgt getInventoryDetails(String rackId) {
+    public WhInventoryMgt getInventoryDetails(String shelfId) {
         String sql = "SELECT * "
                    + "FROM hms_inventory_mgt "
-                   + "WHERE rack_id = '" + rackId + "' ";
+                   + "WHERE shelf_id = '" + shelfId + "' ";
         WhInventoryMgt whInventoryMgt = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -143,7 +143,7 @@ public class InventoryMgtDAO {
     }
 
     public List<WhInventoryMgt> getInventoryDetailsList(String query) {
-        String sql = "SELECT * FROM hms_inventory_mgt " + query + " ORDER BY id ASC";
+        String sql = "SELECT * FROM hms_inventory_mgt " + query + " ORDER BY rack_id ASC";
         List<WhInventoryMgt> whInventoryMgtList = new ArrayList<WhInventoryMgt>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -175,11 +175,66 @@ public class InventoryMgtDAO {
         return whInventoryMgtList;
     }
     
-    public Integer getCountExistingData(String shelfId) {
+    public List<WhInventoryMgt> getInventoryDetailsList2() {
+        String sql = "SELECT DISTINCT rack_id FROM hms_inventory_mgt ORDER BY rack_id ASC";
+        List<WhInventoryMgt> whInventoryMgtList = new ArrayList<WhInventoryMgt>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventoryMgt whInventoryMgt;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whInventoryMgt = new WhInventoryMgt();
+                whInventoryMgt.setRackId(rs.getString("rack_id"));
+                whInventoryMgtList.add(whInventoryMgt);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whInventoryMgtList;
+    }
+    
+    public Integer getCountShelf(String shelfId) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE rack_id = '" + shelfId + "' "
+                "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE shelf_id = '" + shelfId + "' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+    
+    public Integer getCountRack(String rackId) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE rack_id = '" + rackId + "' "
             );
 
             ResultSet rs = ps.executeQuery();
