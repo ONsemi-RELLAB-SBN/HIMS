@@ -257,13 +257,14 @@ public class WhMpListController {
                     }
 
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
-                    System.out.println("\n******************* EMAIL CDARS ******************* cdarsreltest@gmail.com");
+                    System.out.println("\n******************* EMAIL CDARS *******************");
                     //sent to cdars
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentShipping(
                             servletContext,
                             "CDARS", //user name
                             "cdarsreltest@gmail.com", //to
+//                            "cdarsrel@gmail.com",
                             "Status for Hardware Shipping from HIMS SF", //subject
                             "Verification and status for Hardware Shipping has been made." //msg
                     );
@@ -307,7 +308,7 @@ public class WhMpListController {
                     wi.setMaterialPassNo(materialPassNo);
                     WhInventoryDAO widao = new WhInventoryDAO();
                     QueryResult querywi = widao.updateWhInventoryStatus(wi);
-
+                    
                     if (queryResult3.getResult() == 1) {
                         redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success5", args, locale));
                         return "redirect:/wh/whShipping/whMpList";
@@ -358,11 +359,21 @@ public class WhMpListController {
             @ModelAttribute UserSession userSession
     ) throws IOException {
         LOGGER.info("send email to person in charge");
+        
+        WhMpListDAO mpDao= new WhMpListDAO();
+        List<WhMpList> mpList = mpDao.getWhMpListEmail();
+        LOGGER.info("size : " + mpList.size());
+//        for(int i=0; i<mpList.size(); i++) {
+//            
+//        }
+        String[] email = new String[mpList.size()];
+        String[] to = mpList.toArray(email);
+        
         EmailSender emailSender = new EmailSender();
         emailSender.htmlEmailTable(
                 servletContext,
                 "", //user name requestor
-                "fg79cj@onsemi.com",
+                to,
                 //                "muhdfaizal@onsemi.com",                                   //to
                 "List of Hardware(s) Ready for Shipment", //subject
                 "The list of hardware(s) that have been ready for shipment has been made.<br />"

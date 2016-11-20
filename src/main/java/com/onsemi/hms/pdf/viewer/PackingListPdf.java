@@ -28,14 +28,14 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
             PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
         Date date = new Date();
         String todayDate = dateFormat.format(date);
         Paragraph viewTitle2 = new Paragraph("Generated Date : " + todayDate, fontOpenSans(6f, Font.NORMAL));
         viewTitle2.setAlignment(Element.ALIGN_RIGHT);
         doc.add(viewTitle2);
         
-        String title = "\nHIMS SF Shipping List ";
+        String title = "\nHIMS SF Shipping List (SBN Factory to Rel Lab)";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);

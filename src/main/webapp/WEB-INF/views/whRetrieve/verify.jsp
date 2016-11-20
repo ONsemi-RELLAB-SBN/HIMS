@@ -78,7 +78,7 @@
                                     <input type="text" class="form-control" id="status" name="status" value="${whRetrieve.status}" readonly>
                                 </div>
                             </div>
-                            <a href="${contextPath}/wh/whRetrieve" class="btn btn-info pull-left"><i class="fa fa-reply"></i>Back</a>
+                            <a href="${contextPath}/wh/whRetrieve" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="clearfix"></div>
                         </form>
                     </div>
@@ -177,7 +177,7 @@
                                     <div id = "alert_placeholder2"></div>
                                     <br><br>
                                     <div class="pull-right">
-                                        <button type="reset" class="btn btn-secondary cancel1" id="reset2">Reset</button>
+                                        <button type="reset" id="reset2" class="btn btn-secondary cancel1">Reset</button>
                                         <button type="submit" name="submit" id="submit2" class="btn btn-primary">Save</button>
                                     </div>
                                     <div class="clearfix"></div>
@@ -333,6 +333,15 @@
                     $("#tempRack").attr("readonly", true);
                     $("#tempShelf").attr("readonly", true);
                 }
+                
+                var element2 = $('#status');
+                if (element2.val() === 'Move to Inventory') {
+                    $("#submit2").attr("disabled", true);
+                    $("#reset2").attr("disabled", true);
+                    $("#tempRack").attr("readonly", true);
+                    $("#tempShelf").attr("readonly", true);
+                }
+                
             });
         </script>
     </s:layout-component>

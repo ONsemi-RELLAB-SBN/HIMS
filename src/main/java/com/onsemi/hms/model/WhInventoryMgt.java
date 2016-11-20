@@ -5,6 +5,7 @@ public class WhInventoryMgt {
     private String rackId;
     private String shelfId;
     private String hardwareId;
+    private String materialPassNo;
     private String modifiedDate;
     private String dateCreated;
 
@@ -38,6 +39,14 @@ public class WhInventoryMgt {
 
     public void setHardwareId(String hardwareId) {
         this.hardwareId = hardwareId;
+    }
+
+    public String getMaterialPassNo() {
+        return materialPassNo;
+    }
+
+    public void setMaterialPassNo(String materialPassNo) {
+        this.materialPassNo = materialPassNo;
     }
 
     public String getModifiedDate() {

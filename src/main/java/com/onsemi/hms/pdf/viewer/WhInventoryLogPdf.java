@@ -140,22 +140,39 @@ public class WhInventoryLogPdf extends AbstractITextPdfViewPotrait {
 
                     cellHeader.setPhrase(new Phrase("Qual A", fontHeader));
                     table.addCell(cellHeader);
-                    cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbA() + " (Qty: " + whHistoryList.get(i).getQtyQualA() +  ")", fontContent));
+                    if(whHistoryList.get(i).getPcbA().equals("")) {
+                        cellContent.setPhrase(new Phrase("-", fontContent));
+                    } else {
+                        cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbA() + " (Qty: " + whHistoryList.get(i).getQtyQualA() +  ")", fontContent));
+                    }
                     table.addCell(cellContent);
 
                     cellHeader.setPhrase(new Phrase("Qual B", fontHeader));
                     table.addCell(cellHeader);
-                    cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbB() + " (Qty: " + whHistoryList.get(i).getQtyQualB() +  ")", fontContent));
+                    if(whHistoryList.get(i).getPcbB().equals("")) {
+                        cellContent.setPhrase(new Phrase("-", fontContent));
+                    } else {
+                        cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbB() + " (Qty: " + whHistoryList.get(i).getQtyQualB() +  ")", fontContent));
+                    }
                     table.addCell(cellContent);
 
                     cellHeader.setPhrase(new Phrase("Qual C", fontHeader));
                     table.addCell(cellHeader);
-                    cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbC() + " (Qty: " + whHistoryList.get(i).getQtyQualC() +  ")", fontContent));
+                    if(whHistoryList.get(i).getPcbC().equals("")) {
+                        cellContent.setPhrase(new Phrase("-", fontContent));
+                    } else {
+                        cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbC() + " (Qty: " + whHistoryList.get(i).getQtyQualC() +  ")", fontContent));
+                    }
+                    
                     table.addCell(cellContent);
 
                     cellHeader.setPhrase(new Phrase("Qual Control", fontHeader));
                     table.addCell(cellHeader);
-                    cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbControl() + " (Qty: " + whHistoryList.get(i).getQtyControl()+  ")", fontContent));
+                    if(whHistoryList.get(i).getPcbControl().equals("")) {
+                        cellContent.setPhrase(new Phrase("-", fontContent));
+                    } else {
+                        cellContent.setPhrase(new Phrase(whHistoryList.get(i).getPcbControl() + " (Qty: " + whHistoryList.get(i).getQtyControl()+  ")", fontContent));
+                    }
                     table.addCell(cellContent);
 
                     //4

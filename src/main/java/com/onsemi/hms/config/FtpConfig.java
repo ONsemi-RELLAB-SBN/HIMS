@@ -1,6 +1,7 @@
 package com.onsemi.hms.config;
 
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.WhMpListDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhRetrieveDAO;
 import com.onsemi.hms.dao.WhShippingDAO;
@@ -8,6 +9,7 @@ import com.onsemi.hms.model.IonicFtpClose;
 import com.onsemi.hms.model.IonicFtpRequest;
 import com.onsemi.hms.model.IonicFtpRetrieve;
 import com.onsemi.hms.model.LogModule;
+import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhRetrieve;
 import com.onsemi.hms.model.WhShipping;
@@ -286,6 +288,10 @@ public class FtpConfig {
                                 whReq.setRefId(refId);
                                 WhRequestDAO whReqDao = new WhRequestDAO();
                                 QueryResult que = whReqDao.updateWhRequestStatus(whReq);
+                                
+                                WhMpList whMpList = new WhMpList();
+                                WhMpListDAO whMpListDao = new WhMpListDAO();
+                                QueryResult queryMp = whMpListDao.deleteWhMpList(refId);
                                 
                                 WhShippingDAO whShippingDAO2 = new WhShippingDAO();
                                 WhShipping query = whShippingDAO2.getWhShipping(refId);

@@ -101,7 +101,7 @@
                                     <input type="text" class="form-control" id="status" name="status" value="${whRequest.status}" readonly>
                                 </div>
                             </div>
-                            <a href="${contextPath}/wh/whRequest" class="btn btn-info pull-left"><i class="fa fa-reply"></i>Back</a>
+                            <a href="${contextPath}/wh/whRequest" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="clearfix"></div>
                         </form>
                     </div>

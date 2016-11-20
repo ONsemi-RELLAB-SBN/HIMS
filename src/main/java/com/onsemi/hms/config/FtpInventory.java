@@ -55,6 +55,7 @@ public class FtpInventory {
                             ftp.setRackId(shelfId.substring(0,6));
                             ftp.setShelfId(shelfId);
                             ftp.setHardwareId("Empty");
+                            ftp.setMaterialPassNo("Empty");
                             InventoryMgtDAO inventoryMgtDao = new InventoryMgtDAO();
                             int count = inventoryMgtDao.getCountShelf(shelfId);
                             if (count == 0) {

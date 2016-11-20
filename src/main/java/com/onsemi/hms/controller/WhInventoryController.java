@@ -51,15 +51,13 @@ public class WhInventoryController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhInventoryController.class);
     String[] args = {};
-    
+
     @Autowired
     private MessageSource messageSource;
 
     @Autowired
     ServletContext servletContext;
 
-    String tempDUMMY;
-    
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String whInventory(
             Model model,
@@ -67,8 +65,11 @@ public class WhInventoryController {
     ) {
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         List<WhInventory> whInventoryList = whInventoryDAO.getWhInventoryListMergeRetrieve();
+        String groupId = userSession.getGroup();
+//        LOGGER.info("groupId" + groupId);
         model.addAttribute("userSession", userSession);
         model.addAttribute("whInventoryList", whInventoryList);
+        model.addAttribute("groupId", groupId);
         return "whInventory/whInventory";
     }
 
@@ -80,7 +81,7 @@ public class WhInventoryController {
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(whInventoryId);
         LOGGER.info("whInventory.getEquipmentType() : " + whInventory.getEquipmentType());
-        
+
         String type = whInventory.getEquipmentType();
         if ("Motherboard".equals(type)) {
             String IdLabel = "Motherboard ID";
@@ -101,7 +102,7 @@ public class WhInventoryController {
         model.addAttribute("whInventory", whInventory);
         return "whInventory/edit";
     }
-        
+
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String update(
             Model model,
@@ -113,15 +114,19 @@ public class WhInventoryController {
             @RequestParam(required = false) String materialPassNo,
             @RequestParam(required = false) String inventoryRack,
             @RequestParam(required = false) String inventoryShelf,
-            @RequestParam(required = false) String equipmentType
+            @RequestParam(required = false) String equipmentType,
+            @RequestParam(required = false) String equipmentId
     ) {
-        WhInventory whInventory = new WhInventory();
+        inventoryRack = inventoryRack.toUpperCase();
+        inventoryShelf = inventoryShelf.toUpperCase();
         
+        WhInventory whInventory = new WhInventory();
+
         whInventory.setRefId(refId); //ref
         LOGGER.info(refId);
         whInventory.setMaterialPassNo(materialPassNo); //args
         LOGGER.info(materialPassNo);
-        
+
         //start add
         boolean checkLength = false;
         if (inventoryRack.length() == 6 && inventoryShelf.length() == 10) {
@@ -157,129 +162,172 @@ public class WhInventoryController {
             }
         }
 
+        InventoryMgtDAO inventoryMgtDao = new InventoryMgtDAO();
+        int countShelf = inventoryMgtDao.getCountShelf(inventoryShelf);
+
+        InventoryMgtDAO inventoryMgtDao2 = new InventoryMgtDAO();
+        int countRack = inventoryMgtDao2.getCountRack(inventoryRack);
+
+        boolean checkRackShelf = false;
+        if (ck == true) {
+            if (countShelf != 0 && countRack != 0) {
+                checkRackShelf = true;
+            }
+        }
+        boolean checkShelf = false;
+
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         QueryResult queryResult = null;
         String url = "";
-        if (ck == true) {
-            whInventory.setInventoryRack(inventoryRack); //update
-            whInventory.setInventoryShelf(inventoryShelf); //update
-            whInventory.setInventoryBy(userSession.getFullname()); //update
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
-            whInventory.setInventoryDate(dateFormat.format(date)); //update
-            queryResult = whInventoryDAO.updateWhInventory(whInventory);
-            
-            WhInventoryDAO whInventoryDAO3 = new WhInventoryDAO();
-            WhInventory query3 = whInventoryDAO3.getWhInventory(refId);
-            LogModule logModule3 = new LogModule();
-            LogModuleDAO logModuleDAO3 = new LogModuleDAO();
-            logModule3.setModuleId(query3.getId());
-            logModule3.setReferenceId(refId);
-            logModule3.setModuleName("hms_wh_inventory_list");
-            logModule3.setStatus("Change of Inventory");
-            logModule3.setVerifiedBy(query3.getInventoryBy());
-            logModule3.setVerifiedDate(query3.getInventoryDate());
-            QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
-            LOGGER.info("Inventory Pass");
-        
-            args = new String[1];
-            args[0] = materialPassNo;
-            if (queryResult.getResult() == 1) {
-                String username = System.getProperty("user.name");
-                //SEND EMAIL
-                File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
-                if (file.exists()) {
-                    LOGGER.info("dh ada header");
-                    FileWriter fileWriter = null;
-                    FileReader fileReader = null;
+        if (checkRackShelf == true) {
+            InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
+            WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(inventoryShelf);
+            WhInventoryMgt imgt = new WhInventoryMgt();
+            imgt.setRackId(whInventoryMgt.getRackId());
+            imgt.setShelfId(whInventoryMgt.getShelfId());
+            imgt.setHardwareId(equipmentId);
+            imgt.setMaterialPassNo(materialPassNo);
 
-                    try {
-                        fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv", true);
-                        fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
-                        String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
+            WhInventoryDAO invdao = new WhInventoryDAO();
+            WhInventory inv = invdao.getWhInventory(refId);
+            WhInventoryMgt imgt2 = new WhInventoryMgt();
+            imgt2.setRackId(inv.getInventoryRack());
+            imgt2.setShelfId(inv.getInventoryShelf());
+            imgt2.setHardwareId("Empty");
+            imgt2.setMaterialPassNo("Empty");
 
-                        BufferedReader bufferedReader = new BufferedReader(fileReader); 
-                        String data = bufferedReader.readLine();
-                        StringBuilder buff = new StringBuilder();
+            if (whInventoryMgt.getHardwareId().equals("Empty")) {
+                checkShelf = true;
+                LOGGER.info("Shelf empty. Enter.");
+            }
 
-                        int row = 0;
-                        while(data != null){
-                            LOGGER.info("start reading file..........");
-                            buff.append(data).append(System.getProperty("line.separator"));
-                            System.out.println("dataaaaaaaaa : \n" + data);
+            if (checkShelf == true) {
+                whInventory.setInventoryRack(inventoryRack); //update
+                whInventory.setInventoryShelf(inventoryShelf); //update
+                whInventory.setInventoryBy(userSession.getFullname()); //update
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
+                whInventory.setInventoryDate(dateFormat.format(date)); //update
+                queryResult = whInventoryDAO.updateWhInventory(whInventory);
 
-                            String[] split = data.split(",");
-                            IonicFtpInventory inventory = new IonicFtpInventory(
-                                split[0], split[1], split[2],
-                                split[3], split[4], split[5], 
-                                split[6], split[7], split[8],
-                                split[9], split[10], split[11],
-                                split[12], split[13], split[14],
-                                split[15], split[16], split[17],
-                                split[18], split[19], split[20],
-                                split[21], split[22], split[23] //date = [19], rack = [20], shelf = [21], by = [22]
-                            );
+                InventoryMgtDAO imdao = new InventoryMgtDAO();
+                QueryResult queryMgt = imdao.updateInventoryDetails(imgt);
 
-                            if(split[0].equals(refId)) {
-                                LOGGER.info(row + " : refId found...................." + data);
-                                CSV csv = new CSV();
-                                csv.open(new File(targetLocation));
-                                csv.put(19, row, "" + whInventory.getInventoryDate());
-                                csv.put(20, row, "" + whInventory.getInventoryRack());
-                                csv.put(21, row, "" + whInventory.getInventoryShelf());
-                                csv.put(22, row, "" + whInventory.getInventoryBy());
-                                csv.save(new File(targetLocation)); 
-                            } else {
-                                LOGGER.info("refId not found........" + data);
-                            }
-                            data = bufferedReader.readLine();
-                            row++;
-                        }
-                        bufferedReader.close();
-                        fileReader.close();
-                    } catch (Exception ee) {
-                        System.out.println("Error 1 occured while append the fileWriter");
-                    } finally {
+                imdao = new InventoryMgtDAO();
+                QueryResult queryMgt2 = imdao.updateInventoryRevert(imgt2);
+
+                WhInventoryDAO whInventoryDAO3 = new WhInventoryDAO();
+                WhInventory query3 = whInventoryDAO3.getWhInventory(refId);
+                LogModule logModule3 = new LogModule();
+                LogModuleDAO logModuleDAO3 = new LogModuleDAO();
+                logModule3.setModuleId(query3.getId());
+                logModule3.setReferenceId(refId);
+                logModule3.setModuleName("hms_wh_inventory_list");
+                logModule3.setStatus("Change of Inventory");
+                logModule3.setVerifiedBy(query3.getInventoryBy());
+                logModule3.setVerifiedDate(query3.getInventoryDate());
+                QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
+                LOGGER.info("Inventory Pass");
+
+                args = new String[1];
+                args[0] = materialPassNo;
+                if (queryResult.getResult() == 1) {
+                    String username = System.getProperty("user.name");
+                    //SEND EMAIL
+                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                    if (file.exists()) {
+                        LOGGER.info("dh ada header");
+                        FileWriter fileWriter = null;
+                        FileReader fileReader = null;
+
                         try {
-                            fileWriter.close();
-                        } catch (IOException ie) {
-                            System.out.println("Error 2 occured while closing the fileWriter");
+                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv", true);
+                            fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
+
+                            BufferedReader bufferedReader = new BufferedReader(fileReader);
+                            String data = bufferedReader.readLine();
+                            StringBuilder buff = new StringBuilder();
+
+                            int row = 0;
+                            while (data != null) {
+                                LOGGER.info("start reading file..........");
+                                buff.append(data).append(System.getProperty("line.separator"));
+                                System.out.println("dataaaaaaaaa : \n" + data);
+
+                                String[] split = data.split(",");
+                                IonicFtpInventory inventory = new IonicFtpInventory(
+                                        split[0], split[1], split[2],
+                                        split[3], split[4], split[5],
+                                        split[6], split[7], split[8],
+                                        split[9], split[10], split[11],
+                                        split[12], split[13], split[14],
+                                        split[15], split[16], split[17],
+                                        split[18], split[19], split[20],
+                                        split[21], split[22], split[23] //date = [19], rack = [20], shelf = [21], by = [22]
+                                );
+
+                                if (split[0].equals(refId)) {
+                                    LOGGER.info(row + " : refId found...................." + data);
+                                    CSV csv = new CSV();
+                                    csv.open(new File(targetLocation));
+                                    csv.put(19, row, "" + whInventory.getInventoryDate());
+                                    csv.put(20, row, "" + whInventory.getInventoryRack());
+                                    csv.put(21, row, "" + whInventory.getInventoryShelf());
+                                    csv.put(22, row, "" + whInventory.getInventoryBy());
+                                    csv.save(new File(targetLocation));
+                                } else {
+                                    LOGGER.info("refId not found........" + data);
+                                }
+                                data = bufferedReader.readLine();
+                                row++;
+                            }
+                            bufferedReader.close();
+                            fileReader.close();
+                        } catch (Exception ee) {
+                            System.out.println("Error 1 occured while append the fileWriter");
+                        } finally {
+                            try {
+                                fileWriter.close();
+                            } catch (IOException ie) {
+                                System.out.println("Error 2 occured while closing the fileWriter");
+                            }
                         }
+                    } else {
+                        LOGGER.info("File not exists.................");
                     }
+
+                    //send email
+                    LOGGER.info("send email to warehouse");
+
+                    /*to get hostname*/
+                    InetAddress ip;
+                    String hostName = "";
+                    try {
+                        ip = InetAddress.getLocalHost();
+                        hostName = ip.getHostName();
+                    } catch (UnknownHostException ex) {
+                        java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    String[] to = {"cdarsreltest@gmail.com"};
+//                    String[] to = {"cdarsrel@gmail.com"};
+                    EmailSender emailSender = new EmailSender();
+                    emailSender.htmlEmailWithAttachmentTest2(
+                            servletContext,
+                            "CDARS", //user name
+                            to, //to
+                            "Status for Hardware Inventory from HIMS SF", //subject
+                            "Verification and inventory for Hardware has been made." //msg
+                    );
+
+                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
+                    url = "redirect:/wh/whInventory/";
                 } else {
-                    LOGGER.info("File not exists.................");
+                    LOGGER.info("----------------------" + queryResult.getResult());
+                    redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+                    url = "redirect:/wh/whInventory/edit/" + refId;
                 }
-
-                //send email
-                LOGGER.info("send email to warehouse");
-
-                /*to get hostname*/
-                InetAddress ip;
-                String hostName ="";
-                try {
-                    ip = InetAddress.getLocalHost();
-                    hostName = ip.getHostName();
-                } catch (UnknownHostException ex) {
-                    java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                String[] to = {"cdarsreltest@gmail.com"};
-//                String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
-                EmailSender emailSender = new EmailSender();
-                emailSender.htmlEmailWithAttachmentTest2(
-                    servletContext,
-                    "CDARS", //user name
-                    to, //to
-                    "Status for Hardware Inventory from HIMS SF",  //subject
-                    "Verification and inventory for Hardware has been made."    //msg
-                );
-
-                redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
-                url = "redirect:/wh/whInventory/";
-            } else {
-                LOGGER.info("----------------------" + queryResult.getResult());
-                redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
-                url = "redirect:/wh/whInventory/edit/" + refId;
             }
         } else {
             LOGGER.info("Inventory Invalid");
@@ -287,7 +335,7 @@ public class WhInventoryController {
         }
         return url;
     }
-    
+
     @RequestMapping(value = "/view/{whInventoryId}", method = RequestMethod.GET)
     public String view(
             Model model,
@@ -303,26 +351,26 @@ public class WhInventoryController {
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-    
+
     @RequestMapping(value = "/viewWhInventoryPdf/{whInventoryId}", method = RequestMethod.GET)
     public ModelAndView viewWhInventoryPdf(
             Model model,
             @PathVariable("whInventoryId") String whInventoryId
-    ) {        
+    ) {
         LOGGER.info("Masuk 1........");
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(whInventoryId);
-        
+
         return new ModelAndView("whInventoryPdf", "whInventory", whInventory);
     }
-    
+
     @RequestMapping(value = "/history/{whInventoryId}", method = RequestMethod.GET)
     public String history(
             Model model,
             HttpServletRequest request,
             @PathVariable("whInventoryId") String whInventoryId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");        
+        LOGGER.info("Masuk view 1........");
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whInventory/viewWhInventoryLogPdf/" + whInventoryId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
@@ -331,24 +379,24 @@ public class WhInventoryController {
         LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-    
+
     @RequestMapping(value = "/viewWhInventoryLogPdf/{whInventoryId}", method = RequestMethod.GET)
     public ModelAndView viewWhInventoryHistPdf(
             Model model,
             @PathVariable("whInventoryId") String whInventoryId
     ) {
-        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();        
+        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         LOGGER.info("Masuk 1........");
         List<WhInventoryLog> whHistoryList = whInventoryDAO.getWhInventoryRetLog(whInventoryId);
-        LOGGER.info("Masuk 2........ tempDUMMY ___________ " + tempDUMMY);
+        LOGGER.info("Masuk 2........ ");
         return new ModelAndView("whInventoryLogPdf", "whInventoryLog", whHistoryList);
     }
-    
+
     /*
     *
     *   QUERY FOR EVERY SUBMODULE
     *
-    */
+     */
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -369,92 +417,100 @@ public class WhInventoryController {
     ) {
         String query = "";
         int count = 0;
-        
-        if(materialPassNo!=null) {
-            if(!materialPassNo.equals("")) {
+
+        if (materialPassNo != null) {
+            if (!materialPassNo.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " I.material_pass_no = \'" + materialPassNo + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND I.material_pass_no = \'" + materialPassNo + "\' ";
+                }
             }
         }
-        if(equipmentId!=null) {
-            if(!equipmentId.equals("")) {
+        if (equipmentId != null) {
+            if (!equipmentId.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " equipment_id = \'" + equipmentId + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND equipment_id = \'" + equipmentId + "\' ";
+                }
             }
         }
-        if(materialPassExpiry1!=null &&  materialPassExpiry2!=null) {
-            if(!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
+        if (materialPassExpiry1 != null && materialPassExpiry2 != null) {
+            if (!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
                 count++;
-                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 +"\' AS DATE) ";
-                if(count == 1)
+                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = materialPassExpiry;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + materialPassExpiry;
+                }
             }
         }
-        if(equipmentType!=null) {
+        if (equipmentType != null) {
 //            if(!equipmentType.equals("") !("").equals(equipmentType)) {
-              if(!("").equals(equipmentType)) {
+            if (!("").equals(equipmentType)) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " equipment_type = \'" + equipmentType + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND equipment_type = \'" + equipmentType + "\' ";
+                }
             }
         }
-        if(requestedDate1!=null &&  requestedDate2!=null) {
-            if(!requestedDate1.equals("") && !requestedDate2.equals("")) {
+        if (requestedDate1 != null && requestedDate2 != null) {
+            if (!requestedDate1.equals("") && !requestedDate2.equals("")) {
                 count++;
-                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 +"\' AS DATE) ";
-                if(count == 1)
+                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = requestedDate;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + requestedDate;
+                }
             }
         }
-        if(requestedBy!=null) {
-            if(!requestedBy.equals("")) {
+        if (requestedBy != null) {
+            if (!requestedBy.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " requested_by = \'" + requestedBy + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND requested_by = \'" + requestedBy + "\' ";
+                }
             }
         }
-        if(receivedDate1!=null &&  receivedDate2!=null) {
-            if(!receivedDate1.equals("") && !receivedDate2.equals("")) {
+        if (receivedDate1 != null && receivedDate2 != null) {
+            if (!receivedDate1.equals("") && !receivedDate2.equals("")) {
                 count++;
-                String receivedDate = " arrival_received_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 +"\' AS DATE) ";
-                if(count == 1)
+                String receivedDate = " arrival_received_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = receivedDate;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + receivedDate;
+                }
             }
         }
-        if(status!=null) {
-            if(!status.equals("")) {
+        if (status != null) {
+            if (!status.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " I.status = \'" + status + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND I.status = \'" + status + "\' ";
+                }
             }
         }
-        
+
         System.out.println("Query: " + query);
         WhInventoryDAO wh = new WhInventoryDAO();
         List<WhInventory> inventoryQueryList = wh.getQuery(query);
-        
+
         model.addAttribute("inventoryQueryList", inventoryQueryList);
         return "whInventory/query";
     }
-    
+
     @RequestMapping(value = "/viewInventory", method = {RequestMethod.GET, RequestMethod.POST})
     public String viewInventory(
             Model model,
@@ -463,15 +519,19 @@ public class WhInventoryController {
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String rackId
     ) {
-        String query = "";
-        if(rackId == null) {
+        String query = "WHERE rack_id = '' ";
+
+        if (rackId == null) {
             LOGGER.debug("nullllllllllllllllllll~~~~");
+        } else if (rackId.equals("")) {
+            query = "WHERE rack_id = '' ";
+            LOGGER.debug("aaaaaaaaaaaaaaa");
+        } else if (rackId.equals("All")) {
+            query = "";
+            LOGGER.debug("sssssssssssssssssssss");
         } else {
-            if(!rackId.equals("All")) {
-                query = "WHERE rack_id= '" + rackId + "' ";
-            } else {
-                query = "";
-            }
+            query = "WHERE rack_id= '" + rackId + "' ";
+            LOGGER.debug("nllllll~~~~");
         }
         InventoryMgtDAO wh = new InventoryMgtDAO();
         List<WhInventoryMgt> inventoryMgtList = wh.getInventoryDetailsList(query);
@@ -480,22 +540,5 @@ public class WhInventoryController {
         model.addAttribute("inventoryMgtList", inventoryMgtList);
         model.addAttribute("inventoryMgtList2", inventoryMgtList2);
         return "whInventory/viewInventory";
-    }
-    
-    //test utk fg79cj
-    @RequestMapping(value = "/dummy/{dum}", method = {RequestMethod.GET, RequestMethod.POST})
-    public String email(
-            Model model,
-            HttpServletRequest request,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @PathVariable("dum") String dum,
-            @RequestParam(required = false) String refId
-    ) throws IOException {
-        LOGGER.info("inputttt : ___________ " + dum);
-        tempDUMMY = dum;
-        LOGGER.info("refId : ___________ " + refId);
-        return "redirect:/wh/whInventory/";
     }
 }

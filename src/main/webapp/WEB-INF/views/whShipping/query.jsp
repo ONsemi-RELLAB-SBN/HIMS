@@ -120,7 +120,7 @@
                                 <br/>
                             </div>
                             <div class="col-lg-12">
-                                <a href="${contextPath}/wh/whShipping" class="btn btn-info pull-left" id="cancel"><i class="fa fa-reply"></i>Back</a>
+                                <a href="${contextPath}/wh/whShipping" class="btn btn-info pull-left" id="cancel"><i class="fa fa-reply"></i> Back</a>
                                 <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" >View Data</button>
                             </div>
                             <div class="clearfix"><br/></div>

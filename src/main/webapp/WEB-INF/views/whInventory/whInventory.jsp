@@ -83,25 +83,15 @@
                                             <td><c:out value="${whInventory.quantity}"/></td>
                                             <td><c:out value="${whInventory.inventoryRack}, ${whInventory.inventoryShelf}"/></td>
                                             <td><c:out value="${whInventory.inventoryDate}"/></td>
-<!--                                            <td id="tddum" _dum="s"><input id="dum"></td>-->
-                                            <!--<td><input id="dum"><input id="refId" type="text" value="${whInventory.refId}"></td>-->
                                             <td align="center">
-                                                <input type="hidden" id="userSession" name="userSession" value="${userSession.group}" />
-                                                <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" id="edit" title="Update" hidden>
-                                                    
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
-                                                
-<!--                                            utk fg79cj    
-                                                <a class="table-link" id = "dummy" title="Dummy">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>-->
+                                                <c:if test="${groupId == '1' || groupId == '2'}">
+                                                    <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" id="edit" title="Update">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </c:if>
                                                 <a href="${contextPath}/wh/whInventory/history/${whInventory.refId}" class="table-link" title="Details">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
@@ -171,6 +161,8 @@
                     ]
                 });
                 
+//                oTable.buttons().container().appendTo($("#dt_spml_tt", oTable.table().container() ) );
+                
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });
@@ -178,29 +170,7 @@
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });
-                
-                var element2 = $('#userSession');
-                if (element2.val() === "20") {
-                    $("#edit").hide();
-                } else if (element2.val() === "1") {
-                    $("#edit").show();
-                }
             });
-            
-     //utk fg79cj
-//            $('#dummy').on('click', function () {
-//                var dum = $('#dum').val();
-//                location.href = 'http://zbczmg-l1:8080/HMS/wh/whInventory/dummy/' + dum;
-//            })
-
-            function modalDelete(e) {
-                var deleteId = $(e).attr("modaldeleteid");
-                var deleteInfo = $("#modal_delete_info_" + deleteId).html();
-                var deleteUrl = "${contextPath}/wh/whInventory/delete/" + deleteId;
-                var deleteMsg = "<f:message key='general.label.delete.confirmation'><f:param value='" + deleteInfo + "'/></f:message>";
-                $("#delete_modal .modal-body").html(deleteMsg);
-                $("#modal_delete_button").attr("href", deleteUrl);
-            }
-        </script>-->
+        </script>
     </s:layout-component>
 </s:layout-render>

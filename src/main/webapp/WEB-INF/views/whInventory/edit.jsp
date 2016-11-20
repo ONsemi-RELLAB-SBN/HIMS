@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div id = "alert_placeholder2"></div>
-                            <a href="${contextPath}/wh/whInventory" class="btn btn-info pull-left"><i class="fa fa-reply"></i>Back</a>
+                            <a href="${contextPath}/wh/whInventory" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>
                                 <button type="submit" class="btn btn-primary">Save</button>

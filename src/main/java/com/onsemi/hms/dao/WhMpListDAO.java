@@ -202,6 +202,37 @@ public class WhMpListDAO {
         }
         return whMpListList;
     }
+    
+    public List<WhMpList> getWhMpListEmail() {
+        String sql = "SELECT DISTINCT RL.requested_email "
+                   + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
+                   + "WHERE RL.request_id = SL.request_id AND SL.request_id = ML.shipping_id " 
+                   + "ORDER BY ML.shipping_id ASC ";
+        List<WhMpList> whMpListList = new ArrayList<WhMpList>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhMpList whMpList;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whMpList = new WhMpList();
+                whMpList.setRequestedEmail(rs.getString("RL.requested_email"));
+                whMpListList.add(whMpList);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whMpListList;
+    }
 
     public QueryResult deleteAllWhMpList() {
         QueryResult queryResult = new QueryResult();

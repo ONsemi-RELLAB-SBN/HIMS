@@ -584,7 +584,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
         }).start();
     }
     
-    public void htmlEmailTable(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
+    public void htmlEmailTable(final ServletContext servletContext, final String user, final String[] to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {

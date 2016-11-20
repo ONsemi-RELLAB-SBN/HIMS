@@ -31,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
-import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,7 +152,7 @@ public class WhRetrieveController {
             String hiActiveTab = "";
             model.addAttribute("hiActive", hiActive);
             model.addAttribute("hiActiveTab", hiActiveTab);
-        }
+        }        
         model.addAttribute("whRetrieve", whRetrieve);
         return "whRetrieve/verify";
     }
@@ -282,6 +281,11 @@ public class WhRetrieveController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String flag
     ) {
+        tempRack = tempRack.toUpperCase();
+        tempShelf = tempShelf.toUpperCase();
+        
+        String checkValidity = "false";
+        
         WhRetrieve whRetrieve = new WhRetrieve();
         whRetrieve.setRefId(refId);
         whRetrieve.setMaterialPassNo(materialPassNo);
@@ -304,17 +308,22 @@ public class WhRetrieveController {
         InventoryMgtDAO inventoryMgtDao2 = new InventoryMgtDAO();
         int countRack = inventoryMgtDao2.getCountRack(tempRack);
         
-        InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
-        WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(tempShelf);
-        
         boolean checkShelf = false;
-        
-        
-        if(countRack != 0 && countShelf != 0) {
+        WhInventoryMgt imgt = new WhInventoryMgt();
+        InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
+        if(countShelf != 0) {
+            WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(tempShelf);
+            imgt.setRackId(whInventoryMgt.getRackId());
+            imgt.setShelfId(whInventoryMgt.getShelfId());
+            imgt.setHardwareId(equipmentId);
+            imgt.setMaterialPassNo(materialPassNo);
             if(whInventoryMgt.getHardwareId().equals("Empty")) {
                 checkShelf = true;
                 LOGGER.info("Shelf empty. Enter.");
             }
+        }
+        
+        if(countRack != 0 && countShelf != 0) {
             if(checkShelf == true) {
                 if (checkLength == true) {
                     LOGGER.info("************************************ " + tempRack + " vs " + tempShelf.substring(0, 6) + " ************************************");
@@ -348,6 +357,8 @@ public class WhRetrieveController {
                         whRetrieve.setFlag("1");
                         cp = true;
                         LOGGER.info("Inventory Pass");
+                        InventoryMgtDAO imdao = new  InventoryMgtDAO();
+                        QueryResult queryMgt = imdao.updateInventoryDetails(imgt);
                     } else {
                         whRetrieve.setStatus("Inventory Invalid");
                         whRetrieve.setFlag(flag);
@@ -372,8 +383,6 @@ public class WhRetrieveController {
             WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
             WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
             if (query2.getFlag().equals("1")) {
-                
-                
                 LogModule logModule2 = new LogModule();
                 LogModuleDAO logModuleDAO2 = new LogModuleDAO();
                 logModule2.setModuleId(query2.getId());
@@ -388,7 +397,6 @@ public class WhRetrieveController {
             }
             
             if (whRetrieve.getFlag().equals("1")) {
-
                 //save id to table wh_inventory_list
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date();
@@ -405,6 +413,7 @@ public class WhRetrieveController {
                 int count = whInventoryDAO.getCountExistingData(whInventory.getRefId());
 
                 if (count == 0) {
+                    checkValidity = "true";
                     LOGGER.info("data xdeeeeee");
                     whInventoryDAO = new WhInventoryDAO();
                     QueryResult queryResult1 = whInventoryDAO.insertWhInventory(whInventory);
@@ -652,12 +661,12 @@ public class WhRetrieveController {
                             java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
-                        System.out.println("******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
+                        System.out.println("******************* EMAIL CDARS *******************");
 
                         WhInventoryDAO whidao = new WhInventoryDAO();
                         WhInventory whi = whidao.getWhInventoryMergeWithRetrieve(refId);
                         
-//                        String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
+//                        String[] to = {"cdarsrel@gmail.com"};
                         String[] to = {"cdarsreltest@gmail.com"};
                         EmailSender emailSender = new EmailSender();
                         emailSender.htmlEmailWithAttachmentTest2(
@@ -691,6 +700,7 @@ public class WhRetrieveController {
                     LOGGER.info("data adeeeeee");
                 }
             }
+            
             url = "redirect:/wh/whInventory/";
         } else {
             WhRetrieveDAO whRetrieveDAO3 = new WhRetrieveDAO();
@@ -710,6 +720,8 @@ public class WhRetrieveController {
             }
             url = "redirect:/wh/whRetrieve/verify/" + refId;
         }
+        LOGGER.info("checkValidity: " + checkValidity);
+        model.addAttribute("checkValidity", checkValidity);
         return url;
     }
 

@@ -30,11 +30,12 @@ public class InventoryMgtDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_inventory_mgt (rack_id, shelf_id, hardware_id, modified_date, date_created) VALUES (?,?,?,NOW(),NOW())", Statement.RETURN_GENERATED_KEYS
+                    "INSERT INTO hms_inventory_mgt (rack_id, shelf_id, hardware_id, material_pass_no, modified_date, date_created) VALUES (?,?,?,?,NOW(),NOW())", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whInventoryMgt.getRackId());
             ps.setString(2, whInventoryMgt.getShelfId());
             ps.setString(3, whInventoryMgt.getHardwareId());
+            ps.setString(4, whInventoryMgt.getMaterialPassNo());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -62,11 +63,40 @@ public class InventoryMgtDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(
                     "UPDATE hms_inventory_mgt " +
-                    "SET hardware_id = ?, modified_date = NOW() " +
+                    "SET hardware_id = ?, material_pass_no = ?, modified_date = NOW() " +
                     "WHERE rack_id = ? AND shelf_id = ? "
             );
             ps.setString(1, whInventoryMgt.getHardwareId());
-            ps.setString(2, whInventoryMgt.getModifiedDate());
+            ps.setString(2, whInventoryMgt.getMaterialPassNo());
+            ps.setString(3, whInventoryMgt.getRackId());
+            ps.setString(4, whInventoryMgt.getShelfId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    
+    public QueryResult updateInventoryRevert(WhInventoryMgt whInventoryMgt) {
+        QueryResult queryResult = new QueryResult();
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE hms_inventory_mgt " +
+                    "SET hardware_id = ?, material_pass_no = ? " +
+                    "WHERE rack_id = ? AND shelf_id = ? "
+            );
+            ps.setString(1, whInventoryMgt.getHardwareId());
+            ps.setString(2, whInventoryMgt.getMaterialPassNo());
             ps.setString(3, whInventoryMgt.getRackId());
             ps.setString(4, whInventoryMgt.getShelfId());
             queryResult.setResult(ps.executeUpdate());
@@ -110,7 +140,7 @@ public class InventoryMgtDAO {
     }
 
     public WhInventoryMgt getInventoryDetails(String shelfId) {
-        String sql = "SELECT * "
+        String sql = "SELECT *, DATE_FORMAT(modified_date,'%d %M %Y') AS modified_date_view, DATE_FORMAT(date_created,'%d %M %Y') AS date_created_view "
                    + "FROM hms_inventory_mgt "
                    + "WHERE shelf_id = '" + shelfId + "' ";
         WhInventoryMgt whInventoryMgt = null;
@@ -123,8 +153,9 @@ public class InventoryMgtDAO {
                 whInventoryMgt.setRackId(rs.getString("rack_id"));
                 whInventoryMgt.setShelfId(rs.getString("shelf_id"));
                 whInventoryMgt.setHardwareId(rs.getString("hardware_id"));
-                whInventoryMgt.setDateCreated(rs.getString("date_created"));
-                whInventoryMgt.setModifiedDate(rs.getString("modified_date"));
+                whInventoryMgt.setMaterialPassNo(rs.getString("material_pass_no"));
+                whInventoryMgt.setDateCreated(rs.getString("date_created_view"));
+                whInventoryMgt.setModifiedDate(rs.getString("modified_date_view"));
             }
             rs.close();
             ps.close();
@@ -143,7 +174,8 @@ public class InventoryMgtDAO {
     }
 
     public List<WhInventoryMgt> getInventoryDetailsList(String query) {
-        String sql = "SELECT * FROM hms_inventory_mgt " + query + " ORDER BY rack_id ASC";
+        String sql = "SELECT *, DATE_FORMAT(modified_date,'%d %M %Y') AS modified_date_view, DATE_FORMAT(date_created,'%d %M %Y') AS date_created_view "
+                + " FROM hms_inventory_mgt " + query + " ORDER BY rack_id ASC";
         List<WhInventoryMgt> whInventoryMgtList = new ArrayList<WhInventoryMgt>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -155,8 +187,9 @@ public class InventoryMgtDAO {
                 whInventoryMgt.setRackId(rs.getString("rack_id"));
                 whInventoryMgt.setShelfId(rs.getString("shelf_id"));
                 whInventoryMgt.setHardwareId(rs.getString("hardware_id"));
-                whInventoryMgt.setDateCreated(rs.getString("date_created"));
-                whInventoryMgt.setModifiedDate(rs.getString("modified_date"));
+                whInventoryMgt.setMaterialPassNo(rs.getString("material_pass_no"));
+                whInventoryMgt.setDateCreated(rs.getString("date_created_view"));
+                whInventoryMgt.setModifiedDate(rs.getString("modified_date_view"));
                 whInventoryMgtList.add(whInventoryMgt);
             }
             rs.close();

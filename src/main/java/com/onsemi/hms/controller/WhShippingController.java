@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.InventoryMgtDAO;
 import com.onsemi.hms.tools.CSV;
 import com.onsemi.hms.dao.LogModuleDAO;
 import com.onsemi.hms.dao.WhInventoryDAO;
@@ -14,6 +15,7 @@ import com.onsemi.hms.model.IonicFtpShipping;
 import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhInventory;
+import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhShipping;
@@ -27,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
@@ -290,6 +293,9 @@ public class WhShippingController {
     ) {
         WhMpListDAO whMpListDAO = new WhMpListDAO();
         List<WhMpList> packingList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
+        whMpListDAO = new WhMpListDAO();
+        int countAll = whMpListDAO.getCount();
+        model.addAttribute("countAll", countAll);
         model.addAttribute("packingList", packingList);
         return "whShipping/packingList";
     }
@@ -308,6 +314,7 @@ public class WhShippingController {
         if (count != 0) {
             WhMpListDAO whMpListDAO = new WhMpListDAO();
             int countMpNo = whMpListDAO.getCountMpNo(materialPassNo); //mpno in mplist
+            model.addAttribute("count", countMpNo);
             if (countMpNo == 0) {
                 WhShippingDAO whshipD = new WhShippingDAO();
                 WhShipping whship = whshipD.getWhShippingMergeWithRequestByMpNo(materialPassNo);
@@ -474,10 +481,10 @@ public class WhShippingController {
                     }
 
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
-                    System.out.println("\n******************* EMAIL CDARS ******************* cdarsrel@gmail.com");
+                    System.out.println("\n******************* EMAIL CDARS *******************");
                     //sent to cdars
                     String[] to = {"cdarsreltest@gmail.com"};
-//                    String[] to = {"cdarsrel@gmail.com","cdarsreltest@gmail.com"};
+//                    String[] to = {"cdarsrel@gmail.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest(
                             servletContext,
@@ -520,7 +527,19 @@ public class WhShippingController {
                     whReq.setFlag("1");
                     WhRequestDAO whRequestDao = new WhRequestDAO();
                     QueryResult queryResult3 = whRequestDao.updateWhRequestStatus(whReq);
-
+                    
+                    whRequestDao = new WhRequestDAO();
+                    WhRequest queryShelf = whRequestDao.getWhRequest(refId);
+                    InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
+                    WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(queryShelf.getInventoryShelf());
+                    WhInventoryMgt imgt = new WhInventoryMgt();
+                    imgt.setRackId(whInventoryMgt.getRackId());
+                    imgt.setShelfId(whInventoryMgt.getShelfId());
+                    imgt.setHardwareId("Empty");
+                    imgt.setMaterialPassNo("Empty");
+                    InventoryMgtDAO imdao = new  InventoryMgtDAO();
+                    QueryResult queryMgt = imdao.updateInventoryDetails(imgt);
+                    
                     WhInventory wi = new WhInventory();
                     wi.setFlag("1");
                     wi.setStatus("Unavailable in Inventory");
@@ -608,12 +627,24 @@ public class WhShippingController {
         int countMpList = whMpListDAO.getCount();
         
         if(countMpList!= 0) {
+            WhMpListDAO mpDao= new WhMpListDAO();
+            List<WhMpList> mpList = mpDao.getWhMpListEmail();
+            List<String> to = new ArrayList<String>();
+            for(int i=0; i<mpList.size(); i++) {
+                to.add(mpList.get(i).getRequestedEmail());
+            }
+            
+            String[] listEmail = new String[to.size()];
+            to.toArray(listEmail);
+            LOGGER.info("" + listEmail.length);
+            LOGGER.info(""+ to);
+            
             LOGGER.info("send email to person in charge");
-            EmailSender emailSender = new EmailSender();
-            emailSender.htmlEmailTable(
+                EmailSender emailSender = new EmailSender();
+                emailSender.htmlEmailTable(
                     servletContext,
                     "", //user name requestor
-                    "fg79cj@onsemi.com",
+                    listEmail,
                     //                "muhdfaizal@onsemi.com",                                   //to
                     "List of Hardware(s) Ready for Shipment", //subject
                     "The list of hardware(s) that have been ready for shipment has been made.<br />"

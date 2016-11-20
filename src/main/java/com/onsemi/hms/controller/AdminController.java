@@ -1,5 +1,6 @@
 package com.onsemi.hms.controller;
 
+import com.onsemi.hms.dao.InventoryMgtDAO;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import com.onsemi.hms.dao.UserDAO;
 import com.onsemi.hms.dao.UserGroupAccessDAO;
 import com.onsemi.hms.dao.UserGroupDAO;
 import com.onsemi.hms.model.Menu;
+import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.tools.QueryResult;
 import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.UserGroup;
@@ -399,4 +401,13 @@ public class AdminController {
         return "admin/menu";
     }
     
+    @RequestMapping(value = "/inventoryMgt", method = RequestMethod.GET)
+    public String inventoryMgt(
+            Model model
+    ) {
+        InventoryMgtDAO inventoryMgtDAO = new InventoryMgtDAO();
+        List<WhInventoryMgt> inventoryMgtList = inventoryMgtDAO.getInventoryDetailsList("");
+        model.addAttribute("inventoryMgtList", inventoryMgtList);
+        return "admin/inventoryMgt";
+    }
 }
