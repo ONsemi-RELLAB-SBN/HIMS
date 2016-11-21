@@ -487,8 +487,26 @@ public class WhRequestController {
         System.out.println("Query: " + query);
         WhRequestDAO wh = new WhRequestDAO();
         List<WhRequest> requestQueryList = wh.getQuery(query);
-        
         model.addAttribute("requestQueryList", requestQueryList);
+        WhRequestDAO wi = new WhRequestDAO();
+        List<WhRequest> hardwareIdList = wi.getHardwareId();
+        model.addAttribute("hardwareIdList", hardwareIdList);
+        WhRequestDAO wi2 = new WhRequestDAO();
+        List<WhRequest> requestedByList = wi2.getRequestedBy();
+        model.addAttribute("requestedByList", requestedByList);
+        WhRequestDAO wi3 = new WhRequestDAO();
+        List<WhRequest> statusList = wi3.getStatus();
+        model.addAttribute("statusList", statusList);
+        WhRequestDAO wi4 = new WhRequestDAO();
+        List<WhRequest> hardwareTypeList = wi4.getHardwareType();
+        model.addAttribute("hardwareTypeList", hardwareTypeList);
+        WhRequestDAO wi5 = new WhRequestDAO();
+        List<WhRequest> rackList = wi5.getRack();
+        model.addAttribute("rackList", rackList);
+        WhRequestDAO wi6 = new WhRequestDAO();
+        List<WhRequest> shelfList = wi6.getShelf();
+        model.addAttribute("shelfList", shelfList);
+        
         return "whRequest/query";
     }
     

@@ -310,8 +310,8 @@ public class WhInventoryController {
                         java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    String[] to = {"cdarsreltest@gmail.com"};
-//                    String[] to = {"cdarsrel@gmail.com"};
+//                    String[] to = {"cdarsreltest@gmail.com"};
+                    String[] to = {"cdarsrel@gmail.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,
@@ -506,8 +506,28 @@ public class WhInventoryController {
         System.out.println("Query: " + query);
         WhInventoryDAO wh = new WhInventoryDAO();
         List<WhInventory> inventoryQueryList = wh.getQuery(query);
-
         model.addAttribute("inventoryQueryList", inventoryQueryList);
+        WhInventoryDAO wi = new WhInventoryDAO();
+        List<WhInventory> hardwareIdList = wi.getHardwareId();
+        model.addAttribute("hardwareIdList", hardwareIdList);
+        WhInventoryDAO wi2 = new WhInventoryDAO();
+        List<WhInventory> requestedByList = wi2.getRequestedBy();
+        model.addAttribute("requestedByList", requestedByList);
+        WhInventoryDAO wiR = new WhInventoryDAO();
+        List<WhInventory> statusRList = wiR.getStatusR();
+        model.addAttribute("statusRList", statusRList);
+        WhInventoryDAO wiI = new WhInventoryDAO();
+        List<WhInventory> statusIList = wiI.getStatusI();
+        model.addAttribute("statusIList", statusIList);
+        WhInventoryDAO wi4 = new WhInventoryDAO();
+        List<WhInventory> hardwareTypeList = wi4.getHardwareType();
+        model.addAttribute("hardwareTypeList", hardwareTypeList);
+        WhInventoryDAO wi5 = new WhInventoryDAO();
+        List<WhInventory> rackList = wi5.getRack();
+        model.addAttribute("rackList", rackList);
+        WhInventoryDAO wi6 = new WhInventoryDAO();
+        List<WhInventory> shelfList = wi6.getShelf();
+        model.addAttribute("shelfList", shelfList);
         return "whInventory/query";
     }
 

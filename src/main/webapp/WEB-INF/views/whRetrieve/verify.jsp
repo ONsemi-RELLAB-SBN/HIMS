@@ -175,6 +175,9 @@
                                         </div>
                                     </div>
                                     <div id = "alert_placeholder2"></div>
+                                    <c:if test="${checkValidity == 'false'}">
+                                        <div id = "alert_placeholder3"></div>
+                                    </c:if>
                                     <br><br>
                                     <div class="pull-right">
                                         <button type="reset" id="reset2" class="btn btn-secondary cancel1">Reset</button>
@@ -254,6 +257,12 @@
                 } else {
                     $("#quantitydiv").hide();
                 }
+                
+                bootstrap_alert3 = function () {};
+                bootstrap_alert3.warning = function (message) {
+                    $('#alert_placeholder3').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                };
+                bootstrap_alert3.warning('Inventory invalid! Please re-check and try again.');
 
                 bootstrap_alert2 = function () {};
                 bootstrap_alert2.warning = function (message) {

@@ -48,7 +48,13 @@
                             <div class="form-group col-lg-12" >
                                 <label for="equipmentId" class="col-lg-2 control-label">Hardware ID</label>
                                 <div class="col-lg-5">
-                                    <input type="text" class="form-control" id="equipmentId" name="equipmentId">
+<!--                                    <input type="text" class="form-control" id="equipmentId" name="equipmentId">-->
+                                    <select id="equipmentId" name="equipmentId" class="form-control">
+                                        <option value=""></option>
+                                        <c:forEach items="${hardwareIdList}" var="group">
+                                            <option value="${group.equipmentId}">${group.equipmentId}</option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                                 <label for="materialPassNo" class="col-lg-2 control-label">Material Pass No.</label>
                                 <div class="col-lg-3">
@@ -70,10 +76,9 @@
                                     <!--                                    <input type="text" class="form-control" id="equipmentType" name="equipmentType">-->
                                     <select id="equipmentType" name="equipmentType" class="form-control">
                                         <option value=""></option>
-                                        <option value="Motherboard">Motherboard</option>
-                                        <option value="PCB">PCB</option>
-                                        <option value="Stencil">Stencil</option>
-                                        <option value="Tray">Tray</option>
+                                        <c:forEach items="${hardwareTypeList}" var="group">
+                                            <option value="${group.equipmentType}">${group.equipmentType}</option>
+                                        </c:forEach>
                                     </select>
                                 </div>
                             </div>
@@ -89,7 +94,12 @@
                                 </div>
                                 <label for="requestedBy" class="col-lg-2 control-label">Requested By</label>
                                 <div class="col-lg-3">
-                                    <input type="text" class="form-control" id="requestedBy" name="requestedBy">
+                                    <select id="requestedBy" name="requestedBy" class="form-control">
+                                        <option value=""></option>
+                                        <c:forEach items="${requestedByList}" var="group">
+                                            <option value="${group.requestedBy}">${group.requestedBy}</option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12" ></div>
@@ -105,13 +115,10 @@
                                 <label for="status" class="col-lg-2 control-label">Status</label>
                                 <div class="col-lg-3">
                                     <select id="status" name="status" class="form-control">
-                                        <option value="" selected></option>
-                                        <option value="New Inventory Request">New Inventory Request</option>
-                                        <option value="Verification Pass">Barcode Verification Pass</option>
-                                        <option value="Verification Fail">Barcode Verification Fail</option>
-                                        <option value="Inventory Valid">Inventory Valid</option>
-                                        <option value="Inventory Invalid">Inventory Invalid</option>
-                                        <option value="Move to Inventory">Move to Inventory</option>
+                                        <option value=""></option>
+                                        <c:forEach items="${statusList}" var="group">
+                                            <option value="${group.status}">${group.status}</option>
+                                        </c:forEach>
                                     </select>
                                 </div>
                             </div>                            

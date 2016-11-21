@@ -282,8 +282,29 @@ public class WhShippingController {
         System.out.println("Query: " + query);
         WhShippingDAO wh = new WhShippingDAO();
         List<WhShipping> shippingQueryList = wh.getQuery(query);
-        
         model.addAttribute("shippingQueryList", shippingQueryList);
+        WhShippingDAO wr = new WhShippingDAO();
+        List<WhShipping> hardwareIdList = wr.getHardwareId();
+        model.addAttribute("hardwareIdList", hardwareIdList);
+        WhShippingDAO wi2 = new WhShippingDAO();
+        List<WhShipping> requestedByList = wi2.getRequestedBy();
+        model.addAttribute("requestedByList", requestedByList);
+        WhShippingDAO wiR = new WhShippingDAO();
+        List<WhShipping> statusRList = wiR.getStatusR();
+        model.addAttribute("statusRList", statusRList);
+        WhShippingDAO wiS = new WhShippingDAO();
+        List<WhShipping> statusSList = wiS.getStatusS();
+        model.addAttribute("statusSList", statusSList);
+        WhShippingDAO wi4 = new WhShippingDAO();
+        List<WhShipping> hardwareTypeList = wi4.getHardwareType();
+        model.addAttribute("hardwareTypeList", hardwareTypeList);
+        WhShippingDAO wi5 = new WhShippingDAO();
+        List<WhShipping> rackList = wi5.getRack();
+        model.addAttribute("rackList", rackList);
+        WhShippingDAO wi6 = new WhShippingDAO();
+        List<WhShipping> shelfList = wi6.getShelf();
+        model.addAttribute("shelfList", shelfList);
+        
         return "whShipping/query";
     }
     
@@ -483,8 +504,8 @@ public class WhShippingController {
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
                     System.out.println("\n******************* EMAIL CDARS *******************");
                     //sent to cdars
-                    String[] to = {"cdarsreltest@gmail.com"};
-//                    String[] to = {"cdarsrel@gmail.com"};
+//                    String[] to = {"cdarsreltest@gmail.com"};
+                    String[] to = {"cdarsrel@gmail.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest(
                             servletContext,

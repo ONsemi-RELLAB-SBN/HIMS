@@ -263,8 +263,8 @@ public class WhMpListController {
                     emailSender.htmlEmailWithAttachmentShipping(
                             servletContext,
                             "CDARS", //user name
-                            "cdarsreltest@gmail.com", //to
-//                            "cdarsrel@gmail.com",
+//                            "cdarsreltest@gmail.com", //to
+                            "cdarsrel@gmail.com",
                             "Status for Hardware Shipping from HIMS SF", //subject
                             "Verification and status for Hardware Shipping has been made." //msg
                     );

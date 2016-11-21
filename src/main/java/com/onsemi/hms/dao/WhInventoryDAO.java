@@ -737,4 +737,217 @@ public class WhInventoryDAO {
         }
         return whInventoryList;
     }
+    
+    public List<WhInventory> getHardwareId() {
+        String sql = "SELECT DISTINCT equipment_id " +
+                    "FROM hms_wh_retrieval_list R, hms_wh_inventory_list I " +
+                    "WHERE R.retrieve_id = I.retrieve_id " +
+                    "ORDER BY equipment_id ";
+        List<WhInventory> hardwareIdList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhInventory();
+                whRetrieve.setEquipmentId(rs.getString("equipment_id"));
+                hardwareIdList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return hardwareIdList;
+    }
+    
+    public List<WhInventory> getHardwareType() {
+        String sql = "SELECT DISTINCT equipment_type " +
+                    "FROM hms_wh_retrieval_list R, hms_wh_inventory_list I " +
+                    "WHERE R.retrieve_id = I.retrieve_id " +
+                    "ORDER BY equipment_type ";
+        List<WhInventory> hardwareTypeList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhInventory();
+                whRetrieve.setEquipmentType(rs.getString("equipment_type"));
+                hardwareTypeList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return hardwareTypeList;
+    }
+    
+    public List<WhInventory> getRequestedBy() {
+        String sql = "SELECT DISTINCT requested_by " +
+                    "FROM hms_wh_retrieval_list R, hms_wh_inventory_list I " +
+                    "WHERE R.retrieve_id = I.retrieve_id " +
+                    "ORDER BY requested_by ";
+        List<WhInventory> requestedByList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhInventory();
+                whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                requestedByList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return requestedByList;
+    }
+    
+    public List<WhInventory> getStatusR() {
+        String sql = "SELECT DISTINCT status " +
+                    "FROM hms_wh_retrieval_list " +
+                    "ORDER BY status ";
+        List<WhInventory> statusRList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhInventory();
+                whRetrieve.setStatus(rs.getString("status"));
+                statusRList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return statusRList;
+    }
+    
+    public List<WhInventory> getStatusI() {
+        String sql = "SELECT DISTINCT status " +
+                    "FROM hms_wh_inventory_list " +
+                    "ORDER BY status ";
+        List<WhInventory> statusIList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhInventory();
+                whRetrieve.setStatus(rs.getString("status"));
+                statusIList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return statusIList;
+    }
+    
+    public List<WhInventory> getRack() {
+        String sql = "SELECT DISTINCT inventory_rack " +
+                    "FROM hms_wh_inventory_list " +
+                    "ORDER BY inventory_rack ";
+        List<WhInventory> rackList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhInventory();
+                whRetrieve.setInventoryRack(rs.getString("inventory_rack"));
+                rackList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return rackList;
+    }
+    
+    public List<WhInventory> getShelf() {
+        String sql = "SELECT DISTINCT inventory_shelf " +
+                    "FROM hms_wh_inventory_list " +
+                    "ORDER BY inventory_shelf ";
+        List<WhInventory> shelfList = new ArrayList<WhInventory>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhInventory whInventory;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whInventory = new WhInventory();
+                whInventory.setInventoryShelf(rs.getString("inventory_shelf"));
+                shelfList.add(whInventory);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return shelfList;
+    }
 }

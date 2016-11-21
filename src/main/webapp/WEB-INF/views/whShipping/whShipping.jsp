@@ -32,7 +32,7 @@
                         <div class="clearfix">
                             <h2 class="pull-left">Hardware Queue for Shipping List</h2>
                             <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/query" class="btn btn-primary pull-right">
+                                <a href="${contextPath}/wh/whShipping/query" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Query
                                 </a>
                             </div>

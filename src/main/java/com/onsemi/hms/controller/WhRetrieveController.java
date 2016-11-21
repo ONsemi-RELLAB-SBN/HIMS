@@ -309,9 +309,9 @@ public class WhRetrieveController {
         int countRack = inventoryMgtDao2.getCountRack(tempRack);
         
         boolean checkShelf = false;
-        WhInventoryMgt imgt = new WhInventoryMgt();
-        InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
-        if(countShelf != 0) {
+        if(countRack != 0 && countShelf != 0) {
+            WhInventoryMgt imgt = new WhInventoryMgt();
+            InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
             WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(tempShelf);
             imgt.setRackId(whInventoryMgt.getRackId());
             imgt.setShelfId(whInventoryMgt.getShelfId());
@@ -321,9 +321,7 @@ public class WhRetrieveController {
                 checkShelf = true;
                 LOGGER.info("Shelf empty. Enter.");
             }
-        }
-        
-        if(countRack != 0 && countShelf != 0) {
+            
             if(checkShelf == true) {
                 if (checkLength == true) {
                     LOGGER.info("************************************ " + tempRack + " vs " + tempShelf.substring(0, 6) + " ************************************");
@@ -371,12 +369,18 @@ public class WhRetrieveController {
                     cp = false;
                     LOGGER.info("Inventory Not Stated");
                 }
-                WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-                QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
             }
+            WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+            QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
         } else {
             LOGGER.info("Rack or shelf invalid. Exit.");
+            whRetrieve.setStatus("Inventory Invalid");
+            whRetrieve.setFlag(flag);
+            WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+            QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
+            
         }
+        
         
         String url;
         if (ck == true && cp == true) {
@@ -666,8 +670,8 @@ public class WhRetrieveController {
                         WhInventoryDAO whidao = new WhInventoryDAO();
                         WhInventory whi = whidao.getWhInventoryMergeWithRetrieve(refId);
                         
-//                        String[] to = {"cdarsrel@gmail.com"};
-                        String[] to = {"cdarsreltest@gmail.com"};
+                        String[] to = {"cdarsrel@gmail.com"};
+//                        String[] to = {"cdarsreltest@gmail.com"};
                         EmailSender emailSender = new EmailSender();
                         emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,
@@ -908,8 +912,20 @@ public class WhRetrieveController {
         System.out.println("Query: " + query);
         WhRetrieveDAO wh = new WhRetrieveDAO();
         List<WhRetrieve> retrieveQueryList = wh.getQuery(query);
-        
         model.addAttribute("retrieveQueryList", retrieveQueryList);
+        WhRetrieveDAO wr = new WhRetrieveDAO();
+        List<WhRetrieve> hardwareIdList = wr.getHardwareId();
+        model.addAttribute("hardwareIdList", hardwareIdList);
+        WhRetrieveDAO wr2 = new WhRetrieveDAO();
+        List<WhRetrieve> requestedByList = wr2.getRequestedBy();
+        model.addAttribute("requestedByList", requestedByList);
+        WhRetrieveDAO wr3 = new WhRetrieveDAO();
+        List<WhRetrieve> statusList = wr3.getStatus();
+        model.addAttribute("statusList", statusList);
+        WhRetrieveDAO wr4 = new WhRetrieveDAO();
+        List<WhRetrieve> hardwareTypeList = wr4.getHardwareType();
+        model.addAttribute("hardwareTypeList", hardwareTypeList);
+        
         return "whRetrieve/query";
     }
 }

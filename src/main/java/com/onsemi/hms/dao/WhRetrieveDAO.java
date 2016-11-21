@@ -714,4 +714,124 @@ public class WhRetrieveDAO {
         }
         return whRetrieveList;
     }
+    
+    public List<WhRetrieve> getHardwareId() {
+        String sql = "SELECT DISTINCT equipment_id " +
+                    "FROM hms_wh_retrieval_list " +
+                    "ORDER BY equipment_id ";
+        List<WhRetrieve> hardwareIdList = new ArrayList<WhRetrieve>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieve whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setEquipmentId(rs.getString("equipment_id"));
+                hardwareIdList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return hardwareIdList;
+    }
+    
+    public List<WhRetrieve> getHardwareType() {
+        String sql = "SELECT DISTINCT equipment_type " +
+                    "FROM hms_wh_retrieval_list " +
+                    "ORDER BY equipment_type ";
+        List<WhRetrieve> hardwareTypeList = new ArrayList<WhRetrieve>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieve whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setEquipmentType(rs.getString("equipment_type"));
+                hardwareTypeList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return hardwareTypeList;
+    }
+    
+    public List<WhRetrieve> getRequestedBy() {
+        String sql = "SELECT DISTINCT requested_by " +
+                    "FROM hms_wh_retrieval_list " +
+                    "ORDER BY requested_by ";
+        List<WhRetrieve> requestedByList = new ArrayList<WhRetrieve>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieve whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setRequestedBy(rs.getString("requested_by"));
+                requestedByList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return requestedByList;
+    }
+    
+    public List<WhRetrieve> getStatus() {
+        String sql = "SELECT DISTINCT status " +
+                    "FROM hms_wh_retrieval_list " +
+                    "ORDER BY status ";
+        List<WhRetrieve> statusList = new ArrayList<WhRetrieve>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhRetrieve whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhRetrieve();
+                whRetrieve.setStatus(rs.getString("status"));
+                statusList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return statusList;
+    }
 }

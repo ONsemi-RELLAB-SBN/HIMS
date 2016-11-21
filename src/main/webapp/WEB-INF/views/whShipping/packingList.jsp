@@ -93,8 +93,8 @@
                             <a href="${contextPath}/wh/whShipping/email" class="btn btn-info pull-right" id="print"><i class="fa fa-print"></i> Print</a>
                         </div>
                         <div class="table-responsive">
-                            <input type="text" class="form-control" id="count" name="count" value="${count}">
-                            <input type="text" class="form-control" id="countAll" name="countAll" value="${countAll}">
+                            <input type="hidden" class="form-control" id="count" name="count" value="${count}">
+                            <input type="hidden" class="form-control" id="countAll" name="countAll" value="${countAll}">
                             <table id="dt_spml" class="table">
                                 <thead>
                                     <tr>
