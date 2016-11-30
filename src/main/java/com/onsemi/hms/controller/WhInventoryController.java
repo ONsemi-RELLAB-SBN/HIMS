@@ -542,16 +542,14 @@ public class WhInventoryController {
         String query = "WHERE rack_id = '' ";
 
         if (rackId == null) {
-            LOGGER.debug("nullllllllllllllllllll~~~~");
+            LOGGER.debug("null~~~~");
         } else if (rackId.equals("")) {
             query = "WHERE rack_id = '' ";
             LOGGER.debug("aaaaaaaaaaaaaaa");
         } else if (rackId.equals("All")) {
             query = "";
-            LOGGER.debug("sssssssssssssssssssss");
         } else {
             query = "WHERE rack_id= '" + rackId + "' ";
-            LOGGER.debug("nllllll~~~~");
         }
         InventoryMgtDAO wh = new InventoryMgtDAO();
         List<WhInventoryMgt> inventoryMgtList = wh.getInventoryDetailsList(query);

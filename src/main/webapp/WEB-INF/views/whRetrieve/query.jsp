@@ -171,10 +171,10 @@
                                         <th><span>Material Pass Expiry</span></th>
                                         <th><span>Hardware Type</span></th>
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Quantity</span></th>
+                                        <!--<th><span>Quantity</span></th>-->
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
-                                        <th><span>HIMS SF Received Date</span></th>
+                                        <th><span>Box Receive Date</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>
@@ -186,10 +186,10 @@
                                             <td><c:out value="${whRetrieve.materialPassExpiry}"/></td>
                                             <td><c:out value="${whRetrieve.equipmentType}"/></td>
                                             <td><c:out value="${whRetrieve.equipmentId}"/></td>
-                                            <td><c:out value="${whRetrieve.quantity}"/></td>
+<!--                                            <td><c:out value="${whRetrieve.quantity}"/></td>-->
                                             <td><c:out value="${whRetrieve.requestedBy}"/></td>
                                             <td><c:out value="${whRetrieve.requestedDate}"/></td>
-                                            <td><c:out value="${whRetrieve.receivedDate}"/></td>
+                                            <td><c:out value="${whRetrieve.arrivalReceivedDate}"/></td>
                                             <td><c:out value="${whRetrieve.status}"/></td>
                                         </tr>
                                     </c:forEach>

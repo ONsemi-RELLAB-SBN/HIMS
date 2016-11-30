@@ -410,4 +410,9 @@ public class AdminController {
         model.addAttribute("inventoryMgtList", inventoryMgtList);
         return "admin/inventoryMgt";
     }
+    
+    @RequestMapping(value = "/inventoryMgt/add", method = RequestMethod.GET)
+    public String inventoryAdd(Model model) {
+        return "admin/inventory_add";
+    }
 }

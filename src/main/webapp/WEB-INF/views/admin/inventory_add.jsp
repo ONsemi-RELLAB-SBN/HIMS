@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@include file="/WEB-INF/base/taglibs.jsp" %>
 <s:layout-render name="/WEB-INF/base/base.jsp">
-    <s:layout-component name="page_css">
+    <s:layout-component   name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/css/libs/datepicker.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">

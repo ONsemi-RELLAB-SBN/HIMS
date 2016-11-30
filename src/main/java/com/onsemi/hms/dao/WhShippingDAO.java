@@ -804,4 +804,35 @@ public class WhShippingDAO {
         }
         return shelfList;
     }
+    
+    public List<WhShipping> getShippingBy() {
+        String sql = "SELECT DISTINCT shipping_by " +
+                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
+                    "WHERE R.request_id = S.request_id " +
+                    "ORDER BY shipping_by ";
+        List<WhShipping> shelfList = new ArrayList<WhShipping>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhShipping whRetrieve;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whRetrieve = new WhShipping();
+                whRetrieve.setShippingBy(rs.getString("shipping_by"));
+                shelfList.add(whRetrieve);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return shelfList;
+    }
 }

@@ -176,6 +176,9 @@ public class WhShippingController {
             @RequestParam(required = false) String equipmentType,
             @RequestParam(required = false) String requestedDate1,
             @RequestParam(required = false) String requestedDate2,
+            @RequestParam(required = false) String shippingDate1,
+            @RequestParam(required = false) String shippingDate2,
+            @RequestParam(required = false) String shippingBy,
             @RequestParam(required = false) String requestedBy,
             @RequestParam(required = false) String inventoryRack,
             @RequestParam(required = false) String inventoryShelf,
@@ -230,6 +233,25 @@ public class WhShippingController {
                     query = requestedDate;
                 else if(count>1)
                     query = query + " AND " + requestedDate;
+            }
+        }
+        if(shippingDate1!=null &&  shippingDate2!=null) {
+            if(!shippingDate1.equals("") && !shippingDate2.equals("")) {
+                count++;
+                String shippingDate = " shipping_date BETWEEN CAST(\'" + shippingDate1 + "\' AS DATE) AND CAST(\'" + shippingDate2 +"\' AS DATE) ";
+                if(count == 1)
+                    query = shippingDate;
+                else if(count>1)
+                    query = query + " AND " + shippingDate;
+            }
+        }
+        if(shippingBy!=null) {
+            if(!shippingBy.equals("")) {
+                count++;
+                if(count == 1)
+                    query = " shipping_by = \'" + shippingBy + "\' ";
+                else if(count>1)
+                    query = query + " AND shipping_by = \'" + shippingBy + "\' ";
             }
         }
         if(requestedBy!=null) {
@@ -304,6 +326,9 @@ public class WhShippingController {
         WhShippingDAO wi6 = new WhShippingDAO();
         List<WhShipping> shelfList = wi6.getShelf();
         model.addAttribute("shelfList", shelfList);
+        WhShippingDAO wi7 = new WhShippingDAO();
+        List<WhShipping> shippingByList = wi7.getShippingBy();
+        model.addAttribute("shippingByList", shippingByList);
         
         return "whShipping/query";
     }
@@ -490,17 +515,6 @@ public class WhShippingController {
 
                     //send email
                     LOGGER.info("send email to warehouse");
-
-                    //to get hostname
-                    InetAddress ip;
-                    String hostName = "";
-                    try {
-                        ip = InetAddress.getLocalHost();
-                        hostName = ip.getHostName();
-                    } catch (UnknownHostException ex) {
-                        java.util.logging.Logger.getLogger(WhMpListController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
                     System.out.println("\n******************* EMAIL CDARS *******************");
                     //sent to cdars
@@ -514,21 +528,6 @@ public class WhShippingController {
                             "Status for Hardware Shipping from HIMS SF", //subject
                             "Verification and status for Hardware Shipping has been made." //msg
                     );
-
-//                    System.out.println("******************* EMAIL REQUESTOR ******************* " + whship.getRequestedEmail());
-//                    //sent to requestor
-//                    EmailSender emailSender2 = new EmailSender();
-//                    String emailTitle = "Status for Hardware Shipping from HIMS SF";
-//                    emailSender2.htmlEmail2(
-//                            servletContext,
-//                            whship.getRequestedBy(), //from
-//                            whship.getRequestedEmail(), //to
-//                            //                        "muhdfaizal@onsemi.com", //to
-//                            emailTitle,
-//                            "Hardware ID: " + whship.getEquipmentId() + " with material pass no: " + whship.getMaterialPassNo() + " has been ready to shipping. Please go to this link " //msg
-//                            + "<a href=\"" + request.getScheme() + "://fg79cj-l1:" + request.getServerPort() + "/CDARS/wh/whRetrieval/" + "\">CDARS</a>"
-//                            + " for status checking."
-//                    );
 
                     System.out.println("######################### END EMAIL PROCESS ########################### ");
 
@@ -636,6 +635,56 @@ public class WhShippingController {
         return "redirect:/wh/whShipping/packingList";
     }
 
+//    @RequestMapping(value = "/delete/{whShippingId}", method = RequestMethod.GET)
+//    public String delete(
+//            Model model,
+//            Locale locale,
+//            RedirectAttributes redirectAttrs,
+//            @ModelAttribute UserSession userSession,
+//            @PathVariable("whShippingId") String whShippingId
+//    ) throws IOException {
+//        WhMpListDAO whMpListDAO = new WhMpListDAO();
+//        WhMpList whMpList = whMpListDAO.getWhMpListMergeWithShippingAndRequest(whShippingId);
+//        whMpListDAO = new WhMpListDAO();
+//        QueryResult queryResult = whMpListDAO.deleteWhMpList(whShippingId);
+//        args = new String[1];
+//        args[0] = whMpList.getMaterialPassNo();
+//        if (queryResult.getResult() == 1) {
+//            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.delete.success", args, locale));
+//        }
+//        return "";
+//    }
+    
+    
+    //TEMPORARYYYYY
+//    @RequestMapping(value = "/email", method = {RequestMethod.GET, RequestMethod.POST})
+//    public String email(
+//            Model model,
+//            HttpServletRequest request,
+//            Locale locale,
+//            RedirectAttributes redirectAttrs,
+//            @ModelAttribute UserSession userSession
+//    ) throws IOException {
+//        WhMpListDAO whMpListDAO = new WhMpListDAO();
+//        int countMpList = whMpListDAO.getCount();
+//        if(countMpList != 0) {
+//            whMpListDAO = new WhMpListDAO();
+//            List<WhMpList> mpList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
+//            
+//            String shippingId="", materialPassNo="", dateVerify="", userVerify="", createdDate="", createdBy="", status="";
+//            for(int i=0; i<mpList.size(); i++) {
+//                shippingId = mpList.get(i).getShippingId();
+//                materialPassNo = mpList.get(i).getMaterialPassNo();
+//                dateVerify = mpList.get(i).getDateVerify();
+//                userVerify = mpList.get(i).getUserVerify();
+//                createdDate = mpList.get(i).getCreatedDate();
+//                createdBy = mpList.get(i).getCreatedBy();
+//                status = mpList.get(i).getStatus();
+//            }
+//        }
+//        return "redirect:/wh/whShipping/print";
+//    }
+    
     @RequestMapping(value = "/email", method = {RequestMethod.GET, RequestMethod.POST})
     public String email(
             Model model,

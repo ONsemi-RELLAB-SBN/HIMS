@@ -369,16 +369,15 @@ public class WhRetrieveController {
                     cp = false;
                     LOGGER.info("Inventory Not Stated");
                 }
+                WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
+                QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
             }
-            WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
-            QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
         } else {
             LOGGER.info("Rack or shelf invalid. Exit.");
             whRetrieve.setStatus("Inventory Invalid");
             whRetrieve.setFlag(flag);
             WhRetrieveDAO whRetrieveDAO = new WhRetrieveDAO();
             QueryResult queryResult = whRetrieveDAO.updateWhRetrieveForInventory(whRetrieve);
-            
         }
         
         
@@ -654,18 +653,7 @@ public class WhRetrieveController {
 
                         //send email
                         LOGGER.info("send email to warehouse");
-
-                        /*to get hostname*/
-                        InetAddress ip;
-                        String hostName = "";
-                        try {
-                            ip = InetAddress.getLocalHost();
-                            hostName = ip.getHostName();
-                        } catch (UnknownHostException ex) {
-                            java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        System.out.println("******************* EMAIL CDARS *******************");
+                        LOGGER.info("******************* EMAIL CDARS *******************");
 
                         WhInventoryDAO whidao = new WhInventoryDAO();
                         WhInventory whi = whidao.getWhInventoryMergeWithRetrieve(refId);
@@ -681,7 +669,7 @@ public class WhRetrieveController {
                             "Verification and inventory for Hardware has been made." //msg
                         );
                         
-                        System.out.println("******************* EMAIL REQUESTOR *******************");
+                        LOGGER.info("******************* EMAIL REQUESTOR *******************");
 
                         WhInventoryDAO whidao2 = new WhInventoryDAO();
                         WhInventory whi2 = whidao2.getWhInventoryMergeWithRetrieve(refId);

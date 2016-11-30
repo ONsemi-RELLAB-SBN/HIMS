@@ -62,7 +62,7 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="materialPassExpiry1" class="col-lg-2 control-label">M/Pass Expiry Date between </label>
+                                <label for="materialPassExpiry1" class="col-lg-2 control-label">M/Pass Expiry Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="materialPassExpiry1" name="materialPassExpiry1">
                                 </div>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="requestedDate1" class="col-lg-2 control-label">Requested Date between </label>
+                                <label for="requestedDate1" class="col-lg-2 control-label">Requested Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="requestedDate1" name="requestedDate1">
                                 </div>

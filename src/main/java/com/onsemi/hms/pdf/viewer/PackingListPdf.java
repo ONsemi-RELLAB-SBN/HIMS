@@ -42,18 +42,18 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
 
         Integer cellPadding = 5;
         
-        PdfPTable table = new PdfPTable(7);
+        PdfPTable table = new PdfPTable(10);
         table.setWidthPercentage(100.0f);
-        table.setWidths(new float[]{0.5f, 1.5f, 1.5f, 1.5f, 3.0f, 0.5f, 1.5f});
+        table.setWidths(new float[]{0.4f, 1.6f, 1.3f, 1.3f, 2.5f, 0.8f, 0.6f, 0.8f, 0.5f, 1.2f});
         table.setSpacingBefore(20);
         
-        Font fontHeader = fontOpenSans(7f, Font.BOLD);
+        Font fontHeader = fontOpenSans(6f, Font.BOLD);
         fontHeader.setColor(BaseColor.WHITE);
         PdfPCell cellHeader = new PdfPCell();
         cellHeader.setBackgroundColor(BaseColor.GRAY);
         cellHeader.setPadding(cellPadding);
 
-        Font fontContent = fontOpenSans(7f, Font.NORMAL);
+        Font fontContent = fontOpenSans(6f, Font.NORMAL);
         PdfPCell cellContent = new PdfPCell();
         cellContent.setPadding(cellPadding);
         
@@ -73,9 +73,15 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
                 table.addCell(cellHeader);
                 cellHeader.setPhrase(new Phrase("Hardware ID", fontHeader));
                 table.addCell(cellHeader);
+                cellHeader.setPhrase(new Phrase("Shelf ID", fontHeader));
+                table.addCell(cellHeader);
+                cellHeader.setPhrase(new Phrase("Scan Out Done", fontHeader));
+                table.addCell(cellHeader);
+                cellHeader.setPhrase(new Phrase("Material Pass Check In", fontHeader));
+                table.addCell(cellHeader);
                 cellHeader.setPhrase(new Phrase("Qty", fontHeader));
                 table.addCell(cellHeader);
-                cellHeader.setPhrase(new Phrase("Reason Retrieval", fontHeader));
+                cellHeader.setPhrase(new Phrase("Reason for Retrieval", fontHeader));
                 table.addCell(cellHeader);
             }
             cellContent.setPhrase(new Phrase(i+1 + "", fontContent));
@@ -87,6 +93,12 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
             cellContent.setPhrase(new Phrase(packingList.get(i).getEquipmentType(), fontContent));
             table.addCell(cellContent);
             cellContent.setPhrase(new Phrase(packingList.get(i).getEquipmentId(), fontContent));
+            table.addCell(cellContent);
+            cellContent.setPhrase(new Phrase("", fontContent));
+            table.addCell(cellContent);
+            cellContent.setPhrase(new Phrase("", fontContent));
+            table.addCell(cellContent);
+            cellContent.setPhrase(new Phrase("", fontContent));
             table.addCell(cellContent);
             cellContent.setPhrase(new Phrase(packingList.get(i).getQuantity(), fontContent));
             table.addCell(cellContent);

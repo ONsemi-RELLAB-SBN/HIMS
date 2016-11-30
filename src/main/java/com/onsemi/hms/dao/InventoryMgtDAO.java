@@ -175,7 +175,7 @@ public class InventoryMgtDAO {
 
     public List<WhInventoryMgt> getInventoryDetailsList(String query) {
         String sql = "SELECT *, DATE_FORMAT(modified_date,'%d %M %Y') AS modified_date_view, DATE_FORMAT(date_created,'%d %M %Y') AS date_created_view "
-                + " FROM hms_inventory_mgt " + query + " ORDER BY rack_id ASC";
+                + " FROM hms_inventory_mgt " + query + " ORDER BY rack_id ASC, shelf_id ";
         List<WhInventoryMgt> whInventoryMgtList = new ArrayList<WhInventoryMgt>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

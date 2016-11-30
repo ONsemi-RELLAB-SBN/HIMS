@@ -64,7 +64,7 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="materialPassExpiry1" class="col-lg-2 control-label">M/Pass Expiry Date between </label>
+                                <label for="materialPassExpiry1" class="col-lg-2 control-label">M/Pass Expiry Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="materialPassExpiry1" name="materialPassExpiry1">
                                 </div>
@@ -85,7 +85,7 @@
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
-                                <label for="requestedDate1" class="col-lg-2 control-label">Requested Date between </label>
+                                <label for="requestedDate1" class="col-lg-2 control-label">Requested Date BETWEEN </label>
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="requestedDate1" name="requestedDate1">
                                 </div>
@@ -99,6 +99,26 @@
                                         <option value=""></option>
                                         <c:forEach items="${requestedByList}" var="group">
                                             <option value="${group.requestedBy}">${group.requestedBy}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12" ></div>
+                            <div class="form-group col-lg-12">
+                                <label for="shippingDate1" class="col-lg-2 control-label">Shipping Date BETWEEN </label>
+                                <div class="col-lg-2">
+                                    <input type="text" class="form-control" id="shippingDate1" name="shippingDate1">
+                                </div>
+                                <label for="shippingDate2" class="col-lg-1 control-label" style="text-align: center;">AND</label>
+                                <div class="col-lg-2">
+                                    <input type="text" class="form-control" id="shippingDate2" name="shippingDate2">
+                                </div>
+                                <label for="shippingBy" class="col-lg-2 control-label">Shipping By </label>
+                                <div class="col-lg-3">
+                                    <select id="shippingBy" name="shippingBy" class="form-control">
+                                        <option value=""></option>
+                                        <c:forEach items="${shippingByList}" var="group">
+                                            <option value="${group.shippingBy}">${group.shippingBy}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -182,10 +202,10 @@
                                         <th><span>Material Pass Expiry</span></th>
                                         <th><span>Hardware Type</span></th>
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Quantity</span></th>
                                         <th><span>Requested By</span></th>
                                         <th><span>Requested Date</span></th>
                                         <th><span>Inventory</span></th>
+                                        <th><span>Shipping Date</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>
@@ -197,11 +217,11 @@
                                             <td><c:out value="${whShipping.materialPassExpiry}"/></td>
                                             <td><c:out value="${whShipping.equipmentType}"/></td>
                                             <td><c:out value="${whShipping.equipmentId}"/></td>
-                                            <td><c:out value="${whShipping.quantity}"/></td>
                                             <td><c:out value="${whShipping.requestedBy}"/></td>
                                             <td><c:out value="${whShipping.requestedDate}"/></td>
-                                            <td><c:out value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}"/></td>
-                                            <td><c:out value="${whRequest.status}"/></td>
+                                            <td><c:out value="${whShipping.inventoryRack}, ${whShipping.inventoryShelf}"/></td>
+                                            <td><c:out value="${whShipping.shippingDate}"/></td>
+                                            <td><c:out value="${whShipping.status}"/></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -235,6 +255,16 @@
                     format: 'yyyy-mm-dd',
                     autoclose: true
                 });
+                $('#shippingDate1').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true
+                });
+                
+                $('#shippingDate2').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true
+                });
+                
                 
                 $('#materialPassExpiry1').datepicker({
                     format: 'yyyy-mm-dd',
@@ -249,7 +279,7 @@
                 var validator = $("#update_hardwareinventory_form").validate({
                     rules: {
                         requestedDate1: { 
-                            required: function (element) {
+                            required: function (element1) {
                                 if($('#requestedDate1').val() === "" && $('#requestedDate2').val() !== "") {
                                     return true;                            
                                 }
@@ -259,7 +289,7 @@
                             }
                         },
                         requestedDate2: { 
-                            required: function (element) {
+                            required: function (element2) {
                                 if($('#requestedDate2').val() === "" && $('#requestedDate1').val() !== "") {
                                     return true;                            
                                 }
@@ -269,7 +299,7 @@
                             }
                         },
                         materialPassExpiry1: { 
-                            required: function (element) {
+                            required: function (element3) {
                                 if($('#materialPassExpiry1').val() === "" && $('#materialPassExpiry2').val() !== "") {
                                     return true;                            
                                 }
@@ -279,8 +309,28 @@
                             }
                         },
                         materialPassExpiry2: { 
-                            required: function (element) {
+                            required: function (element4) {
                                 if($('#materialPassExpiry2').val() === "" && $('#materialPassExpiry1').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        shippingDate1: { 
+                            required: function (element5) {
+                                if($('#shippingDate1').val() === "" && $('#shippingDate2').val() !== "") {
+                                    return true;                            
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        },
+                        shippingDate2: { 
+                            required: function (element6) {
+                                if($('#shippingDate2').val() === "" && $('#shippingDate1').val() !== "") {
                                     return true;                            
                                 }
                                 else {
@@ -299,12 +349,6 @@
                     $("#data").show();
                 });
                 
-//                oTable = $('#dt_spml').DataTable({
-//                    dom: 'Bfrtip',
-//                    buttons: [
-//                        'print'
-//                    ]
-//                });
                 oTable = $('#dt_spml').DataTable({
                     dom: 'Brtip',
                     buttons: [
