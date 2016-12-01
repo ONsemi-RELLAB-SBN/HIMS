@@ -112,7 +112,7 @@ public class WhMpListDAO {
     public WhMpList getWhMpListMergeWithShippingAndRequest(String whMpListId) {
         String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view "
                    + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
-                   + "WHERE RL.request_id = SL.request_id AND SL.request_id = ML.shipping_id AND ML.shipping_id = '" + whMpListId + "'";
+                   + "WHERE RL.request_id = SL.request_id AND SL.id = ML.shipping_id AND ML.request_id = '" + whMpListId + "'";
         WhMpList whMpList = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

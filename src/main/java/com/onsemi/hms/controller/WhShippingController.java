@@ -365,7 +365,7 @@ public class WhShippingController {
                 WhShippingDAO whshipD = new WhShippingDAO();
                 WhShipping whship = whshipD.getWhShippingMergeWithRequestByMpNo(materialPassNo);
                 WhMpList whMpList = new WhMpList();
-                whMpList.setShippingId(whship.getRequestId());
+                whMpList.setShippingId(whship.getId());
                 String refId = whship.getRequestId();
                 whMpList.setRequestId(refId);
                 whMpList.setMaterialPassNo(materialPassNo);
@@ -377,7 +377,7 @@ public class WhShippingController {
                 WhShippingDAO whShippingDAO1 = new WhShippingDAO();
                 WhShipping query1 = whShippingDAO1.getWhShipping(refId);
                 WhMpListDAO whMpListDAO3 = new WhMpListDAO();
-                WhMpList query2 = whMpListDAO3.getWhMpListMergeWithShippingAndRequest(refId);
+                WhMpList query2 = whMpListDAO3.getWhMpListMergeWithShippingAndRequest(refId); //double check
                 LogModule logModule2 = new LogModule();
                 LogModuleDAO logModuleDAO2 = new LogModuleDAO();
                 logModule2.setModuleId(query1.getId());
@@ -428,7 +428,7 @@ public class WhShippingController {
                                         split[6] //date = [4], by = [5], status = [6]
                                 );
 
-                                if (split[0].equals(mplist.getShippingId())) {
+                                if (split[0].equals(mplist.getRequestId())) {
                                     LOGGER.info(row + " : request Id found...................." + data);
                                     CSV csv = new CSV();
                                     csv.open(new File(targetLocation));
@@ -450,7 +450,7 @@ public class WhShippingController {
                                 fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
-                                fileWriter.append(mplist.getShippingId());
+                                fileWriter.append(mplist.getRequestId());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(mplist.getMaterialPassNo());
                                 fileWriter.append(COMMA_DELIMITER);
@@ -486,7 +486,7 @@ public class WhShippingController {
 
                             //New Line after the header
                             fileWriter.append(LINE_SEPARATOR);
-                            fileWriter.append(mplist.getShippingId());
+                            fileWriter.append(mplist.getRequestId());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(mplist.getMaterialPassNo());
                             fileWriter.append(COMMA_DELIMITER);
