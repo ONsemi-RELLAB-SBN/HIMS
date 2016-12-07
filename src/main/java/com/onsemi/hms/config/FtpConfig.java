@@ -100,7 +100,7 @@ public class FtpConfig {
                             ftp.setRemarks(r.getRemarks());
                             ftp.setCsvStatus(r.getCsvStatus());
                             if(r.getCsvStatus().equals("Cancelled")) {
-                                ftp.setStatus("Shipping Canceled");
+                                ftp.setStatus("Shipping Cancelled");
                                 ftp.setFlag("1");
                             } else {
                                 ftp.setStatus("New Shipping Request");
@@ -142,7 +142,8 @@ public class FtpConfig {
                                 }
                             }
                         }
-                    } catch (Exception ee) {
+                    } catch (Exception ee) { 
+                        LOGGER.info("Error while reading cdars_retrieve.csv");
                         ee.printStackTrace();
                     }
                 } else if (listOfFile.getName().equals("cdars_shipping.csv")) {
@@ -191,7 +192,7 @@ public class FtpConfig {
                             ftp.setShippingDate(r.getShippingDate());
                             ftp.setCsvStatus(r.getCsvStatus());
                             if(r.getCsvStatus().equals("Cancelled")) {
-                                ftp.setStatus("Inventory Canceled");
+                                ftp.setStatus("Inventory Cancelled");
                                 ftp.setFlag("1");
                             } else {
                                 ftp.setStatus("New Inventory Request");
@@ -201,7 +202,7 @@ public class FtpConfig {
                             int count = whRetrieveDAO.getCountExistingData(r.getRefId());
                             if (count == 0) {
                                 if("0".equals(refId)){
-                                    LOGGER.info("xperlu masuk1");
+//                                    LOGGER.info("xperlu masuk1");
                                 }else{
                                     LOGGER.info("data xdeeeeee");
                                     WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
@@ -222,7 +223,7 @@ public class FtpConfig {
                                 WhRetrieve que = whRetDAO.getWhRetrieve(refId);
                                 if(r.getCsvStatus().equals("Cancelled") && que.getFlag().equals("0")) {
                                     if("0".equals(refId)){
-                                        LOGGER.info("xperlu masuk2");
+//                                        LOGGER.info("xperlu masuk2");
                                     } else {
                                         WhRetrieveDAO whRetrieveDAO1 = new WhRetrieveDAO();
                                         QueryResult queryResult1 = whRetrieveDAO1.updateWhRetrieveForApproval(ftp);
@@ -242,6 +243,7 @@ public class FtpConfig {
                             }
                         }
                     } catch (Exception ee) {
+                        LOGGER.info("Error while reading cdars_shipping.csv");
                         ee.printStackTrace();
                     }
                 } else if (listOfFile.getName().equals("cdars_retrieval_status.csv")) {
@@ -305,6 +307,7 @@ public class FtpConfig {
                             }
                         }
                     } catch (Exception ee) {
+                        LOGGER.info("Error while reading cdars_retrieval_status.csv");
                         ee.printStackTrace();
                     }
                 }

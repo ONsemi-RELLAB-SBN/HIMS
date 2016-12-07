@@ -285,12 +285,12 @@ public class WhInventoryController {
                             bufferedReader.close();
                             fileReader.close();
                         } catch (Exception ee) {
-                            System.out.println("Error 1 occured while append the fileWriter");
+                            LOGGER.info("Error 1 occured while append the fileWriter");
                         } finally {
                             try {
                                 fileWriter.close();
                             } catch (IOException ie) {
-                                System.out.println("Error 2 occured while closing the fileWriter");
+                                LOGGER.info("Error 2 occured while closing the fileWriter");
                             }
                         }
                     } else {
@@ -310,8 +310,8 @@ public class WhInventoryController {
                         java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-//                    String[] to = {"cdarsreltest@gmail.com"};
-                    String[] to = {"cdarsrel@gmail.com"};
+                    String[] to = {"cdarsreltest@gmail.com"};
+//                    String[] to = {"cdarsrel@gmail.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,
@@ -342,13 +342,13 @@ public class WhInventoryController {
             HttpServletRequest request,
             @PathVariable("whInventoryId") String whInventoryId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");
+//        LOGGER.info("Masuk view 1........");
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whInventory/viewWhInventoryPdf/" + whInventoryId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware in SBN Factory");
-        LOGGER.info("Masuk view 2........");
+//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
 
@@ -357,7 +357,7 @@ public class WhInventoryController {
             Model model,
             @PathVariable("whInventoryId") String whInventoryId
     ) {
-        LOGGER.info("Masuk 1........");
+//        LOGGER.info("Masuk 1........");
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(whInventoryId);
 

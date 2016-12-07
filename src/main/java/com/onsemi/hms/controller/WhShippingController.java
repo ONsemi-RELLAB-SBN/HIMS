@@ -419,7 +419,7 @@ public class WhShippingController {
                             while (data != null) {
                                 LOGGER.info("start reading file..........");
                                 buff.append(data).append(System.getProperty("line.separator"));
-                                System.out.println("dataaaaaaaaa : \n" + data);
+//                                System.out.println("dataaaaaaaaa : \n" + data);
 
                                 String[] split = data.split(",");
                                 IonicFtpShipping shipping = new IonicFtpShipping(
@@ -518,8 +518,8 @@ public class WhShippingController {
                     System.out.println("######################### START EMAIL PROCESS ########################### ");
                     System.out.println("\n******************* EMAIL CDARS *******************");
                     //sent to cdars
-//                    String[] to = {"cdarsreltest@gmail.com"};
-                    String[] to = {"cdarsrel@gmail.com"};
+                    String[] to = {"cdarsreltest@gmail.com"};
+//                    String[] to = {"cdarsrel@gmail.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest(
                             servletContext,
@@ -574,15 +574,9 @@ public class WhShippingController {
                 }
             } else {
                 redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.save.error1", args, locale));
-//                String messageError = "Material Pass Number " + materialPassNo + " already added to the list!";
-//                model.addAttribute("error", messageError);
-//                return "whShipping/packingList";
             }
         } else {
             redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.save.error2", args, locale));
-//            String messageError = "Material Pass Number " + materialPassNo + " Not Exist!";
-//            model.addAttribute("error", messageError);
-//            return "whShipping/packingList";
         }
          return "redirect:/wh/whShipping/packingList";
     }
@@ -609,9 +603,6 @@ public class WhShippingController {
         WhMpListDAO whMpListDAO = new WhMpListDAO();        
         LOGGER.info("Masuk 1........");
         List<WhMpList> packingList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
-//        model.addAttribute("packingList", packingList);
-//        List<WhMpList> whMpList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
-//        WhRequestLog whHistoryList = whRequestDAO.getWhRetLog(whRequestId);
         LOGGER.info("Masuk 2........");
         return new ModelAndView("packingListPdf", "packingList", packingList);
     }
@@ -714,8 +705,7 @@ public class WhShippingController {
                 emailSender.htmlEmailTable(
                     servletContext,
                     "", //user name requestor
-                    listEmail,
-                    //                "muhdfaizal@onsemi.com",                                   //to
+                    listEmail,                               //to
                     "List of Hardware(s) Ready for Shipment", //subject
                     "The list of hardware(s) that have been ready for shipment has been made.<br />"
                     + "This table will shows the details of each hardware in a material pass shipping list from Seremban Factory. <br /><br />"

@@ -459,7 +459,7 @@ public class WhRetrieveController {
                                     buff.append(data).append(System.getProperty("line.separator"));
                                     System.out.println("dataaaaaaaaa : \n" + data);
 
-                                    String[] split = data.split(",");
+                                    String[] split = data.split("?");
                                     IonicFtpRetrieve2 retrieve = new IonicFtpRetrieve2(
                                             split[0], split[1], split[2],
                                             split[3], split[4], split[5],
@@ -658,8 +658,8 @@ public class WhRetrieveController {
                         WhInventoryDAO whidao = new WhInventoryDAO();
                         WhInventory whi = whidao.getWhInventoryMergeWithRetrieve(refId);
                         
-                        String[] to = {"cdarsrel@gmail.com"};
-//                        String[] to = {"cdarsreltest@gmail.com"};
+//                        String[] to = {"cdarsrel@gmail.com"};
+                        String[] to = {"cdarsreltest@gmail.com"};
                         EmailSender emailSender = new EmailSender();
                         emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,
