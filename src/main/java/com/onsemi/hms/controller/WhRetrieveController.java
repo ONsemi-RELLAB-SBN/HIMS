@@ -457,9 +457,9 @@ public class WhRetrieveController {
                                 while (data != null) {
                                     LOGGER.info("start reading file..........");
                                     buff.append(data).append(System.getProperty("line.separator"));
-                                    System.out.println("dataaaaaaaaa : \n" + data);
+//                                    System.out.println("dataaaaaaaaa : \n" + data);
 
-                                    String[] split = data.split("?");
+                                    String[] split = data.split(",");
                                     IonicFtpRetrieve2 retrieve = new IonicFtpRetrieve2(
                                             split[0], split[1], split[2],
                                             split[3], split[4], split[5],
@@ -469,10 +469,10 @@ public class WhRetrieveController {
                                     );
 
                                     if (split[0].equals(refId)) {
-                                        LOGGER.info(row + " : retrieve Id found...................." + data);
+//                                        LOGGER.info(row + " : retrieve Id found...................." + data);
                                         check = true;
                                     } else {
-                                        LOGGER.info("retrieve Id not found........" + data);
+//                                        LOGGER.info("retrieve Id not found........" + data);
                                     }
                                     data = bufferedReader.readLine();
                                     row++;
