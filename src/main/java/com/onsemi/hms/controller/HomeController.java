@@ -38,10 +38,13 @@ public class HomeController {
     ) {
         HttpSession currentSession = request.getSession();
         UserSession userSession = (UserSession) currentSession.getAttribute("userSession");
+        LOGGER.info("MASUK KE HOME CONTROLLER UTAMA" );
         if (userSession != null) {
+            LOGGER.info("LOGGER for xxx : " +userSession.getLoginId());
             //Anything for Dashboard
             return "home/index";
         } else {
+            LOGGER.info("MASUK YANG LAIN2");
             return "home/index";
         }
     }

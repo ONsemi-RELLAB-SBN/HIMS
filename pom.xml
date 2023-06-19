@@ -305,4 +305,5 @@
             </plugin>
         </plugins>
     </build>
+    <description>Enhancement</description>
 </project>

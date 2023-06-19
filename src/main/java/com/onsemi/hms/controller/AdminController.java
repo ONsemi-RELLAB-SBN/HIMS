@@ -96,6 +96,7 @@ public class AdminController {
             HttpServletRequest request,
             @PathVariable("loginId") String loginId
     ) {
+        LOGGER.info("MASUK SINI UNTUK LOGIN ID ");
         UserDAO userDAO = new UserDAO();
         User user = userDAO.getUserByLoginId(loginId);
         if (user == null) {

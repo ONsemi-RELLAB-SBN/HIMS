@@ -36,6 +36,7 @@ public class Interceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         HttpSession currentSession = request.getSession();
         if (!auth.getName().equals("anonymousUser")) {
@@ -61,6 +62,7 @@ public class Interceptor implements HandlerInterceptor {
     private User setUserSession(Authentication auth, HttpSession currentSession) {
         //User Session
         UserDAO userDAO = new UserDAO();
+        LOGGER.info("kita masuk ke dalam ni ke??: " + auth.getName());
         User user = userDAO.getUserByLoginId(auth.getName());
         UserSession userSession = new UserSession();
         userSession.setId(user.getId());

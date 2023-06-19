@@ -41,8 +41,9 @@ public class FtpConfig {
 
     String fileLocation = "";
 
-    @Scheduled(cron = "0 */1 * * * ?") //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional)) //active
+//    @Scheduled(cron = "0 */1 * * * ?") //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional)) //active
     public void cronRun() {
+        LOGGER.info("MASUK KE FUNCTION CRON JOB - HMS");
         String username = System.getProperty("user.name");
         String targetLocation = "D:\\HIMS_CSV\\RL\\";
         File folder = new File(targetLocation);
