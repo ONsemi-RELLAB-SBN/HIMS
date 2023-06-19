@@ -67,8 +67,9 @@
                                         <th><span>No</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Material Pass No.</span></th>
-                                        <!--th><span>Requested By</span></th-->
+                                        <!--<th><span>Material Pass No.</span></th>-->
+                                        <th><span>Box No</span></th>
+                                        <th><span>GTS No</span></th>
                                         <th><span>Requested Date</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>Manage</span></th>
@@ -79,8 +80,23 @@
                                         <tr>
                                             <td><c:out value="${whRetrieveLoop.index+1}"/></td>
                                             <td><c:out value="${whRetrieve.equipmentType}"/></td>
-                                            <td id="modal_delete_info_${whRetrieve.refId}"><c:out value="${whRetrieve.equipmentId}"/></td>
-                                            <td><c:out value="${whRetrieve.materialPassNo}"/></td>
+                                            <td id="modal_delete_info_${whRetrieve.refId}">
+                                                <c:if test="${whRetrieve.pairingType == 'PAIR'}">
+                                                    <c:out value="${whRetrieve.loadCardId}"/><br><c:out value="${whRetrieve.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whRetrieve.pairingType == 'SINGLE' && whRetrieve.equipmentType == 'Load Card'}">
+                                                    <c:out value="${whRetrieve.loadCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whRetrieve.pairingType == 'SINGLE' && whRetrieve.equipmentType == 'Program Card'}">
+                                                    <c:out value="${whRetrieve.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whRetrieve.pairingType == null}">
+                                                    <c:out value="${whRetrieve.equipmentId}"/>
+                                                </c:if>
+                                            </td>
+                                            <td><c:out value="${whRetrieve.boxNo}"/></td>
+                                            <td><c:out value="${whRetrieve.gtsNo}"/></td>
+                                            <!--<td><c:out value="${whRetrieve.materialPassNo}"/></td>-->
                                             <!--td><c:out value="${whRetrieve.requestedBy}"/></td-->
                                             <td><c:out value="${whRetrieve.requestedDate}"/></td>
                                             <td><c:out value="${whRetrieve.status}"/></td>
@@ -134,31 +150,31 @@
                     dom: 'Brtip',
                     columnDefs : [{
                         sortable : false,
-                        targets : [ 6 ]
+                        targets : [ 7 ]
                     }],
                     buttons: [
                         {
                             extend: 'copy',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
                             }
                         },
                         {
                             extend: 'excel',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
                             }
                         },
                         {
                             extend: 'pdf',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
                             }
                         },
                         {
                             extend: 'print',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
                             },
                             customize: function (win) {
                                 $(win.document.body)

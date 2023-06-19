@@ -4,6 +4,7 @@ package com.onsemi.hms.model;
  * @author fg79cj
  */
 public class IonicFtpRetrieve {
+
     private String refId;
     private String equipmentType;
     private String equipmentId;
@@ -24,12 +25,73 @@ public class IonicFtpRetrieve {
     private String remarks;
     private String shippingDate;
     private String csvStatus;
-    
-    public IonicFtpRetrieve() {
-        
+    private String boxNo;
+    private String gtsNo;
+    private String lcId;
+    private String lcQty;
+    private String pcId;
+    private String pcQty;
+
+    public String getLcId() {
+        return lcId;
     }
 
-    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate, String csvStatus) {
+    public void setLcId(String lcId) {
+        this.lcId = lcId;
+    }
+
+    public String getLcQty() {
+        return lcQty;
+    }
+
+    public void setLcQty(String lcQty) {
+        this.lcQty = lcQty;
+    }
+
+    public String getPcId() {
+        return pcId;
+    }
+
+    public void setPcId(String pcId) {
+        this.pcId = pcId;
+    }
+
+    public String getPcQty() {
+        return pcQty;
+    }
+
+    public void setPcQty(String pcQty) {
+        this.pcQty = pcQty;
+    }
+
+    public IonicFtpRetrieve() {
+
+    }
+
+//    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate, String csvStatus) {
+//        this.refId = refId;
+//        this.equipmentType = equipmentType;
+//        this.equipmentId = equipmentId;
+//        this.pcbA = pcbA;
+//        this.qtyQualA = qtyQualA;
+//        this.pcbB = pcbB;
+//        this.qtyQualB = qtyQualB;
+//        this.pcbC = pcbC;
+//        this.qtyQualC = qtyQualC;
+//        this.pcbControl = pcbControl;
+//        this.qtyControl = qtyControl;
+//        this.quantity = quantity;
+//        this.materialPassNo = materialPassNo;
+//        this.materialPassExpiry = materialPassExpiry;
+//        this.requestedBy = requestedBy;
+//        this.requestedEmail = requestedEmail;
+//        this.requestedDate = requestedDate;
+//        this.remarks = remarks;
+//        this.shippingDate = shippingDate;
+//        this.csvStatus = csvStatus;
+//    }
+    //change mpNo and mpExpiryDate to boxNo and gtsNo
+    public IonicFtpRetrieve(String refId, String equipmentType, String equipmentId, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String boxNo, String gtsNo, String requestedBy, String requestedEmail, String requestedDate, String remarks, String shippingDate, String csvStatus) {
         this.refId = refId;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
@@ -42,8 +104,8 @@ public class IonicFtpRetrieve {
         this.pcbControl = pcbControl;
         this.qtyControl = qtyControl;
         this.quantity = quantity;
-        this.materialPassNo = materialPassNo;
-        this.materialPassExpiry = materialPassExpiry;
+        this.boxNo = boxNo;
+        this.gtsNo = gtsNo;
         this.requestedBy = requestedBy;
         this.requestedEmail = requestedEmail;
         this.requestedDate = requestedDate;
@@ -51,7 +113,38 @@ public class IonicFtpRetrieve {
         this.shippingDate = shippingDate;
         this.csvStatus = csvStatus;
     }
-    
+
+    public IonicFtpRetrieve(String refId, String equipmentId, String boxNo, String gtsNo) {
+        this.refId = refId;
+        this.equipmentId = equipmentId;
+        this.boxNo = boxNo;
+        this.gtsNo = gtsNo;
+    }
+
+    public IonicFtpRetrieve(String refId, String lcId, String lcQty, String pcId, String pcQty) {
+        this.refId = refId;
+        this.lcId = lcId;
+        this.lcQty = lcQty;
+        this.pcId = pcId;
+        this.pcQty = pcQty;
+    }
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
+    }
+
     public String getRefId() {
         return refId;
     }

@@ -232,6 +232,11 @@ public class LogDAO {
                 whShipping.setShippingBy(rs.getString("SL.shipping_by"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
             }
             rs.close();
             ps.close();
@@ -281,6 +286,11 @@ public class LogDAO {
                 whShipping.setShippingBy(rs.getString("SL.shipping_by"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -415,6 +425,11 @@ public class LogDAO {
                 whShipping.setShippingBy(rs.getString("shipping_date_view"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
             }
             rs.close();
             ps.close();
@@ -507,6 +522,12 @@ public class LogDAO {
                 whShippingLog.setBarVerifyInvVerify(rs.getString("bar_inv_verify"));
                 whShippingLog.setInvVerifyShip(rs.getString("inv_verify_ship"));
                 whShippingLog.setShipClose(rs.getString("ship_close"));
+                //loadCard
+                whShippingLog.setPairingType(rs.getString("pairing_type"));
+                whShippingLog.setLoadCardId(rs.getString("load_card_id"));
+                whShippingLog.setLoadCardQty(rs.getString("load_card_qty"));
+                whShippingLog.setProgCardId(rs.getString("prog_card_id"));
+                whShippingLog.setProgCardQty(rs.getString("prog_card_qty"));
 //                whShippingLog.setRequestReceive(rs.getString("request_receive"));
 //                whShippingLog.setReceiveVerify1(rs.getString("receive_verify1"));
 //                whShippingLog.setVerify1Verify2(rs.getString("verify1_verify2"));
@@ -570,6 +591,11 @@ public class LogDAO {
                 whShipping.setShippingDate(rs.getString("shipping_date_view"));
                 whShipping.setStatus(rs.getString("S.status"));
                 whShipping.setFlag(rs.getString("S.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
                 whShippingList.add(whShipping);
             }
             rs.close();

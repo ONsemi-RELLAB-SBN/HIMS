@@ -29,12 +29,14 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>Add New Material Pass Number</h2>
+                        <h2>Add New Box Number</h2>
                         <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/wh/whShipping/save" method="post">
                             <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-3 control-label">Material Pass Number *</label>
+                                <!--<label for="materialPassNo" class="col-lg-3 control-label">Material Pass Number *</label>-->
+                                <label for="boxNo" class="col-lg-3 control-label">Box Number *</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" placeholder="" value="" autofocus="autofocus">
+                                    <!--<input type="text" class="form-control" id="materialPassNo" name="materialPassNo" placeholder="" value="" autofocus="autofocus">-->
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
                             <a href="${contextPath}/wh/whRequest/ship" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
@@ -92,8 +94,9 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Material Pass Number</span></th>
-                                        <th><span>Material Pass Expiry Date</span></th>
+                                        <th><span>Box Number</span></th>
+                                        <!--<th><span>Material Pass Number</span></th>-->
+                                        <!--<th><span>Material Pass Expiry Date</span></th>-->
                                         <th><span>Hardware Type</span></th>
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Quantity</span></th>
@@ -103,10 +106,24 @@
                                     <c:forEach items="${packingList}" var="packingList" varStatus="packingListLoop">
                                         <tr>
                                             <td><c:out value="${packingListLoop.index+1}"/></td>
-                                            <td><c:out value="${packingList.materialPassNo}"/></td>
-                                            <td><c:out value="${packingList.materialPassExpiry}"/></td>
+                                            <td><c:out value="${packingList.boxNo}"/></td>
+                                            <!--<td><c:out value="${packingList.materialPassNo}"/></td>-->
+                                            <!--<td><c:out value="${packingList.materialPassExpiry}"/></td>-->
                                             <td><c:out value="${packingList.equipmentType}"/></td>
-                                            <td><c:out value="${packingList.equipmentId}"/></td>
+                                            <td>
+                                                <c:if test="${packingList.pairingType == 'PAIR'}">
+                                                    <c:out value="${packingList.loadCardId}"/><br><c:out value="${packingList.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${packingList.pairingType == 'SINGLE' && packingList.equipmentType == 'Load Card'}">
+                                                    <c:out value="${packingList.loadCardId}"/>
+                                                </c:if>
+                                                <c:if test="${packingList.pairingType == 'SINGLE' && packingList.equipmentType == 'Program Card'}">
+                                                    <c:out value="${packingList.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${packingList.pairingType == null}">
+                                                    <c:out value="${packingList.equipmentId}"/>
+                                                </c:if>
+                                            </td>
                                             <td><c:out value="${packingList.quantity}"/></td>
                                         </tr>
                                     </c:forEach>

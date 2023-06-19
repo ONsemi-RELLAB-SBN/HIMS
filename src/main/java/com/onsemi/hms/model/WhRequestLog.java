@@ -1,6 +1,7 @@
 package com.onsemi.hms.model;
 
 public class WhRequestLog {
+
     //log
     private String id;
     private String referenceId;
@@ -10,7 +11,7 @@ public class WhRequestLog {
     private String timestamp;
     private String logVerifyDate;
     private String logVerifyBy;
-    
+
     //request
     private String requestId;
     private String materialPassNo;
@@ -48,14 +49,31 @@ public class WhRequestLog {
     //time
     private String requestBarVerify;
     private String barVerifyInvVerify;
-//    private String invVerifyShip;
-    
-    
-//    private String requestReceive;
-//    private String receiveVerify1;
-//    private String verify1Verify2;
-//    private String receiveVerify2;
-//    private String requestVerify2;
+
+    //load card and program card
+    private String loadCardId;
+    private String loadCardQty;
+    private String progCardId;
+    private String progCardQty;
+    private String pairingType;
+    private String boxNo;
+    private String gtsNo;
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
+    }
 
     public String getId() {
         return id;
@@ -168,7 +186,7 @@ public class WhRequestLog {
     public void setReasonRetrieval(String reasonRetrieval) {
         this.reasonRetrieval = reasonRetrieval;
     }
-    
+
     public String getPcbA() {
         return pcbA;
     }
@@ -400,43 +418,44 @@ public class WhRequestLog {
     public void setBarVerifyInvVerify(String barVerifyInvVerify) {
         this.barVerifyInvVerify = barVerifyInvVerify;
     }
-//    public String getRequestReceive() {
-//        return requestReceive;
-//    }
-//
-//    public void setRequestReceive(String requestReceive) {
-//        this.requestReceive = requestReceive;
-//    }
-//
-//    public String getReceiveVerify1() {
-//        return receiveVerify1;
-//    }
-//
-//    public void setReceiveVerify1(String receiveVerify1) {
-//        this.receiveVerify1 = receiveVerify1;
-//    }
-//
-//    public String getVerify1Verify2() {
-//        return verify1Verify2;
-//    }
-//
-//    public void setVerify1Verify2(String verify1Verify2) {
-//        this.verify1Verify2 = verify1Verify2;
-//    }
-//
-//    public String getReceiveVerify2() {
-//        return receiveVerify2;
-//    }
-//
-//    public void setReceiveVerify2(String receiveVerify2) {
-//        this.receiveVerify2 = receiveVerify2;
-//    }
-//
-//    public String getRequestVerify2() {
-//        return requestVerify2;
-//    }
-//
-//    public void setRequestVerify2(String requestVerify2) {
-//        this.requestVerify2 = requestVerify2;
-//    }
+
+    public String getLoadCardId() {
+        return loadCardId;
+    }
+
+    public void setLoadCardId(String loadCardId) {
+        this.loadCardId = loadCardId;
+    }
+
+    public String getLoadCardQty() {
+        return loadCardQty;
+    }
+
+    public void setLoadCardQty(String loadCardQty) {
+        this.loadCardQty = loadCardQty;
+    }
+
+    public String getProgCardId() {
+        return progCardId;
+    }
+
+    public void setProgCardId(String progCardId) {
+        this.progCardId = progCardId;
+    }
+
+    public String getProgCardQty() {
+        return progCardQty;
+    }
+
+    public void setProgCardQty(String progCardQty) {
+        this.progCardQty = progCardQty;
+    }
+
+    public String getPairingType() {
+        return pairingType;
+    }
+
+    public void setPairingType(String pairingType) {
+        this.pairingType = pairingType;
+    }
 }

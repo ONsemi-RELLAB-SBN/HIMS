@@ -1,6 +1,7 @@
 package com.onsemi.hms.model;
 
 public class WhShipping {
+
     private String id;
     private String requestId;
     private String materialPassNo;
@@ -22,6 +23,30 @@ public class WhShipping {
     private String shippingBy;
     private String status;
     private String flag;
+    //load card and program card
+    private String loadCardId;
+    private String loadCardQty;
+    private String progCardId;
+    private String progCardQty;
+    private String pairingType;
+    private String boxNo;
+    private String gtsNo;
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
+    }
 
     public String getId() {
         return id;
@@ -86,7 +111,7 @@ public class WhShipping {
     public void setRequestedBy(String requestedBy) {
         this.requestedBy = requestedBy;
     }
-    
+
     public String getRequestedEmail() {
         return requestedEmail;
     }
@@ -118,7 +143,7 @@ public class WhShipping {
     public void setInventoryShelf(String inventoryShelf) {
         this.inventoryShelf = inventoryShelf;
     }
-    
+
 //    public String getInventoryLoc() {
 //        return inventoryLoc;
 //    }
@@ -126,7 +151,6 @@ public class WhShipping {
 //    public void setInventoryLoc(String inventoryLoc) {
 //        this.inventoryLoc = inventoryLoc;
 //    }
-
     public String getRemarks() {
         return remarks;
     }
@@ -189,5 +213,45 @@ public class WhShipping {
 
     public void setFlag(String flag) {
         this.flag = flag;
-    } 
+    }
+
+    public String getLoadCardId() {
+        return loadCardId;
+    }
+
+    public void setLoadCardId(String loadCardId) {
+        this.loadCardId = loadCardId;
+    }
+
+    public String getLoadCardQty() {
+        return loadCardQty;
+    }
+
+    public void setLoadCardQty(String loadCardQty) {
+        this.loadCardQty = loadCardQty;
+    }
+
+    public String getProgCardId() {
+        return progCardId;
+    }
+
+    public void setProgCardId(String progCardId) {
+        this.progCardId = progCardId;
+    }
+
+    public String getProgCardQty() {
+        return progCardQty;
+    }
+
+    public void setProgCardQty(String progCardQty) {
+        this.progCardQty = progCardQty;
+    }
+
+    public String getPairingType() {
+        return pairingType;
+    }
+
+    public void setPairingType(String pairingType) {
+        this.pairingType = pairingType;
+    }
 }

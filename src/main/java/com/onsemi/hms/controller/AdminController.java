@@ -8,6 +8,7 @@ import com.onsemi.hms.dao.MenuDAO;
 import com.onsemi.hms.dao.UserDAO;
 import com.onsemi.hms.dao.UserGroupAccessDAO;
 import com.onsemi.hms.dao.UserGroupDAO;
+import com.onsemi.hms.model.FileUploadDO;
 import com.onsemi.hms.model.Menu;
 import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.tools.QueryResult;
@@ -15,7 +16,18 @@ import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.UserGroup;
 import com.onsemi.hms.model.UserGroupAccess;
 import com.onsemi.hms.model.UserSession;
+import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.tools.SpmlUtil;
+import com.opencsv.CSVReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -37,6 +51,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @SessionAttributes({"userSession"})
 public class AdminController {
 
+    private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     String[] args = {};
 
@@ -415,4 +430,101 @@ public class AdminController {
     public String inventoryAdd(Model model) {
         return "admin/inventory_add";
     }
+    
+    @RequestMapping(value = "/fileEntry", method = RequestMethod.GET)
+    public String hwEntryFile(
+            Model model
+    ) {
+        return "admin/fileEntry";
+    }
+    
+    @RequestMapping(value = "/fileEntry/upload", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView shipFileUpload(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) MultipartFile fileShipUpload
+    ) {
+        String stringPath = "";
+        
+        List<WhMpList> packingList = new ArrayList<WhMpList>();
+        
+        if (fileShipUpload.isEmpty()) {
+            redirectAttrs.addFlashAttribute("message", "Please select a file to upload");
+        } else {
+            if(fileShipUpload.getOriginalFilename().contains(".csv")) {
+                try {
+                    File folder = new File(UPLOADED_FOLDER);
+                    File[] verifyFiles = folder.listFiles();
+                    int maxIndex = 0;
+                    if(verifyFiles.length!=0) {
+                        for (File listOfFile : verifyFiles) {
+                            if (listOfFile.isFile()) {
+                                maxIndex++;
+                            }
+                        }
+                    }
+                    String index = String.format("%05d" , maxIndex+1);
+                    // Get the file and save it somewhere
+                    byte[] bytes = fileShipUpload.getBytes();
+                    Path path = Paths.get(UPLOADED_FOLDER + index + "_DO_" + fileShipUpload.getOriginalFilename());
+                    Files.write(path, bytes);
+                    stringPath = path.toString();
+
+                    folder = new File(UPLOADED_FOLDER);
+                    File[] listOfFiles = folder.listFiles();
+
+                    boolean readFile = false;
+                    String fileName = fileShipUpload.getOriginalFilename();
+                    if(listOfFiles.length!=0) {
+                        for (File listOfFile : listOfFiles) {
+                            if (listOfFile.isFile()) {
+                                if (listOfFile.getName().equals(index + "_DO_" + fileName)) {
+                                    readFile = true;
+                                    CSVReader csvReader = null;      
+                                    try {
+                                        csvReader = new CSVReader(new FileReader(stringPath), ',', '"', 1);
+                                        String[] fileContents = null;
+                                        List<FileUploadDO> importList = new ArrayList<FileUploadDO>();
+                                        while ((fileContents = csvReader.readNext()) != null) {
+                                            FileUploadDO hwFileImport = new FileUploadDO(
+                                                fileContents[0], fileContents[1], fileContents[2], //mpNo, mpExp, eqptType
+                                                fileContents[3], fileContents[4], fileContents[5], //eqptId, shelfId, qty
+                                                fileContents[6] //reasonsRetrieval
+                                            );
+                                            importList.add(hwFileImport);
+                                        }
+                                        int y=1;
+                                        for (FileUploadDO r : importList) {
+                                            y++;
+                                            WhMpList doList = new WhMpList();
+                                            doList.setMaterialPassNo(r.getMpNo());
+                                            Date sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(r.getMpExpDate());
+                                            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+                                            String mpExpDate = formatter.format(sdf);
+                                            doList.setMaterialPassExpiry(mpExpDate);
+                                            doList.setEquipmentType(r.getEqptType());
+                                            doList.setEquipmentId(r.getEqptId());
+                                            doList.setInventoryLoc(r.getShelfId());
+                                            doList.setQuantity(r.getQty());
+                                            doList.setReasonRetrieval(r.getReasonsRetrieval());
+                                            packingList.add(doList);
+                                        }
+                                    } catch (Exception ee) { 
+                                        LOGGER.info("File Reading Error : Error while reading " + fileName + ".");
+                                        ee.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                }
+            } else {
+                redirectAttrs.addFlashAttribute("message", "Only .csv ALLOWED.");
+            }
+        }
+        return new ModelAndView("packingListPdf", "packingList", packingList);
+    } 
 }

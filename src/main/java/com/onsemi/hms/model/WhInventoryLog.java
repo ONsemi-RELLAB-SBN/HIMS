@@ -1,6 +1,7 @@
 package com.onsemi.hms.model;
 
 public class WhInventoryLog {
+
     //log
     private String id;
     private String referenceId;
@@ -10,7 +11,7 @@ public class WhInventoryLog {
     private String timestamp;
     private String logVerifyDate;
     private String logVerifyBy;
-    
+
     //retrieve
     private String retrieveId;
     private String materialPassNo;
@@ -38,7 +39,7 @@ public class WhInventoryLog {
     private String status;
     private String flag;
     private String arrivalReceivedDate;
-    
+
     //inventory
     private String inRetrieveId;
     private String inventoryDate;
@@ -48,11 +49,19 @@ public class WhInventoryLog {
     private String inventoryBy;
     private String inventoryStatus;
     private String inventoryFlag;
-    
+
     //timelapse
     private String shipArrReceive;
     private String arrReceiveInventory;
     private String shipInventory;
+    //load card and program card
+    private String loadCardId;
+    private String loadCardQty;
+    private String progCardId;
+    private String progCardQty;
+    private String pairingType;
+    private String boxNo;
+    private String gtsNo;
 //    private String shipReceive;
 //    private String receiveVerify;
 //    private String verifyInventory;
@@ -61,6 +70,22 @@ public class WhInventoryLog {
 
     public String getId() {
         return id;
+    }
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
     }
 
     public void setId(String id) {
@@ -394,7 +419,7 @@ public class WhInventoryLog {
     public void setInventoryFlag(String inventoryFlag) {
         this.inventoryFlag = inventoryFlag;
     }
-    
+
     public String getShipArrReceive() {
         return shipArrReceive;
     }
@@ -419,43 +444,44 @@ public class WhInventoryLog {
         this.shipInventory = shipInventory;
     }
 
-//    public String getShipReceive() {
-//        return shipReceive;
-//    }
-//
-//    public void setShipReceive(String shipReceive) {
-//        this.shipReceive = shipReceive;
-//    }
-//
-//    public String getReceiveVerify() {
-//        return receiveVerify;
-//    }
-//
-//    public void setReceiveVerify(String receiveVerify) {
-//        this.receiveVerify = receiveVerify;
-//    }
-//
-//    public String getVerifyInventory() {
-//        return verifyInventory;
-//    }
-//
-//    public void setVerifyInventory(String verifyInventory) {
-//        this.verifyInventory = verifyInventory;
-//    }
-//
-//    public String getReceiveInventory() {
-//        return receiveInventory;
-//    }
-//
-//    public void setReceiveInventory(String receiveInventory) {
-//        this.receiveInventory = receiveInventory;
-//    }
-//
-//    public String getShippingInventory() {
-//        return shippingInventory;
-//    }
-//
-//    public void setShippingInventory(String shippingInventory) {
-//        this.shippingInventory = shippingInventory;
-//    }
+    public String getLoadCardId() {
+        return loadCardId;
+    }
+
+    public void setLoadCardId(String loadCardId) {
+        this.loadCardId = loadCardId;
+    }
+
+    public String getLoadCardQty() {
+        return loadCardQty;
+    }
+
+    public void setLoadCardQty(String loadCardQty) {
+        this.loadCardQty = loadCardQty;
+    }
+
+    public String getProgCardId() {
+        return progCardId;
+    }
+
+    public void setProgCardId(String progCardId) {
+        this.progCardId = progCardId;
+    }
+
+    public String getProgCardQty() {
+        return progCardQty;
+    }
+
+    public void setProgCardQty(String progCardQty) {
+        this.progCardQty = progCardQty;
+    }
+
+    public String getPairingType() {
+        return pairingType;
+    }
+
+    public void setPairingType(String pairingType) {
+        this.pairingType = pairingType;
+    }
+
 }

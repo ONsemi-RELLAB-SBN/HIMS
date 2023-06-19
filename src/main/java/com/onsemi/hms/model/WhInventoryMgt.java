@@ -1,6 +1,7 @@
 package com.onsemi.hms.model;
 
 public class WhInventoryMgt {
+
     private String id;
     private String rackId;
     private String shelfId;
@@ -8,6 +9,15 @@ public class WhInventoryMgt {
     private String materialPassNo;
     private String modifiedDate;
     private String dateCreated;
+    private String boxNo;
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
 
     public String getId() {
         return id;

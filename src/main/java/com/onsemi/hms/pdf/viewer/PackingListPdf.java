@@ -34,19 +34,20 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
         Paragraph viewTitle2 = new Paragraph("Generated Date : " + todayDate, fontOpenSans(6f, Font.NORMAL));
         viewTitle2.setAlignment(Element.ALIGN_RIGHT);
         doc.add(viewTitle2);
-        
+
         String title = "\nHIMS SF Shipping List (SBN Factory to Rel Lab)";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
 
         Integer cellPadding = 5;
-        
+
         PdfPTable table = new PdfPTable(10);
         table.setWidthPercentage(100.0f);
-        table.setWidths(new float[]{0.4f, 1.6f, 1.3f, 1.3f, 2.5f, 0.8f, 0.6f, 0.8f, 0.5f, 1.2f});
+        table.setWidths(new float[]{0.4f, 1.3f, 1.2f, 1.3f, 2.2f, 0.8f, 0.6f, 0.8f, 0.5f, 1.0f});
+//        table.setWidths(new float[]{0.5f, 1.5f, 1.3f, 1.3f, 2.5f, 0.8f, 0.6f, 0.8f, 0.5f, 1.2f});
         table.setSpacingBefore(20);
-        
+
         Font fontHeader = fontOpenSans(6f, Font.BOLD);
         fontHeader.setColor(BaseColor.WHITE);
         PdfPCell cellHeader = new PdfPCell();
@@ -56,18 +57,19 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
         Font fontContent = fontOpenSans(6f, Font.NORMAL);
         PdfPCell cellContent = new PdfPCell();
         cellContent.setPadding(cellPadding);
-        
+
         List<WhMpList> packingList = (List<WhMpList>) model.get("packingList");
-        
+
         int i = 0;
-        while(i<packingList.size()) {
-            if(i==0) {
+        while (i < packingList.size()) {
+            if (i == 0) {
                 //Header
                 cellHeader.setPhrase(new Phrase("No", fontHeader));
                 table.addCell(cellHeader);
-                cellHeader.setPhrase(new Phrase("Material Pass No", fontHeader));
+//                cellHeader.setPhrase(new Phrase("Material Pass No", fontHeader));
+                cellHeader.setPhrase(new Phrase("Box No", fontHeader));
                 table.addCell(cellHeader);
-                cellHeader.setPhrase(new Phrase("MP Expiry Date", fontHeader));
+                cellHeader.setPhrase(new Phrase("MP No", fontHeader));
                 table.addCell(cellHeader);
                 cellHeader.setPhrase(new Phrase("Hardware Type", fontHeader));
                 table.addCell(cellHeader);
@@ -77,22 +79,30 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
                 table.addCell(cellHeader);
                 cellHeader.setPhrase(new Phrase("Scan Out Done", fontHeader));
                 table.addCell(cellHeader);
-                cellHeader.setPhrase(new Phrase("Material Pass Check In", fontHeader));
+                cellHeader.setPhrase(new Phrase("Box No Check In", fontHeader));
                 table.addCell(cellHeader);
                 cellHeader.setPhrase(new Phrase("Qty", fontHeader));
                 table.addCell(cellHeader);
                 cellHeader.setPhrase(new Phrase("Reason for Retrieval", fontHeader));
                 table.addCell(cellHeader);
             }
-            cellContent.setPhrase(new Phrase(i+1 + "", fontContent));
+            cellContent.setPhrase(new Phrase(i + 1 + "", fontContent));
+            table.addCell(cellContent);
+            cellContent.setPhrase(new Phrase(packingList.get(i).getBoxNo(), fontContent));
             table.addCell(cellContent);
             cellContent.setPhrase(new Phrase(packingList.get(i).getMaterialPassNo(), fontContent));
             table.addCell(cellContent);
-            cellContent.setPhrase(new Phrase(packingList.get(i).getMaterialPassExpiry(), fontContent));
-            table.addCell(cellContent);
             cellContent.setPhrase(new Phrase(packingList.get(i).getEquipmentType(), fontContent));
             table.addCell(cellContent);
-            cellContent.setPhrase(new Phrase(packingList.get(i).getEquipmentId(), fontContent));
+            if (packingList.get(i).getEquipmentType().equals("Program Card")) {
+                cellContent.setPhrase(new Phrase(packingList.get(i).getProgCardId(), fontContent));
+            } else if (packingList.get(i).getEquipmentType().equals("Load Card")) {
+                cellContent.setPhrase(new Phrase(packingList.get(i).getLoadCardId(), fontContent));
+            } else if (packingList.get(i).getEquipmentType().equals("Load Card & Program Card")) {
+                cellContent.setPhrase(new Phrase(packingList.get(i).getLoadCardId() + " &\n " + packingList.get(i).getProgCardId(), fontContent));
+            } else {
+                cellContent.setPhrase(new Phrase(packingList.get(i).getEquipmentId(), fontContent));
+            }
             table.addCell(cellContent);
             cellContent.setPhrase(new Phrase("", fontContent));
             table.addCell(cellContent);
@@ -105,7 +115,7 @@ public class PackingListPdf extends AbstractITextPdfViewPotraitPrint {
             cellContent.setPhrase(new Phrase(packingList.get(i).getReasonRetrieval(), fontContent));
             table.addCell(cellContent);
             i++;
-        }        
+        }
         doc.add(table);
     }
 }

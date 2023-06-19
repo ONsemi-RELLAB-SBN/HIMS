@@ -70,7 +70,8 @@
                                         <th><span>No</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Material Pass No.</span></th>
+                                        <th><span>Box No.</span></th>
+                                        <!--<th><span>Material Pass No.</span></th>-->
                                         <th><span>Qty</span></th>
                                         <th><span>Inventory</span></th>
                                         <th><span>Verification Date</span></th>
@@ -83,8 +84,22 @@
                                         <tr>                                            
                                             <td><c:out value="${whShippingLoop.index+1}"/></td>
                                             <td><c:out value="${whShipping.equipmentType}"/></td>
-                                            <td id="modal_delete_info_${whShipping.requestId}"><c:out value="${whShipping.equipmentId}"/></td>
-                                            <td><c:out value="${whShipping.materialPassNo}"/></td>
+                                            <td id="modal_delete_info_${whShipping.requestId}">
+                                                <c:if test="${whShipping.pairingType == 'PAIR'}">
+                                                    <c:out value="${whShipping.loadCardId}"/><br><c:out value="${whShipping.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whShipping.pairingType == 'SINGLE' && whShipping.equipmentType == 'Load Card'}">
+                                                    <c:out value="${whShipping.loadCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whShipping.pairingType == 'SINGLE' && whShipping.equipmentType == 'Program Card'}">
+                                                    <c:out value="${whShipping.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whShipping.pairingType == null}">
+                                                    <c:out value="${whShipping.equipmentId}"/>
+                                                </c:if>
+                                            </td>
+                                            <td><c:out value="${whShipping.boxNo}"/></td>
+                                            <!--<td><c:out value="${whShipping.materialPassNo}"/></td>-->
                                             <td><c:out value="${whShipping.quantity}"/></td>
                                             <td><c:out value="${whShipping.inventoryRack}, ${whShipping.inventoryShelf}"/></td>
                                             <td><c:out value="${whShipping.dateVerify}"/></td>

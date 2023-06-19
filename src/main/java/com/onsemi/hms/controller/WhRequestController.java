@@ -47,7 +47,8 @@ public class WhRequestController {
     private static final String LINE_SEPARATOR = "\n";
 
     //File header
-    private static final String HEADER = "id,material_pass_no,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_rack,inventory_slot,inventory_by,status";
+//    private static final String HEADER = "id,material_pass_no,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_rack,inventory_slot,inventory_by,status";
+    private static final String HEADER = "id,box_no,equipment_type,equipment_id,quantity,requested_by,requested_date,remarks,date_verify,inventory_date,inventory_rack,inventory_slot,inventory_by,status";
 
     @Autowired
     private MessageSource messageSource;
@@ -93,7 +94,6 @@ public class WhRequestController {
         return new ModelAndView("whRequestPdf", "whRequest", whRequest);
     }
 
-    
     @RequestMapping(value = "/verify/{whRequestId}", method = RequestMethod.GET)
     public String verify(
             Model model,
@@ -101,7 +101,7 @@ public class WhRequestController {
     ) {
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         WhRequest whRequest = whRequestDAO.getWhRequest(whRequestId);
-        
+
         String type = whRequest.getEquipmentType();
         if ("Motherboard".equals(type)) {
             String IdLabel = "Motherboard ID";
@@ -145,7 +145,7 @@ public class WhRequestController {
         model.addAttribute("whRequest", whRequest);
         return "whRequest/verify";
     }
-    
+
     @RequestMapping(value = "/verifyMp", method = RequestMethod.POST)
     public String verifyMp(
             Model model,
@@ -154,7 +154,8 @@ public class WhRequestController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
-            @RequestParam(required = false) String materialPassNo,
+            //            @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String boxNo,
             @RequestParam(required = false) String barcodeVerify,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) int tempCount
@@ -167,10 +168,11 @@ public class WhRequestController {
         whRequest.setDateVerify(dateFormat.format(date));
         whRequest.setUserVerify(userSession.getFullname());
         String barcodeVerified = whRequest.getBarcodeVerify();
-        whRequest.setMaterialPassNo(materialPassNo);
+//        whRequest.setMaterialPassNo(materialPassNo);
+        whRequest.setBoxNo(boxNo);
         LOGGER.info("barcodeVerified : " + barcodeVerified);
         boolean cp = false;
-        if (materialPassNo.equals(barcodeVerified)) {
+        if (boxNo.equals(barcodeVerified)) {
             whRequest.setStatus("Barcode Verification Pass");
             whRequest.setFlag("0");
             cp = true;
@@ -181,12 +183,12 @@ public class WhRequestController {
             cp = false;
             LOGGER.info("Barcode Verification Fail");
         }
-        
+
         tempCount = tempCount + 1;
         whRequest.setTempCount(Integer.toString(tempCount));
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestVerification(whRequest);
-        
+
         WhRequestDAO whRequestDAO3 = new WhRequestDAO();
         WhRequest query3 = whRequestDAO3.getWhReq(refId);
         LogModule logModule3 = new LogModule();
@@ -198,10 +200,10 @@ public class WhRequestController {
         logModule3.setVerifiedBy(query3.getUserVerify());
         logModule3.setVerifiedDate(query3.getDateVerify());
         QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
-        
-       // String check = "";
+
+        // String check = "";
         args = new String[1];
-        args[0] = materialPassNo;
+        args[0] = boxNo;
         if (queryResult.getResult() == 1 && cp == true) {
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success2", args, locale));
         } else {
@@ -209,16 +211,17 @@ public class WhRequestController {
         }
         return "redirect:/wh/whRequest/verify/" + refId;
     }
-    
+
     @RequestMapping(value = "/verifyInventory", method = RequestMethod.POST)
-    public String setInventory(
+    public String verifyInventory(
             Model model,
             Locale locale,
             HttpServletRequest request,
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
-            @RequestParam(required = false) String materialPassNo,
+            //            @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String boxNo1,
             @RequestParam(required = false) String inventoryRack,
             @RequestParam(required = false) String inventoryRackVerify,
             @RequestParam(required = false) String inventoryShelf,
@@ -227,8 +230,10 @@ public class WhRequestController {
             @RequestParam(required = false) String flag
     ) {
         WhRequest whRequest = new WhRequest();
-        whRequest.setRefId(refId);      
-        whRequest.setMaterialPassNo(materialPassNo);
+        whRequest.setRefId(refId);
+//        whRequest.setMaterialPassNo(materialPassNo);
+//        LOGGER.info("boxNo - " + boxNo1);
+        whRequest.setBoxNo(boxNo1);
         whRequest.setInventoryRackVerify(inventoryRackVerify);
         whRequest.setInventoryShelfVerify(inventoryShelfVerify);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -249,10 +254,10 @@ public class WhRequestController {
             cp = false;
             LOGGER.info("Wrong Inventory");
         }
-        
+
         WhRequestDAO whRequestDAO = new WhRequestDAO();
         QueryResult queryResult = whRequestDAO.updateWhRequestForShipping(whRequest);
-        
+
         WhRequestDAO whRequestDAO3 = new WhRequestDAO();
         WhRequest query3 = whRequestDAO3.getWhReq(refId);
         LogModule logModule3 = new LogModule();
@@ -264,17 +269,18 @@ public class WhRequestController {
         logModule3.setVerifiedBy(query3.getInventoryUserVerify());
         logModule3.setVerifiedDate(query3.getInventoryDateVerify());
         QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
-        
-        if(cp == true) {
+
+        if (cp == true) {
             WhShipping whShipping = new WhShipping();
             whShipping.setRequestId(refId);
-            whShipping.setMaterialPassNo(materialPassNo);
+//            whShipping.setMaterialPassNo(materialPassNo);
+            whShipping.setBoxNo(boxNo1);
             whShipping.setStatus("Ready for Shipment");
             whShipping.setFlag("0");
             whShipping.setShippingBy(userSession.getFullname());
             WhShippingDAO whShippingDao = new WhShippingDAO();
             QueryResult queryResult2 = whShippingDao.insertWhShipping(whShipping);
-            
+
             WhShippingDAO whShippingDAO3 = new WhShippingDAO();
             WhShipping query2 = whShippingDAO3.getWhShipping(refId);
             LogModule logModule2 = new LogModule();
@@ -285,49 +291,51 @@ public class WhRequestController {
             logModule2.setStatus(query2.getStatus());
             QueryResult queryResult1 = logModuleDAO2.insertLog(logModule2);
         }
-        
+
         String check = "";
         args = new String[1];
-        args[0] = materialPassNo;
+        args[0] = boxNo1;
         if (queryResult.getResult() == 0 || cp == false) {
+//            LOGGER.info("failed result - " + queryResult.getResult());
+//            LOGGER.info("CP - " + cp);
             //redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
             check = "redirect:/wh/whRequest/verify/" + refId;
         } else {
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success4", args, locale));
-            check = "redirect:/wh/whShipping/";
+            check = "redirect:/wh/whRequest/";
         }
         return check;
     }
-    
+
     @RequestMapping(value = "/history/{whRequestId}", method = RequestMethod.GET)
     public String history(
             Model model,
             HttpServletRequest request,
             @PathVariable("whRequestId") String whRequestId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");        
+//        LOGGER.info("Masuk view 1........");        
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whRequest/viewWhRequestLogPdf/" + whRequestId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whRequest";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware for Shipment to Rel Lab History");
-        LOGGER.info("Masuk view 2........");
+//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-    
+
     @RequestMapping(value = "/viewWhRequestLogPdf/{whRequestId}", method = RequestMethod.GET)
     public ModelAndView viewWhRequestHistPdf(
             Model model,
             @PathVariable("whRequestId") String whRequestId
     ) {
-        WhRequestDAO whRequestDAO = new WhRequestDAO();        
-        LOGGER.info("Masuk 1........");
+        WhRequestDAO whRequestDAO = new WhRequestDAO();
+//        LOGGER.info("Masuk 1........");
         List<WhRequestLog> whHistoryList = whRequestDAO.getWhReqLog(whRequestId);
 //        WhRequestLog whHistoryList = whRequestDAO.getWhRetLog(whRequestId);
-        LOGGER.info("Masuk 2........");
+//        LOGGER.info("Masuk 2........");
         return new ModelAndView("whRequestLogPdf", "whRequestLog", whHistoryList);
     }
-    
+
     @RequestMapping(value = "/error/{whRequestId}", method = {RequestMethod.GET, RequestMethod.POST})
     public String error(
             Model model,
@@ -360,14 +368,12 @@ public class WhRequestController {
         }
         return "redirect:/wh/whRequest/verify/" + whRequestId;
     }
-    
-    
-    
+
     /*
     *
     *   QUERY FOR EVERY SUBMODULE
     *
-    */
+     */
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -375,6 +381,7 @@ public class WhRequestController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String boxNo,
             @RequestParam(required = false) String equipmentId,
             @RequestParam(required = false) String materialPassExpiry1,
             @RequestParam(required = false) String materialPassExpiry2,
@@ -388,94 +395,111 @@ public class WhRequestController {
     ) {
         String query = "";
         int count = 0;
-        
-        if(materialPassNo!=null) {
-            if(!materialPassNo.equals("")) {
+
+        if (materialPassNo != null) {
+            if (!materialPassNo.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " material_pass_no = \'" + materialPassNo + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND material_pass_no = \'" + materialPassNo + "\' ";
+                }
             }
         }
-        if(equipmentId!=null) {
-            if(!equipmentId.equals("")) {
+        if (boxNo != null) {
+            if (!boxNo.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
+                    query = " box_no = \'" + boxNo + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND box_no = \'" + boxNo + "\' ";
+                }
+            }
+        }
+        if (equipmentId != null) {
+            if (!equipmentId.equals("")) {
+                count++;
+                if (count == 1) {
                     query = " equipment_id = \'" + equipmentId + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND equipment_id = \'" + equipmentId + "\' ";
+                }
             }
         }
-        if(materialPassExpiry1!=null &&  materialPassExpiry2!=null) {
-            if(!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
+        if (materialPassExpiry1 != null && materialPassExpiry2 != null) {
+            if (!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
                 count++;
-                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 +"\' AS DATE) ";
-                if(count == 1)
+                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = materialPassExpiry;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + materialPassExpiry;
+                }
             }
         }
-        if(equipmentType!=null) {
+        if (equipmentType != null) {
 //            if(!equipmentType.equals("") !("").equals(equipmentType)) {
-              if(!("").equals(equipmentType)) {
+            if (!("").equals(equipmentType)) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " equipment_type = \'" + equipmentType + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND equipment_type = \'" + equipmentType + "\' ";
+                }
             }
         }
-        if(requestedDate1!=null &&  requestedDate2!=null) {
-            if(!requestedDate1.equals("") && !requestedDate2.equals("")) {
+        if (requestedDate1 != null && requestedDate2 != null) {
+            if (!requestedDate1.equals("") && !requestedDate2.equals("")) {
                 count++;
-                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 +"\' AS DATE) ";
-                if(count == 1)
+                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = requestedDate;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + requestedDate;
+                }
             }
         }
-        if(requestedBy!=null) {
-            if(!requestedBy.equals("")) {
+        if (requestedBy != null) {
+            if (!requestedBy.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " requested_by = \'" + requestedBy + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND requested_by = \'" + requestedBy + "\' ";
+                }
             }
         }
-        if(inventoryRack!=null) {
-            if(!inventoryRack.equals("")) {
+        if (inventoryRack != null) {
+            if (!inventoryRack.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " inventory_rack = \'" + inventoryRack + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND inventory_rack = \'" + inventoryRack + "\' ";
+                }
             }
         }
-        if(inventoryShelf!=null) {
-            if(!inventoryShelf.equals("")) {
+        if (inventoryShelf != null) {
+            if (!inventoryShelf.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " inventory_shelf = \'" + inventoryShelf + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND inventory_shelf = \'" + inventoryShelf + "\' ";
+                }
             }
         }
-        if(status!=null) {
-            if(!("").equals(status)) {
+        if (status != null) {
+            if (!("").equals(status)) {
                 count++;
-                if(count == 1) {
-                    if(status.equals("Closed")) {
+                if (count == 1) {
+                    if (status.equals("Closed")) {
                         query = " status = \'" + status + "\' OR status = \'Closed. Verified By Supervisor\' ";
                     } else {
                         query = " status = \'" + status + "\' ";
                     }
-                }
-                else if(count>1) {
-                    if(status.equals("Closed")) {
+                } else if (count > 1) {
+                    if (status.equals("Closed")) {
                         query = " AND (status = \'" + status + "\' OR status = \'Closed. Verified By Supervisor\') ";
                     } else {
                         query = query + " AND status = \'" + status + "\' ";
@@ -483,7 +507,7 @@ public class WhRequestController {
                 }
             }
         }
-        
+
         System.out.println("Query: " + query);
         WhRequestDAO wh = new WhRequestDAO();
         List<WhRequest> requestQueryList = wh.getQuery(query);
@@ -506,10 +530,10 @@ public class WhRequestController {
         WhRequestDAO wi6 = new WhRequestDAO();
         List<WhRequest> shelfList = wi6.getShelf();
         model.addAttribute("shelfList", shelfList);
-        
+
         return "whRequest/query";
     }
-    
+
     @RequestMapping(value = "/ship", method = RequestMethod.GET)
     public String whShip(
             Model model

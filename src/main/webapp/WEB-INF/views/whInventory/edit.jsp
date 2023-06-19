@@ -17,12 +17,24 @@
                         <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/wh/whInventory/update" method="post">
                             <input type="hidden" name="refId" value="${whInventory.refId}" />
                             <div class="form-group">
+                                <label for="boxNo" class="col-lg-3 control-label">Box No.</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" value="${whInventory.boxNo}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="gtsNo" class="col-lg-3 control-label">GTS No.</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="gtsNo" name="gtsNo" value="${whInventory.gtsNo}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="materialPassNo" class="col-lg-3 control-label">Material Pass No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" value="${whInventory.materialPassNo}" readonly>
                                 </div>
                             </div>
-                                <div class="form-group">
+                            <div class="form-group">
                                 <label for="materialPassExpiry" class="col-lg-3 control-label">Material Pass Expiry Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassExpiry" name="materialPassExpiry" value="${whInventory.materialPassExpiry}" readonly>
@@ -80,14 +92,14 @@
         <script>
             $(document).ready(function () {
                 //temporary disabled
-                $('#inventoryRack').bind('copy paste cut', function (e)  {
+                $('#inventoryRack').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-                
-                $('#inventoryShelf').bind('copy paste cut', function (e)  {
+
+                $('#inventoryShelf').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-                
+
                 var element = $('#equipmentType');
                 if (element.val() === "Motherboard") {
                     $("#quantitydiv").hide();
@@ -100,20 +112,20 @@
                 } else {
                     $("#quantitydiv").hide();
                 }
-                
+
                 bootstrap_alert = function () {};
                 bootstrap_alert.warning = function (message) {
                     $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 };
-                if ($('#inventoryRack').val() !== $('#inventoryShelf').val().substring(0,6) || $('#inventoryRack').val().length !== 6 && $('#inventoryShelf').val().length !== 10 
-                    && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
+                if ($('#inventoryRack').val() !== $('#inventoryShelf').val().substring(0, 6) || $('#inventoryRack').val().length !== 6 && $('#inventoryShelf').val().length !== 10
+                        && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
                     bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
                     $("#inventoryRack").addClass('highlight');
                     $("#inventoryShelf").addClass('highlight');
                 } else {
                     if ($('#equipmentType').val() === 'Motherboard' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
-                        if($('#inventoryRack').val().substring(0,4) === "S-SY" || $('#inventoryRack').val().substring(0,4) === "S-AC" || $('#inventoryRack').val().substring(0,4) === "S-WF" || $('#inventoryRack').val().substring(0,4) !== "S-IO"
-                        || $('#inventoryRack').val().substring(0,4) === "S-BB" || $('#inventoryRack').val().substring(0,4) === "S-HA" || $('#inventoryRack').val().substring(0,4) === "S-PT") {
+                        if ($('#inventoryRack').val().substring(0, 4) === "S-SY" || $('#inventoryRack').val().substring(0, 4) === "S-AC" || $('#inventoryRack').val().substring(0, 4) === "S-WF" || $('#inventoryRack').val().substring(0, 4) !== "S-IO"
+                                || $('#inventoryRack').val().substring(0, 4) === "S-BB" || $('#inventoryRack').val().substring(0, 4) === "S-HA" || $('#inventoryRack').val().substring(0, 4) === "S-PT") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -122,7 +134,7 @@
                             $("#inventoryShelf").addClass('highlight');
                         }
                     } else if ($('#equipmentType').val() === 'Stencil' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
-                        if($('#inventoryRack').val().substring(0,4) === "S-ST") {
+                        if ($('#inventoryRack').val().substring(0, 4) === "S-ST") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -131,7 +143,7 @@
                             $("#inventoryShelf").addClass('highlight');
                         }
                     } else if ($('#equipmentType').val() === 'Tray' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
-                        if($('#inventoryRack').val().substring(0,4) === "S-TJ" || $('#inventoryRack').val().substring(0,4) === "S-TR") {
+                        if ($('#inventoryRack').val().substring(0, 4) === "S-TJ" || $('#inventoryRack').val().substring(0, 4) === "S-TR") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -140,7 +152,7 @@
                             $("#inventoryShelf").addClass('highlight');
                         }
                     } else if ($('#equipmentType').val() === 'PCB' && ($('#inventoryRack').val() !== "" && $('#inventoryShelf').val() !== "")) {
-                        if($('#inventoryRack').val().substring(0,4) === "S-PC") {
+                        if ($('#inventoryRack').val().substring(0, 4) === "S-PC") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -150,7 +162,7 @@
                         }
                     }
                 }
-                
+
                 var validator = $("#update_hardwareinventory_form").validate({
                     rules: {
                         inventoryRack: {
@@ -165,7 +177,7 @@
                         }
                     }
                 });
-                
+
                 $(".cancel").click(function () {
                     validator.resetForm();
                 });

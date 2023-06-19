@@ -100,7 +100,7 @@ public class CSV {
 //            CSV csv = new CSV();
 // 
 //            String username = System.getProperty("user.name");
-//            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
+//            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
 //    
 //            csv.open(new File(targetLocation));
 //            csv.put(0, 0, "Column0");

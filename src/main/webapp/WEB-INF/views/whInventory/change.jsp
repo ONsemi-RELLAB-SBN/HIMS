@@ -25,20 +25,20 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>Warehouse Management - HW in  SBN Factory</h1>
+            <h1>Warehouse Management - Barcode Change Management</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">HW in  SBN Factory List</h2>
-                            <div class="filter-block pull-right">
+                            <h2 class="pull-left">HW in  SBN Factory With Old Barcode Sticker</h2>
+<!--                            <div class="filter-block pull-right">
                                 <a href="${contextPath}/wh/whInventory/query" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Query
                                 </a>
                                 <a href="${contextPath}/wh/whInventory/viewInventory" id = "viewInventory" class="btn btn-primary pull-right" title="View Inventory">
                                     <i class="fa fa-list-alt fa-lg"></i> View Inventory
                                 </a>
-                            </div>
+                            </div>-->
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -67,7 +67,7 @@
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Box No.</span></th>
-                                        <!--<th><span>Material Pass No.</span></th>-->
+                                        <th><span>Material Pass No.</span></th>
                                         <th><span>Qty</span></th>
                                         <th><span>Inventory</span></th>
                                         <th><span>Inventory Date</span></th>
@@ -94,25 +94,17 @@
                                                 </c:if>
                                             </td>
                                             <td><c:out value="${whInventory.boxNo}"/></td>
-                                            <!--<td><c:out value="${whInventory.materialPassNo}"/></td>-->
+                                            <td><c:out value="${whInventory.materialPassNo}"/></td>
                                             <td><c:out value="${whInventory.quantity}"/></td>
                                             <td><c:out value="${whInventory.inventoryRack}, ${whInventory.inventoryShelf}"/></td>
                                             <td><c:out value="${whInventory.inventoryDate}"/></td>
                                             <td align="center">
-                                                <c:if test="${groupId == '1' || groupId == '2'}">
-                                                    <a href="${contextPath}/wh/whInventory/edit/${whInventory.refId}" class="table-link" id="edit" title="Update">
+                                                    <a href="${contextPath}/whChange/editChange/${whInventory.refId}" class="table-link" id="edit" title="Print Barcode">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                         </span>
                                                     </a>
-                                                </c:if>
-                                                <a href="${contextPath}/wh/whInventory/history/${whInventory.refId}" class="table-link" title="Details">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-book fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
                                             </td>
                                         </tr>
                                     </c:forEach>

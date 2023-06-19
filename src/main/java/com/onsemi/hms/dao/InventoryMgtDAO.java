@@ -30,12 +30,13 @@ public class InventoryMgtDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO hms_inventory_mgt (rack_id, shelf_id, hardware_id, material_pass_no, modified_date, date_created) VALUES (?,?,?,?,NOW(),NOW())", Statement.RETURN_GENERATED_KEYS
+                    "INSERT INTO hms_inventory_mgt (rack_id, shelf_id, hardware_id, material_pass_no, modified_date, date_created,box_no) VALUES (?,?,?,?,NOW(),NOW(),?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whInventoryMgt.getRackId());
             ps.setString(2, whInventoryMgt.getShelfId());
             ps.setString(3, whInventoryMgt.getHardwareId());
             ps.setString(4, whInventoryMgt.getMaterialPassNo());
+            ps.setString(5, whInventoryMgt.getBoxNo());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -62,14 +63,15 @@ public class InventoryMgtDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE hms_inventory_mgt " +
-                    "SET hardware_id = ?, material_pass_no = ?, modified_date = NOW() " +
-                    "WHERE rack_id = ? AND shelf_id = ? "
+                    "UPDATE hms_inventory_mgt "
+                    + "SET hardware_id = ?, material_pass_no = ?, box_no = ?, modified_date = NOW() "
+                    + "WHERE rack_id = ? AND shelf_id = ? "
             );
             ps.setString(1, whInventoryMgt.getHardwareId());
             ps.setString(2, whInventoryMgt.getMaterialPassNo());
-            ps.setString(3, whInventoryMgt.getRackId());
-            ps.setString(4, whInventoryMgt.getShelfId());
+            ps.setString(3, whInventoryMgt.getBoxNo());
+            ps.setString(4, whInventoryMgt.getRackId());
+            ps.setString(5, whInventoryMgt.getShelfId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -86,19 +88,20 @@ public class InventoryMgtDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateInventoryRevert(WhInventoryMgt whInventoryMgt) {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE hms_inventory_mgt " +
-                    "SET hardware_id = ?, material_pass_no = ? " +
-                    "WHERE rack_id = ? AND shelf_id = ? "
+                    "UPDATE hms_inventory_mgt "
+                    + "SET hardware_id = ?, material_pass_no = ? , box_no "
+                    + "WHERE rack_id = ? AND shelf_id = ? "
             );
             ps.setString(1, whInventoryMgt.getHardwareId());
             ps.setString(2, whInventoryMgt.getMaterialPassNo());
-            ps.setString(3, whInventoryMgt.getRackId());
-            ps.setString(4, whInventoryMgt.getShelfId());
+            ps.setString(3, whInventoryMgt.getBoxNo());
+            ps.setString(4, whInventoryMgt.getRackId());
+            ps.setString(5, whInventoryMgt.getShelfId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -141,8 +144,8 @@ public class InventoryMgtDAO {
 
     public WhInventoryMgt getInventoryDetails(String shelfId) {
         String sql = "SELECT *, DATE_FORMAT(modified_date,'%d %M %Y') AS modified_date_view, DATE_FORMAT(date_created,'%d %M %Y') AS date_created_view "
-                   + "FROM hms_inventory_mgt "
-                   + "WHERE shelf_id = '" + shelfId + "' ";
+                + "FROM hms_inventory_mgt "
+                + "WHERE shelf_id = '" + shelfId + "' ";
         WhInventoryMgt whInventoryMgt = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -207,7 +210,7 @@ public class InventoryMgtDAO {
         }
         return whInventoryMgtList;
     }
-    
+
     public List<WhInventoryMgt> getInventoryDetailsList2() {
         String sql = "SELECT DISTINCT rack_id FROM hms_inventory_mgt ORDER BY rack_id ASC";
         List<WhInventoryMgt> whInventoryMgtList = new ArrayList<WhInventoryMgt>();
@@ -235,12 +238,12 @@ public class InventoryMgtDAO {
         }
         return whInventoryMgtList;
     }
-    
+
     public Integer getCountShelf(String shelfId) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE shelf_id = '" + shelfId + "' "
+                    "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE shelf_id = '" + shelfId + "' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -262,12 +265,39 @@ public class InventoryMgtDAO {
         }
         return count;
     }
-    
+
     public Integer getCountRack(String rackId) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE rack_id = '" + rackId + "' "
+                    "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE rack_id = '" + rackId + "' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+
+    public Integer getCountAvailableShelf(String shelfId) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT COUNT(*) AS count FROM hms_inventory_mgt WHERE shelf_id = '" + shelfId + "' and hardware_id = 'Empty' "
             );
 
             ResultSet rs = ps.executeQuery();

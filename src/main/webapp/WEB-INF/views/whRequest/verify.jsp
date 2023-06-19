@@ -32,13 +32,30 @@
                             <div class="form-group">
                                 <label for="equipmentId" class="col-lg-3 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.equipmentId}" readonly>
+                                    <c:if test="${whRequest.pairingType == 'PAIR'}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.loadCardId} & ${whRequest.progCardId}" readonly>
+                                    </c:if>
+                                    <c:if test="${whRequest.pairingType == 'SINGLE' && whRequest.equipmentType == 'Load Card'}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.loadCardId}" readonly>
+                                    </c:if>
+                                    <c:if test="${whRequest.pairingType == 'SINGLE' && whRequest.equipmentType == 'Program Card'}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.progCardId}" readonly>
+                                    </c:if>
+                                    <c:if test="${whRequest.pairingType == null}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRequest.equipmentId}" readonly>
+                                    </c:if>
                                 </div>
                             </div>  
                             <div class="form-group" id="quantitydiv" hidden>
                                 <label for="quantity" class="col-lg-3 control-label">Quantity *</label>
                                 <div class="col-lg-3">
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="${whRequest.quantity}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="boxNo" class="col-lg-3 control-label">Box No.</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" value="${whRequest.boxNo}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -108,9 +125,9 @@
                 </div>	
             </div>
         </div>
-                            
-       <!--New Tab Menu-->
-       <hr class="separator">
+
+        <!--New Tab Menu-->
+        <hr class="separator">
         <div class="col-lg-12">
             <br>
             <div class="row">
@@ -128,6 +145,8 @@
                                 <form id="mp_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyMp" method="post">
                                     <input type="hidden" id="refId" name="refId" value="${whRequest.refId}" />
                                     <input type="hidden" id="status" name="status" value="${whRequest.status}" />
+                                    <input type="hidden" id="boxNo" name="boxNo" value="${whRequest.boxNo}" />
+                                    <input type="hidden" id="gtsNo" name="gtsNo" value="${whRequest.gtsNo}" />
                                     <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRequest.materialPassNo}" />
                                     <input type="hidden" id="flag" name="flag" value="${whRequest.flag}" />
                                     <input type="hidden" id="tempCount" name="tempCount" id="tempCount" value="${whRequest.tempCount}" />
@@ -168,6 +187,8 @@
                                 <form id="hi_form" class="form-horizontal" role="form" action="${contextPath}/wh/whRequest/verifyInventory" method="post">
                                     <input type="hidden" id="refId1" name="refId" value="${whRequest.refId}" />
                                     <input type="hidden" id="materialPassNo1" name="materialPassNo" value="${whRequest.materialPassNo}" />
+                                    <input type="hidden" id="boxNo1" name="boxNo1" value="${whRequest.boxNo}" />
+                                    <input type="hidden" id="gtsNo1" name="gtsNo1" value="${whRequest.gtsNo}" />
                                     <input type="hidden" id="status1" name="status" value="${whRequest.status}" />
                                     <input type="hidden" id="flag1" name="flag" value="${whRequest.flag}" />
                                     <input type="hidden" id="inventoryRack" name="inventoryRack" value="${whRequest.inventoryRack}" />
@@ -201,7 +222,7 @@
             </div>
         </div>
         <!--END tab menu-->
-       
+
     </s:layout-component>
     <s:layout-component name="page_js">
         <script src="${contextPath}/resources/validation/jquery.validate.min.js"></script>
@@ -210,126 +231,133 @@
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
-            $(document).ready(function () {
-                //temporary disabled
-                $('#barcodeVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
-                
-                $('#inventoryRackVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
-                
-                $('#inventoryShelfVerify').bind('copy paste cut', function (e)  {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-                });
+                                            $(document).ready(function () {
+                                                //temporary disabled //temporary disable 110123
+//                                                $('#barcodeVerify').bind('copy paste cut', function (e) {
+//                                                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+//                                                });
 
-                var element2 = $('#tempCount');
-                if (element2.val() === "0" || element2.val() === "1" || element2.val() === "2") {
-                    $("#emaildiv").hide();
-                } else {
-                    $("#emaildiv").show();
-                }
-                
-                var element1 = $('#barcodeVerify');
-                var element11 = $('#materialPassNo');
-                if (element1.val() === element11.val()) {
-                    $("#submit1").attr("disabled", true);
-                    $("#reset1").attr("disabled", true);
-                    $("#barcodeVerify").attr("readonly", true);
-                    $("#emaildiv").hide();
-                } else {
-                    $("#submit2").attr("disabled", true);
-                    $("#reset2").attr("disabled", true);
-                    $("#inventoryRackVerify").attr("readonly", true);
-                    $("#inventoryShelfVerify").attr("readonly", true);
-                }
-                
-                
-                var validator = $("#mp_form").validate({
-                    rules: {
-                        barcodeVerify: {
-                            required: true
-                        }
-                    }
-                });
-                
-                $(".cancel").click(function () {
-                    validator.resetForm();
-                });
-                
-                var validator1 = $("#hi_form").validate({
-                    rules: {
-                        inventoryRackVerify: {
-                            required: true,
-                            minlength: 6,
-                            maxlength: 6
-                        },
-                        inventoryShelfVerify: {
-                            required: true,
-                            minlength: 10,
-                            maxlength: 10
-                        }
-                    }
-                });
-                
-                $(".cancel1").click(function () {
-                    validator1.resetForm();
-                });
-                
-                var element = $('#equipmentType');
-                if (element.val() === "Motherboard") {
-                    $("#quantitydiv").hide();
-                } else if (element.val() === "Stencil") {
-                    $("#quantitydiv").hide();
-                } else if (element.val() === "Tray") {
-                    $("#quantitydiv").show();
-                } else if (element.val() === "PCB") {
-                    $("#quantitydiv").show();
-                } else {
-                    $("#quantitydiv").hide();
-                }
-                
-                bootstrap_alert = function () {}
-                bootstrap_alert.warning = function (message) {
-                    $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
-                }
-                if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
-                    bootstrap_alert.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
-                    $("#barcodeVerify").effect("highlight", {}, 1000);
-                    $("#barcodeVerify").addClass('highlight');
-                }
-                
-                bootstrap_alert2 = function () {}
-                bootstrap_alert2.warning = function (message) {
-                    $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
-                }
-                if ($('#inventoryRackVerify').val() !== "" && $('#inventoryRackVerify').val() !== $('#inventoryRack').val()) {
-                    bootstrap_alert2.warning('The Rack value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
-                    $("#inventoryRackVerify").effect("highlight", {}, 1000);
-                    $("#inventoryRackVerify").addClass('highlight');
-                }
-                
-                bootstrap_alert3 = function () {}
-                bootstrap_alert3.warning = function (message) {
-                    $('#alert_placeholder3').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
-                }
-                if ($('#inventoryShelfVerify').val() !== "" && $('#inventoryShelfVerify').val() !== $('#inventoryShelf').val()) {
-                    bootstrap_alert3.warning('The Shelf value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
-                    $("#inventoryShelfVerify").effect("highlight", {}, 1000);
-                    $("#inventoryShelfVerify").addClass('highlight');
-                }
-            });
-            
-            $("#barcodeVerify").keypress(function(e){
-                if ( e.which === 13 ) {
-                    e.preventDefault();
-                }
-            });
+                                                $('#inventoryRackVerify').bind('copy paste cut', function (e) {
+                                                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                                                });
 
-            function modalEmail(e) {
-                alert("Email has been successfully sent to the requestor.");
-            }
+                                                $('#inventoryShelfVerify').bind('copy paste cut', function (e) {
+                                                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                                                });
+
+                                                var element2 = $('#tempCount');
+                                                if (element2.val() === "0" || element2.val() === "1" || element2.val() === "2") {
+                                                    $("#emaildiv").hide();
+                                                } else {
+                                                    $("#emaildiv").show();
+                                                }
+
+                                                var element1 = $('#barcodeVerify');
+//                                                var element11 = $('#materialPassNo');
+                                                var element11 = $('#boxNo');
+                                                if (element1.val() === element11.val()) {
+                                                    $("#submit1").attr("disabled", true);
+                                                    $("#reset1").attr("disabled", true);
+                                                    $("#barcodeVerify").attr("readonly", true);
+                                                    $("#emaildiv").hide();
+                                                } else {
+                                                    $("#submit2").attr("disabled", true);
+                                                    $("#reset2").attr("disabled", true);
+                                                    $("#inventoryRackVerify").attr("readonly", true);
+                                                    $("#inventoryShelfVerify").attr("readonly", true);
+                                                }
+
+                                                var valMpNo = $("#boxNo");
+                                                var validator = $("#mp_form").validate({
+                                                    rules: {
+                                                        barcodeVerify: {
+                                                            required: true,
+                                                            equalTo: valMpNo
+                                                        }
+                                                    }
+                                                });
+
+                                                $(".cancel").click(function () {
+                                                    validator.resetForm();
+                                                });
+
+                                                var inventoryRack = $("#inventoryRack");
+                                                var inventoryShelf = $("#inventoryShelf");
+                                                var validator1 = $("#hi_form").validate({
+                                                    rules: {
+                                                        inventoryRackVerify: {
+                                                            required: true,
+                                                            minlength: 6,
+                                                            maxlength: 6,
+                                                            equalTo: inventoryRack
+                                                        },
+                                                        inventoryShelfVerify: {
+                                                            required: true,
+                                                            minlength: 10,
+                                                            maxlength: 10,
+                                                            equalTo: inventoryShelf
+                                                        }
+                                                    }
+                                                });
+
+                                                $(".cancel1").click(function () {
+                                                    validator1.resetForm();
+                                                });
+
+                                                var element = $('#equipmentType');
+                                                if (element.val() === "Motherboard") {
+                                                    $("#quantitydiv").hide();
+                                                } else if (element.val() === "Stencil") {
+                                                    $("#quantitydiv").hide();
+                                                } else if (element.val() === "Tray") {
+                                                    $("#quantitydiv").show();
+                                                } else if (element.val() === "PCB") {
+                                                    $("#quantitydiv").show();
+                                                } else {
+                                                    $("#quantitydiv").hide();
+                                                }
+
+                                                bootstrap_alert = function () {}
+                                                bootstrap_alert.warning = function (message) {
+                                                    $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                                                }
+                                                if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#boxNo').val()) {
+                                                    bootstrap_alert.warning('Barcode Sticker NOT MATCH with Box No! Please re-check and try again.');
+                                                    $("#barcodeVerify").effect("highlight", {}, 1000);
+                                                    $("#barcodeVerify").addClass('highlight');
+                                                }
+
+                                                bootstrap_alert2 = function () {}
+                                                bootstrap_alert2.warning = function (message) {
+                                                    $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                                                }
+                                                if ($('#inventoryRackVerify').val() !== "" && $('#inventoryRackVerify').val() !== $('#inventoryRack').val()) {
+                                                    bootstrap_alert2.warning('The Rack value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
+                                                    $("#inventoryRackVerify").effect("highlight", {}, 1000);
+                                                    $("#inventoryRackVerify").addClass('highlight');
+                                                }
+
+                                                bootstrap_alert3 = function () {}
+                                                bootstrap_alert3.warning = function (message) {
+                                                    $('#alert_placeholder3').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
+                                                }
+                                                if ($('#inventoryShelfVerify').val() !== "" && $('#inventoryShelfVerify').val() !== $('#inventoryShelf').val()) {
+                                                    bootstrap_alert3.warning('The Shelf value is NOT MATCH with the inventory\'s record! Please re-check and try again.');
+                                                    $("#inventoryShelfVerify").effect("highlight", {}, 1000);
+                                                    $("#inventoryShelfVerify").addClass('highlight');
+                                                }
+                                            });
+
+
+//                                            $("#barcodeVerify").keypress(function (e) { //temporary disable 110123
+//                                                if (e.which === 13) {
+//                                                    e.preventDefault();
+//                                                }
+//                                            });
+
+                                            function modalEmail(e) {
+                                                alert("Email has been successfully sent to the requestor.");
+                                            }
         </script>
     </s:layout-component>
 </s:layout-render>

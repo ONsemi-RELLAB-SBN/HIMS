@@ -55,7 +55,7 @@ public class WhShippingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhShippingController.class);
     String[] args = {};
-    
+
     @Autowired
     private MessageSource messageSource;
 
@@ -65,8 +65,9 @@ public class WhShippingController {
     //Delimiters which has to be in the CSV file
     private static final String COMMA_DELIMITER = ",";
     private static final String LINE_SEPARATOR = "\n";
-    private static final String HEADER = "request id,material pass no,date verified,verified by,shipping date,shipping by,status";
-    
+//    private static final String HEADER = "request id,material pass no,date verified,verified by,shipping date,shipping by,status";
+    private static final String HEADER = "request id,box no,date verified,verified by,shipping date,shipping by,status";
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String whShipping(
             Model model
@@ -85,7 +86,7 @@ public class WhShippingController {
         WhShippingDAO whShippingDAO = new WhShippingDAO();
         WhShipping whShipping = whShippingDAO.getWhShippingMergeWithRequest(whShippingId);
         LOGGER.info("whShipping.getEquipmentType() : " + whShipping.getEquipmentType());
-        
+
         String type = whShipping.getEquipmentType();
         if ("Motherboard".equals(type)) {
             String IdLabel = "Motherboard ID";
@@ -106,20 +107,20 @@ public class WhShippingController {
         model.addAttribute("whShipping", whShipping);
         return "whShipping/edit";
     }
-    
+
     @RequestMapping(value = "/view/{whShippingId}", method = RequestMethod.GET)
     public String view(
             Model model,
             HttpServletRequest request,
             @PathVariable("whShippingId") String whShippingId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");
+//        LOGGER.info("Masuk view 1........");
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewWhShippingPdf/" + whShippingId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whShipping";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware Shipping");
-        LOGGER.info("Masuk view 2........");
+//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
 
@@ -129,40 +130,40 @@ public class WhShippingController {
             @PathVariable("whShippingId") String whShippingId
     ) {
         WhShippingDAO whShippingDAO = new WhShippingDAO();
-        LOGGER.info("Masuk 1........");
+//        LOGGER.info("Masuk 1........");
         WhShipping whShipping = whShippingDAO.getWhShippingMergeWithRequest(whShippingId);
-        LOGGER.info("Masuk 2........");
+//        LOGGER.info("Masuk 2........");
         return new ModelAndView("whShippingPdf", "whShipping", whShipping);
     }
-    
+
     @RequestMapping(value = "/history/{whShippingId}", method = RequestMethod.GET)
     public String history(
             Model model,
             HttpServletRequest request,
             @PathVariable("whShippingId") String whShippingId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");        
+//        LOGGER.info("Masuk view 1........");        
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewWhShippingLogPdf/" + whShippingId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whShipping";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware Shipping History");
-        LOGGER.info("Masuk view 2........");
+//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-    
+
     @RequestMapping(value = "/viewWhShippingLogPdf/{whShippingId}", method = RequestMethod.GET)
     public ModelAndView viewWhShippingHistPdf(
             Model model,
             @PathVariable("whShippingId") String whShippingId
     ) {
-        WhShippingDAO whShippingDAO = new WhShippingDAO();        
-        LOGGER.info("Masuk 1........");
+        WhShippingDAO whShippingDAO = new WhShippingDAO();
+//        LOGGER.info("Masuk 1........");
         List<WhShippingLog> whHistoryList = whShippingDAO.getWhShippingReqLog(whShippingId);
-        LOGGER.info("Masuk 2........");
+//        LOGGER.info("Masuk 2........");
         return new ModelAndView("whShippingLogPdf", "whShippingLog", whHistoryList);
     }
-    
+
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -170,6 +171,7 @@ public class WhShippingController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String boxNo,
             @RequestParam(required = false) String equipmentId,
             @RequestParam(required = false) String materialPassExpiry1,
             @RequestParam(required = false) String materialPassExpiry2,
@@ -186,113 +188,133 @@ public class WhShippingController {
     ) {
         String query = "";
         int count = 0;
-        
-        if(materialPassNo!=null) {
-            if(!materialPassNo.equals("")) {
+
+        if (materialPassNo != null) {
+            if (!materialPassNo.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " material_pass_no = \'" + materialPassNo + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND material_pass_no = \'" + materialPassNo + "\' ";
+                }
             }
         }
-        if(equipmentId!=null) {
-            if(!equipmentId.equals("")) {
+
+        if (boxNo != null) {
+            if (!boxNo.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
+                    query = " box_no = \'" + boxNo + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND box_no = \'" + boxNo + "\' ";
+                }
+            }
+        }
+        if (equipmentId != null) {
+            if (!equipmentId.equals("")) {
+                count++;
+                if (count == 1) {
                     query = " equipment_id = \'" + equipmentId + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND equipment_id = \'" + equipmentId + "\' ";
+                }
             }
         }
-        if(materialPassExpiry1!=null &&  materialPassExpiry2!=null) {
-            if(!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
+        if (materialPassExpiry1 != null && materialPassExpiry2 != null) {
+            if (!materialPassExpiry1.equals("") && !materialPassExpiry2.equals("")) {
                 count++;
-                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 +"\' AS DATE) ";
-                if(count == 1)
+                String materialPassExpiry = " material_pass_expiry BETWEEN CAST(\'" + materialPassExpiry1 + "\' AS DATE) AND CAST(\'" + materialPassExpiry2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = materialPassExpiry;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + materialPassExpiry;
+                }
             }
         }
-        if(equipmentType!=null) {
+        if (equipmentType != null) {
 //            if(!equipmentType.equals("") !("").equals(equipmentType)) {
-              if(!("").equals(equipmentType)) {
+            if (!("").equals(equipmentType)) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " equipment_type = \'" + equipmentType + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND equipment_type = \'" + equipmentType + "\' ";
+                }
             }
         }
-        if(requestedDate1!=null &&  requestedDate2!=null) {
-            if(!requestedDate1.equals("") && !requestedDate2.equals("")) {
+        if (requestedDate1 != null && requestedDate2 != null) {
+            if (!requestedDate1.equals("") && !requestedDate2.equals("")) {
                 count++;
-                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 +"\' AS DATE) ";
-                if(count == 1)
+                String requestedDate = " requested_date BETWEEN CAST(\'" + requestedDate1 + "\' AS DATE) AND CAST(\'" + requestedDate2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = requestedDate;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + requestedDate;
+                }
             }
         }
-        if(shippingDate1!=null &&  shippingDate2!=null) {
-            if(!shippingDate1.equals("") && !shippingDate2.equals("")) {
+        if (shippingDate1 != null && shippingDate2 != null) {
+            if (!shippingDate1.equals("") && !shippingDate2.equals("")) {
                 count++;
-                String shippingDate = " shipping_date BETWEEN CAST(\'" + shippingDate1 + "\' AS DATE) AND CAST(\'" + shippingDate2 +"\' AS DATE) ";
-                if(count == 1)
+                String shippingDate = " shipping_date BETWEEN CAST(\'" + shippingDate1 + "\' AS DATE) AND CAST(\'" + shippingDate2 + "\' AS DATE) ";
+                if (count == 1) {
                     query = shippingDate;
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND " + shippingDate;
+                }
             }
         }
-        if(shippingBy!=null) {
-            if(!shippingBy.equals("")) {
+        if (shippingBy != null) {
+            if (!shippingBy.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " shipping_by = \'" + shippingBy + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND shipping_by = \'" + shippingBy + "\' ";
+                }
             }
         }
-        if(requestedBy!=null) {
-            if(!requestedBy.equals("")) {
+        if (requestedBy != null) {
+            if (!requestedBy.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " requested_by = \'" + requestedBy + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND requested_by = \'" + requestedBy + "\' ";
+                }
             }
         }
-        if(inventoryRack!=null) {
-            if(!inventoryRack.equals("")) {
+        if (inventoryRack != null) {
+            if (!inventoryRack.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " inventory_rack = \'" + inventoryRack + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND inventory_rack = \'" + inventoryRack + "\' ";
+                }
             }
         }
-        if(inventoryShelf!=null) {
-            if(!inventoryShelf.equals("")) {
+        if (inventoryShelf != null) {
+            if (!inventoryShelf.equals("")) {
                 count++;
-                if(count == 1)
+                if (count == 1) {
                     query = " inventory_shelf = \'" + inventoryShelf + "\' ";
-                else if(count>1)
+                } else if (count > 1) {
                     query = query + " AND inventory_shelf = \'" + inventoryShelf + "\' ";
+                }
             }
         }
-        if(status!=null) {
-            if(!("").equals(status)) {
+        if (status != null) {
+            if (!("").equals(status)) {
                 count++;
-                if(count == 1) {
-                    if(status.equals("Closed")) {
+                if (count == 1) {
+                    if (status.equals("Closed")) {
                         query = " (S.status = \'" + status + "\' OR S.status = \'Closed. Verified By Supervisor\') ";
                     } else {
                         query = " S.status = \'" + status + "\' ";
                     }
-                }
-                else if(count>1) {
-                    if(status.equals("Closed")) {
+                } else if (count > 1) {
+                    if (status.equals("Closed")) {
                         query = query + " AND (S.status = \'" + status + "\' OR S.status = \'Closed. Verified By Supervisor\' ) ";
                     } else {
                         query = query + " AND S.status = \'" + status + "\' ";
@@ -300,7 +322,7 @@ public class WhShippingController {
                 }
             }
         }
-        
+
         System.out.println("Query: " + query);
         WhShippingDAO wh = new WhShippingDAO();
         List<WhShipping> shippingQueryList = wh.getQuery(query);
@@ -329,10 +351,10 @@ public class WhShippingController {
         WhShippingDAO wi7 = new WhShippingDAO();
         List<WhShipping> shippingByList = wi7.getShippingBy();
         model.addAttribute("shippingByList", shippingByList);
-        
+
         return "whShipping/query";
     }
-    
+
     @RequestMapping(value = "/packingList", method = RequestMethod.GET)
     public String packingList(
             Model model
@@ -345,7 +367,7 @@ public class WhShippingController {
         model.addAttribute("packingList", packingList);
         return "whShipping/packingList";
     }
-    
+
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(
             Model model,
@@ -353,22 +375,24 @@ public class WhShippingController {
             Locale locale,
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String materialPassNo
+            //            @RequestParam(required = false) String materialPassNo
+            @RequestParam(required = false) String boxNo
     ) throws IOException {
         WhShippingDAO whShipD = new WhShippingDAO();
-        int count = whShipD.getCountMpNo(materialPassNo); //mpno in shipping
+        int count = whShipD.getCountBoxNo(boxNo); //mpno in shipping
         if (count != 0) {
             WhMpListDAO whMpListDAO = new WhMpListDAO();
-            int countMpNo = whMpListDAO.getCountMpNo(materialPassNo); //mpno in mplist
+            int countMpNo = whMpListDAO.getCountBoxNo(boxNo); //mpno in mplist
             model.addAttribute("count", countMpNo);
             if (countMpNo == 0) {
                 WhShippingDAO whshipD = new WhShippingDAO();
-                WhShipping whship = whshipD.getWhShippingMergeWithRequestByMpNo(materialPassNo);
+                WhShipping whship = whshipD.getWhShippingMergeWithRequestByBoxNo(boxNo);
                 WhMpList whMpList = new WhMpList();
                 whMpList.setShippingId(whship.getId());
                 String refId = whship.getRequestId();
                 whMpList.setRequestId(refId);
-                whMpList.setMaterialPassNo(materialPassNo);
+//                whMpList.setMaterialPassNo(materialPassNo);
+                whMpList.setBoxNo(boxNo);
                 whMpList.setCreatedBy(userSession.getFullname());
                 whMpList.setStatus("Ship");
                 whMpListDAO = new WhMpListDAO();
@@ -389,7 +413,7 @@ public class WhShippingController {
                 QueryResult queryResult1 = logModuleDAO2.insertLogForVerification(logModule2);
 
                 args = new String[1];
-                args[0] = materialPassNo;
+                args[0] = boxNo;
                 if (queryResult.getGeneratedKey().equals("0")) {
                     model.addAttribute("error", messageSource.getMessage("general.label.save.error", args, locale));
                     model.addAttribute("packingList", whMpList);
@@ -397,7 +421,7 @@ public class WhShippingController {
                 } else {
                     /*create csv & email*/
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     WhMpListDAO whListDao = new WhMpListDAO();
                     WhMpList mplist = whListDao.getWhMpListMergeWithShippingAndRequest(whship.getRequestId());
@@ -406,9 +430,9 @@ public class WhShippingController {
                         FileWriter fileWriter = null;
                         FileReader fileReader = null;
                         try {
-                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
-                            fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
-                            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv";
+                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
+                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
 
                             BufferedReader bufferedReader = new BufferedReader(fileReader);
                             String data = bufferedReader.readLine();
@@ -432,8 +456,8 @@ public class WhShippingController {
                                     LOGGER.info(row + " : request Id found...................." + data);
                                     CSV csv = new CSV();
                                     csv.open(new File(targetLocation));
-                                    csv.put(4, row, "" + mplist.getCreatedDate());
-                                    csv.put(5, row, "" + mplist.getCreatedBy());
+                                    csv.put(4, row, mplist.getCreatedDate());
+                                    csv.put(5, row, mplist.getCreatedBy());
                                     csv.save(new File(targetLocation));
 
                                     check = true;
@@ -447,12 +471,13 @@ public class WhShippingController {
                             fileReader.close();
 
                             if (check == false) {
-                                fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv", true);
+                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
                                 fileWriter.append(mplist.getRequestId());
                                 fileWriter.append(COMMA_DELIMITER);
-                                fileWriter.append(mplist.getMaterialPassNo());
+//                                fileWriter.append(mplist.getMaterialPassNo());
+                                fileWriter.append(mplist.getBoxNo());
                                 fileWriter.append(COMMA_DELIMITER);
                                 fileWriter.append(mplist.getDateVerify());
                                 fileWriter.append(COMMA_DELIMITER);
@@ -479,7 +504,7 @@ public class WhShippingController {
                     } else {
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
                             LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);
@@ -488,7 +513,8 @@ public class WhShippingController {
                             fileWriter.append(LINE_SEPARATOR);
                             fileWriter.append(mplist.getRequestId());
                             fileWriter.append(COMMA_DELIMITER);
-                            fileWriter.append(mplist.getMaterialPassNo());
+//                            fileWriter.append(mplist.getMaterialPassNo());
+                            fileWriter.append(mplist.getBoxNo());
                             fileWriter.append(COMMA_DELIMITER);
                             fileWriter.append(mplist.getDateVerify());
                             fileWriter.append(COMMA_DELIMITER);
@@ -514,26 +540,27 @@ public class WhShippingController {
                     }
 
                     //send email
-                    LOGGER.info("send email to warehouse");
-                    System.out.println("######################### START EMAIL PROCESS ########################### ");
-                    System.out.println("\n******************* EMAIL CDARS *******************");
-                    //sent to cdars
-                    String[] to = {"cdarsreltest@gmail.com"};
-//                    String[] to = {"cdarsrel@gmail.com"};
-                    EmailSender emailSender = new EmailSender();
-                    emailSender.htmlEmailWithAttachmentTest(
-                            servletContext,
-                            "CDARS", //user name
-                            to, //to
-                            "Status for Hardware Shipping from HIMS SF", //subject
-                            "Verification and status for Hardware Shipping has been made." //msg
-                    );
-
-                    System.out.println("######################### END EMAIL PROCESS ########################### ");
-
+//                    LOGGER.info("send email to warehouse");
+//                    System.out.println("######################### START EMAIL PROCESS ########################### ");
+//                    System.out.println("\n******************* EMAIL CDARS *******************");
+//                    //sent to cdars
+////                    String[] to = {"cdarsreltest@gmail.com"};
+////                    String[] to = {"cdarsrel@gmail.com"};
+//                    String[] to = {"hims@onsemi.com"};
+//                    EmailSender emailSender = new EmailSender();
+//                    emailSender.htmlEmailWithAttachmentTest(
+//                            servletContext,
+//                            "CDARS", //user name
+//                            to, //to
+//                            "Status for Hardware Shipping from HIMS SF", //subject
+//                            "Verification and status for Hardware Shipping has been made." //msg
+//                    );
+//
+//                    System.out.println("######################### END EMAIL PROCESS ########################### ");
                     WhShipping whShipping = new WhShipping();
                     whShipping.setRequestId(whship.getRequestId());
-                    whShipping.setMaterialPassNo(materialPassNo);
+//                    whShipping.setMaterialPassNo(materialPassNo);
+                    whShipping.setBoxNo(boxNo);
                     whShipping.setStatus("Ship");
                     whShipping.setFlag("1");
                     whShipping.setShippingBy(mplist.getCreatedBy());
@@ -547,23 +574,37 @@ public class WhShippingController {
                     whReq.setFlag("1");
                     WhRequestDAO whRequestDao = new WhRequestDAO();
                     QueryResult queryResult3 = whRequestDao.updateWhRequestStatus(whReq);
-                    
+
                     whRequestDao = new WhRequestDAO();
                     WhRequest queryShelf = whRequestDao.getWhRequest(refId);
                     InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
                     WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(queryShelf.getInventoryShelf());
+
+                    //add mpNo to shipping table - to display MP no in packing list (security need to close)
+                    WhShipping whShipping2 = new WhShipping();
+                    whShipping2.setRequestId(whship.getRequestId());
+                    if (whInventoryMgt.getMaterialPassNo() == "Empty") {
+                        whShipping2.setMaterialPassNo("");
+                    } else {
+                        whShipping2.setMaterialPassNo(whInventoryMgt.getMaterialPassNo());
+                    }
+                    WhShippingDAO whSD = new WhShippingDAO();
+                    QueryResult qRe = whSD.updateWhShippingMaterialPass(whShipping2);
+
                     WhInventoryMgt imgt = new WhInventoryMgt();
                     imgt.setRackId(whInventoryMgt.getRackId());
                     imgt.setShelfId(whInventoryMgt.getShelfId());
                     imgt.setHardwareId("Empty");
                     imgt.setMaterialPassNo("Empty");
-                    InventoryMgtDAO imdao = new  InventoryMgtDAO();
+                    imgt.setBoxNo("Empty");
+                    InventoryMgtDAO imdao = new InventoryMgtDAO();
                     QueryResult queryMgt = imdao.updateInventoryDetails(imgt);
-                    
+
                     WhInventory wi = new WhInventory();
                     wi.setFlag("1");
                     wi.setStatus("Unavailable in Inventory");
-                    wi.setMaterialPassNo(materialPassNo);
+//                    wi.setMaterialPassNo(materialPassNo);
+                    wi.setBoxNo(boxNo);
                     WhInventoryDAO widao = new WhInventoryDAO();
                     QueryResult querywi = widao.updateWhInventoryStatus(wi);
 
@@ -578,29 +619,29 @@ public class WhShippingController {
         } else {
             redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.save.error2", args, locale));
         }
-         return "redirect:/wh/whShipping/packingList";
+        return "redirect:/wh/whShipping/packingList";
     }
-    
+
     @RequestMapping(value = "/print", method = RequestMethod.GET)
     public String print(
             Model model,
             HttpServletRequest request
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");        
+//        LOGGER.info("Masuk view 1........");        
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewPackingListPdf", "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whShipping/packingList";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware Packing List From SBN Factory to Rel Lab ON Semiconductor");
-        LOGGER.info("Masuk view 2........");
+//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
-    
+
     @RequestMapping(value = "/viewPackingListPdf", method = RequestMethod.GET)
     public ModelAndView viewPackingListPdf(
             Model model
     ) {
-        WhMpListDAO whMpListDAO = new WhMpListDAO();        
+        WhMpListDAO whMpListDAO = new WhMpListDAO();
         LOGGER.info("Masuk 1........");
         List<WhMpList> packingList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
         LOGGER.info("Masuk 2........");
@@ -645,8 +686,6 @@ public class WhShippingController {
 //        }
 //        return "";
 //    }
-    
-    
     //TEMPORARYYYYY
 //    @RequestMapping(value = "/email", method = {RequestMethod.GET, RequestMethod.POST})
 //    public String email(
@@ -675,7 +714,6 @@ public class WhShippingController {
 //        }
 //        return "redirect:/wh/whShipping/print";
 //    }
-    
     @RequestMapping(value = "/email", method = {RequestMethod.GET, RequestMethod.POST})
     public String email(
             Model model,
@@ -684,28 +722,45 @@ public class WhShippingController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession
     ) throws IOException {
+
+        //send email
+        LOGGER.info("send email to warehouse");
+        System.out.println("######################### START EMAIL PROCESS ########################### ");
+        System.out.println("\n******************* EMAIL CDARS *******************");
+        //sent to cdars
+//                    String[] to = {"cdarsrel@gmail.com"};
+        String[] receiver = {"hims@onsemi.com"};
+        EmailSender emailSenderCsv = new EmailSender();
+        emailSenderCsv.htmlEmailWithAttachmentTest(
+                servletContext,
+                "CDARS", //user name
+                receiver, //to
+                "Status for Hardware Shipping from HIMS SF", //subject
+                "Verification and status for Hardware Shipping has been made." //msg
+        );
+
         WhMpListDAO whMpListDAO = new WhMpListDAO();
         int countMpList = whMpListDAO.getCount();
-        
-        if(countMpList!= 0) {
-            WhMpListDAO mpDao= new WhMpListDAO();
+
+        if (countMpList != 0) {
+            WhMpListDAO mpDao = new WhMpListDAO();
             List<WhMpList> mpList = mpDao.getWhMpListEmail();
             List<String> to = new ArrayList<String>();
-            for(int i=0; i<mpList.size(); i++) {
+            for (int i = 0; i < mpList.size(); i++) {
                 to.add(mpList.get(i).getRequestedEmail());
             }
-            
+
             String[] listEmail = new String[to.size()];
             to.toArray(listEmail);
             LOGGER.info("" + listEmail.length);
-            LOGGER.info(""+ to);
-            
+            LOGGER.info("" + to);
+
             LOGGER.info("send email to person in charge");
-                EmailSender emailSender = new EmailSender();
-                emailSender.htmlEmailTable(
+            EmailSender emailSender = new EmailSender();
+            emailSender.htmlEmailTable(
                     servletContext,
                     "", //user name requestor
-                    listEmail,                               //to
+                    listEmail, //to
                     "List of Hardware(s) Ready for Shipment", //subject
                     "The list of hardware(s) that have been ready for shipment has been made.<br />"
                     + "This table will shows the details of each hardware in a material pass shipping list from Seremban Factory. <br /><br />"
@@ -713,8 +768,9 @@ public class WhShippingController {
                     + "<style>table, th, td {border: 1px solid black;} </style>"
                     + "<table style=\"width:100%\">" //tbl
                     + "<tr>"
-                    + "<th>MATERIAL PASS NO</th> "
-                    + "<th>MATERIAL PASS EXPIRY DATE</th> "
+                    + "<th>BOX NO</th> "
+                    //                    + "<th>MATERIAL PASS NO</th> "
+                    //                    + "<th>MATERIAL PASS EXPIRY DATE</th> "
                     + "<th>HARDWARE TYPE</th>"
                     + "<th>HARDWARE ID</th>"
                     + "<th>QUANTITY</th>"
@@ -724,28 +780,31 @@ public class WhShippingController {
                     + "<br />Thank you." //msg
             );
         }
+
+        System.out.println("######################### END EMAIL PROCESS ########################### ");
+
         return "redirect:/wh/whShipping/print";
     }
 
     private String table() {
         WhMpListDAO whMpListDAO = new WhMpListDAO();
         List<WhMpList> whMpListList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
-        String materialPassNo = "";
-        String materialPassExp = "";
+//        String materialPassNo = "";
+        String boxNo = "";
         String hardwareType = "";
         String hardwareId = "";
         String quantity = "";
         String text = "";
 
         for (int i = 0; i < whMpListList.size(); i++) {
-            materialPassNo = whMpListList.get(i).getMaterialPassNo();
-            materialPassExp = whMpListList.get(i).getMaterialPassExpiry();
+//            materialPassNo = whMpListList.get(i).getMaterialPassNo();
+            boxNo = whMpListList.get(i).getBoxNo();
             hardwareId = whMpListList.get(i).getEquipmentId();
             hardwareType = whMpListList.get(i).getEquipmentType();
             quantity = whMpListList.get(i).getQuantity();
             text = text + "<tr align = \"center\">";
-            text = text + "<td>" + materialPassNo + "</td>";
-            text = text + "<td>" + materialPassExp + "</td>";
+            text = text + "<td>" + boxNo + "</td>";
+//            text = text + "<td>" + materialPassExp + "</td>";
             text = text + "<td>" + hardwareType + "</td>";
             text = text + "<td>" + hardwareId + "</td>";
             text = text + "<td>" + quantity + "</td>";

@@ -1,6 +1,7 @@
 package com.onsemi.hms.model;
 
 public class IonicFtpRequest {
+
     private String refId;
     private String equipmentType;
     private String equipmentId;
@@ -24,11 +25,38 @@ public class IonicFtpRequest {
     private String requestedDate;
     private String remarks;
     private String csvStatus;
-    
+    private String boxNo;
+    private String gtsNo;
+
     public IonicFtpRequest() {
     }
 
-    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String reasonRetrieval, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks, String csvStatus) {
+//    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String reasonRetrieval, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String materialPassNo, String materialPassExpiry, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks, String csvStatus) {
+//        this.refId = refId;
+//        this.equipmentType = equipmentType;
+//        this.equipmentId = equipmentId;
+//        this.reasonRetrieval = reasonRetrieval;
+//        this.pcbA = pcbA;
+//        this.qtyQualA = qtyQualA;
+//        this.pcbB = pcbB;
+//        this.qtyQualB = qtyQualB;
+//        this.pcbC = pcbC;
+//        this.qtyQualC = qtyQualC;
+//        this.pcbControl = pcbControl;
+//        this.qtyControl = qtyControl;
+//        this.quantity = quantity;
+//        this.materialPassNo = materialPassNo;
+//        this.materialPassExpiry = materialPassExpiry;
+//        this.inventoryRack = inventoryRack;
+//        this.inventoryShelf = inventoryShelf;
+//        this.requestedBy = requestedBy;
+//        this.requestedEmail = requestedEmail;
+//        this.requestedDate = requestedDate;
+//        this.remarks = remarks;
+//        this.csvStatus = csvStatus;
+//    }
+    //change mpNo to boxNo; mpExpiryDate to gtsNo
+    public IonicFtpRequest(String refId, String equipmentType, String equipmentId, String reasonRetrieval, String pcbA, String qtyQualA, String pcbB, String qtyQualB, String pcbC, String qtyQualC, String pcbControl, String qtyControl, String quantity, String boxNo, String gtsNo, String inventoryRack, String inventoryShelf, String requestedBy, String requestedEmail, String requestedDate, String remarks, String csvStatus) {
         this.refId = refId;
         this.equipmentType = equipmentType;
         this.equipmentId = equipmentId;
@@ -42,8 +70,8 @@ public class IonicFtpRequest {
         this.pcbControl = pcbControl;
         this.qtyControl = qtyControl;
         this.quantity = quantity;
-        this.materialPassNo = materialPassNo;
-        this.materialPassExpiry = materialPassExpiry;
+        this.boxNo = boxNo;
+        this.gtsNo = gtsNo;
         this.inventoryRack = inventoryRack;
         this.inventoryShelf = inventoryShelf;
         this.requestedBy = requestedBy;
@@ -51,6 +79,22 @@ public class IonicFtpRequest {
         this.requestedDate = requestedDate;
         this.remarks = remarks;
         this.csvStatus = csvStatus;
+    }
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
     }
 
     public String getRefId() {
@@ -84,7 +128,7 @@ public class IonicFtpRequest {
     public void setReasonRetrieval(String reasonRetrieval) {
         this.reasonRetrieval = reasonRetrieval;
     }
-    
+
     public String getPcbA() {
         return pcbA;
     }
@@ -188,7 +232,7 @@ public class IonicFtpRequest {
     public void setInventoryShelf(String inventoryShelf) {
         this.inventoryShelf = inventoryShelf;
     }
-    
+
 //    public String getInventoryLoc() {
 //        return inventoryLoc;
 //    }
@@ -196,7 +240,6 @@ public class IonicFtpRequest {
 //    public void setInventoryLoc(String inventoryLoc) {
 //        this.inventoryLoc = inventoryLoc;
 //    }
-
     public String getRequestedBy() {
         return requestedBy;
     }
@@ -227,7 +270,7 @@ public class IonicFtpRequest {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
-    }    
+    }
 
     public String getCsvStatus() {
         return csvStatus;

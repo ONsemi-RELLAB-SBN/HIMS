@@ -17,6 +17,7 @@ import com.onsemi.hms.model.WhInventoryLog;
 import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
+import com.onsemi.hms.tools.SpmlUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -51,6 +52,11 @@ public class WhInventoryController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhInventoryController.class);
     String[] args = {};
+    private static final String COMMA_DELIMITER = ",";
+    private static final String LINE_SEPARATOR = "\n";
+    //File header
+//    private static final String HEADER = "retrieve_id,material_pass_no,material_pass_expiry,equipment_type,equipment_id,pcb_A,qty_qualA,pcb_B,qty_qualB,pcb_C,qty_qualC,pcb_control,qty_control,total_quantity,requested_by,requested_date,remarks,date_verify,receival_time,inventory_date,inventory_rack,inventory_shelf,inventory_by,status";
+    private static final String HEADER = "retrieve_id,box_no,gts_no,equipment_type,equipment_id,pcb_A,qty_qualA,pcb_B,qty_qualB,pcb_C,qty_qualC,pcb_control,qty_control,total_quantity,requested_by,requested_date,remarks,date_verify,receival_time,inventory_date,inventory_rack,inventory_shelf,inventory_by,status";
 
     @Autowired
     private MessageSource messageSource;
@@ -73,6 +79,80 @@ public class WhInventoryController {
         return "whInventory/whInventory";
     }
 
+//    @RequestMapping(value = "/change", method = RequestMethod.GET)
+//    public String change(
+//            Model model,
+//            @ModelAttribute UserSession userSession
+//    ) {
+//        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+//        List<WhInventory> whInventoryList = whInventoryDAO.getWhInventoryListMergeRetrieveForMpToBoxNo();
+//        String groupId = userSession.getGroup();
+////        LOGGER.info("groupId" + groupId);
+//        model.addAttribute("userSession", userSession);
+//        model.addAttribute("whInventoryList", whInventoryList);
+//        model.addAttribute("groupId", groupId);
+//        return "whInventory/change";
+//    }
+//
+//    @RequestMapping(value = "/editChange/{whInventoryId}", method = RequestMethod.GET)
+//    public String editChange(
+//            Model model,
+//            @PathVariable("whInventoryId") String whInventoryId
+//    ) {
+//        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+//        WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(whInventoryId);
+//        String type = whInventory.getEquipmentType();
+//        if ("Motherboard".equals(type)) {
+//            String IdLabel = "Motherboard ID";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else if ("Stencil".equals(type)) {
+//            String IdLabel = "Stencil ID";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else if ("Tray".equals(type)) {
+//            String IdLabel = "Tray Type";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else if ("PCB".equals(type)) {
+//            String IdLabel = "PCB Name";
+//            model.addAttribute("IdLabel", IdLabel);
+//        } else {
+//            String IdLabel = "Hardware ID";
+//            model.addAttribute("IdLabel", IdLabel);
+//        }
+//        model.addAttribute("whInventory", whInventory);
+//        return "whInventory/editChange";
+//    }
+//
+//    @RequestMapping(value = "/updateChange", method = RequestMethod.POST)
+//    public String updateChange(
+//            Model model,
+//            Locale locale,
+//            HttpServletRequest request,
+//            RedirectAttributes redirectAttrs,
+//            @ModelAttribute UserSession userSession,
+//            @RequestParam(required = false) String refId
+//    ) {
+//
+//        //change mpToBox from 0 to 1
+//        WhInventory in = new WhInventory();
+//        in.setRefId(refId);
+//        in.setMpToBox("1");
+//
+//        WhInventoryDAO inv = new WhInventoryDAO();
+//        QueryResult q = inv.updateWhInventoryMpToBox(in);
+//
+//        return "redirect:/wh/whInventory/editChange/" + refId;
+//    }
+//
+//    @RequestMapping(value = "/viewWhBarcodeStickerPdf/{refId}", method = RequestMethod.GET)
+//    public ModelAndView viewWhBarcodeStickerPdf(
+//            Model model,
+//            @PathVariable("refId") String refId
+//    ) {
+//        WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+//        WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(refId);
+//        return new ModelAndView("whBarcodeStickerPdf", "whInventory", whInventory);
+//    }
+
     @RequestMapping(value = "/edit/{whInventoryId}", method = RequestMethod.GET)
     public String edit(
             Model model,
@@ -80,8 +160,6 @@ public class WhInventoryController {
     ) {
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
         WhInventory whInventory = whInventoryDAO.getWhInventoryMergeWithRetrievePdf(whInventoryId);
-        LOGGER.info("whInventory.getEquipmentType() : " + whInventory.getEquipmentType());
-
         String type = whInventory.getEquipmentType();
         if ("Motherboard".equals(type)) {
             String IdLabel = "Motherboard ID";
@@ -111,6 +189,7 @@ public class WhInventoryController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String refId,
+            @RequestParam(required = false) String boxNo,
             @RequestParam(required = false) String materialPassNo,
             @RequestParam(required = false) String inventoryRack,
             @RequestParam(required = false) String inventoryShelf,
@@ -119,13 +198,14 @@ public class WhInventoryController {
     ) {
         inventoryRack = inventoryRack.toUpperCase();
         inventoryShelf = inventoryShelf.toUpperCase();
-        
+
         WhInventory whInventory = new WhInventory();
 
         whInventory.setRefId(refId); //ref
         LOGGER.info(refId);
         whInventory.setMaterialPassNo(materialPassNo); //args
-        LOGGER.info(materialPassNo);
+        whInventory.setBoxNo(boxNo); //args
+//        LOGGER.info(materialPassNo);
 
         //start add
         boolean checkLength = false;
@@ -155,8 +235,25 @@ public class WhInventoryController {
                         || inventoryRack.substring(0, 4).equals("S-BB") || inventoryRack.substring(0, 4).equals("S-HA") || inventoryRack.substring(0, 4).equals("S-PT")) {
                     checkRack = true;
                 }
+            } else if (equipmentType.contains("Load Card") || equipmentType.contains("Program Card")) {
+                if (inventoryRack.substring(0, 4).equals("S-LP")) {
+                    checkRack = true;
+                }
+            } else if (equipmentType.contains("BIB Parts")) {
+                if (inventoryRack.substring(0, 4).equals("S-BP")) {
+                    checkRack = true;
+                }
+            } else if (equipmentType.substring(0, 13).contains("EQP_SPAREPART") || equipmentType.substring(0, 13).contains("ATE_SPAREPART")) {
+                if (inventoryRack.substring(0, 4).equals("S-SP")) {
+                    checkRack = true;
+                } else if (inventoryRack.substring(0, 4).equals("S-FL") || inventoryRack.substring(0, 4).equals("S-HP") || inventoryRack.substring(0, 4).equals("S-HH")
+                        || inventoryRack.substring(0, 4).equals("S-GH") || inventoryRack.substring(0, 4).equals("S-GR") || inventoryRack.substring(0, 4).equals("S-TI")) {
+                    checkRack = true;
+                } else if (equipmentId.contains("ACS BOX") || equipmentId.contains("IOL BOX") || equipmentId.contains("BLUE M BOX") || equipmentId.contains("Stencil Box")
+                        || equipmentId.contains("WAKEFIELD BOX") || equipmentId.contains("Silica Gel") || equipmentId.contains("Plastic Trip Ticket") || equipmentId.contains("Loadcard Box")) {
+                    checkRack = true;
+                }
             }
-
             if (checkRack == true && inventoryShelf.substring(0, 6).equals(inventoryRack)) {
                 ck = true;
             }
@@ -187,6 +284,7 @@ public class WhInventoryController {
             imgt.setShelfId(whInventoryMgt.getShelfId());
             imgt.setHardwareId(equipmentId);
             imgt.setMaterialPassNo(materialPassNo);
+            imgt.setBoxNo(boxNo);
 
             WhInventoryDAO invdao = new WhInventoryDAO();
             WhInventory inv = invdao.getWhInventory(refId);
@@ -195,6 +293,7 @@ public class WhInventoryController {
             imgt2.setShelfId(inv.getInventoryShelf());
             imgt2.setHardwareId("Empty");
             imgt2.setMaterialPassNo("Empty");
+            imgt2.setBoxNo("Empty");
 
             if (whInventoryMgt.getHardwareId().equals("Empty")) {
                 checkShelf = true;
@@ -234,27 +333,27 @@ public class WhInventoryController {
                 if (queryResult.getResult() == 1) {
                     String username = System.getProperty("user.name");
                     //SEND EMAIL
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
                     if (file.exists()) {
                         LOGGER.info("dh ada header");
                         FileWriter fileWriter = null;
                         FileReader fileReader = null;
 
+                        boolean check = false;
                         try {
-                            fileWriter = new FileWriter("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv", true);
-                            fileReader = new FileReader("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
-                            String targetLocation = "C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv";
+                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv", true);
+                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
 
                             BufferedReader bufferedReader = new BufferedReader(fileReader);
                             String data = bufferedReader.readLine();
                             StringBuilder buff = new StringBuilder();
 
                             int row = 0;
+
                             while (data != null) {
                                 LOGGER.info("start reading file..........");
                                 buff.append(data).append(System.getProperty("line.separator"));
-                                System.out.println("dataaaaaaaaa : \n" + data);
-
                                 String[] split = data.split(",");
                                 IonicFtpInventory inventory = new IonicFtpInventory(
                                         split[0], split[1], split[2],
@@ -268,14 +367,15 @@ public class WhInventoryController {
                                 );
 
                                 if (split[0].equals(refId)) {
-                                    LOGGER.info(row + " : refId found...................." + data);
                                     CSV csv = new CSV();
                                     csv.open(new File(targetLocation));
-                                    csv.put(19, row, "" + whInventory.getInventoryDate());
-                                    csv.put(20, row, "" + whInventory.getInventoryRack());
-                                    csv.put(21, row, "" + whInventory.getInventoryShelf());
-                                    csv.put(22, row, "" + whInventory.getInventoryBy());
+                                    csv.put(19, row, whInventory.getInventoryDate());
+                                    csv.put(20, row, whInventory.getInventoryRack());
+                                    csv.put(21, row, whInventory.getInventoryShelf());
+                                    csv.put(22, row, whInventory.getInventoryBy());
                                     csv.save(new File(targetLocation));
+
+                                    check = true;
                                 } else {
                                     LOGGER.info("refId not found........" + data);
                                 }
@@ -293,8 +393,229 @@ public class WhInventoryController {
                                 LOGGER.info("Error 2 occured while closing the fileWriter");
                             }
                         }
+
+                        if (check == false) {
+                            try {
+                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                                //New Line after the header
+                                fileWriter.append(LINE_SEPARATOR);
+                                WhInventoryDAO whdao = new WhInventoryDAO();
+                                WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
+
+                                String pcbA = wh.getPcbA(), pcbB = wh.getPcbB(), pcbC = wh.getPcbC(), pcbControl = wh.getPcbControl();
+                                String qtyPcbA = wh.getQtyQualA(), qtyPcbB = wh.getQtyQualB(), qtyPcbC = wh.getQtyQualC(), qtyPcbControl = wh.getQtyControl();
+
+                                if (!wh.getEquipmentType().equals("PCB")) {
+                                    if (wh.getPcbA() == null || wh.getPcbA().equals("null")) {
+                                        pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
+                                    }
+                                    if (wh.getPcbB() == null || wh.getPcbB().equals("null")) {
+                                        pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
+                                    }
+                                    if (wh.getPcbC() == null || wh.getPcbC().equals("null")) {
+                                        pcbC = SpmlUtil.nullToEmptyString(wh.getPcbC());
+                                    }
+                                    if (wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
+                                        pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
+                                    }
+                                }
+
+                                if (wh.getPairingType() != null) {
+                                    if (wh.getPairingType().equals("PAIR")) {
+                                        pcbA = wh.getLoadCardId();
+                                        qtyPcbA = wh.getLoadCardQty();
+                                        pcbB = wh.getProgCardId();
+                                        qtyPcbB = wh.getProgCardQty();
+                                    } else if (wh.getPairingType().equals("SINGLE")) {
+                                        if (wh.getEquipmentType().equals("Load Card")) {
+                                            pcbA = wh.getLoadCardId();
+                                            qtyPcbA = wh.getLoadCardQty();
+                                            pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
+                                            qtyPcbB = "0";
+                                        } else if (wh.getEquipmentType().equals("Program Card")) {
+                                            pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
+                                            qtyPcbA = wh.getLoadCardQty();
+                                            pcbB = wh.getProgCardId();
+                                            qtyPcbB = "0";
+                                        }
+                                    }
+                                }
+                                fileWriter.append(refId);
+                                fileWriter.append(COMMA_DELIMITER);
+//                                fileWriter.append(wh.getMaterialPassNo());
+//                                fileWriter.append(COMMA_DELIMITER);
+//                                fileWriter.append(wh.getMaterialPassExpiry());
+                                fileWriter.append(wh.getBoxNo());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getGtsNo());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getEquipmentType());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getEquipmentId());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(pcbA);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(qtyPcbA);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(pcbB);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(qtyPcbB);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(pcbC);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(qtyPcbC);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(pcbControl);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(qtyPcbControl);
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getQuantity());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getRequestedBy());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getRequestedDate());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getRemarks());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getDateVerify());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getArrivalReceivedDate());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getInventoryDate());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getInventoryRack());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getInventoryShelf());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(userSession.getFullname());
+                                fileWriter.append(COMMA_DELIMITER);
+                                fileWriter.append(wh.getStatus());
+                                //                            fileWriter.append(COMMA_DELIMITER);              
+                            } catch (Exception ee) {
+                                System.out.println("Error 1 occured while append the fileWriter");
+                            } finally {
+                                try {
+                                    System.out.println("write new to CSV file Succeed!!!");
+                                    fileWriter.close();
+                                } catch (IOException ie) {
+                                    System.out.println("Error 2 occured while closing the fileWriter");
+                                    ie.printStackTrace();
+                                }
+                            }
+                        }
                     } else {
-                        LOGGER.info("File not exists.................");
+                        FileWriter fileWriter = null;
+                        try {
+                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                            LOGGER.info("no file yet");
+                            //Adding the header
+                            fileWriter.append(HEADER);
+
+                            //New Line after the header
+                            fileWriter.append(LINE_SEPARATOR);
+                            WhInventoryDAO whdao = new WhInventoryDAO();
+                            WhInventory wh = whdao.getWhInventoryMergeWithRetrieve(refId);
+
+                            String pcbA = wh.getPcbA(), pcbB = wh.getPcbB(), pcbC = wh.getPcbC(), pcbControl = wh.getPcbControl();
+                            String qtyPcbA = wh.getQtyQualA(), qtyPcbB = wh.getQtyQualB(), qtyPcbC = wh.getQtyQualC(), qtyPcbControl = wh.getQtyControl();
+
+                            if (!wh.getEquipmentType().equals("PCB")) {
+                                if (wh.getPcbA() == null || wh.getPcbA().equals("null")) {
+                                    pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
+                                }
+                                if (wh.getPcbB() == null || wh.getPcbB().equals("null")) {
+                                    pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
+                                }
+                                if (wh.getPcbC() == null || wh.getPcbC().equals("null")) {
+                                    pcbC = SpmlUtil.nullToEmptyString(wh.getPcbC());
+                                }
+                                if (wh.getPcbControl() == null || wh.getPcbControl().equals("null")) {
+                                    pcbControl = SpmlUtil.nullToEmptyString(wh.getPcbControl());
+                                }
+                            }
+
+                            if (wh.getPairingType() != null) {
+                                if (wh.getPairingType().equals("PAIR")) {
+                                    pcbA = wh.getLoadCardId();
+                                    qtyPcbA = wh.getLoadCardQty();
+                                    pcbB = wh.getProgCardId();
+                                    qtyPcbB = wh.getProgCardQty();
+                                } else if (wh.getPairingType().equals("SINGLE")) {
+                                    if (wh.getEquipmentType().equals("Load Card")) {
+                                        pcbA = wh.getLoadCardId();
+                                        qtyPcbA = wh.getLoadCardQty();
+                                        pcbB = SpmlUtil.nullToEmptyString(wh.getPcbB());
+                                        qtyPcbB = "0";
+                                    } else if (wh.getEquipmentType().equals("Program Card")) {
+                                        pcbA = SpmlUtil.nullToEmptyString(wh.getPcbA());
+                                        qtyPcbA = wh.getLoadCardQty();
+                                        pcbB = wh.getProgCardId();
+                                        qtyPcbB = "0";
+                                    }
+                                }
+                            }
+                            fileWriter.append(refId);
+                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getMaterialPassNo());
+//                            fileWriter.append(COMMA_DELIMITER);
+//                            fileWriter.append(wh.getMaterialPassExpiry());
+                            fileWriter.append(wh.getBoxNo());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getGtsNo());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getEquipmentType());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getEquipmentId());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(pcbA);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(qtyPcbA);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(pcbB);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(qtyPcbB);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(pcbC);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(qtyPcbC);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(pcbControl);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(qtyPcbControl);
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getQuantity());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getRequestedBy());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getRequestedDate());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getRemarks());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getDateVerify());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getArrivalReceivedDate());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getInventoryDate());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getInventoryRack());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getInventoryShelf());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(userSession.getFullname());
+                            fileWriter.append(COMMA_DELIMITER);
+                            fileWriter.append(wh.getStatus());
+                            //                            fileWriter.append(COMMA_DELIMITER);              
+                        } catch (Exception ee) {
+                            System.out.println("Error 1 occured while append the fileWriter");
+                        } finally {
+                            try {
+                                System.out.println("write new to CSV file Succeed!!!");
+                                fileWriter.close();
+                            } catch (IOException ie) {
+                                System.out.println("Error 2 occured while closing the fileWriter");
+                                ie.printStackTrace();
+                            }
+                        }
                     }
 
                     //send email
@@ -310,8 +631,9 @@ public class WhInventoryController {
                         java.util.logging.Logger.getLogger(WhRetrieveController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    String[] to = {"cdarsreltest@gmail.com"};
+//                    String[] to = {"cdarsreltest@gmail.com"};
 //                    String[] to = {"cdarsrel@gmail.com"};
+                    String[] to = {"hims@onsemi.com"};
                     EmailSender emailSender = new EmailSender();
                     emailSender.htmlEmailWithAttachmentTest2(
                             servletContext,
@@ -331,6 +653,7 @@ public class WhInventoryController {
             }
         } else {
             LOGGER.info("Inventory Invalid");
+            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error1", args, locale));
             url = "redirect:/wh/whInventory/edit/" + refId;
         }
         return url;
@@ -370,13 +693,13 @@ public class WhInventoryController {
             HttpServletRequest request,
             @PathVariable("whInventoryId") String whInventoryId
     ) throws UnsupportedEncodingException {
-        LOGGER.info("Masuk view 1........");
+//        LOGGER.info("Masuk view 1........");
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whInventory/viewWhInventoryLogPdf/" + whInventoryId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whInventory";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware in SBN Factory History");
-        LOGGER.info("Masuk view 2........");
+//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
 
@@ -386,9 +709,9 @@ public class WhInventoryController {
             @PathVariable("whInventoryId") String whInventoryId
     ) {
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
-        LOGGER.info("Masuk 1........");
+//        LOGGER.info("Masuk 1........");
         List<WhInventoryLog> whHistoryList = whInventoryDAO.getWhInventoryRetLog(whInventoryId);
-        LOGGER.info("Masuk 2........ ");
+//        LOGGER.info("Masuk 2........ ");
         return new ModelAndView("whInventoryLogPdf", "whInventoryLog", whHistoryList);
     }
 
@@ -404,6 +727,8 @@ public class WhInventoryController {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String materialPassNo,
+            @RequestParam(required = false) String boxNo,
+            @RequestParam(required = false) String gtsNo,
             @RequestParam(required = false) String equipmentId,
             @RequestParam(required = false) String materialPassExpiry1,
             @RequestParam(required = false) String materialPassExpiry2,
@@ -425,6 +750,26 @@ public class WhInventoryController {
                     query = " I.material_pass_no = \'" + materialPassNo + "\' ";
                 } else if (count > 1) {
                     query = query + " AND I.material_pass_no = \'" + materialPassNo + "\' ";
+                }
+            }
+        }
+        if (boxNo != null) {
+            if (!boxNo.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " I.box_no = \'" + boxNo + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND I.box_no = \'" + boxNo + "\' ";
+                }
+            }
+        }
+        if (gtsNo != null) {
+            if (!gtsNo.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " I.gts_no = \'" + gtsNo + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND I.gts_no = \'" + gtsNo + "\' ";
                 }
             }
         }

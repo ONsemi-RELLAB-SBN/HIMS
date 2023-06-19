@@ -8,7 +8,7 @@
         <style>
             .fa-stack {
                 color: red;
-            }
+            } 
             .table-link {
                 color: red;
             }
@@ -33,13 +33,36 @@
                             <div class="form-group">
                                 <label for="equipmentId" class="col-lg-3 control-label">Hardware ID</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.equipmentId}" readonly>
+                                    <c:if test="${whRetrieve.pairingType == 'PAIR'}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.loadCardId} & ${whRetrieve.progCardId}" readonly>
+                                    </c:if>
+                                    <c:if test="${whRetrieve.pairingType == 'SINGLE' && whRetrieve.equipmentType == 'Load Card'}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.loadCardId}" readonly>
+                                    </c:if>
+                                    <c:if test="${whRetrieve.pairingType == 'SINGLE' && whRetrieve.equipmentType == 'Program Card'}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.progCardId}" readonly>
+                                    </c:if>
+                                    <c:if test="${whRetrieve.pairingType == null}">
+                                        <input type="text" class="form-control" id="equipmentId" name="equipmentId" value="${whRetrieve.equipmentId}" readonly>
+                                    </c:if>
                                 </div>
                             </div>  
                             <div class="form-group" id="quantitydiv" hidden>
                                 <label for="quantity" class="col-lg-3 control-label">Quantity *</label>
                                 <div class="col-lg-4">
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="${whRetrieve.quantity}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="boxNo" class="col-lg-3 control-label">Box No.</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" value="${whRetrieve.boxNo}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="gtsNo" class="col-lg-3 control-label">GTS No.</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="gtsNo" name="gtsNo" value="${whRetrieve.gtsNo}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -108,12 +131,14 @@
                                     <input type="hidden" name="refId" value="${whRetrieve.refId}" />
                                     <input type="hidden" name="status" value="${whRetrieve.status}" />
                                     <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRetrieve.materialPassNo}" />
+                                    <input type="hidden" id="boxNoV" name="boxNoV" value="${whRetrieve.boxNo}" />
+                                    <input type="hidden" id="boxNo" name="boxNo" value="${whRetrieve.boxNo}" />
                                     <input type="hidden" id="flag" name="flag" value="${whRetrieve.flag}" />
                                     <input type="hidden" id="requestedEmail" name="requestedEmail" value="${whRetrieve.requestedEmail}" />
                                     <input type="hidden" id="requestedBy" name="requestedBy" value="${whRetrieve.requestedBy}" />
                                     <input type="hidden" id="equipmentId" name="equipmentId" value="${whRetrieve.equipmentId}" />
                                     <input type="hidden" id="equipmentType" name="equipmentType" value="${whRetrieve.equipmentType}" />
-                                    <input type="hidden" id="materialPassExpiry" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
+                                    <!--<input type="hidden" id="materialPassExpiry" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />-->
                                     <input type="hidden" name="tempCount" id="tempCount" value="${whRetrieve.tempCount}" />
                                     <input type="hidden" name="tab" value="${mpActiveTab}" />
                                     <div class="form-group">
@@ -157,6 +182,7 @@
                                     <input type="hidden" id="quantity" name="quantity" value="${whRetrieve.quantity}" />
                                     <input type="hidden" id="barcodeVerify" name="barcodeVerify" value="${whRetrieve.barcodeVerify}" />
                                     <input type="hidden" id="dateVerify" name="dateVerify" value="${whRetrieve.dateVerify}" />
+                                    <input type="hidden" id="boxNo" name="boxNo" value="${whRetrieve.boxNo}" />
                                     <input type="hidden" id="materialPassNo" name="materialPassNo" value="${whRetrieve.materialPassNo}" />
                                     <input type="hidden" id="materialPassExpiry" name="materialPassExpiry" value="${whRetrieve.materialPassExpiry}" />
                                     <input type="hidden" id="status" name="status" value="${whRetrieve.status}" />
@@ -203,22 +229,24 @@
         <script>
             $(document).ready(function () {
                 //temporary disabled.
-                $('#barcodeVerify').bind('copy paste cut', function (e)  {
+                $('#barcodeVerify').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-                
-                $('#tempRack').bind('copy paste cut', function (e)  {
+
+                $('#tempRack').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-                
-                $('#tempShelf').bind('copy paste cut', function (e)  {
+
+                $('#tempShelf').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-                
+
+                var valMpNo = $("#boxNoV");
                 var validator = $("#mp_form").validate({
                     rules: {
                         barcodeVerify: {
-                            required: true
+                            required: true,
+                            equalTo: valMpNo
                         }
                     }
                 });
@@ -236,7 +264,7 @@
                         tempShelf: {
                             required: true,
                             minlength: 10,
-                            maxlength: 10                            
+                            maxlength: 10
                         }
                     }
                 });
@@ -257,7 +285,7 @@
                 } else {
                     $("#quantitydiv").hide();
                 }
-                
+
                 bootstrap_alert3 = function () {};
                 bootstrap_alert3.warning = function (message) {
                     $('#alert_placeholder3').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
@@ -268,23 +296,24 @@
                 bootstrap_alert2.warning = function (message) {
                     $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 };
-                if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#materialPassNo').val()) {
-                    bootstrap_alert2.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
+                if ($('#barcodeVerify').val() !== "" && $('#barcodeVerify').val() !== $('#boxNo').val()) {
+//                    bootstrap_alert2.warning('Barcode Sticker NOT MATCH with Material Pass No! Please re-check and try again.');
+                    bootstrap_alert2.warning('Barcode Sticker NOT MATCH with Box No! Please re-check and try again.');
                     $("#hardwareBarcode2").addClass('highlight');
                 }
-                
+
                 bootstrap_alert = function () {};
                 bootstrap_alert.warning = function (message) {
                     $('#alert_placeholder2').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + message + '</span></div>')
                 };
-                if ($('#tempRack').val() !== $('#tempShelf').val().substring(0,6) || $('#tempRack').val().length !== 6 && $('#tempShelf').val().length !== 10 
-                    && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
+                if ($('#tempRack').val() !== $('#tempShelf').val().substring(0, 6) || $('#tempRack').val().length !== 6 && $('#tempShelf').val().length !== 10
+                        && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
                     bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
                     $("#tempRack").addClass('highlight');
                     $("#tempShelf").addClass('highlight');
                 } else {
                     if ($('#equipmentType2').val() === 'Motherboard' && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
-                        if($('#tempRack').val().substring(0,4) === "S-SY" || $('#tempRack').val().substring(0,4) === "S-AC" || $('#tempRack').val().substring(0,4) === "S-WF" || $('#tempRack').val().substring(0,4) === "S-SY" || $('#tempRack').val().substring(0,4) === "S-IO" || $('#tempRack').val().substring(0,4) === "S-BB" || $('#tempRack').val().substring(0,4) === "S-HA" || $('#tempRack').val().substring(0,4) === "S-PT") {
+                        if ($('#tempRack').val().substring(0, 4) === "S-SY" || $('#tempRack').val().substring(0, 4) === "S-AC" || $('#tempRack').val().substring(0, 4) === "S-WF" || $('#tempRack').val().substring(0, 4) === "S-SY" || $('#tempRack').val().substring(0, 4) === "S-IO" || $('#tempRack').val().substring(0, 4) === "S-BB" || $('#tempRack').val().substring(0, 4) === "S-HA" || $('#tempRack').val().substring(0, 4) === "S-PT") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -293,7 +322,7 @@
                             $("#tempShelf").addClass('highlight');
                         }
                     } else if ($('#equipmentType2').val() === 'Stencil' && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
-                        if($('#tempRack').val().substring(0,4) === "S-ST") {
+                        if ($('#tempRack').val().substring(0, 4) === "S-ST") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -302,7 +331,7 @@
                             $("#tempShelf").addClass('highlight');
                         }
                     } else if ($('#equipmentType2').val() === 'Tray' && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
-                        if($('#tempRack').val().substring(0,4) === "S-TJ" || $('#tempRack').val().substring(0,4) === "S-TR") {
+                        if ($('#tempRack').val().substring(0, 4) === "S-TJ" || $('#tempRack').val().substring(0, 4) === "S-TR") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -311,7 +340,7 @@
                             $("#tempShelf").addClass('highlight');
                         }
                     } else if ($('#equipmentType2').val() === 'PCB' && ($('#tempRack').val() !== "" && $('#tempShelf').val() !== "")) {
-                        if($('#tempRack').val().substring(0,4) === "S-PC") {
+                        if ($('#tempRack').val().substring(0, 4) === "S-PC") {
                             //do nothing
                         } else {
                             bootstrap_alert.warning('Inventory assigned is NOT VALID! Please re-check and try again.');
@@ -328,9 +357,9 @@
                 } else {
                     $("#emaildiv").show();
                 }
-                
+
                 var element1 = $('#barcodeVerify');
-                var element11 = $('#materialPassNo');
+                var element11 = $('#boxNoV');
                 if (element1.val() === element11.val()) {
                     $("#submit1").attr("disabled", true);
                     $("#reset1").attr("disabled", true);
@@ -342,7 +371,7 @@
                     $("#tempRack").attr("readonly", true);
                     $("#tempShelf").attr("readonly", true);
                 }
-                
+
                 var element2 = $('#status');
                 if (element2.val() === 'Move to Inventory') {
                     $("#submit2").attr("disabled", true);
@@ -350,7 +379,7 @@
                     $("#tempRack").attr("readonly", true);
                     $("#tempShelf").attr("readonly", true);
                 }
-                
+
             });
         </script>
     </s:layout-component>

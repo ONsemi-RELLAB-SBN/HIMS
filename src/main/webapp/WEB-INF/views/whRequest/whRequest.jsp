@@ -72,7 +72,8 @@
                                         <th><span>No</span></th>
                                         <th><span>Hardware Type</span></th> 
                                         <th><span>Hardware ID</span></th>
-                                        <th><span>Material Pass No.</span></th>
+                                        <th><span>Box No.</span></th>
+                                        <!--<th><span>Material Pass No.</span></th>-->
                                         <th><span>Inventory</span></th>
                                         <th><span>Requested Date</span></th>
                                         <th><span>Status</span></th>
@@ -84,8 +85,22 @@
                                         <tr>
                                             <td><c:out value="${whRequestLoop.index+1}"/></td>
                                             <td><c:out value="${whRequest.equipmentType}"/></td>
-                                            <td id="modal_delete_info_${whRequest.refId}"><c:out value="${whRequest.equipmentId}"/></td>
+                                            <td id="modal_delete_info_${whRequest.refId}">
+                                                <c:if test="${whRequest.pairingType == 'PAIR'}">
+                                                    <c:out value="${whRequest.loadCardId}"/><br><c:out value="${whRequest.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whRequest.pairingType == 'SINGLE' && whRequest.equipmentType == 'Load Card'}">
+                                                    <c:out value="${whRequest.loadCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whRequest.pairingType == 'SINGLE' && whRequest.equipmentType == 'Program Card'}">
+                                                    <c:out value="${whRequest.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whRequest.pairingType == null}">
+                                                    <c:out value="${whRequest.equipmentId}"/>
+                                                </c:if>
+                                            </td>
                                             <td><c:out value="${whRequest.materialPassNo}"/></td>
+                                             <!--<td><c:out value="${whRequest.boxNo}"/></td>-->
                                             <td><c:out value="${whRequest.inventoryRack}, ${whRequest.inventoryShelf}" /></td>
                                             <td><c:out value="${whRequest.requestedDate}"/></td>
                                             <td><c:out value="${whRequest.status}"/></td>

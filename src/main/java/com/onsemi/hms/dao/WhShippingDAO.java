@@ -16,8 +16,8 @@ import com.onsemi.hms.tools.SpmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class WhShippingDAO {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WhShippingDAO.class);
     private final Connection conn;
     private final DataSource dataSource;
@@ -32,11 +32,13 @@ public class WhShippingDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO hms_wh_shipping_list (request_id, material_pass_no, status, flag) "
-              + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                    //                    "INSERT INTO hms_wh_shipping_list (request_id, material_pass_no, status, flag) "
+                    //                    + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+                    "INSERT INTO hms_wh_shipping_list (request_id, box_no, status, flag) "
+                    + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whShipping.getRequestId());
-            ps.setString(2, whShipping.getMaterialPassNo());
+            ps.setString(2, whShipping.getBoxNo());
             ps.setString(3, whShipping.getStatus());
             ps.setString(4, whShipping.getFlag());
             queryResult.setResult(ps.executeUpdate());
@@ -64,15 +66,15 @@ public class WhShippingDAO {
     public QueryResult updateWhShipping(WhShipping whShipping) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_shipping_list "
-                   + "SET shipping_date = ?, shipping_by = ?, status = ?, flag = ? "
-                   + "WHERE material_pass_no = ?";
+                + "SET shipping_date = ?, shipping_by = ?, status = ?, flag = ? "
+                + "WHERE box_no = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whShipping.getShippingDate());
             ps.setString(2, whShipping.getShippingBy());
             ps.setString(3, whShipping.getStatus());
             ps.setString(4, whShipping.getFlag());
-            ps.setString(5, whShipping.getMaterialPassNo());
+            ps.setString(5, whShipping.getBoxNo());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -89,12 +91,12 @@ public class WhShippingDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateWhShippingStatus(WhShipping whShipping) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_shipping_list "
-                   + "SET status = ? "
-                   + "WHERE request_id = ?";
+                + "SET status = ? "
+                + "WHERE request_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whShipping.getStatus());
@@ -115,12 +117,38 @@ public class WhShippingDAO {
         }
         return queryResult;
     }
-    
+
+    public QueryResult updateWhShippingMaterialPass(WhShipping whShipping) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_shipping_list "
+                + "SET material_pass_no = ? "
+                + "WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, whShipping.getMaterialPassNo());
+            ps.setString(2, whShipping.getRequestId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+
     public QueryResult updateStatus(WhShipping whShipping) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_shipping_list "
-                   + "SET status = ?, flag = ?, close_date = NOW() "
-                   + "WHERE request_id = ?";
+                + "SET status = ?, flag = ?, close_date = NOW() "
+                + "WHERE request_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whShipping.getStatus());
@@ -147,7 +175,7 @@ public class WhShippingDAO {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "DELETE FROM hms_wh_shipping_list WHERE request_id = '" + whShippingId + "'"
+                    "DELETE FROM hms_wh_shipping_list WHERE request_id = '" + whShippingId + "'"
             );
             queryResult.setResult(ps.executeUpdate());
             ps.close();
@@ -168,8 +196,8 @@ public class WhShippingDAO {
 
     public WhShipping getWhShipping(String whShippingId) {
         String sql = "SELECT * "
-                   + "FROM hms_wh_shipping_list "
-                   + "WHERE request_id = '" + whShippingId + "'";
+                + "FROM hms_wh_shipping_list "
+                + "WHERE request_id = '" + whShippingId + "'";
         WhShipping whShipping = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -182,7 +210,8 @@ public class WhShippingDAO {
                 whShipping.setShippingDate(rs.getString("shipping_date"));
                 whShipping.setShippingBy(rs.getString("shipping_by"));
                 whShipping.setStatus(rs.getString("status"));
-                whShipping.setFlag(rs.getString("flag"));                
+                whShipping.setFlag(rs.getString("flag"));
+                whShipping.setBoxNo(rs.getString("box_no"));
             }
             rs.close();
             ps.close();
@@ -199,12 +228,12 @@ public class WhShippingDAO {
         }
         return whShipping;
     }
-        
+
     public WhShipping getWhShippingMergeWithRequest(String whShippingId) {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
-                   + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.request_id = RL.request_id AND SL.request_id = '" + whShippingId + "' ";
+                + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
+                + "WHERE SL.request_id = RL.request_id AND SL.request_id = '" + whShippingId + "' ";
         WhShipping whShipping = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -232,6 +261,13 @@ public class WhShippingDAO {
                 whShipping.setShippingBy(rs.getString("SL.shipping_by"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
+                whShipping.setBoxNo(rs.getString("RL.box_no"));
+                whShipping.setGtsNo(rs.getString("RL.gts_no"));
             }
             rs.close();
             ps.close();
@@ -248,13 +284,13 @@ public class WhShippingDAO {
         }
         return whShipping;
     }
-    
+
     public List<WhShipping> getWhShippingListMergeRequest() {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
-                   + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.request_id = RL.request_id AND SL.flag NOT LIKE '2' "
-                   + "ORDER BY RL.date_verify DESC ";
+                + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
+                + "WHERE SL.request_id = RL.request_id AND SL.flag NOT LIKE '2' "
+                + "ORDER BY RL.date_verify DESC ";
         List<WhShipping> whShippingList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -282,6 +318,13 @@ public class WhShippingDAO {
                 whShipping.setShippingBy(rs.getString("SL.shipping_by"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
+                whShipping.setBoxNo(rs.getString("RL.box_no"));
+                whShipping.setGtsNo(rs.getString("RL.gts_no"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -299,14 +342,14 @@ public class WhShippingDAO {
         }
         return whShippingList;
     }
-    
+
     public Integer getCountExistingData(String id) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count "
-                + "FROM hms_wh_shipping_list "
-                + "WHERE request_id = '" + id + "' "
+                    "SELECT COUNT(*) AS count "
+                    + "FROM hms_wh_shipping_list "
+                    + "WHERE request_id = '" + id + "' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -328,14 +371,14 @@ public class WhShippingDAO {
         }
         return count;
     }
-    
+
     public Integer getCountDone(String id) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count "
-                + "FROM hms_wh_shipping_list "
-                + "WHERE request_id = '" + id + "' AND flag = '1' "
+                    "SELECT COUNT(*) AS count "
+                    + "FROM hms_wh_shipping_list "
+                    + "WHERE request_id = '" + id + "' AND flag = '1' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -357,12 +400,12 @@ public class WhShippingDAO {
         }
         return count;
     }
-    
+
     public Integer getCountMpNo(String mpno) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE material_pass_no = '" + mpno + "' AND flag NOT LIKE '2' "
+                    "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE material_pass_no = '" + mpno + "' AND flag NOT LIKE '2' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -384,12 +427,39 @@ public class WhShippingDAO {
         }
         return count;
     }
-    
+
+    public Integer getCountBoxNo(String boxNo) {
+        Integer count = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT COUNT(*) AS count FROM hms_wh_shipping_list WHERE box_no = '" + boxNo + "' AND flag NOT LIKE '2' "
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+
     public WhShipping getWhShippingMergeWithRequestByMpNo(String whShippingMpNo) {
         String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
-                   + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
-                   + "WHERE SL.material_pass_no = '" + whShippingMpNo + "' ";
+                + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
+                + "WHERE SL.material_pass_no = '" + whShippingMpNo + "' ";
         WhShipping whShipping = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -417,6 +487,11 @@ public class WhShippingDAO {
                 whShipping.setShippingBy(rs.getString("shipping_date_view"));
                 whShipping.setStatus(rs.getString("SL.status"));
                 whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
             }
             rs.close();
             ps.close();
@@ -433,17 +508,77 @@ public class WhShippingDAO {
         }
         return whShipping;
     }
-    
+
+    public WhShipping getWhShippingMergeWithRequestByBoxNo(String boxNo) {
+//        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view , DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+//                + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+//                + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
+//                + "WHERE SL.box_no = '" + boxNo + "' ";
+        String sql = "SELECT SL.*, RL.*, DATE_FORMAT(RL.requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                + "DATE_FORMAT(RL.date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(SL.shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                + "FROM hms_wh_shipping_list SL, hms_wh_request_list RL "
+                + "WHERE SL.box_no = '" + boxNo + "' ";
+        WhShipping whShipping = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhShipping();
+                whShipping.setId(rs.getString("SL.id"));
+                whShipping.setRequestId(rs.getString("SL.request_id"));
+                whShipping.setMaterialPassNo(rs.getString("SL.material_pass_no"));
+//                whShipping.setMaterialPassExpiry(rs.getString("mp_expiry_view"));
+                whShipping.setEquipmentType(rs.getString("RL.equipment_type"));
+                whShipping.setEquipmentId(rs.getString("RL.equipment_id"));
+                whShipping.setQuantity(rs.getString("RL.quantity"));
+                whShipping.setRequestedBy(rs.getString("RL.requested_by"));
+                whShipping.setRequestedEmail(rs.getString("RL.requested_email"));
+                whShipping.setRequestedDate(rs.getString("requested_date_view"));
+//                whShipping.setInventoryLoc(rs.getString("RL.inventory_loc"));
+                whShipping.setInventoryRack(rs.getString("RL.inventory_rack"));
+                whShipping.setInventoryShelf(rs.getString("RL.inventory_shelf"));
+                whShipping.setRemarks(rs.getString("RL.remarks"));
+                whShipping.setBarcodeVerify(rs.getString("RL.barcode_verify"));
+                whShipping.setUserVerify(rs.getString("RL.user_verify"));
+                whShipping.setDateVerify(rs.getString("date_verify_view"));
+                whShipping.setShippingDate(rs.getString("shipping_date_view"));
+                whShipping.setShippingBy(rs.getString("shipping_date_view"));
+                whShipping.setStatus(rs.getString("SL.status"));
+                whShipping.setFlag(rs.getString("SL.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
+                whShipping.setBoxNo(rs.getString("RL.box_no"));
+                whShipping.setGtsNo(rs.getString("RL.gts_no"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whShipping;
+    }
+
     public List<WhShippingLog> getWhShippingReqLog(String whShippingId) {
-        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
-                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, date_verify)), ' mins, ', SECOND(TIMEDIFF(requested_date, date_verify)), ' secs') AS req_bar_verify, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins, ', SECOND(TIMEDIFF(date_verify, inventory_date_verify)), ' secs') AS bar_inv_verify, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(inventory_date_verify, shipping_date)), ' mins, ', SECOND(TIMEDIFF(inventory_date_verify, shipping_date)), ' secs') AS inv_verify_ship, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, close_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, close_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, close_date)), ' mins, ', SECOND(TIMEDIFF(shipping_date, close_date)), ' secs') AS ship_close "
-                    + "FROM hms_wh_log L, hms_wh_request_list R, hms_wh_shipping_list S "
-                    + "WHERE L.reference_id = R.request_id AND R.request_id = S.request_id AND S.request_id = '" + whShippingId + "' "
-                    + "ORDER BY timestamp DESC";
+        String sql = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
+                + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, "
+                + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, date_verify)), ' mins, ', SECOND(TIMEDIFF(requested_date, date_verify)), ' secs') AS req_bar_verify, "
+                + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins, ', SECOND(TIMEDIFF(date_verify, inventory_date_verify)), ' secs') AS bar_inv_verify, "
+                + "CONCAT(FLOOR(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(inventory_date_verify, shipping_date)), 24), ' hours, ', MINUTE(TIMEDIFF(inventory_date_verify, shipping_date)), ' mins, ', SECOND(TIMEDIFF(inventory_date_verify, shipping_date)), ' secs') AS inv_verify_ship, "
+                + "CONCAT(FLOOR(HOUR(TIMEDIFF(shipping_date, close_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(shipping_date, close_date)), 24), ' hours, ', MINUTE(TIMEDIFF(shipping_date, close_date)), ' mins, ', SECOND(TIMEDIFF(shipping_date, close_date)), ' secs') AS ship_close "
+                + "FROM hms_wh_log L, hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE L.reference_id = R.request_id AND R.request_id = S.request_id AND S.request_id = '" + whShippingId + "' "
+                + "ORDER BY timestamp DESC";
         List<WhShippingLog> whShippingList = new ArrayList<WhShippingLog>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -483,7 +618,7 @@ public class WhShippingDAO {
                 whShippingLog.setInventoryRack(rs.getString("inventory_rack"));
                 whShippingLog.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whShippingLog.setRemarks(remarks);
@@ -510,6 +645,13 @@ public class WhShippingDAO {
                 whShippingLog.setBarVerifyInvVerify(rs.getString("bar_inv_verify"));
                 whShippingLog.setInvVerifyShip(rs.getString("inv_verify_ship"));
                 whShippingLog.setShipClose(rs.getString("ship_close"));
+                whShippingLog.setPairingType(rs.getString("pairing_type"));
+                whShippingLog.setLoadCardId(rs.getString("load_card_id"));
+                whShippingLog.setLoadCardQty(rs.getString("load_card_qty"));
+                whShippingLog.setProgCardId(rs.getString("prog_card_id"));
+                whShippingLog.setProgCardQty(rs.getString("prog_card_qty"));
+                whShippingLog.setBoxNo(rs.getString("box_no"));
+                whShippingLog.setGtsNo(rs.getString("gts_no"));
 //                whShippingLog.setRequestReceive(rs.getString("request_receive"));
 //                whShippingLog.setReceiveVerify1(rs.getString("receive_verify1"));
 //                whShippingLog.setVerify1Verify2(rs.getString("verify1_verify2"));
@@ -518,7 +660,7 @@ public class WhShippingDAO {
 //                whShippingLog.setVerify2Shipping(rs.getString("verify2_shipping"));
 //                whShippingLog.setReceiveShipping(rs.getString("receive_shipping"));
 //                whShippingLog.setRequestShipping(rs.getString("request_shipping"));
-                
+
                 whShippingList.add(whShippingLog);
             }
             rs.close();
@@ -536,12 +678,12 @@ public class WhShippingDAO {
         }
         return whShippingList;
     }
-    
+
     public List<WhShipping> getQuery(String query) {
         String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
-                   + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
-                   + "WHERE R.request_id = S.request_id AND " + query;
+                + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(shipping_date,'%d %M %Y %h:%i %p') AS shipping_date_view "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id AND " + query;
         List<WhShipping> whShippingList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -562,7 +704,7 @@ public class WhShippingDAO {
                 whShipping.setInventoryRack(rs.getString("inventory_rack"));
                 whShipping.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whShipping.setRemarks(remarks);
@@ -573,6 +715,13 @@ public class WhShippingDAO {
                 whShipping.setShippingDate(rs.getString("shipping_date_view"));
                 whShipping.setStatus(rs.getString("S.status"));
                 whShipping.setFlag(rs.getString("S.flag"));
+                whShipping.setPairingType(rs.getString("pairing_type"));
+                whShipping.setLoadCardId(rs.getString("load_card_id"));
+                whShipping.setLoadCardQty(rs.getString("load_card_qty"));
+                whShipping.setProgCardId(rs.getString("prog_card_id"));
+                whShipping.setProgCardQty(rs.getString("prog_card_qty"));
+                whShipping.setBoxNo(rs.getString("box_no"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -590,12 +739,12 @@ public class WhShippingDAO {
         }
         return whShippingList;
     }
-    
+
     public List<WhShipping> getHardwareId() {
-        String sql = "SELECT DISTINCT equipment_id " +
-                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
-                    "WHERE R.request_id = S.request_id " +
-                    "ORDER BY equipment_id ";
+        String sql = "SELECT DISTINCT equipment_id "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id "
+                + "ORDER BY equipment_id ";
         List<WhShipping> hardwareIdList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -621,12 +770,12 @@ public class WhShippingDAO {
         }
         return hardwareIdList;
     }
-    
+
     public List<WhShipping> getHardwareType() {
-        String sql = "SELECT DISTINCT equipment_type " +
-                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
-                    "WHERE R.request_id = S.request_id " +
-                    "ORDER BY equipment_type ";
+        String sql = "SELECT DISTINCT equipment_type "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id "
+                + "ORDER BY equipment_type ";
         List<WhShipping> hardwareTypeList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -652,12 +801,12 @@ public class WhShippingDAO {
         }
         return hardwareTypeList;
     }
-    
+
     public List<WhShipping> getRequestedBy() {
-        String sql = "SELECT DISTINCT requested_by " +
-                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
-                    "WHERE R.request_id = S.request_id " +
-                    "ORDER BY requested_by ";
+        String sql = "SELECT DISTINCT requested_by "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id "
+                + "ORDER BY requested_by ";
         List<WhShipping> requestedByList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -683,11 +832,11 @@ public class WhShippingDAO {
         }
         return requestedByList;
     }
-    
+
     public List<WhShipping> getStatusR() {
-        String sql = "SELECT DISTINCT status " +
-                    "FROM hms_wh_request_list " +
-                    "ORDER BY status ";
+        String sql = "SELECT DISTINCT status "
+                + "FROM hms_wh_request_list "
+                + "ORDER BY status ";
         List<WhShipping> statusRList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -713,11 +862,11 @@ public class WhShippingDAO {
         }
         return statusRList;
     }
-    
+
     public List<WhShipping> getStatusS() {
-        String sql = "SELECT DISTINCT status " +
-                    "FROM hms_wh_shipping_list " +
-                    "ORDER BY status ";
+        String sql = "SELECT DISTINCT status "
+                + "FROM hms_wh_shipping_list "
+                + "ORDER BY status ";
         List<WhShipping> statusSList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -743,12 +892,12 @@ public class WhShippingDAO {
         }
         return statusSList;
     }
-    
+
     public List<WhShipping> getRack() {
-        String sql = "SELECT DISTINCT inventory_rack " +
-                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
-                    "WHERE R.request_id = S.request_id " +
-                    "ORDER BY inventory_rack ";
+        String sql = "SELECT DISTINCT inventory_rack "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id "
+                + "ORDER BY inventory_rack ";
         List<WhShipping> rackList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -774,12 +923,12 @@ public class WhShippingDAO {
         }
         return rackList;
     }
-    
+
     public List<WhShipping> getShelf() {
-        String sql = "SELECT DISTINCT inventory_shelf " +
-                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
-                    "WHERE R.request_id = S.request_id " +
-                    "ORDER BY inventory_shelf ";
+        String sql = "SELECT DISTINCT inventory_shelf "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id "
+                + "ORDER BY inventory_shelf ";
         List<WhShipping> shelfList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -805,12 +954,12 @@ public class WhShippingDAO {
         }
         return shelfList;
     }
-    
+
     public List<WhShipping> getShippingBy() {
-        String sql = "SELECT DISTINCT shipping_by " +
-                    "FROM hms_wh_request_list R, hms_wh_shipping_list S " +
-                    "WHERE R.request_id = S.request_id " +
-                    "ORDER BY shipping_by ";
+        String sql = "SELECT DISTINCT shipping_by "
+                + "FROM hms_wh_request_list R, hms_wh_shipping_list S "
+                + "WHERE R.request_id = S.request_id "
+                + "ORDER BY shipping_by ";
         List<WhShipping> shelfList = new ArrayList<WhShipping>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

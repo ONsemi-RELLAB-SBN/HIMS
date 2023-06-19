@@ -1,6 +1,5 @@
 package com.onsemi.hms.pdf;
 
-import com.itextpdf.text.BaseColor;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.view.AbstractView;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.ExceptionConverter;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
@@ -31,9 +29,9 @@ import java.io.InputStream;
 import javax.servlet.ServletContext;
 import org.apache.commons.io.IOUtils;
 
-public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
+public abstract class AbstractITextPdfViewPotraitBarcodeSticker extends AbstractView {
 
-    public AbstractITextPdfViewPotraitPrint() {
+    public AbstractITextPdfViewPotraitBarcodeSticker() {
         setContentType("application/pdf");
     }
 
@@ -61,15 +59,14 @@ public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
         // Add Logo
         ServletContext context = getServletContext();
         //String file = "/resources/img/cmts_all.png";
-//        String file = "/resources/img/ONwarehouse.png";
-        String file = "/resources/img/logoON.png";
-        InputStream is = context.getResourceAsStream(file);
-        byte[] bytes = IOUtils.toByteArray(is);
-        Image image = Image.getInstance(bytes);
-        event.setHeaderLogo(image);
+//        String file = "/resources/img/cdars_logo.png";
+//        InputStream is = context.getResourceAsStream(file);
+//        byte[] bytes = IOUtils.toByteArray(is);
+//        Image image = Image.getInstance(bytes);
+//        event.setHeaderLogo(image);
         //Add Text
-        event.setHeader("HARDWARE INVENTORY MANAGEMENT SYSTEM");
-        event.setFooter("Copyright © 2018, ON Semiconductor.");
+//        event.setHeader("CDARS");
+//        event.setFooter("Copyright © 2016, ONSEMI");
         // Build PDF
         buildPdfDocument(model, document, writer, request, response);
         document.close();
@@ -80,8 +77,9 @@ public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
 
     protected Document newDocument() {
         //return new Document(PageSize.LETTER.rotate());
-        return new Document(PageSize.A4, 36, 36, 80, 36);
-        //return new Document(PageSize.A4);
+//        return new Document(PageSize.A4, 6, 36, 8, 8);
+        Rectangle one = new Rectangle(320, 130);
+        return new Document(one,6, 6, 16, 6);
     }
 
     protected PdfWriter newWriter(Document document, OutputStream os) throws DocumentException {
@@ -104,7 +102,7 @@ public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
             HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     public Font fontOpenSans() throws DocumentException, IOException {
-        return fontOpenSans(9f, Font.NORMAL);
+        return fontOpenSans(7f, Font.NORMAL);
     }
 
     public Font fontOpenSans(Float size, Integer style) throws DocumentException, IOException {
@@ -135,7 +133,7 @@ public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
     public PdfPTable tableNoData() throws IOException, DocumentException {
         Font fontNoData = fontOpenSans(9f, Font.ITALIC);
         Integer cellPadding = 5;
-        
+
         PdfPTable tableNoData = new PdfPTable(1);
         tableNoData.setWidthPercentage(100.0f);
         tableNoData.setWidths(new float[]{1.0f});
@@ -146,7 +144,7 @@ public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
         cellNoData.setPadding(cellPadding);
         cellNoData.setPhrase(new Phrase("No data available!", fontNoData));
         tableNoData.addCell(cellNoData);
-        
+
         return tableNoData;
     }
 
@@ -200,83 +198,81 @@ public abstract class AbstractITextPdfViewPotraitPrint extends AbstractView {
          * @see com.itextpdf.text.pdf.PdfPageEventHelper#onEndPage(
          * com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
          */
-        @Override
-        public void onEndPage(PdfWriter writer, Document document) {
-            try {
-                BaseColor borderColor = new BaseColor(249, 78, 5);
-                Float borderWidth = 1.8f;
-                Float borderWidth2 = 1.8f;
-                // Table Header
-                PdfPTable tableHeader = new PdfPTable(4);
-                tableHeader.setWidths(new float[]{6.7f, 6.0f, 5.8f, 1.0f});
-                tableHeader.setTotalWidth(527);
-                tableHeader.setLockedWidth(true);
-                // Set Logo
-                PdfPCell cellLogo = new PdfPCell(headerLogo);
-                cellLogo.setBorder(Rectangle.BOTTOM);
-                cellLogo.setBorderColor(borderColor);
-                cellLogo.setBorderWidth(borderWidth);
-                cellLogo.setFixedHeight(35);
-                cellLogo.setPaddingBottom(3);
-                tableHeader.addCell(cellLogo);
-                // Set Text Header
-                PdfPCell cellTitle = new PdfPCell();
-                cellTitle.setPhrase(new Phrase(header, fontOpenSans(12f, Font.BOLD)));
-                cellTitle.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellTitle.setBorder(Rectangle.BOTTOM);
-                cellTitle.setBorderColor(borderColor);
-                cellTitle.setBorderWidth(borderWidth);
-                cellTitle.setFixedHeight(37);
-                cellTitle.setPaddingBottom(5);
-                cellTitle.setPaddingTop(0);
-                tableHeader.addCell(cellTitle);
-                // Set Page Of
-                PdfPCell cellPageOf = new PdfPCell();
-                cellPageOf.setPhrase(new Phrase(String.format("Page %d of", writer.getPageNumber()), fontOpenSans(8f, Font.NORMAL)));
-                cellPageOf.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cellPageOf.setBorder(Rectangle.BOTTOM);
-                cellPageOf.setBorderColor(borderColor);
-                cellPageOf.setBorderWidth(borderWidth);
-                cellPageOf.setFixedHeight(37);
-                cellPageOf.setPaddingBottom(4.95f);
-                cellPageOf.setPaddingTop(22.0f);
-                cellPageOf.setPaddingRight(3.0f);
-                tableHeader.addCell(cellPageOf);
-                // Set Page Number
-                PdfPCell cellPageNo = new PdfPCell(Image.getInstance(total));
-                cellPageNo.setBorder(Rectangle.BOTTOM);
-                cellPageNo.setBorderColor(borderColor);
-                cellPageNo.setBorderWidth(borderWidth);
-                cellPageNo.setFixedHeight(37);
-                cellPageNo.setPaddingBottom(5.3f);
-                cellPageNo.setPaddingTop(22.0f);
-                tableHeader.addCell(cellPageNo);
-                // Write Table Header
-                tableHeader.writeSelectedRows(0, -1, 34, 823, writer.getDirectContent());
-
-                // Table Footer
-                PdfPTable tableFooter = new PdfPTable(1);
-                tableFooter.setWidths(new float[]{100.0f});
-                tableFooter.setTotalWidth(527);
-                tableFooter.setLockedWidth(true);
-                // Set Footer Title
-                PdfPCell cellFooter = new PdfPCell();
-                cellFooter.setPhrase(new Phrase(footer, fontOpenSans(6f, Font.NORMAL)));
-                cellFooter.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellFooter.setBorder(Rectangle.TOP);
-                cellFooter.setBorderColor(borderColor);
-                cellFooter.setBorderWidth(borderWidth);
-                cellFooter.setPaddingTop(5);
-                tableFooter.addCell(cellFooter);
-                // Write Table Footer
-                tableFooter.writeSelectedRows(0, -1, 34, 30, writer.getDirectContent());
-            } catch (DocumentException de) {
-                throw new ExceptionConverter(de);
-            } catch (IOException ex) {
-                throw new ExceptionConverter(ex);
-            }
-        }
-
+//        @Override
+//        public void onEndPage(PdfWriter writer, Document document) {
+//            try {
+//                BaseColor borderColor = new BaseColor(249, 78, 5);
+//                Float borderWidth = 1.8f;
+//                // Table Header
+//                PdfPTable tableHeader = new PdfPTable(4);
+//                tableHeader.setWidths(new float[]{6.7f, 6.0f, 5.8f, 1.0f});
+//                tableHeader.setTotalWidth(527);
+//                tableHeader.setLockedWidth(true);
+//                // Set Logo
+////                PdfPCell cellLogo = new PdfPCell(headerLogo);
+////                cellLogo.setBorder(Rectangle.BOTTOM);
+////                cellLogo.setBorderColor(borderColor);
+////                cellLogo.setBorderWidth(borderWidth);
+////                cellLogo.setFixedHeight(35);
+////                cellLogo.setPaddingBottom(5);
+////                tableHeader.addCell(cellLogo);
+//                // Set Text Header
+//                PdfPCell cellTitle = new PdfPCell();
+//                cellTitle.setPhrase(new Phrase(header, fontOpenSans(12f, Font.BOLD)));
+//                cellTitle.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                cellTitle.setBorder(Rectangle.BOTTOM);
+//                cellTitle.setBorderColor(borderColor);
+//                cellTitle.setBorderWidth(borderWidth);
+//                cellTitle.setFixedHeight(37);
+//                cellTitle.setPaddingBottom(5);
+//                cellTitle.setPaddingTop(0);
+//                tableHeader.addCell(cellTitle);
+//                // Set Page Of
+//                PdfPCell cellPageOf = new PdfPCell();
+//                cellPageOf.setPhrase(new Phrase(String.format("Page %d of", writer.getPageNumber()), fontOpenSans(8f, Font.NORMAL)));
+//                cellPageOf.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//                cellPageOf.setBorder(Rectangle.BOTTOM);
+//                cellPageOf.setBorderColor(borderColor);
+//                cellPageOf.setBorderWidth(borderWidth);
+//                cellPageOf.setFixedHeight(37);
+//                cellPageOf.setPaddingBottom(4.95f);
+//                cellPageOf.setPaddingTop(22.0f);
+//                cellPageOf.setPaddingRight(3.0f);
+//                tableHeader.addCell(cellPageOf);
+//                // Set Page Number
+//                PdfPCell cellPageNo = new PdfPCell(Image.getInstance(total));
+//                cellPageNo.setBorder(Rectangle.BOTTOM);
+//                cellPageNo.setBorderColor(borderColor);
+//                cellPageNo.setBorderWidth(borderWidth);
+//                cellPageNo.setFixedHeight(37);
+//                cellPageNo.setPaddingBottom(5.3f);
+//                cellPageNo.setPaddingTop(22.0f);
+//                tableHeader.addCell(cellPageNo);
+//                // Write Table Header
+//                tableHeader.writeSelectedRows(0, -1, 34, 823, writer.getDirectContent());
+//
+//                // Table Footer
+//                PdfPTable tableFooter = new PdfPTable(1);
+//                tableFooter.setWidths(new float[]{100.0f});
+//                tableFooter.setTotalWidth(527);
+//                tableFooter.setLockedWidth(true);
+//                // Set Footer Title
+//                PdfPCell cellFooter = new PdfPCell();
+//                cellFooter.setPhrase(new Phrase(footer, fontOpenSans(6f, Font.NORMAL)));
+//                cellFooter.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                cellFooter.setBorder(Rectangle.TOP);
+//                cellFooter.setBorderColor(borderColor);
+//                cellFooter.setBorderWidth(borderWidth);
+//                cellFooter.setPaddingTop(5);
+//                tableFooter.addCell(cellFooter);
+//                // Write Table Footer
+//                tableFooter.writeSelectedRows(0, -1, 34, 30, writer.getDirectContent());
+//            } catch (DocumentException de) {
+//                throw new ExceptionConverter(de);
+//            } catch (IOException ex) {
+//                throw new ExceptionConverter(ex);
+//            }
+//        }
         /**
          * Fills out the total number of pages before the document is closed.
          *

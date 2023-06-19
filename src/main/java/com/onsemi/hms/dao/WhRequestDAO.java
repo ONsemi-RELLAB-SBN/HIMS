@@ -28,15 +28,15 @@ public class WhRequestDAO {
         this.dataSource = db.getDataSource();
     }
 
-    
     public QueryResult insertWhRequest(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO hms_wh_request_list (request_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, reason_retrieval, "
-                                                    + "pcb_a, qty_qual_a, pcb_b, qty_qual_b, pcb_c, qty_qual_c, pcb_control, qty_control, quantity, "
-                                                    + "requested_by, requested_email, requested_date, inventory_rack, inventory_shelf, remarks, received_date, status, flag) "
-                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)", Statement.RETURN_GENERATED_KEYS
+                    + "pcb_a, qty_qual_a, pcb_b, qty_qual_b, pcb_c, qty_qual_c, pcb_control, qty_control, quantity, "
+                    + "requested_by, requested_email, requested_date, inventory_rack, inventory_shelf, remarks, received_date, "
+                    + "status, flag, pairing_type, load_card_id, load_card_qty, prog_card_id, prog_card_qty) "
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, whRequest.getRefId());
             ps.setString(2, whRequest.getMaterialPassNo());
@@ -61,6 +61,11 @@ public class WhRequestDAO {
             ps.setString(21, whRequest.getRemarks());
             ps.setString(22, whRequest.getStatus());
             ps.setString(23, whRequest.getFlag());
+            ps.setString(24, whRequest.getPairingType());
+            ps.setString(25, whRequest.getLoadCardId());
+            ps.setString(26, whRequest.getLoadCardQty());
+            ps.setString(27, whRequest.getProgCardId());
+            ps.setString(28, whRequest.getProgCardQty());
 
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
@@ -83,11 +88,76 @@ public class WhRequestDAO {
         }
         return queryResult;
     }
-    
+
+    public QueryResult insertWhRequestNew(WhRequest whRequest) {
+        QueryResult queryResult = new QueryResult();
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO hms_wh_request_list (request_id, material_pass_no, material_pass_expiry, equipment_type, equipment_id, reason_retrieval, "
+                    + "pcb_a, qty_qual_a, pcb_b, qty_qual_b, pcb_c, qty_qual_c, pcb_control, qty_control, quantity, "
+                    + "requested_by, requested_email, requested_date, inventory_rack, inventory_shelf, remarks, received_date, "
+                    + "status, flag, pairing_type, load_card_id, load_card_qty, prog_card_id, prog_card_qty,box_no,gts_no) "
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS
+            );
+            ps.setString(1, whRequest.getRefId());
+            ps.setString(2, whRequest.getMaterialPassNo());
+            ps.setString(3, whRequest.getMaterialPassExpiry());
+            ps.setString(4, whRequest.getEquipmentType());
+            ps.setString(5, whRequest.getEquipmentId());
+            ps.setString(6, whRequest.getReasonRetrieval());
+            ps.setString(7, whRequest.getPcbA());
+            ps.setString(8, whRequest.getQtyQualA());
+            ps.setString(9, whRequest.getPcbB());
+            ps.setString(10, whRequest.getQtyQualB());
+            ps.setString(11, whRequest.getPcbC());
+            ps.setString(12, whRequest.getQtyQualC());
+            ps.setString(13, whRequest.getPcbControl());
+            ps.setString(14, whRequest.getQtyControl());
+            ps.setString(15, whRequest.getQuantity());
+            ps.setString(16, whRequest.getRequestedBy());
+            ps.setString(17, whRequest.getRequestedEmail());
+            ps.setString(18, whRequest.getRequestedDate());
+            ps.setString(19, whRequest.getInventoryRack());
+            ps.setString(20, whRequest.getInventoryShelf());
+            ps.setString(21, whRequest.getRemarks());
+            ps.setString(22, whRequest.getStatus());
+            ps.setString(23, whRequest.getFlag());
+            ps.setString(24, whRequest.getPairingType());
+            ps.setString(25, whRequest.getLoadCardId());
+            ps.setString(26, whRequest.getLoadCardQty());
+            ps.setString(27, whRequest.getProgCardId());
+            ps.setString(28, whRequest.getProgCardQty());
+            ps.setString(29, whRequest.getBoxNo());
+            ps.setString(30, whRequest.getGtsNo());
+
+            queryResult.setResult(ps.executeUpdate());
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+
     public QueryResult updateWhRequestVerification(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
+//        String sql = "UPDATE hms_wh_request_list SET barcode_verify = ?, user_verify = ?, date_verify = ?, status = ?, flag = ?, temp_count = ? "
+//                + "WHERE request_id = ? AND material_pass_no = ? ";
         String sql = "UPDATE hms_wh_request_list SET barcode_verify = ?, user_verify = ?, date_verify = ?, status = ?, flag = ?, temp_count = ? "
-                   + "WHERE request_id = ? AND material_pass_no = ? ";
+                + "WHERE request_id = ? AND box_no = ? ";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRequest.getBarcodeVerify());
@@ -97,7 +167,7 @@ public class WhRequestDAO {
             ps.setString(5, whRequest.getFlag());
             ps.setString(6, whRequest.getTempCount());
             ps.setString(7, whRequest.getRefId());
-            ps.setString(8, whRequest.getMaterialPassNo());
+            ps.setString(8, whRequest.getBoxNo());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -114,13 +184,15 @@ public class WhRequestDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateWhRequestForShipping(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
-        String sql = 
-               "UPDATE hms_wh_request_list SET inventory_rack_verify = ?, inventory_shelf_verify = ?, inventory_date_verify = ?, inventory_user_verify = ?, status = ?, flag = ? "
-             + "WHERE request_id = ? AND material_pass_no = ? ";
-        try{
+        String sql
+                //                = "UPDATE hms_wh_request_list SET inventory_rack_verify = ?, inventory_shelf_verify = ?, inventory_date_verify = ?, inventory_user_verify = ?, status = ?, flag = ? "
+                //                + "WHERE request_id = ? AND material_pass_no = ? ";
+                = "UPDATE hms_wh_request_list SET inventory_rack_verify = ?, inventory_shelf_verify = ?, inventory_date_verify = ?, inventory_user_verify = ?, status = ?, flag = ? "
+                + "WHERE request_id = ? AND box_no = ? ";
+        try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRequest.getInventoryRackVerify());
             ps.setString(2, whRequest.getInventoryShelfVerify());
@@ -129,7 +201,7 @@ public class WhRequestDAO {
             ps.setString(5, whRequest.getStatus());
             ps.setString(6, whRequest.getFlag());
             ps.setString(7, whRequest.getRefId());
-            ps.setString(8, whRequest.getMaterialPassNo());
+            ps.setString(8, whRequest.getBoxNo());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -150,7 +222,7 @@ public class WhRequestDAO {
     public QueryResult updateWhRequestForApproval(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_request_list SET status = ?, flag = ?"
-                   + "WHERE request_id = ?";
+                + "WHERE request_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRequest.getStatus());
@@ -172,11 +244,11 @@ public class WhRequestDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateWhRequestStatus(WhRequest whRequest) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_request_list SET status = ?, flag = ?"
-                   + "WHERE request_id = ?";
+                + "WHERE request_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, whRequest.getStatus());
@@ -198,12 +270,12 @@ public class WhRequestDAO {
         }
         return queryResult;
     }
-    
+
     public Integer getCountExistingData(String id) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_request_list WHERE request_id = '" + id + "' "
+                    "SELECT COUNT(*) AS count FROM hms_wh_request_list WHERE request_id = '" + id + "' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -225,12 +297,12 @@ public class WhRequestDAO {
         }
         return count;
     }
-    
+
     public Integer getCountDone(String id) {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS count FROM hms_wh_request_list WHERE request_id = '" + id + "' AND flag = '1' "
+                    "SELECT COUNT(*) AS count FROM hms_wh_request_list WHERE request_id = '" + id + "' AND flag = '1' "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -252,7 +324,7 @@ public class WhRequestDAO {
         }
         return count;
     }
-    
+
     public QueryResult deleteWhRequest(String whRequestId) {
         QueryResult queryResult = new QueryResult();
         try {
@@ -277,9 +349,9 @@ public class WhRequestDAO {
     }
 
     public WhRequest getWhReq(String whRequestId) {
-        String sql  = "SELECT * "
-                    + "FROM hms_wh_request_list "
-                    + "WHERE request_id = '" + whRequestId + "' ";
+        String sql = "SELECT * "
+                + "FROM hms_wh_request_list "
+                + "WHERE request_id = '" + whRequestId + "' ";
         WhRequest whRequest = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -300,7 +372,7 @@ public class WhRequestDAO {
                 whRequest.setInventoryRack(rs.getString("inventory_rack"));
                 whRequest.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRequest.setRemarks(remarks);
@@ -314,6 +386,13 @@ public class WhRequestDAO {
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
                 whRequest.setTempCount(rs.getString("temp_count"));
+                whRequest.setPairingType(rs.getString("pairing_type"));
+                whRequest.setLoadCardId(rs.getString("load_card_id"));
+                whRequest.setLoadCardQty(rs.getString("load_card_qty"));
+                whRequest.setProgCardId(rs.getString("prog_card_id"));
+                whRequest.setProgCardQty(rs.getString("prog_card_qty"));
+                whRequest.setBoxNo(rs.getString("box_no"));
+                whRequest.setGtsNo(rs.getString("gts_no"));
             }
             rs.close();
             ps.close();
@@ -330,12 +409,12 @@ public class WhRequestDAO {
         }
         return whRequest;
     }
-    
+
     public WhRequest getWhRequest(String whRequestId) {
-        String sql  = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                    + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
-                    + "FROM hms_wh_request_list "
-                    + "WHERE request_id = '" + whRequestId + "' ";
+        String sql = "SELECT *,DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
+                + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
+                + "FROM hms_wh_request_list "
+                + "WHERE request_id = '" + whRequestId + "' ";
         WhRequest whRequest = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -356,7 +435,7 @@ public class WhRequestDAO {
                 whRequest.setInventoryRack(rs.getString("inventory_rack"));
                 whRequest.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRequest.setRemarks(remarks);
@@ -370,6 +449,13 @@ public class WhRequestDAO {
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
                 whRequest.setTempCount(rs.getString("temp_count"));
+                whRequest.setPairingType(rs.getString("pairing_type"));
+                whRequest.setLoadCardId(rs.getString("load_card_id"));
+                whRequest.setLoadCardQty(rs.getString("load_card_qty"));
+                whRequest.setProgCardId(rs.getString("prog_card_id"));
+                whRequest.setProgCardQty(rs.getString("prog_card_qty"));
+                whRequest.setBoxNo(rs.getString("box_no"));
+                whRequest.setGtsNo(rs.getString("gts_no"));
             }
             rs.close();
             ps.close();
@@ -389,10 +475,10 @@ public class WhRequestDAO {
 
     public List<WhRequest> getWhRequestList() {
         String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
-                   + "FROM hms_wh_request_list "
-                   + "WHERE flag = '0' "
-                   + "ORDER BY requested_date DESC";
+                + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
+                + "FROM hms_wh_request_list "
+                + "WHERE flag = '0' "
+                + "ORDER BY requested_date DESC";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -414,7 +500,7 @@ public class WhRequestDAO {
                 whRequest.setInventoryRack(rs.getString("inventory_rack"));
                 whRequest.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRequest.setRemarks(remarks);
@@ -428,6 +514,13 @@ public class WhRequestDAO {
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
                 whRequest.setTempCount(rs.getString("temp_count"));
+                whRequest.setPairingType(rs.getString("pairing_type"));
+                whRequest.setLoadCardId(rs.getString("load_card_id"));
+                whRequest.setLoadCardQty(rs.getString("load_card_qty"));
+                whRequest.setProgCardId(rs.getString("prog_card_id"));
+                whRequest.setProgCardQty(rs.getString("prog_card_qty"));
+                whRequest.setBoxNo(rs.getString("box_no"));
+                whRequest.setGtsNo(rs.getString("gts_no"));
                 whRequestList.add(whRequest);
             }
             rs.close();
@@ -445,12 +538,12 @@ public class WhRequestDAO {
         }
         return whRequestList;
     }
-    
+
     //yesterday report
     public List<WhRequest> getWhRequestReportList() {
         String sql = "SELECT *, CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' DAYS, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' HOURS, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' MINS') AS DURATION "
-                   + "FROM hms_wh_request_list "
-                   + "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) ";
+                + "FROM hms_wh_request_list "
+                + "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) ";
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -471,7 +564,7 @@ public class WhRequestDAO {
                 whRequest.setInventoryRack(rs.getString("inventory_rack"));
                 whRequest.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRequest.setRemarks(remarks);
@@ -483,6 +576,11 @@ public class WhRequestDAO {
                 whRequest.setFlag(rs.getString("flag"));
                 whRequest.setDuration(rs.getString("duration"));
                 whRequest.setTempCount(rs.getString("temp_count"));
+                whRequest.setPairingType(rs.getString("pairing_type"));
+                whRequest.setLoadCardId(rs.getString("load_card_id"));
+                whRequest.setLoadCardQty(rs.getString("load_card_qty"));
+                whRequest.setProgCardId(rs.getString("prog_card_id"));
+                whRequest.setProgCardQty(rs.getString("prog_card_qty"));
                 whRequestList.add(whRequest);
             }
             rs.close();
@@ -500,14 +598,14 @@ public class WhRequestDAO {
         }
         return whRequestList;
     }
-    
+
     public Integer getCountYesterday() {
         Integer count = null;
         try {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(date_verify) AS count " +
-                "FROM hms_wh_request_list " +
-                "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) "
+                    "SELECT COUNT(date_verify) AS count "
+                    + "FROM hms_wh_request_list "
+                    + "WHERE DATE(date_verify) LIKE SUBDATE(DATE(NOW()),1) "
             );
 
             ResultSet rs = ps.executeQuery();
@@ -530,22 +628,21 @@ public class WhRequestDAO {
         }
         return count;
     }
-    
+
     public List<WhRequestLog> getWhReqLog(String whRequestId) {
-        String sql  = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
-                    + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, date_verify)), ' mins, ', SECOND(TIMEDIFF(requested_date, date_verify)), ' secs') AS req_bar_verify, "
-                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins, ', SECOND(TIMEDIFF(date_verify, inventory_date_verify)), ' secs') AS bar_inv_verify "
-                    + "FROM hms_wh_log L, hms_wh_request_list R "
-                    + "WHERE L.reference_id = R.request_id AND R.request_id = '" + whRequestId + "' "
-                    + "ORDER BY timestamp DESC";
-        
+        String sql = "SELECT *, DATE_FORMAT(timestamp,'%d %M %Y %h:%i %p') AS timestamp_view, DATE_FORMAT(verified_date,'%d %M %Y %h:%i %p') AS verified_date_view, "
+                + "DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, DATE_FORMAT(received_date,'%d %M %Y %h:%i %p') AS received_date_view, "
+                + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, date_verify)), ' mins, ', SECOND(TIMEDIFF(requested_date, date_verify)), ' secs') AS req_bar_verify, "
+                + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins, ', SECOND(TIMEDIFF(date_verify, inventory_date_verify)), ' secs') AS bar_inv_verify "
+                + "FROM hms_wh_log L, hms_wh_request_list R "
+                + "WHERE L.reference_id = R.request_id AND R.request_id = '" + whRequestId + "' "
+                + "ORDER BY timestamp DESC";
+
 //        + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, received_date)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, received_date)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, received_date)), ' mins') AS request_receive, "
 //                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, date_verify)), ' mins') AS receive_verify1, "
 //                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(date_verify, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(date_verify, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(date_verify, inventory_date_verify)), ' mins') AS verify1_verify2, "
 //                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(received_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(received_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(received_date, inventory_date_verify)), ' mins') AS receive_verify2, "
 //                    + "CONCAT(FLOOR(HOUR(TIMEDIFF(requested_date, inventory_date_verify)) / 24), ' days, ', MOD(HOUR(TIMEDIFF(requested_date, inventory_date_verify)), 24), ' hours, ', MINUTE(TIMEDIFF(requested_date, inventory_date_verify)), ' mins') AS request_verify2 "
-                
         List<WhRequestLog> whRequestList = new ArrayList<WhRequestLog>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -585,7 +682,7 @@ public class WhRequestDAO {
                 whRequestLog.setInventoryRack(rs.getString("inventory_rack"));
                 whRequestLog.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRequestLog.setRemarks(remarks);
@@ -609,6 +706,13 @@ public class WhRequestDAO {
 //                whRequestLog.setReceiveVerify2(rs.getString("receive_verify2"));
 //                whRequestLog.setRequestVerify2(rs.getString("request_verify2"));
                 whRequestLog.setTempCount(rs.getString("temp_count"));
+                whRequestLog.setPairingType(rs.getString("pairing_type"));
+                whRequestLog.setLoadCardId(rs.getString("load_card_id"));
+                whRequestLog.setLoadCardQty(rs.getString("load_card_qty"));
+                whRequestLog.setProgCardId(rs.getString("prog_card_id"));
+                whRequestLog.setProgCardQty(rs.getString("prog_card_qty"));
+                whRequestLog.setBoxNo(rs.getString("box_no"));
+                whRequestLog.setGtsNo(rs.getString("gts_no"));
                 whRequestList.add(whRequestLog);
             }
             rs.close();
@@ -626,12 +730,12 @@ public class WhRequestDAO {
         }
         return whRequestList;
     }
-    
+
     public List<WhRequest> getQuery(String query) {
         String sql = "SELECT *, DATE_FORMAT(material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(requested_date,'%d %M %Y %h:%i %p') AS requested_date_view, "
-                   + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
-                   + "FROM hms_wh_request_list "
-                   + "WHERE " + query;
+                + "DATE_FORMAT(date_verify,'%d %M %Y %h:%i %p') AS date_verify_view, DATE_FORMAT(inventory_date_verify,'%d %M %Y %h:%i %p') AS inventory_date_verify_view "
+                + "FROM hms_wh_request_list "
+                + "WHERE " + query;
         List<WhRequest> whRequestList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -653,7 +757,7 @@ public class WhRequestDAO {
                 whRequest.setInventoryRack(rs.getString("inventory_rack"));
                 whRequest.setInventoryShelf(rs.getString("inventory_shelf"));
                 String remarks = rs.getString("remarks");
-                if(remarks == null || remarks.equals("null")) {
+                if (remarks == null || remarks.equals("null")) {
                     remarks = SpmlUtil.nullToEmptyString(rs.getString("remarks"));
                 }
                 whRequest.setRemarks(remarks);
@@ -667,6 +771,11 @@ public class WhRequestDAO {
                 whRequest.setStatus(rs.getString("status"));
                 whRequest.setFlag(rs.getString("flag"));
                 whRequest.setTempCount(rs.getString("temp_count"));
+                whRequest.setPairingType(rs.getString("pairing_type"));
+                whRequest.setLoadCardId(rs.getString("load_card_id"));
+                whRequest.setLoadCardQty(rs.getString("load_card_qty"));
+                whRequest.setProgCardId(rs.getString("prog_card_id"));
+                whRequest.setProgCardQty(rs.getString("prog_card_qty"));
                 whRequestList.add(whRequest);
             }
             rs.close();
@@ -684,11 +793,11 @@ public class WhRequestDAO {
         }
         return whRequestList;
     }
-    
+
     public List<WhRequest> getHardwareId() {
-        String sql = "SELECT DISTINCT equipment_id " +
-                    "FROM hms_wh_request_list " +
-                    "ORDER BY equipment_id ";
+        String sql = "SELECT DISTINCT equipment_id "
+                + "FROM hms_wh_request_list "
+                + "ORDER BY equipment_id ";
         List<WhRequest> hardwareIdList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -714,11 +823,11 @@ public class WhRequestDAO {
         }
         return hardwareIdList;
     }
-    
+
     public List<WhRequest> getHardwareType() {
-        String sql = "SELECT DISTINCT equipment_type " +
-                    "FROM hms_wh_request_list " +
-                    "ORDER BY equipment_type ";
+        String sql = "SELECT DISTINCT equipment_type "
+                + "FROM hms_wh_request_list "
+                + "ORDER BY equipment_type ";
         List<WhRequest> hardwareTypeList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -744,11 +853,11 @@ public class WhRequestDAO {
         }
         return hardwareTypeList;
     }
-    
+
     public List<WhRequest> getRequestedBy() {
-        String sql = "SELECT DISTINCT requested_by " +
-                    "FROM hms_wh_request_list " +
-                    "ORDER BY requested_by ";
+        String sql = "SELECT DISTINCT requested_by "
+                + "FROM hms_wh_request_list "
+                + "ORDER BY requested_by ";
         List<WhRequest> requestedByList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -774,11 +883,11 @@ public class WhRequestDAO {
         }
         return requestedByList;
     }
-    
+
     public List<WhRequest> getStatus() {
-        String sql = "SELECT DISTINCT status " +
-                    "FROM hms_wh_request_list " +
-                    "ORDER BY status ";
+        String sql = "SELECT DISTINCT status "
+                + "FROM hms_wh_request_list "
+                + "ORDER BY status ";
         List<WhRequest> statusList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -804,11 +913,11 @@ public class WhRequestDAO {
         }
         return statusList;
     }
-    
+
     public List<WhRequest> getRack() {
-        String sql = "SELECT DISTINCT inventory_rack " +
-                    "FROM hms_wh_request_list " +
-                    "ORDER BY inventory_rack ";
+        String sql = "SELECT DISTINCT inventory_rack "
+                + "FROM hms_wh_request_list "
+                + "ORDER BY inventory_rack ";
         List<WhRequest> rackList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -834,11 +943,11 @@ public class WhRequestDAO {
         }
         return rackList;
     }
-    
+
     public List<WhRequest> getShelf() {
-        String sql = "SELECT DISTINCT inventory_shelf " +
-                    "FROM hms_wh_request_list R " +
-                    "ORDER BY inventory_shelf ";
+        String sql = "SELECT DISTINCT inventory_shelf "
+                + "FROM hms_wh_request_list R "
+                + "ORDER BY inventory_shelf ";
         List<WhRequest> shelfList = new ArrayList<WhRequest>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -864,5 +973,5 @@ public class WhRequestDAO {
         }
         return shelfList;
     }
-    
+
 }

@@ -40,6 +40,32 @@ public class WhRequest {
     private String tempCount;
     private String csvStatus;
 
+    //load card and program card
+    private String loadCardId;
+    private String loadCardQty;
+    private String progCardId;
+    private String progCardQty;
+    private String pairingType;
+
+    private String boxNo;
+    private String gtsNo;
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
+    }
+
     public String getId() {
         return id;
     }
@@ -96,8 +122,6 @@ public class WhRequest {
         this.reasonRetrieval = reasonRetrieval;
     }
 
-    
-    
     public String getPcbA() {
         return pcbA;
     }
@@ -177,7 +201,6 @@ public class WhRequest {
 //    public void setInventoryLoc(String inventoryLoc) {
 //        this.inventoryLoc = inventoryLoc;
 //    }
-    
     public String getInventoryRack() {
         return inventoryRack;
     }
@@ -265,7 +288,7 @@ public class WhRequest {
     public void setInventoryRackVerify(String inventoryRackVerify) {
         this.inventoryRackVerify = inventoryRackVerify;
     }
-    
+
     public String getInventoryShelfVerify() {
         return inventoryShelfVerify;
     }
@@ -329,4 +352,45 @@ public class WhRequest {
     public void setCsvStatus(String csvStatus) {
         this.csvStatus = csvStatus;
     }
+
+    public String getLoadCardId() {
+        return loadCardId;
+    }
+
+    public void setLoadCardId(String loadCardId) {
+        this.loadCardId = loadCardId;
+    }
+
+    public String getLoadCardQty() {
+        return loadCardQty;
+    }
+
+    public void setLoadCardQty(String loadCardQty) {
+        this.loadCardQty = loadCardQty;
+    }
+
+    public String getProgCardId() {
+        return progCardId;
+    }
+
+    public void setProgCardId(String progCardId) {
+        this.progCardId = progCardId;
+    }
+
+    public String getProgCardQty() {
+        return progCardQty;
+    }
+
+    public void setProgCardQty(String progCardQty) {
+        this.progCardQty = progCardQty;
+    }
+
+    public String getPairingType() {
+        return pairingType;
+    }
+
+    public void setPairingType(String pairingType) {
+        this.pairingType = pairingType;
+    }
+
 }

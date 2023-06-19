@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onsemi</groupId>
     <artifactId>HIMS</artifactId>
-    <name>HIMS</name>
+    <name>HIMS-SF</name>
     <packaging>war</packaging>
     <version>1.0</version>
     <properties>
@@ -98,6 +98,12 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
         
         <!-- Stripes -->
         <dependency>
@@ -164,10 +170,15 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.0.1</version>
+        </dependency>-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
         </dependency>
         
         <!-- JFreeChart -->

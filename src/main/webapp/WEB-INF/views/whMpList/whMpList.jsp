@@ -36,14 +36,20 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>Add New Material Pass Number</h2>
+                        <h2>Add New Box Number</h2>
                         <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/wh/whShipping/whMpList/save" method="post">
                             <div class="form-group">
+                                <label for="boxNo" class="col-lg-3 control-label">Box Number *</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
+                                </div>
+                            </div>
+<!--                            <div class="form-group">
                                 <label for="materialPassNo" class="col-lg-3 control-label">Material Pass Number *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="materialPassNo" name="materialPassNo" placeholder="" value="" autofocus="autofocus">
                                 </div>
-                            </div>
+                            </div>-->
                             <a href="${contextPath}/wh/whRequest/ship" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>
@@ -105,8 +111,9 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Material Pass Number</span></th>
-                                        <th><span>Material Pass Expiry Date</span></th>
+                                        <th><span>Box Number</span></th>
+                                        <!--<th><span>Material Pass Number</span></th>-->
+                                        <!--<th><span>Material Pass Expiry Date</span></th>-->
                                         <th><span>Hardware Type</span></th>
                                         <th><span>Hardware ID</span></th>
                                         <th><span>Quantity</span></th>
@@ -116,10 +123,24 @@
                                     <c:forEach items="${whMpListList}" var="whMpList" varStatus="whMpListLoop">
                                         <tr>
                                             <td><c:out value="${whMpListLoop.index+1}"/></td>
-                                            <td><c:out value="${whMpList.materialPassNo}"/></td>
-                                            <td><c:out value="${whMpList.materialPassExpiry}"/></td>
+                                            <td><c:out value="${whMpList.boxNo}"/></td>
+                                            <!--<td><c:out value="${whMpList.materialPassNo}"/></td>-->
+                                            <!--<td><c:out value="${whMpList.materialPassExpiry}"/></td>-->
                                             <td><c:out value="${whMpList.equipmentType}"/></td>
-                                            <td><c:out value="${whMpList.equipmentId}"/></td>
+                                            <td>
+                                                <c:if test="${whMpList.pairingType == 'PAIR'}">
+                                                    <c:out value="${whMpList.loadCardId}"/><br><c:out value="${whMpList.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whMpList.pairingType == 'SINGLE' && whMpList.equipmentType == 'Load Card'}">
+                                                    <c:out value="${whMpList.loadCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whMpList.pairingType == 'SINGLE' && whMpList.equipmentType == 'Program Card'}">
+                                                    <c:out value="${whMpList.progCardId}"/>
+                                                </c:if>
+                                                <c:if test="${whMpList.pairingType == null}">
+                                                    <c:out value="${whMpList.equipmentId}"/>
+                                                </c:if>
+                                            </td>
                                             <td><c:out value="${whMpList.quantity}"/></td>
                                         </tr>
                                     </c:forEach>

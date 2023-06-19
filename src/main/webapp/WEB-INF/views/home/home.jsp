@@ -119,17 +119,17 @@
                         next: '<i class="fa fa-chevron-right"></i>'
                     },
                     events: [
-            <c:forEach items="${courseRegisterList}" var="courseRegister">
-                        {
-                            title: '${courseRegister.courseCode} - ${courseRegister.title}',
-                                                start: '${courseRegister.startDate}',
-                                                end: '${courseRegister.endDate}',
-                                                className: '${courseRegister.calendarLabel}'
-                                            },
-            </c:forEach>
-                                        ]
-                                    });
-                                });
+                        <c:forEach items="${courseRegisterList}" var="courseRegister">
+                            {
+                                title: '${courseRegister.courseCode} - ${courseRegister.title}',
+                                start: '${courseRegister.startDate}',
+                                end: '${courseRegister.endDate}',
+                                className: '${courseRegister.calendarLabel}'
+                            },
+                        </c:forEach>
+                    ]
+                });
+            });
         </script>
     </s:layout-component>
 </s:layout-render>

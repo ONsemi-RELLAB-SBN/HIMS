@@ -34,6 +34,30 @@ public class WhRetrieve {
     private String tempShelf;
     private String tempCount;
     private String csvStatus;
+    //load card and program card
+    private String loadCardId;
+    private String loadCardQty;
+    private String progCardId;
+    private String progCardQty;
+    private String pairingType;
+    private String boxNo;
+    private String gtsNo;
+
+    public String getBoxNo() {
+        return boxNo;
+    }
+
+    public void setBoxNo(String boxNo) {
+        this.boxNo = boxNo;
+    }
+
+    public String getGtsNo() {
+        return gtsNo;
+    }
+
+    public void setGtsNo(String gtsNo) {
+        this.gtsNo = gtsNo;
+    }
 
     public String getId() {
         return id;
@@ -130,7 +154,7 @@ public class WhRetrieve {
     public void setQtyControl(String qtyControl) {
         this.qtyControl = qtyControl;
     }
-    
+
     public String getQuantity() {
         return quantity;
     }
@@ -290,5 +314,45 @@ public class WhRetrieve {
     public void setCsvStatus(String csvStatus) {
         this.csvStatus = csvStatus;
     }
-    
+
+    public String getLoadCardId() {
+        return loadCardId;
+    }
+
+    public void setLoadCardId(String loadCardId) {
+        this.loadCardId = loadCardId;
+    }
+
+    public String getLoadCardQty() {
+        return loadCardQty;
+    }
+
+    public void setLoadCardQty(String loadCardQty) {
+        this.loadCardQty = loadCardQty;
+    }
+
+    public String getProgCardId() {
+        return progCardId;
+    }
+
+    public void setProgCardId(String progCardId) {
+        this.progCardId = progCardId;
+    }
+
+    public String getProgCardQty() {
+        return progCardQty;
+    }
+
+    public void setProgCardQty(String progCardQty) {
+        this.progCardQty = progCardQty;
+    }
+
+    public String getPairingType() {
+        return pairingType;
+    }
+
+    public void setPairingType(String pairingType) {
+        this.pairingType = pairingType;
+    }
+
 }

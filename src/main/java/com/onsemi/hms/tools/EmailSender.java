@@ -96,7 +96,9 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     htmlEmail.setFrom(email.getSender());
@@ -128,7 +130,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmail2(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -141,7 +143,9 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     htmlEmail.setFrom(email.getSender());
@@ -186,11 +190,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -222,7 +228,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailWithAttachmentRetrieve2(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -235,14 +241,16 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\Hardware Arrival Report (" + todayDate + ").xls");
+                    File file = new File("D:\\HIMS_CSV\\SF\\Hardware Arrival Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -274,7 +282,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailWithAttachmentRequest2(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -287,14 +295,16 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\Hardware Shipping Report (" + todayDate + ").xls");
+                    File file = new File("D:\\HIMS_CSV\\SF\\Hardware Shipping Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -326,7 +336,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailWithAttachmentShipping(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -339,11 +349,14 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+                    File file = new File("C:\\HIMS_CSV\\SF\\hms_shipping.csv");
+//                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -375,7 +388,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailWithAttachmentMpExpiry(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -388,14 +401,16 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
+                    File file = new File("D:\\HIMS_CSV\\SF\\Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -427,7 +442,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailTableWithAttachment(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -440,15 +455,17 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
-                    
+
                     String username = System.getProperty("user.name");
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls");
-                    
+                    File file = new File("D:\\HIMS_CSV\\SF\\Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls");
+
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
                     htmlEmail.setSubject(subject);
@@ -479,7 +496,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailTableWithAttachmentMonth(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -492,15 +509,17 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
-                    
+
                     String username = System.getProperty("user.name");
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
-                    
+                    File file = new File("D:\\HIMS_CSV\\SF\\Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
+
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
                     htmlEmail.setSubject(subject);
@@ -531,7 +550,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailTableExceedUSL(final ServletContext servletContext, final String user, final String to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -544,15 +563,17 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
-                    
+
                     String username = System.getProperty("user.name");
                     DateFormat dateFormat = new SimpleDateFormat("ddMMMyyyy");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\CDARS\\HIMS Upper Specs Limit Report (" + todayDate + ").xls");
-                    
+                    File file = new File("D:\\HIMS_CSV\\RL\\HIMS Upper Specs Limit Report (" + todayDate + ").xls");
+
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
                     htmlEmail.setSubject(subject);
@@ -583,7 +604,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailTable(final ServletContext servletContext, final String user, final String[] to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -596,9 +617,11 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
-                    
+
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
                     htmlEmail.setSubject(subject);
@@ -628,7 +651,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailWithAttachmentTest(final ServletContext servletContext, final String user, final String[] to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -641,11 +664,14 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_shipping.csv");
+//                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                    File file = new File("C:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -677,7 +703,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
-    
+
     public void htmlEmailWithAttachmentTest2(final ServletContext servletContext, final String user, final String[] to, final String subject, final String msg) {
         new Thread(new Runnable() {
             @Override
@@ -690,11 +716,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setHostName(email.getHost());
                     htmlEmail.setSmtpPort(email.getPort());
                     htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
-                    htmlEmail.setSSLOnConnect(true);
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true); //16032022
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\Users\\" + username + "\\Documents\\from HMS\\hms_inventory.csv");
+                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
