@@ -6,7 +6,7 @@
     <artifactId>HIMS</artifactId>
     <name>HIMS-SF</name>
     <packaging>war</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <properties>
         <!-- Build Properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,7 +121,8 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.27</version>
+            <!--<version>5.1.27</version>-->
+            <version>8.0.32</version>
         </dependency>
         <!-- HikariCP -->
         <dependency>
