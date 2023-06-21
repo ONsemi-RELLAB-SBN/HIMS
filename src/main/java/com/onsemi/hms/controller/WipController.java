@@ -86,4 +86,30 @@ public class WipController {
         return "whWip/list_new";
     }
     
+    @RequestMapping(value = "/listVerify", method = RequestMethod.GET)
+    public String whVerifyList(Model model, @ModelAttribute UserSession userSession) {
+        LOGGER.info("LOGGER for MASUK DATA LIST NEW : " );
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(VERIFY);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        LOGGER.info("LOGGER for xxx : " +status);
+        model.addAttribute("wipList", wipList);
+        LOGGER.info("MASUK KE FROM LIST");
+        return "whWip/list_verify";
+    }
+    
+    @RequestMapping(value = "/listRegister", method = RequestMethod.GET)
+    public String whRegisterList(Model model, @ModelAttribute UserSession userSession) {
+        LOGGER.info("LOGGER for MASUK DATA LIST NEW : " );
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(REGISTER);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        LOGGER.info("LOGGER for xxx : " +status);
+        model.addAttribute("wipList", wipList);
+        LOGGER.info("MASUK KE FROM LIST");
+        return "whWip/list_register";
+    }
+    
 }
