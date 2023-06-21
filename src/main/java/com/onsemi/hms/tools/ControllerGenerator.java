@@ -16,12 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 public class ControllerGenerator {
 
     public static void main(String[] args) {
-        String table = "spml_course_register_instructor";
+        String table = "hms_wh_wip";
         String sql = "SELECT * FROM " + table + " LIMIT 1";
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = null;
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hms", "root", "root");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hms", "ayep", "mysql@2023");
             if (conn != null) {
                 String className = className(table) + "Controller";
                 String modelName = modelName(table);

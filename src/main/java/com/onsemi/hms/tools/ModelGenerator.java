@@ -16,12 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 public class ModelGenerator {
 
     public static void main(String[] args) {
-        String table = "hms_wh_retrieval_list";
+        String table = "hms_wh_wip";
         String sql = "SELECT * FROM " + table + " LIMIT 1";
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = null;
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hms", "root", "ONsemi123");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hms", "ayep", "mysql@2023");
             if (conn != null) {
                 String className = className(table);
                 System.out.println("ClassName: " + className);

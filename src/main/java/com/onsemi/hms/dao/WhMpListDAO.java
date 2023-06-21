@@ -90,9 +90,8 @@ public class WhMpListDAO {
     public QueryResult deleteWhMpList(String whMpListId) {
         QueryResult queryResult = new QueryResult();
         try {
-            PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM hms_wh_mp_list WHERE shipping_id = '" + whMpListId + "'"
-            );
+            String sql = "DELETE FROM hms_wh_mp_list WHERE shipping_id = '" + whMpListId + "'";
+            PreparedStatement ps = conn.prepareStatement(sql);
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -114,9 +113,6 @@ public class WhMpListDAO {
         String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view "
                 + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
                 + "WHERE RL.request_id = SL.request_id AND SL.id = ML.shipping_id AND ML.request_id = '" + whMpListId + "'";
-//        String sql = "SELECT ML.*, RL.*, SL.*, DATE_FORMAT(RL.material_pass_expiry,'%d %M %Y') AS mp_expiry_view, DATE_FORMAT(RL.requested_date,'%d %M %Y') AS requested_date_view "
-//                + "FROM hms_wh_mp_list ML, hms_wh_request_list RL, hms_wh_shipping_list SL "
-//                + "WHERE RL.request_id = SL.request_id AND SL.id = ML.shipping_id AND ML.request_id = '" + whMpListId + "'";
         WhMpList whMpList = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
