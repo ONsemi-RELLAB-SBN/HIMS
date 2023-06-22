@@ -11,7 +11,10 @@ import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhWip;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -77,39 +82,107 @@ public class WipController {
     public String whNewList(Model model, @ModelAttribute UserSession userSession) {
         LOGGER.info("LOGGER for MASUK DATA LIST NEW : " );
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(NEW);
+//        String status = pdao.getDetailByCode(NEW);
+        String status = pdao.getDetailByCode(NEW+ "','"+ RECEIVE);
         WhWipDAO dao = new WhWipDAO();
+        LOGGER.info("STATUS LIST NEW  : " +status);
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         LOGGER.info("LOGGER for xxx : " +status);
         model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE FROM LIST");
+        LOGGER.info("MASUK KE FROM LIST NEW");
         return "whWip/list_new";
     }
     
     @RequestMapping(value = "/listVerify", method = RequestMethod.GET)
     public String whVerifyList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("LOGGER for MASUK DATA LIST NEW : " );
+        LOGGER.info("LOGGER for MASUK DATA LIST VERIFY : " );
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(VERIFY);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         LOGGER.info("LOGGER for xxx : " +status);
         model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE FROM LIST");
+        LOGGER.info("MASUK KE VERIFY LIST");
         return "whWip/list_verify";
+    }
+    
+    @RequestMapping(value = "/listReceive", method = RequestMethod.GET)
+    public String whReceiveList(Model model, @ModelAttribute UserSession userSession) {
+        LOGGER.info("LOGGER for MASUK DATA LIST RECEIVE : " );
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(NEW);
+        // WE CAN ONLY SHOWN THE STATUS - NEW SHIPMENT ONLY, ALL THE RECEIVE STATUS ALREADY MOVED OUT
+//        String status = pdao.getDetailByCode(NEW+ "','"+ RECEIVE);
+        LOGGER.info("STATUS DEKAT SINI RECEIVE STATUS >> " + status);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        LOGGER.info("LOGGER for xxx : " +status);
+        model.addAttribute("wipList", wipList);
+        LOGGER.info("MASUK KE LIST RECEIVE");
+        return "whWip/list_receive";
+    }
+    
+    @RequestMapping(value = "/updateReceive", method = RequestMethod.POST)
+    public String updateReceive(
+            Model model,
+            HttpServletRequest request,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            //            @RequestParam(required = false) String materialPassNo
+            @RequestParam(required = false) String boxNo
+    ) throws IOException {
+        LOGGER.info("MASUK KE UPDATE RECEIVE" + boxNo);
+        String columnDate = "receive_date";
+        String columnBy = "receive_by";
+        String gtsNo = boxNo;
+        String flag = "receive";
+        
+        WhWipDAO daoUpdate = new WhWipDAO();
+        daoUpdate.updateStatus(columnDate, columnBy, gtsNo, flag);
+//        daoUpdate.updateStatus(wip, NEW, NEW, NEW);
+        LOGGER.info("");
+        
+        return "redirect:/whWip/listNew";
     }
     
     @RequestMapping(value = "/listRegister", method = RequestMethod.GET)
     public String whRegisterList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("LOGGER for MASUK DATA LIST NEW : " );
+        LOGGER.info("LOGGER for MASUK DATA LIST REGISTER : " );
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(REGISTER);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         LOGGER.info("LOGGER for xxx : " +status);
         model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE FROM LIST");
+        LOGGER.info("MASUK KE REGISTER LIST");
         return "whWip/list_register";
+    }
+    
+    @RequestMapping(value = "/listReady", method = RequestMethod.GET)
+    public String whReadyList(Model model, @ModelAttribute UserSession userSession) {
+        LOGGER.info("LOGGER for MASUK DATA LIST READY : " );
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(REGISTER);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        LOGGER.info("LOGGER for ready status : " +status);
+        model.addAttribute("wipList", wipList);
+        LOGGER.info("MASUK KE REGISTER READY");
+        return "whWip/list_ready";
+    }
+    
+    @RequestMapping(value = "/listShip", method = RequestMethod.GET)
+    public String whShipList(Model model, @ModelAttribute UserSession userSession) {
+        LOGGER.info("LOGGER for MASUK DATA LIST REGISTER : " );
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(REGISTER);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        LOGGER.info("LOGGER for xxx : " +status);
+        model.addAttribute("wipList", wipList);
+        LOGGER.info("MASUK KE REGISTER LIST");
+        return "whWip/list_ship";
     }
     
 }

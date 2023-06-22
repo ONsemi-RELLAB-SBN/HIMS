@@ -421,7 +421,8 @@ public class WhShippingController {
                 } else {
                     /*create csv & email*/
                     String username = System.getProperty("user.name");
-                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+//                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                    File file = new File("D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv");
 
                     WhMpListDAO whListDao = new WhMpListDAO();
                     WhMpList mplist = whListDao.getWhMpListMergeWithShippingAndRequest(whship.getRequestId());
@@ -430,9 +431,9 @@ public class WhShippingController {
                         FileWriter fileWriter = null;
                         FileReader fileReader = null;
                         try {
-                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
-                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
-                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
+                            fileWriter = new FileWriter("D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv", true);
+                            fileReader = new FileReader("D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv");
+                            String targetLocation = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
 
                             BufferedReader bufferedReader = new BufferedReader(fileReader);
                             String data = bufferedReader.readLine();
@@ -471,7 +472,7 @@ public class WhShippingController {
                             fileReader.close();
 
                             if (check == false) {
-                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
+                                fileWriter = new FileWriter("D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv", true);
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
                                 fileWriter.append(mplist.getRequestId());
@@ -504,7 +505,7 @@ public class WhShippingController {
                     } else {
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                            fileWriter = new FileWriter("D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv");
                             LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);

@@ -31,17 +31,17 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - HW for Shipment from Rel Lab</h1>
+            <h1>WIP Management - Data from RMS</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">HW for Shipment to Rel Lab List</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/query" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Query
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
+                                    <i class="fa fa-pencil-square-o fa-lg"></i> Scan GTS No
                                 </a>
-                            </div>
+                            </div><!--
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/wh/whRequest/ship" data-toggle="modal" class="btn btn-primary pull-right">
                                     <i class="fa fa-bars fa-lg"></i> View Hardware Queue for Shipment

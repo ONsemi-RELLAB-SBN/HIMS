@@ -24,17 +24,24 @@ import org.slf4j.LoggerFactory;
  * @author zbqb9x
  */
 public class WhWipDAO {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WhWipDAO.class);
+    private static final String NEW = "0101";
+    private static final String RECEIVE = "0102";
+    private static final String VERIFY = "0103";
+    private static final String REGISTER = "0104";
+    private static final String READY = "0105";
+    private static final String SHIP = "0106";
+
     private final Connection conn;
     private final DataSource dataSource;
-    
+
     public WhWipDAO() {
         DB db = new DB();
         this.conn = db.getConnection();
         this.dataSource = db.getDataSource();
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="INSERT STATEMENT">
     public QueryResult insertWhMpList(WhMpList whMpList) {
         QueryResult queryResult = new QueryResult();
@@ -71,27 +78,14 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult insertWhWip(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         try {
-            LOGGER.info("EXECUTE THE INSERT STATEMENT");
-            LOGGER.info("LOGGER for xxx : " +wip.getRequestId());
-            LOGGER.info("LOGGER for xxx : " +wip.getGtsNo());
-            LOGGER.info("LOGGER for xxx : " +wip.getRmsEvent());
-            LOGGER.info("LOGGER for xxx : " +wip.getIntervals());
-            LOGGER.info("LOGGER for xxx : " +wip.getQuantity());
-            LOGGER.info("LOGGER for xxx : " +wip.getShipmentDate());
-            LOGGER.info("LOGGER for xxx : " +wip.getStatus());
-            String sql = "INSERT INTO hms_wh_wip (`request_id`, `gts_no`, `rms_event`, `intervals`, `quantity`, `shipment_date`, `created_date`, `status`) "
+            String sql = "INSERT INTO hms_wh_wip (request_id, gts_no, rms_event, intervals, quantity, shipment_date,created_date, status)"
                     + " VALUES (?,?,?,?,?,?,NOW(),?)";
-            LOGGER.info("------------ READ THE SQL STATEMENT ------------------");
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            LOGGER.info("DAH PREAPRE TEE DATA");
-            
-//            LOGGER.info("MASUK TRY STATEMENT >> " + conn);
-//            PreparedStatement ps = conn.prepareStatement("INSERT INTO hms_wh_wip (`request_id`, `gts_no`, `rms_event`, `intervals`, `quantity`, `shipment_date`, `created_date`, `status`)  "
-//                    + " VALUES (?,?,?,?,?,?,NOW(),?)", Statement.RETURN_GENERATED_KEYS);
+
             ps.setString(1, wip.getRequestId());
             ps.setString(2, wip.getGtsNo());
             ps.setString(3, wip.getRmsEvent());
@@ -104,11 +98,9 @@ public class WhWipDAO {
             if (rs.next()) {
                 queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
             }
-            LOGGER.info("YESY, BERJAYA MASUK KE DALAM DATABASE");
             rs.close();
             ps.close();
         } catch (SQLException e) {
-            LOGGER.info("ALOOOO, ERRORR PLAK");
             queryResult.setErrorMessage(e.getMessage());
             LOGGER.error(e.getMessage());
         } finally {
@@ -123,13 +115,106 @@ public class WhWipDAO {
         return queryResult;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="UPDATE STATEMENT">
-    public QueryResult updateStatus(WhWip wip, String date, String by, String data) {
+    public QueryResult updateStatus(String date, String by, String gtsNo, String data) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_wip SET "
-                + date + " = NOW(), " + by + " = ?, status = ? "
-                + " WHERE id = ?";
+        String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, status = ? WHERE gts_no = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            String status = "";
+            String username = System.getProperty("user.name");
+            LOGGER.info("LOGGER for xxx : " +username);
+            ParameterDetailsDAO dao = new ParameterDetailsDAO();
+            if (data.equalsIgnoreCase("receive")) {
+                status = dao.getDetailByCode(RECEIVE);
+            } else if (data.equalsIgnoreCase("verify")) {
+                status = dao.getDetailByCode(VERIFY);
+            } else if (data.equalsIgnoreCase("register")) {
+                status = dao.getDetailByCode(REGISTER);
+            } else if (data.equalsIgnoreCase("ready")) {
+                status = dao.getDetailByCode(READY);
+            } else if (data.equalsIgnoreCase("ship")) {
+                status = dao.getDetailByCode(SHIP);
+            }
+            ps.setString(1, username);
+            ps.setString(2, status);
+            ps.setString(3, gtsNo);
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+//        try {
+//            // do something here
+//        } catch (SQLException e) {
+//            queryResult.setErrorMessage(e.getMessage());
+//            LOGGER.error(e.getMessage());
+//        } finally {
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException e) {
+//                    LOGGER.error(e.getMessage());
+//                }
+//            }
+//        }
+        return queryResult;
+    }
+
+    /*
+    public QueryResult updateStatus(String date, String by, String gtsNo, String data) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, status = ? WHERE gts_no = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            String status = "";
+            String username = System.getProperty(user.name);
+            LOGGER.info("LOGGER for xxx : " +username);
+            ParameterDetailsDAO dao = new ParameterDetailsDAO();
+            if (data.equalsIgnoreCase("receive")) {
+                status = dao.getDetailByCode(RECEIVE);
+            } else if (data.equalsIgnoreCase("verify")) {
+                status = dao.getDetailByCode(VERIFY);
+            } else if (data.equalsIgnoreCase("register")) {
+                status = dao.getDetailByCode(REGISTER);
+            } else if (data.equalsIgnoreCase("ready")) {
+                status = dao.getDetailByCode(READY);
+            } else if (data.equalsIgnoreCase("ship")) {
+                status = dao.getDetailByCode(SHIP);
+            }
+            ps.setString(1, username);
+            ps.setString(2, status);
+            ps.setString(3, gtsNo);
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+     */
+    public QueryResult updateStatus01(WhWip wip, String date, String by, String data) {
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, status = ? WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             String maklumat = "";
@@ -163,7 +248,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateReceive(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip "
@@ -191,7 +276,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateVerify(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip "
@@ -219,7 +304,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateRegister(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip "
@@ -247,7 +332,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateReady(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET ready_date = ?, ready_by = ?, status = ? WHERE id = ?";
@@ -273,7 +358,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateShip(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET ship_date = ?, ship_by = ?, status = ? WHERE id = ?";
@@ -300,7 +385,7 @@ public class WhWipDAO {
         return queryResult;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="DELETE STATEMENT">
     public QueryResult deleteWhWip(String whWipId) {
         QueryResult queryResult = new QueryResult();
@@ -324,7 +409,7 @@ public class WhWipDAO {
         return queryResult;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="SELECT STATEMENT">
     public WhWip getWhWipById(String whWipId) {
         String sql = "SELECT * FROM hms_wh_wip WHERE id = '" + whWipId + "'";
@@ -370,7 +455,7 @@ public class WhWipDAO {
         }
         return whShipping;
     }
-    
+
     public WhWip getWhWipByRequestId(String requestId) {
         String sql = "SELECT * FROM hms_wh_wip WHERE request_id = '" + requestId + "'";
         WhWip whShipping = null;
@@ -415,9 +500,10 @@ public class WhWipDAO {
         }
         return whShipping;
     }
-    
+
     public List<WhWip> getWhWipByStatus(String status) {
-        String sql = "SELECT * FROM hms_wh_wip WHERE status = '"+status+"'";
+        String sql = "SELECT * FROM hms_wh_wip WHERE status IN ('" + status + "')";
+        LOGGER.info("DATA LATEST : " + sql);
         List<WhWip> wipList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -462,7 +548,7 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWip> getWhWipByShipment() {
         String sql = "SELECT * FROM hms_wh_wip WHERE wip_box = ? ";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
@@ -509,7 +595,7 @@ public class WhWipDAO {
         }
         return whShippingList;
     }
-    
+
     public Integer getCountExistingData(String id) {
         Integer count = null;
         try {
@@ -535,5 +621,5 @@ public class WhWipDAO {
         return count;
     }
     //</editor-fold>
-    
+
 }

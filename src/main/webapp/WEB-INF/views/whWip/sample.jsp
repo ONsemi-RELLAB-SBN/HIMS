@@ -1,6 +1,6 @@
 <%-- 
-    Document   : list_ready
-    Created on : Jun 21, 2023, 5:10:23 PM
+    Document   : sample
+    Created on : Jun 22, 2023, 12:37:19 PM
     Author     : zbqb9x
 --%>
 
@@ -17,12 +17,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - TO BE READY</h1>
+            <h1>WIP Management - TO BE ????</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">PAGE WIP TO BE READY</h2>
+                            <h2 class="pull-left">PAGE WIP TO BE ????</h2>
 <!--                            <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Scan GTS No

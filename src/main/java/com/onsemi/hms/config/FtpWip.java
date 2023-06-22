@@ -6,8 +6,6 @@ package com.onsemi.hms.config;
 
 import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.WhWipDAO;
-import com.onsemi.hms.model.IonicFtpEqpt;
-import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.model.WhWipFTP;
 import com.onsemi.hms.tools.QueryResult;
@@ -83,12 +81,13 @@ public class FtpWip {
                                 wipdata.setQuantity(data[4]);
                                 wipdata.setShipmentDate(data[5]);
                                 wipdata.setStatus(status);
-                                
+
                                 WhWipDAO wip = new WhWipDAO();
                                 int check = wip.getCountExistingData(data[0]);
-                                
+
                                 if (check == 0) {
                                     LOGGER.info("INSERT INTO DATABASE");
+                                    wip = new WhWipDAO();
                                     wip.insertWhWip(wipdata);
                                 } else {
                                     LOGGER.info("SKIP INSERT INTO DATABASE");

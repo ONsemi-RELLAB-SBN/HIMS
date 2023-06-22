@@ -21,9 +21,7 @@ public class DB extends SpringBeanAutowiringSupport {
         Connection conn;
         try {
             conn = dataSource.getConnection();
-            LOGGER.info("ADA CONNECTION HERE");
         } catch (SQLException ex) {
-            LOGGER.info("ERROR EXCEPTION");
             throw new RuntimeException(ex);
         }
         return conn;
