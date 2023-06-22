@@ -137,6 +137,8 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
+//                oTable.search($(this).val()).draw();
+                
                 oTable = $('#dt_spml').DataTable({
 //                    dom: 'Brtip'
                 });
@@ -148,6 +150,7 @@
                 $('#boxNo').keyup(function () {
                     console.log("masuk ke sini");
                     oTable.search($(this).val()).draw();
+                    console.log("log tigger the function again");
                 });
                 
                 $("#dt_spml_rows").change(function () {
@@ -175,7 +178,11 @@
 //                });
                 $(".cancel").click(function () {
                     validator.resetForm();
-                });         
+                });
+                
+                $(".viewData").click(function () {
+                    $("#data").show();
+                });
             });
             
 //            $('#submit1').on('click', function () {

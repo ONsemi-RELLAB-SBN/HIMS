@@ -6,10 +6,8 @@ package com.onsemi.hms.controller;
 
 import com.onsemi.hms.config.FtpWip;
 import com.onsemi.hms.dao.ParameterDetailsDAO;
-import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.UserSession;
-import com.onsemi.hms.model.WhRequest;
 import com.onsemi.hms.model.WhWip;
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +20,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,13 +51,11 @@ public class WipController {
     private MessageSource messageSource;
     
 //    @RequestMapping(value = "wipList", method = RequestMethod.GET)
-    @RequestMapping(value = "/wipList", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/sync", method = {RequestMethod.GET, RequestMethod.POST})
     public String wipList(Model model) {
-        LOGGER.info("TO INTO WIP LIST FUNCTION");
         FtpWip wip = new FtpWip();
         wip.cronRun();
-        LOGGER.info("THIS FUNCTION AFTER READ THE CSV FILES");
-        return "whWip/list";
+        return "redirect:/whWip/listNew";
     }
     
     @RequestMapping(value = "/from", method = RequestMethod.GET)
@@ -68,57 +65,32 @@ public class WipController {
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE FROM LIST");
         return "whWip/from_list";
     }
     
     @RequestMapping(value = "/to", method = RequestMethod.GET)
     public String whToList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("MASUK KE TO LIST");
         return "whWip/to_list";
     }
     
     @RequestMapping(value = "/listNew", method = RequestMethod.GET)
     public String whNewList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("LOGGER for MASUK DATA LIST NEW : " );
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-//        String status = pdao.getDetailByCode(NEW);
         String status = pdao.getDetailByCode(NEW+ "','"+ RECEIVE);
         WhWipDAO dao = new WhWipDAO();
-        LOGGER.info("STATUS LIST NEW  : " +status);
         List<WhWip> wipList = dao.getWhWipByStatus(status);
-        LOGGER.info("LOGGER for xxx : " +status);
         model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE FROM LIST NEW");
         return "whWip/list_new";
-    }
-    
-    @RequestMapping(value = "/listVerify", method = RequestMethod.GET)
-    public String whVerifyList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("LOGGER for MASUK DATA LIST VERIFY : " );
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(VERIFY);
-        WhWipDAO dao = new WhWipDAO();
-        List<WhWip> wipList = dao.getWhWipByStatus(status);
-        LOGGER.info("LOGGER for xxx : " +status);
-        model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE VERIFY LIST");
-        return "whWip/list_verify";
     }
     
     @RequestMapping(value = "/listReceive", method = RequestMethod.GET)
     public String whReceiveList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("LOGGER for MASUK DATA LIST RECEIVE : " );
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(NEW);
         // WE CAN ONLY SHOWN THE STATUS - NEW SHIPMENT ONLY, ALL THE RECEIVE STATUS ALREADY MOVED OUT
-//        String status = pdao.getDetailByCode(NEW+ "','"+ RECEIVE);
-        LOGGER.info("STATUS DEKAT SINI RECEIVE STATUS >> " + status);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
-        LOGGER.info("LOGGER for xxx : " +status);
         model.addAttribute("wipList", wipList);
-        LOGGER.info("MASUK KE LIST RECEIVE");
         return "whWip/list_receive";
     }
     
@@ -129,10 +101,8 @@ public class WipController {
             Locale locale,
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
-            //            @RequestParam(required = false) String materialPassNo
             @RequestParam(required = false) String boxNo
     ) throws IOException {
-        LOGGER.info("MASUK KE UPDATE RECEIVE" + boxNo);
         String columnDate = "receive_date";
         String columnBy = "receive_by";
         String gtsNo = boxNo;
@@ -140,10 +110,25 @@ public class WipController {
         
         WhWipDAO daoUpdate = new WhWipDAO();
         daoUpdate.updateStatus(columnDate, columnBy, gtsNo, flag);
-//        daoUpdate.updateStatus(wip, NEW, NEW, NEW);
-        LOGGER.info("");
-        
         return "redirect:/whWip/listNew";
+    }
+    
+    @RequestMapping(value = "/listVerify/{requestId}", method = RequestMethod.GET)
+    public String whVerifyList(Model model, @ModelAttribute UserSession userSession, @PathVariable("requestId") String requestId) {
+        LOGGER.info("LOGGER for MASUK DATA LIST VERIFY : " +requestId);
+        WhWipDAO dao = new WhWipDAO();
+        WhWip data = dao.getWhWipByRequestId(requestId);
+        LOGGER.info("LOGGER for xxx : " +data);
+        LOGGER.info("LOGGER for xxx : " +data.getRequestId());
+        model.addAttribute("wipData", data);
+//        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+//        String status = pdao.getDetailByCode(VERIFY);
+//        WhWipDAO dao = new WhWipDAO();
+//        List<WhWip> wipList = dao.getWhWipByStatus(status);
+//        LOGGER.info("LOGGER for xxx : " +status);
+//        model.addAttribute("wipList", wipList);
+        LOGGER.info("MASUK KE VERIFY LIST");
+        return "whWip/list_verify";
     }
     
     @RequestMapping(value = "/listRegister", method = RequestMethod.GET)

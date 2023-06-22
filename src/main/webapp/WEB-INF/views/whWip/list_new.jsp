@@ -81,6 +81,7 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
+                                        <c:if test="${whWip.status == 'Wip Received'}"><th><span></span></th></c:if>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,7 +95,24 @@
                                             <td><c:out value="${whWip.intervals}"/></td>
                                             <td><c:out value="${whWip.quantity}"/></td>
                                             <td><c:out value="${whWip.shipmentDate}"/></td>
-                                            <td><c:out value="${whWip.status}"/></td>
+                                            
+                                            <c:choose>
+                                                <c:when test="${whWip.status == 'Wip Received'}">
+                                                    <td><c:out value="${whWip.status}"/></td>
+                                                    <td>
+                                                        <!--<a href="${contextPath}/whWip/updateReceiveToVerify/${whWip.requestId}" class="table-button" title="Verify">-->
+                                                        <a href="${contextPath}/whWip/listVerify/${whWip.requestId}" class="table-button" title="Verify">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-book fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td colspan="2"><c:out value="${whWip.status}"/></td>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

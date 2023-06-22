@@ -484,6 +484,23 @@ a.list-group-item.active:focus {
 	color: #dd504c;
 }
 
+.table a.table-button {
+	margin: 0 5px;
+	font-size: 1.125em;
+        color: #0a2925;
+}
+.table a.table-button:hover {
+	text-decoration: none;
+	color: #2aa493;
+	/*color: #0a2925;*/
+}
+.table a.table-button.danger {
+	color: #fe635f;
+}
+.table a.table-button.danger:hover {
+	color: #dd504c;
+}
+
 .table-products tbody > tr > td {
 	background: none;
 	border: none;
