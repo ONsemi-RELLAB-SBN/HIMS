@@ -13,29 +13,65 @@
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
+            @media print {
+                table thead {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+                table tbody {
+                    border-top: #000 solid 2px;
+                    border-bottom: #000 solid 2px;
+                }
+            }
+            .dataTables_wrapper .dt-buttons {
+                float:none;  
+                text-align:right;
+            }
         </style>
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - TO BE REGISTER</h1>
+            <h1>WIP Management - Register WIP</h1>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-8">
+                    <div class="main-box">
+                        <h2>Scan Trip Ticket / RMS Event</h2>
+                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerifyToUpdate" method="post">
+                            <div class="form-group">
+                                <label for="boxNo" class="col-lg-3 control-label">Box Number *</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
+                                </div>
+                            </div>
+                            <a href="${contextPath}/wh/whRequest/ship" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
+                            <div class="pull-right">
+                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>	
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <h1>WIP Management - Register WIP</h1>
+            <div class="row">
+                <div class="col-lg-8">
                     <div class="main-box clearfix">
-                        <div class="clearfix">
-                            <h2 class="pull-left">PAGE WIP TO BE REGISTER</h2>
+                            <h2 class="pull-left">Scan Trip Ticket / RMS Event</h2>
 <!--                            <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Scan GTS No
                                 </a>
                             </div>-->
-<!--                        <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/ship" data-toggle="modal" class="btn btn-primary pull-right">
-                                    <i class="fa fa-bars fa-lg"></i> View Hardware Queue for Shipment
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/registerPage" data-toggle="modal" class="btn btn-primary pull-right">
+                                    <i class="fa fa-bars fa-lg"></i> button Register WIP
                                 </a>
-                            </div>-->
+                            </div>
                             <div class="filter-block pull-right">
                             </div>
-                        </div>
                         <hr/>
                         <div class="clearfix">
                             <div class="form-group pull-left">

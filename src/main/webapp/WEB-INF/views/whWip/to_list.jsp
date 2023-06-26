@@ -31,18 +31,23 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - HW for Shipment to Rel Lab</h1>
+            <h1>WIP Management - WIP for Shipment to Rel Lab</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">HW for Shipment to Rel Lab List</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/query" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Query
+                            <h2 class="pull-left">WIP for Shipment to Rel Lab List</h2>
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right">
+                                    <i class="fa fa-pencil-square-o fa-lg"></i> Prepare Shipment
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/registerPage" class="btn btn-primary pull-right">
+                                    <i class="fa fa-pencil-square-o fa-lg"></i> Register WIP
+                                </a>
+                            </div>
+                            <!-- <div class="filter-block pull-right">
                                 <a href="${contextPath}/wh/whRequest/ship" data-toggle="modal" class="btn btn-primary pull-right">
                                     <i class="fa fa-bars fa-lg"></i> View Hardware Queue for Shipment
                                 </a>
@@ -74,26 +79,29 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Hardware Type</span></th> 
-                                        <th><span>Hardware ID</span></th>
-                                        <th><span>Box No.</span></th>
-                                        <th><span>Inventory</span></th>
-                                        <th><span>Requested Date</span></th>
+                                        <th><span>RMS Event</span></th>
+                                        <th><span>Plan Ship Date</span></th>
                                         <th><span>Status</span></th>
+                                        <th><span>WIP BOX NO</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${whRequestList}" var="whRequest" varStatus="whRequestLoop">
+                                    <c:forEach items="${wipList}" var="wipList" varStatus="whLoop">
                                         <tr>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
-                                            <td><c:out value=""/></td>
+                                            <td><c:out value="${whLoop.index+1}"/></td>
+                                            <td><c:out value="${wipList.rmsEvent}"/></td>
+                                            <td><c:out value="${wipList.shipmentDate}"/></td>
+                                            <td><c:out value="${wipList.status}"/></td>
+                                            <td><c:out value="${wipList.wipBox}"/></td>
+                                            <td>
+                                                <a href="${contextPath}/whWip/history/${whShipping.wipBox}" class="table-link" title="History">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-book fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

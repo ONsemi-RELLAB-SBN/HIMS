@@ -36,8 +36,8 @@
                 <div class="col-lg-8">
                     <div class="main-box">
                         <h2>WIP Information</h2>
-                        <form id="update_hardwareinventory_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceiveToVerify/${wipData.requestId}" method="post">
-                            <input type="hidden" name="refId" value="${wipData.requestId}" />
+                        <form id="wip_information_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceiveToVerify/${wipData.requestId}" method="post">
+                            <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
                                 <label for="gtsNo" class="col-lg-3 control-label">GTS No.</label>
                                 <div class="col-lg-8">
@@ -45,25 +45,25 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="materialPassNo" class="col-lg-3 control-label">RMS Event No.</label>
+                                <label for="rms" class="col-lg-3 control-label">RMS Event No.</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="rms" name="rms" value="${wipData.rmsEvent}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="materialPassExpiry" class="col-lg-3 control-label">Intervals</label>
+                                <label for="intervals" class="col-lg-3 control-label">Intervals</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="intervals" name="intervals" value="${wipData.intervals}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentType" class="col-lg-3 control-label">Quantity</label>
+                                <label for="quantity" class="col-lg-3 control-label">Quantity</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="quantity" name="quantity" value="${wipData.quantity}" readonly>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="equipmentId" class="col-lg-3 control-label">Shipment Date</label>
+                                <label for="shipDate" class="col-lg-3 control-label">Shipment Date</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="shipDate" name="shipDate" value="${wipData.shipmentDate}" readonly>
                                 </div>
@@ -84,7 +84,9 @@
                 <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Scan Trip Ticket</h2>
-                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceive" method="post">
+                        <form id="wip_verification_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerify" method="post">
+                            <input type="text" name="requestId" value="${wipData.requestId}" />
+                            <input type="text" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <div class="form-group">
                                 <label for="boxNo" class="col-lg-3 control-label">Scan Trip Ticket *</label>
                                 <div class="col-lg-8">
@@ -93,7 +95,7 @@
                             </div>
                             <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
                             <div class="pull-right">
-                                <button type="submit" class="btn btn-primary">Verify</button>
+                                <button type="submit" id="verify" class="btn btn-primary">Verify</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -121,24 +123,40 @@
 //                    e.preventDefault();
 //                });
 
+                jQuery.extend(jQuery.validator.messages, {
+                    required: "This field is required.",
+                    equalTo: "Value is not match! Please re-scan.",
+                    email: "Please enter a valid email.",
+                });
+
                 $(".cancel").click(function () {
                     validator.resetForm();
                 });
                 
-                var tripT = $('#tripTicket');
-                var rmsNo = $('#rms');
-                var trip2 = document.update_hardwareinventory_form.tripTicket;
-                
-                var value = document.getElementById("tripTicket").value;
-                
-                $('#tripTicket').keyup(function () {
-//                    oTable.search($(this).val()).draw();
-                    console.log("log tigger the function again");
-                    console.log("trip ticker :: "+tripT);
-                    console.log("rms number  :: "+rmsNo);
-                    console.log("TTTTTTTTTT  :: "+trip2);
-                    // check if the data same with rms event
+                var validator = $("#wip_verification_form").validate({
+                    rules: {
+                        tripTicket: {
+                            required: true,
+                            equalTo: "#rmsEvent"
+                        }
+                    }
                 });
+                
+//                var tripTicket = $('#tripTicket');
+//                var rms = $('#rms');
+//                
+//                var tt = document.getElementById("tripTicket").innerHTML;
+//                var ms = document.getElementById("rms").innerHTML;
+//                
+//                $('#tripTicket').keyup(function () {
+//                    if (tt == ms) {
+//                        console.log("eh, dah sama da");
+//                        $("#verify").show();
+//                    } else {
+//                        console.log("masih tak sama");
+//                        $("#verify").hide();
+//                    }
+//                });
                 
             });
         </script>

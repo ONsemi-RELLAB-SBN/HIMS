@@ -1,6 +1,6 @@
 <%-- 
-    Document   : list_receive
-    Created on : Jun 22, 2023, 9:38:58 AM
+    Document   : register_page
+    Created on : Jun 23, 2023, 10:16:03 AM
     Author     : zbqb9x
 --%>
 
@@ -29,26 +29,30 @@
             }
         </style>
     </s:layout-component>
-    <s:layout-component name="page_container">
+        <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - Data from RMS 02</h1>
+            <h1>WIP Management - Register WIP</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>Scan GTS Number</h2>
-                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceive" method="post">
+                        <h2>Scan Trip Ticket / RMS Event</h2>
+                        <form id="register_wip_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerifyToRegister" method="post">
                             <div class="form-group">
-                                <label for="boxNo" class="col-lg-3 control-label">GTS Number *</label>
+                                <label for="tripTicket" class="col-lg-3 control-label">Trip Ticket *</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
-                                    <!--<input id="dt_spml_search" type="text" class="form-control" placeholder="<f:message key="general.label.search"/>">-->
+                                    <input type="text" class="form-control" id="tripTicket" name="tripTicket" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
+                            <div class="form-group">
+                                <label for="intervals" class="col-lg-3 control-label">Intervals *</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="intervals" name="intervals" placeholder="" value="" autofocus="autofocus">
+                                </div>
+                            </div>
+                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <!--<button type="button" class="btn btn-primary" onclick="searchData()">Check List</button>-->
-                                <button type="submit" class="btn btn-primary">Receive</button>
+                                <button type="submit" class="btn btn-primary">Register</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -61,33 +65,33 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">HIMS – WIP List</h2>
-<!--                            <div class="filter-block pull-right">
+                            <h2 class="pull-left">HIMS–Sg Gadut Shipping Packing List -READY LIST</h2>
+                            <div class="filter-block pull-right">
                                 <a href="#delete_modal" data-toggle="modal" class="btn btn-danger danger group_delete pull-right" onclick="modalDelete(this);" id="deleteAll">
                                     <i class="fa fa-trash-o fa-lg"></i> Delete All
                                 </a>
-                            </div>-->
+                            </div>
                         </div>
 <!--                        <div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             *Please delete all data after print the shipping material pass number list.
-                        </div>    -->
+                        </div>-->
                         <hr/>
                         <div class="clearfix">
-<!--                            <div class="form-group pull-left">
+                            <div class="form-group pull-left">
                                 <select id="dt_spml_rows" class="form-control">
                                     <option value="10">10</option>
                                     <option value="25">25</option>
                                     <option value="50">50</option>
                                     <option value="100">100</option>
                                 </select>
-                            </div>-->
+                            </div>
                             <div class="filter-block pull-right">
                                 <div id="dt_spml_tt" class="form-group pull-left" style="margin-right: 5px;">
                                 </div>
-<!--                                <div class="form-group pull-left" style="margin-right: 0px;">
+                                <div class="form-group pull-left" style="margin-right: 0px;">
                                     <input id="dt_spml_search" type="text" class="form-control" placeholder="<f:message key="general.label.search"/>">
                                     <i class="fa fa-search search-icon"></i>
-                                </div>-->
+                                </div>
                             </div>
                         </div>
 <!--                        <div class="col-lg-12">
@@ -100,22 +104,24 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Request ID</span></th>
                                         <th><span>GTS Number</span></th>
                                         <th><span>RMS Event</span></th>
+                                        <th><span>Hardware ID</span></th>
                                         <th><span>Intervals</span></th>
                                         <th><span>Quantity</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${wipList}" var="wipList" varStatus="wipLoop">
+                                    <c:forEach items="${packingList}" var="packingList" varStatus="packingListLoop">
                                         <tr>
-                                            <td><c:out value="${wipLoop.index+1}"/></td>
-                                            <td><c:out value="${wipList.requestId}"/></td>
-                                            <td><c:out value="${wipList.gtsNo}"/></td>
-                                            <td><c:out value="${wipList.rmsEvent}"/></td>
-                                            <td><c:out value="${wipList.intervals}"/></td>
-                                            <td><c:out value="${wipList.quantity}"/></td>
+                                            <td><c:out value="${packingListLoop.index+1}"/></td>
+                                            <td><c:out value="${packingList.gtsNo}"/></td>
+                                            <td><c:out value="${packingList.rmsEvent}"/></td>
+                                            <td>
+                                                takda apa2
+                                            </td>
+                                            <td><c:out value="${packingList.intervals}"/></td>
+                                            <td><c:out value="${packingList.quantity}"/></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -133,27 +139,22 @@
         <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
+        <script src="${contextPath}/resources/validation\jquery.validate.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-//                oTable.search($(this).val()).draw();
-                
-                oTable = $('#dt_spml').DataTable({
-//                    dom: 'Brtip'
-                });
-                
-                $('#dt_spml_search').keyup(function () {
-                    oTable.search($(this).val()).draw();
-                });
-                
-                $('#boxNo').keyup(function () {
-                    oTable.search($(this).val()).draw();
-                });
-                
-                $("#dt_spml_rows").change(function () {
-                    oTable.page.len($(this).val()).draw();
-                });
+//                oTable = $('#dt_spml').DataTable({
+////                    dom: 'Brtip'
+//                });
+//                
+//                $('#dt_spml_search').keyup(function () {
+//                    oTable.search($(this).val()).draw();
+//                });
+//                
+//                $("#dt_spml_rows").change(function () {
+//                    oTable.page.len($(this).val()).draw();
+//                });
                 
                 if ($('#countAll').val() === '0') {
                     $('#print').hide();
@@ -167,15 +168,45 @@
                     $('#deleteAll').show();
                 }
                 
-                $(".cancel").click(function () {
-                    validator.resetForm();
+                var validator = $("#register_wip_form").validate({
+                    rules: {
+//                        mpNo: {
+//                            required: true
+//                        },
+                        tripTicket: {
+                            required: true
+                        },
+                        intervals: {
+                            required: true
+                        }
+                    }
                 });
                 
-                $(".viewData").click(function () {
-                    $("#data").show();
-                });
+                $(".cancel").click(function () {
+                    validator.resetForm();
+                });           
             });
             
+//            $('#submit1').on('click', function () {
+//                location.reload();
+//                window.open('${contextPath}/wh/whShipping/whMpList/viewPackingListPdf', 'Packing List', 'width=1600,height=1100').print();
+//            });
+            
+            function modalDelete(e) {
+                var deleteUrl = "${contextPath}/whWip/deleteAll";
+                var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
+                $("#delete_modal .modal-body").html(deleteMsg);
+                $("#modal_delete_button").attr("href", deleteUrl);
+            }
+            
+//            function modalDelete1(e) {
+//                var deleteId = $(e).attr("modaldeleteid");
+//                var deleteInfo = $("#modal_delete_info_" + deleteId).html();
+//                var deleteUrl = "${contextPath}/wh/whShipping/delete/" + deleteId;
+//                var deleteMsg = "Are you sure want to delete this row?";
+//                $("#delete_modal .modal-body").html(deleteMsg);
+//                $("#modal_delete_button").attr("href", deleteUrl);
+//            }
         </script>
     </s:layout-component>
 </s:layout-render>

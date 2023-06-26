@@ -73,6 +73,8 @@ public class FtpWip {
                             String[] data = null;
 
                             while ((data = csvReader.readNext()) != null) {
+                                LOGGER.info("LOGGER for request id : " +data[0]);
+                                LOGGER.info("LOGGER for maklumat shipment : " +data[5]);
                                 WhWip wipdata = new WhWip();
                                 wipdata.setRequestId(data[0]);
                                 wipdata.setGtsNo(data[1]);

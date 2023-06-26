@@ -29,7 +29,8 @@ public class WhWip {
     private String readyDate;
     private String shipBy;
     private String shipDate;
-    private String wipBox;
+    private String shipCreatedDate;
+    private String shippingList;
 
     public String getId() {
         return id;
@@ -183,12 +184,20 @@ public class WhWip {
         this.shipDate = shipDate;
     }
 
-    public String getWipBox() {
-        return wipBox;
+    public String getShipCreatedDate() {
+        return shipCreatedDate;
     }
 
-    public void setWipBox(String wipBox) {
-        this.wipBox = wipBox;
+    public void setShipCreatedDate(String shipCreatedDate) {
+        this.shipCreatedDate = shipCreatedDate;
     }
-    
+
+    public String getShippingList() {
+        return shippingList;
+    }
+
+    public void setShippingList(String shippingList) {
+        this.shippingList = shippingList;
+    }
+
 }
