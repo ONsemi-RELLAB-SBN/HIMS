@@ -72,9 +72,6 @@
                                 </a>
                             </div>
                         </div>
-<!--                        <div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            *Please delete all data after print the shipping material pass number list.
-                        </div>-->
                         <hr/>
                         <div class="clearfix">
                             <div class="form-group pull-left">
@@ -94,9 +91,6 @@
                                 </div>
                             </div>
                         </div>
-<!--                        <div class="col-lg-12">
-                            <a href="${contextPath}/wh/whShipping/email" class="btn btn-info pull-right" id="print"><i class="fa fa-print"></i> Print</a>
-                        </div>-->
                         <div class="table-responsive">
                             <input type="hidden" class="form-control" id="count" name="count" value="${count}">
                             <input type="hidden" class="form-control" id="countAll" name="countAll" value="${countAll}">
@@ -144,17 +138,6 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-//                oTable = $('#dt_spml').DataTable({
-////                    dom: 'Brtip'
-//                });
-//                
-//                $('#dt_spml_search').keyup(function () {
-//                    oTable.search($(this).val()).draw();
-//                });
-//                
-//                $("#dt_spml_rows").change(function () {
-//                    oTable.page.len($(this).val()).draw();
-//                });
                 
                 if ($('#countAll').val() === '0') {
                     $('#print').hide();
@@ -170,9 +153,6 @@
                 
                 var validator = $("#register_wip_form").validate({
                     rules: {
-//                        mpNo: {
-//                            required: true
-//                        },
                         tripTicket: {
                             required: true
                         },
@@ -187,11 +167,6 @@
                 });           
             });
             
-//            $('#submit1').on('click', function () {
-//                location.reload();
-//                window.open('${contextPath}/wh/whShipping/whMpList/viewPackingListPdf', 'Packing List', 'width=1600,height=1100').print();
-//            });
-            
             function modalDelete(e) {
                 var deleteUrl = "${contextPath}/whWip/deleteAll";
                 var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
@@ -199,14 +174,6 @@
                 $("#modal_delete_button").attr("href", deleteUrl);
             }
             
-//            function modalDelete1(e) {
-//                var deleteId = $(e).attr("modaldeleteid");
-//                var deleteInfo = $("#modal_delete_info_" + deleteId).html();
-//                var deleteUrl = "${contextPath}/wh/whShipping/delete/" + deleteId;
-//                var deleteMsg = "Are you sure want to delete this row?";
-//                $("#delete_modal .modal-body").html(deleteMsg);
-//                $("#modal_delete_button").attr("href", deleteUrl);
-//            }
         </script>
     </s:layout-component>
 </s:layout-render>

@@ -239,7 +239,9 @@ public class WipController {
     }
     
     @RequestMapping(value = "/updateReadyToShip", method = {RequestMethod.GET, RequestMethod.POST})
-    public String updateReadyToShip(Model model, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttrs, @ModelAttribute UserSession userSession) throws IOException {
+    public String updateReadyToShip(Model model, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttrs, @ModelAttribute UserSession userSession, 
+            @RequestParam(required = false) String shippingList,
+            @RequestParam(required = false) String shipDate) throws IOException {
         
 //        String[] receiver = {"hims@onsemi.com"};
 //        EmailSender emailSenderCsv = new EmailSender();
@@ -250,13 +252,34 @@ public class WipController {
 //                "Status for Hardware Shipping from HIMS SF", //subject
 //                "Verification and status for Hardware Shipping has been made." //msg
 //        );
+
+        LOGGER.info("LOGGER for DATE KITA SELECT UNTUK SHIPPING : " +shipDate);
+        LOGGER.info("LOGGER for xxx : " +shippingList);
         
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String statusReady =  pdao.getDetailByCode(READY);
+        String statusShip =  pdao.getDetailByCode(SHIP);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> dataList = dao.getWhWipByStatus(statusReady);
+        String username = System.getProperty("user.name");
         
-        return "";
+        for (int i = 0; i < dataList.size(); i++) {
+            LOGGER.info("-----------------------------");
+            LOGGER.info("LOGGER for REQUEST ID : " +dataList.get(i).getRequestId());
+            LOGGER.info("UPDATE THE STATUS TO SHIP");
+            WhWip wip = new WhWip();
+            wip.setId(dataList.get(i).getId());
+//            wip.setRequestId(dataList.get(i).getRequestId());
+            wip.setShipBy(username);
+            wip.setShipDate(shipDate);
+            wip.setStatus(statusShip);
+            wip.setShippingList(shippingList);
+            
+            dao = new WhWipDAO();
+            dao.updateShip(wip);
+        }
+        
+        return "redirect:/whWip/to";
     }
     
     

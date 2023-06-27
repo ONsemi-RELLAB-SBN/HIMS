@@ -37,16 +37,6 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">HW for Shipment to Rel Lab List</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/query" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Query
-                                </a>
-                            </div>
-                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/ship" data-toggle="modal" class="btn btn-primary pull-right">
-                                    <i class="fa fa-bars fa-lg"></i> View Hardware Queue for Shipment
-                                </a>
-                            </div>-->
                             <div class="filter-block pull-right">
                             </div>
                         </div>

@@ -41,13 +41,11 @@
                                 <label for="boxNo" class="col-lg-3 control-label">GTS Number *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
-                                    <!--<input id="dt_spml_search" type="text" class="form-control" placeholder="<f:message key="general.label.search"/>">-->
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <!--<button type="button" class="btn btn-primary" onclick="searchData()">Check List</button>-->
                                 <button type="submit" class="btn btn-primary">Receive</button>
                             </div>
                             <div class="clearfix"></div>
@@ -62,37 +60,13 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">HIMS – WIP List</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="#delete_modal" data-toggle="modal" class="btn btn-danger danger group_delete pull-right" onclick="modalDelete(this);" id="deleteAll">
-                                    <i class="fa fa-trash-o fa-lg"></i> Delete All
-                                </a>
-                            </div>-->
                         </div>
-<!--                        <div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            *Please delete all data after print the shipping material pass number list.
-                        </div>    -->
                         <hr/>
                         <div class="clearfix">
-<!--                            <div class="form-group pull-left">
-                                <select id="dt_spml_rows" class="form-control">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                            </div>-->
                             <div class="filter-block pull-right">
-                                <div id="dt_spml_tt" class="form-group pull-left" style="margin-right: 5px;">
-                                </div>
-<!--                                <div class="form-group pull-left" style="margin-right: 0px;">
-                                    <input id="dt_spml_search" type="text" class="form-control" placeholder="<f:message key="general.label.search"/>">
-                                    <i class="fa fa-search search-icon"></i>
-                                </div>-->
+                                <div id="dt_spml_tt" class="form-group pull-left" style="margin-right: 5px;"></div>
                             </div>
                         </div>
-<!--                        <div class="col-lg-12">
-                            <a href="${contextPath}/wh/whShipping/email" class="btn btn-info pull-right" id="print"><i class="fa fa-print"></i> Print</a>
-                        </div>-->
                         <div class="table-responsive">
                             <input type="hidden" class="form-control" id="count" name="count" value="${count}">
                             <input type="hidden" class="form-control" id="countAll" name="countAll" value="${countAll}">

@@ -47,11 +47,6 @@
                                     <i class="fa fa-pencil-square-o fa-lg"></i> Register WIP
                                 </a>
                             </div>
-                            <!-- <div class="filter-block pull-right">
-                                <a href="${contextPath}/wh/whRequest/ship" data-toggle="modal" class="btn btn-primary pull-right">
-                                    <i class="fa fa-bars fa-lg"></i> View Hardware Queue for Shipment
-                                </a>
-                            </div>-->
                             <div class="filter-block pull-right">
                             </div>
                         </div>
@@ -156,7 +151,7 @@
                             },
                             customize: function (win) {
                                 $(win.document.body)
-                                    .css('font-size', '10pt')
+                                    .css('font-size', '10pt'),
                                 $(win.document.body).find('table')
                                     .addClass('compact')
                                     .css('font-size', 'inherit');

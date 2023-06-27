@@ -60,11 +60,6 @@
                 <div class="col-lg-8">
                     <div class="main-box clearfix">
                             <h2 class="pull-left">Scan Trip Ticket / RMS Event</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Scan GTS No
-                                </a>
-                            </div>-->
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/registerPage" data-toggle="modal" class="btn btn-primary pull-right">
                                     <i class="fa fa-bars fa-lg"></i> button Register WIP

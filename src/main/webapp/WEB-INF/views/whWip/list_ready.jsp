@@ -27,12 +27,12 @@
                                 <label for="shipDate" class="col-lg-2 control-label">Shipping Date Time *</label>
                                 <div class="col-lg-12">
                                     <input type="datetime-local" id="shipDate" name="shipDate" class="btn pull-right">
-                                    <!--<input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">-->
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
                             <div class="pull-right">
                                 <button type="submit" class="btn btn-primary">PRINT for ${wipBox}</button>
+                                <input type="hidden" class="form-control" id="shippingList" name="shippingList" value="${wipBox}">
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -41,26 +41,9 @@
             </div>
         </div>
         <div class="col-lg-12">
-            <!--<h1>WIP Management - TO BE READY</h1>-->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
-<!--                            <div>
-                                <h2 class="pull-left">PAGE WIP TO BE READY</h2>
-                                <c:if test="${checkReady > 0}">
-                                    <div class="filter-block pull-right">
-                                        <a href="${contextPath}/whWip/updateReadyToShip" class="btn btn-primary pull-right">
-                                            <i class="fa fa-pencil-square-o fa-lg"></i> PRINT for ${wipBox}
-                                        </a>
-                                    </div>
-                                    <div class="filter-block pull-right"></div>
-                                </c:if>
-                                <div class="form-group pull-right">
-                                    <div class="form-group pull-right" style="margin-right: 0px;">
-                                        <input type="datetime-local" id="shipDate" name="shipDate" class="btn pull-right">`
-                                    </div>
-                                </div>
-                            </div>-->
                             <hr/>
                             <div class="clearfix">
                                 <div class="form-group pull-left">
@@ -71,11 +54,6 @@
                                         <option value="100">100</option>
                                     </select>
                                 </div>
-<!--                                <div class="form-group pull-right">
-                                    <div class="form-group pull-right" style="margin-right: 0px;">
-                                        <input type="datetime-local" id="shipDate" name="shipDate" class="btn pull-right">`
-                                    </div>
-                                </div>-->
                             </div>
                             <div class="table-responsive">
                                 <table id="dt_spml" class="table">
@@ -104,7 +82,6 @@
                                         </c:forEach>
                                     </tbody>
                                 </table>
-                                <!--<div><a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a></div>-->
                             </div>
                     </div>
                 </div>

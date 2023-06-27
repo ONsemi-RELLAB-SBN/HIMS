@@ -323,12 +323,14 @@ public class WhWipDAO {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET ready_date = ?, ready_by = ?, status = ? WHERE id = ?";
         try {
+            LOGGER.info("LOGGER for 6666666666666666666 : " +wip.getRequestId());
+            LOGGER.info("LOGGER for 7777777777777777777 : " +wip.getShipDate());
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, wip.getReadyDate());
             ps.setString(2, wip.getReadyBy());
             ps.setString(3, wip.getStatus());
             ps.setString(4, wip.getId());
-            queryResult.setResult(ps.executeUpdate());
+//            queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
             queryResult.setErrorMessage(e.getMessage());
@@ -347,15 +349,14 @@ public class WhWipDAO {
     
     public QueryResult updateShip(WhWip wip) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_wip SET ship_date = ?, ship_by = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE hms_wh_wip SET ship_created_date = NOW(), ship_date = ?, ship_by = ?, shipping_list = ?, status = ? WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, wip.getShipDate());
             ps.setString(2, wip.getShipBy());
             ps.setString(3, wip.getStatus());
-            ps.setString(4, wip.getShipCreatedDate());
-            ps.setString(5, wip.getShippingList());
-            ps.setString(6, wip.getId());
+            ps.setString(4, wip.getShippingList());
+            ps.setString(5, wip.getId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {

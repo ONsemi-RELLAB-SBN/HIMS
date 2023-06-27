@@ -70,10 +70,6 @@
                             </div>
                             <div id = "alert_placeholder2"></div>
                             <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
-<!--                            <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <button type="submit" class="btn btn-primary">Save</button>
-                            </div>-->
                             <div class="clearfix"></div>
                         </form>
                     </div>
@@ -93,7 +89,6 @@
                                     <input type="text" class="form-control" id="tripTicket" name="tripTicket" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                            <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
                             <div class="pull-right">
                                 <button type="submit" id="verify" class="btn btn-primary">Verify</button>
                             </div>
@@ -141,23 +136,6 @@
                         }
                     }
                 });
-                
-//                var tripTicket = $('#tripTicket');
-//                var rms = $('#rms');
-//                
-//                var tt = document.getElementById("tripTicket").innerHTML;
-//                var ms = document.getElementById("rms").innerHTML;
-//                
-//                $('#tripTicket').keyup(function () {
-//                    if (tt == ms) {
-//                        console.log("eh, dah sama da");
-//                        $("#verify").show();
-//                    } else {
-//                        console.log("masih tak sama");
-//                        $("#verify").hide();
-//                    }
-//                });
-                
             });
         </script>
     </s:layout-component>
