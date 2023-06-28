@@ -12,6 +12,7 @@
 
             <!-- bootstrap -->
             <link href="${contextPath}/resources/private/css/bootstrap/bootstrap.css" rel="stylesheet" />
+            <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
             <!-- libraries -->
             <!-- <link href="${contextPath}/resources/private/css/libs/jquery-ui-1.10.2.custom.css" rel="stylesheet" type="text/css" /> -->

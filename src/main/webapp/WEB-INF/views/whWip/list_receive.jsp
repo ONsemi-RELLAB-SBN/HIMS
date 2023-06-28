@@ -31,7 +31,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - Data from RMS 02</h1>
+            <h1>WIP Management</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
@@ -43,10 +43,10 @@
                                     <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
+                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
                             <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <button type="submit" class="btn btn-primary">Receive</button>
+                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset' ></i> Reset</button>
+                                <button type="submit" class="btn btn-primary"><i class='bx bxs-shield-plus' style='color:#ffffff'  ></i> Receive</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -59,7 +59,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">HIMS – WIP List</h2>
+                            <h2 class="pull-left">WIP List</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -74,7 +74,6 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Request ID</span></th>
                                         <th><span>GTS Number</span></th>
                                         <th><span>RMS Event</span></th>
                                         <th><span>Intervals</span></th>
@@ -85,7 +84,6 @@
                                     <c:forEach items="${wipList}" var="wipList" varStatus="wipLoop">
                                         <tr>
                                             <td><c:out value="${wipLoop.index+1}"/></td>
-                                            <td><c:out value="${wipList.requestId}"/></td>
                                             <td><c:out value="${wipList.gtsNo}"/></td>
                                             <td><c:out value="${wipList.rmsEvent}"/></td>
                                             <td><c:out value="${wipList.intervals}"/></td>

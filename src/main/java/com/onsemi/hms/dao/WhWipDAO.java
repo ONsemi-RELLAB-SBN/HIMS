@@ -291,8 +291,6 @@ public class WhWipDAO {
     public QueryResult updateRegister(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET register_date = NOW(), register_by = ?, status = ? WHERE id = ?";
-        LOGGER.info("MASUK KE FUNCTION NK UPDATE TO REGSITER STATUS " + sql);
-        LOGGER.info("LOGGER for ID DIA : " +wip.getId());
         String username = System.getProperty("user.name");
         ParameterDetailsDAO dao = new ParameterDetailsDAO();
         String status = dao.getDetailByCode(READY);
@@ -323,14 +321,12 @@ public class WhWipDAO {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET ready_date = ?, ready_by = ?, status = ? WHERE id = ?";
         try {
-            LOGGER.info("LOGGER for 6666666666666666666 : " +wip.getRequestId());
-            LOGGER.info("LOGGER for 7777777777777777777 : " +wip.getShipDate());
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, wip.getReadyDate());
             ps.setString(2, wip.getReadyBy());
             ps.setString(3, wip.getStatus());
             ps.setString(4, wip.getId());
-//            queryResult.setResult(ps.executeUpdate());
+            queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
             queryResult.setErrorMessage(e.getMessage());
@@ -354,8 +350,8 @@ public class WhWipDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, wip.getShipDate());
             ps.setString(2, wip.getShipBy());
-            ps.setString(3, wip.getStatus());
-            ps.setString(4, wip.getShippingList());
+            ps.setString(3, wip.getShippingList());
+            ps.setString(4, wip.getStatus());
             ps.setString(5, wip.getId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
@@ -494,7 +490,6 @@ public class WhWipDAO {
 
     public List<WhWip> getWhWipByStatus(String status) {
         String sql = "SELECT * FROM hms_wh_wip WHERE status IN ('" + status + "')";
-        LOGGER.info("DATA LATEST : " + sql);
         List<WhWip> wipList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -540,9 +535,11 @@ public class WhWipDAO {
         }
         return wipList;
     }
-
-    public List<WhWip> getWhWipByShipment() {
-        String sql = "SELECT * FROM hms_wh_wip WHERE wip_box = ? ";
+    
+    public List<WhWip> getWhWipByShipment(String shipList) {
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status =  pdao.getDetailByCode(SHIP);
+        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '"+shipList+"' AND status = '"+status+"'";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

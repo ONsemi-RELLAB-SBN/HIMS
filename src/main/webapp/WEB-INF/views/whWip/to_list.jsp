@@ -24,27 +24,29 @@
                 }
             }
             .dataTables_wrapper .dt-buttons {
-                float:none;  
+                float:none;
                 text-align:right;
             }
         </style>
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - WIP for Shipment to Rel Lab</h1>
+            <h1>WIP Management</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">WIP for Shipment to Rel Lab List</h2>
+                            <h2 class="pull-left">Shipment to Rel Lab - WIP Information</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Prepare Shipment
+                                    <!--<i class="fa fa-pencil-square-o fa-lg"></i> Prepare Shipment-->
+                                    <i class='bx bx-list-plus'></i> Prepare Shipment
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/registerPage" class="btn btn-primary pull-right">
-                                    <i class="fa fa-pencil-square-o fa-lg"></i> Register WIP
+                                    <!--<i class="fa fa-pencil-square-o fa-lg"></i> Register WIP-->
+                                    <i class='bx bx-message-square-add' style='color:#ffffff' ></i> Register WIP
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
@@ -78,7 +80,7 @@
                                         <th><span>Plan Ship Date</span></th>
                                         <th><span>Status</span></th>
                                         <th><span>WIP BOX NO</span></th>
-                                        <th><span>Manage</span></th>
+                                        <th><span>View Detail</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -88,13 +90,10 @@
                                             <td><c:out value="${wipList.rmsEvent}"/></td>
                                             <td><c:out value="${wipList.shipmentDate}"/></td>
                                             <td><c:out value="${wipList.status}"/></td>
-                                            <td><c:out value="${wipList.wipBox}"/></td>
+                                            <td><c:out value="${wipList.shippingList}"/></td>
                                             <td>
-                                                <a href="${contextPath}/whWip/history/${whShipping.wipBox}" class="table-link" title="History">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-book fa-stack-1x fa-inverse"></i>
-                                                    </span>
+                                                <a href="${contextPath}/whWip/history/${wipList.shippingList}" class="table-link" title="History">
+                                                    <i class='bx bx-search-alt bx-md'></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -119,46 +118,46 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                oTable = $('#dt_spml').DataTable({
-                    dom: 'Brtip',
-                    columnDefs : [{
-                        sortable : false,
-                        targets : [ 7 ]
-                    }],
-                    buttons: [
-                        {
-                            extend: 'copy',
-                            exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-                            }
-                        },
-                        {
-                            extend: 'excel',
-                            exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-                            }
-                        },
-                        {
-                            extend: 'pdf',
-                            exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-                            }
-                        },
-                        {
-                            extend: 'print',
-                            exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-                            },
-                            customize: function (win) {
-                                $(win.document.body)
-                                    .css('font-size', '10pt'),
-                                $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                            }
-                        }
-                    ]
-                });
+//                oTable = $('#dt_spml').DataTable({
+//                    dom: 'Brtip',
+//                    columnDefs : [{
+//                        sortable : false,
+//                        targets : [ 7 ]
+//                    }],
+//                    buttons: [
+//                        {
+//                            extend: 'copy',
+//                            exportOptions: {
+//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+//                            }
+//                        },
+//                        {
+//                            extend: 'excel',
+//                            exportOptions: {
+//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+//                            }
+//                        },
+//                        {
+//                            extend: 'pdf',
+//                            exportOptions: {
+//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+//                            }
+//                        },
+//                        {
+//                            extend: 'print',
+//                            exportOptions: {
+//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+//                            },
+//                            customize: function (win) {
+//                                $(win.document.body)
+//                                    .css('font-size', '10pt'),
+//                                $(win.document.body).find('table')
+//                                    .addClass('compact')
+//                                    .css('font-size', 'inherit');
+//                            }
+//                        }
+//                    ]
+//                });
                 
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
@@ -177,6 +176,6 @@
                 $("#delete_modal .modal-body").html(deleteMsg);
                 $("#modal_delete_button").attr("href", deleteUrl);
             }
-        </script>
+            </script>
     </s:layout-component>
 </s:layout-render>

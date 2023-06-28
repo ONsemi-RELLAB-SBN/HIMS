@@ -11,9 +11,10 @@ import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.tools.EmailSender;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -41,11 +42,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping(value = "/whWip")
 @SessionAttributes({"userSession"})
 public class WipController {
-    
+
     private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
     private static final Logger LOGGER = LoggerFactory.getLogger(WipController.class);
     String[] args = {};
-    
+
     private static final String NEW = "0101";
     private static final String RECEIVE = "0102";
     private static final String VERIFY = "0103";
@@ -53,12 +54,16 @@ public class WipController {
     private static final String READY = "0105";
     private static final String SHIP = "0106";
 
+    private static final String COMMA_DELIMITER = ",";
+    private static final String LINE_SEPARATOR = "\n";
+    private static final String HEADER = "Request ID,RMS Event,Shipment Date,Intervals,Quantity";
+
     @Autowired
     private MessageSource messageSource;
-    
+
     @Autowired
     ServletContext servletContext;
-    
+
 //    @RequestMapping(value = "wipList", method = RequestMethod.GET)
     @RequestMapping(value = "/sync", method = {RequestMethod.GET, RequestMethod.POST})
     public String wipList(Model model) {
@@ -66,7 +71,7 @@ public class WipController {
         wip.cronRun();
         return "redirect:/whWip/listNew";
     }
-    
+
     @RequestMapping(value = "/from", method = RequestMethod.GET)
     public String whFromList(Model model, @ModelAttribute UserSession userSession) {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -76,22 +81,27 @@ public class WipController {
         model.addAttribute("wipList", wipList);
         return "whWip/from_list";
     }
-    
+
     @RequestMapping(value = "/to", method = RequestMethod.GET)
     public String whToList(Model model, @ModelAttribute UserSession userSession) {
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        WhWipDAO dao = new WhWipDAO();
+        String status = pdao.getDetailByCode(SHIP);
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        model.addAttribute("wipList", wipList);
         return "whWip/to_list";
     }
-    
+
     @RequestMapping(value = "/listNew", method = RequestMethod.GET)
     public String whNewList(Model model, @ModelAttribute UserSession userSession) {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(NEW+ "','"+ RECEIVE);
+        String status = pdao.getDetailByCode(NEW + "','" + RECEIVE);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         model.addAttribute("wipList", wipList);
         return "whWip/list_new";
     }
-    
+
     @RequestMapping(value = "/listReceive", method = RequestMethod.GET)
     public String whReceiveList(Model model, @ModelAttribute UserSession userSession) {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -102,7 +112,7 @@ public class WipController {
         model.addAttribute("wipList", wipList);
         return "whWip/list_receive";
     }
-    
+
     @RequestMapping(value = "/updateReceive", method = RequestMethod.POST)
     public String updateReceive(
             Model model,
@@ -119,7 +129,7 @@ public class WipController {
         daoUpdate.updateStatusByGts(columnDate, columnBy, gtsNo, flag);
         return "redirect:/whWip/listNew";
     }
-    
+
     @RequestMapping(value = "/listVerify/{requestId}", method = RequestMethod.GET)
     public String whVerifyList(Model model, @ModelAttribute UserSession userSession, @PathVariable("requestId") String requestId) {
         WhWipDAO dao = new WhWipDAO();
@@ -127,7 +137,7 @@ public class WipController {
         model.addAttribute("wipData", data);
         return "whWip/list_verify";
     }
-    
+
     @RequestMapping(value = "/updateVerify", method = RequestMethod.POST)
     public String updateVerify(
             Model model,
@@ -139,10 +149,9 @@ public class WipController {
 //         THIS FUNCTION WILL UPDATE THE STATUS FROM RECEIVED TO VERIFIED
         WhWipDAO daoUpdate = new WhWipDAO();
         daoUpdate.updateVerify(requestId);
-//        return "redirect:/whWip/listRegister";
         return "redirect:/whWip/listNew";
     }
-    
+
 //    @RequestMapping(value = "/listRegister", method = RequestMethod.GET)
 //    public String whRegisterList(Model model, @ModelAttribute UserSession userSession) {
 //        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -155,7 +164,6 @@ public class WipController {
     
     @RequestMapping(value = "/registerPage", method = RequestMethod.GET)
     public String whRegisterPage(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("MASUK PAGE REGISTER WIP");
         WhWipDAO dao = new WhWipDAO();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(READY);
@@ -163,27 +171,22 @@ public class WipController {
         model.addAttribute("packingList", packingList);
         return "whWip/register_page";
     }
-    
-    @RequestMapping(value = "/updateVerifyToRegister", method  = RequestMethod.POST)
-    public String updateRegister(Model model, Locale locale, RedirectAttributes redirectAttrs, 
-            @ModelAttribute UserSession userSession, 
-            @RequestParam(required = false) String tripTicket, 
+
+    @RequestMapping(value = "/updateVerifyToRegister", method = RequestMethod.POST)
+    public String updateRegister(Model model, Locale locale, RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String tripTicket,
+            @RequestParam(required = false) String quantity,
             @RequestParam(required = false) String intervals) {
-        LOGGER.info("LOGGER for GET REQUEST ID : " +tripTicket);
-        
+
         WhWipDAO daoSelect = new WhWipDAO();
         WhWip daoData = daoSelect.getWipByRmsInterval(tripTicket, intervals);
         String status = daoData.getStatus();
-        LOGGER.info("MASUK KE FUNCTION NK UPDATE THE STATUS");
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String checkStatus = pdao.getDetailByCode(VERIFY);
-        
-        LOGGER.info("LOGGER for chek : " +checkStatus);
-        LOGGER.info("LOGGER for stat : " +status);
         args = new String[1];
         args[0] = tripTicket + " [" + intervals + "]";
-        
-//        if (status.equalsIgnoreCase(checkStatus)) {
+
         if (status == null ? checkStatus == null : status.equals(checkStatus)) {
             WhWipDAO daoUpdate = new WhWipDAO();
             sendEmailWipReady();
@@ -191,19 +194,17 @@ public class WipController {
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.successwip1", args, locale));
         } else {
             if (daoData.getStatus() == null) {
-                LOGGER.info("SINI TAKDE LANGSUNG DATA JUMPA " );
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.search.error", args, locale));
             } else {
-                LOGGER.info("SINI ADA DATA, TAPI BUKAN STATUS DIA >>> " + daoData);
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip1", args, locale));
             }
         }
         return "redirect:/whWip/registerPage";
     }
-    
+
     private String sendEmailWipReady() {
         String emailStatus = "";
-        
+
 //        String[] receiver = {"hims@onsemi.com"};
         String[] receiver = {"zbqb9x@onsemi.com"};
         EmailSender emailSenderCsv = new EmailSender();
@@ -216,122 +217,149 @@ public class WipController {
         );
         return emailStatus;
     }
-    
+
     @RequestMapping(value = "/listReady", method = RequestMethod.GET)
     public String whReadyList(Model model, @ModelAttribute UserSession userSession) {
-        LOGGER.info("LOGGER for MASUK DATA LIST READY : " );
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(READY);
-        WhWipDAO dao = new WhWipDAO(); 
+        WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         dao = new WhWipDAO();
         int checkReady = dao.getCountByStatus(status);
-        
         String latestShouldBe = getLatestRunningNumber();
-        LOGGER.info("LOGGER for DATA RUNNING NUMBER YANG KITA AKAN GUNA : " +latestShouldBe);
-        LOGGER.info("LOGGER for ready number : " +checkReady);
-        LOGGER.info("LOGGER for ready status : " +status);
+
         model.addAttribute("wipList", wipList);
         model.addAttribute("checkReady", checkReady);
         model.addAttribute("wipBox", latestShouldBe);
-        LOGGER.info("MASUK KE REGISTER READY");
         return "whWip/list_ready";
     }
-    
+
     @RequestMapping(value = "/updateReadyToShip", method = {RequestMethod.GET, RequestMethod.POST})
-    public String updateReadyToShip(Model model, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttrs, @ModelAttribute UserSession userSession, 
+    public String updateReadyToShip(Model model, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttrs, @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String shippingList,
             @RequestParam(required = false) String shipDate) throws IOException {
-        
-//        String[] receiver = {"hims@onsemi.com"};
-//        EmailSender emailSenderCsv = new EmailSender();
-//        emailSenderCsv.htmlEmailWithAttachmentTest(
-//                servletContext,
-//                "CDARS", //user name
-//                receiver, //to
-//                "Status for Hardware Shipping from HIMS SF", //subject
-//                "Verification and status for Hardware Shipping has been made." //msg
-//        );
 
-        LOGGER.info("LOGGER for DATE KITA SELECT UNTUK SHIPPING : " +shipDate);
-        LOGGER.info("LOGGER for xxx : " +shippingList);
-        
+        String filePath = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shippinh.csv";
+        File file = new File(filePath);
+
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String statusReady =  pdao.getDetailByCode(READY);
-        String statusShip =  pdao.getDetailByCode(SHIP);
+        String statusReady = pdao.getDetailByCode(READY);
+        String statusShip = pdao.getDetailByCode(SHIP);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> dataList = dao.getWhWipByStatus(statusReady);
         String username = System.getProperty("user.name");
-        
+
         for (int i = 0; i < dataList.size(); i++) {
-            LOGGER.info("-----------------------------");
-            LOGGER.info("LOGGER for REQUEST ID : " +dataList.get(i).getRequestId());
-            LOGGER.info("UPDATE THE STATUS TO SHIP");
             WhWip wip = new WhWip();
             wip.setId(dataList.get(i).getId());
-//            wip.setRequestId(dataList.get(i).getRequestId());
             wip.setShipBy(username);
             wip.setShipDate(shipDate);
             wip.setStatus(statusShip);
             wip.setShippingList(shippingList);
-            
+
             dao = new WhWipDAO();
             dao.updateShip(wip);
+
+            if (file.exists()) {
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(filePath);
+                    //New Line after the header
+                    fileWriter.append(LINE_SEPARATOR);
+                    fileWriter.append(wip.getRequestId());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getRmsEvent());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getShipDate());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getIntervals());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getQuantity());
+                    System.out.println("Write new to CSV file Succeed!!!");
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                } finally {
+                    try {
+                        fileWriter.close();
+                    } catch (IOException ie) {
+                        System.out.println("Error occured while closing the fileWriter");
+                        ie.printStackTrace();
+                    }
+                }
+            } else {
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(filePath);
+                    //Adding the header
+                    fileWriter.append(HEADER);
+
+                    //New Line after the header
+                    fileWriter.append(LINE_SEPARATOR);
+                    fileWriter.append(wip.getRequestId());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getRmsEvent());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getShipDate());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getIntervals());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getQuantity());
+                    System.out.println("Write new to CSV file Succeed!!!");
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                } finally {
+                    try {
+                        fileWriter.close();
+                    } catch (IOException ie) {
+                        System.out.println("Error occured while closing the fileWriter");
+                        ie.printStackTrace();
+                    }
+                }
+            }
         }
-        
         return "redirect:/whWip/to";
     }
-    
-    
+
     // INI SUDAH TIDAK DIGUNAKAN, SBB DA MASUK KE DALAM TO LIST
 //    @RequestMapping(value = "/listShip", method = RequestMethod.GET)
 //    public String whShipList(Model model, @ModelAttribute UserSession userSession) {
-//        LOGGER.info("LOGGER for MASUK DATA LIST REGISTER : " );
 //        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
 //        String status = pdao.getDetailByCode(REGISTER);
 //        WhWipDAO dao = new WhWipDAO();
 //        List<WhWip> wipList = dao.getWhWipByStatus(status);
-//        LOGGER.info("LOGGER for xxx : " +status);
 //        model.addAttribute("wipList", wipList);
-//        LOGGER.info("MASUK KE REGISTER LIST");
 //        return "whWip/list_ship";
 //    }
     
     private String getLatestRunningNumber() {
-        
+
         String runningNumber = "0001";
-        LocalDateTime myDateObj = LocalDateTime.now();  
-        DateTimeFormatter myFormatYear = DateTimeFormatter.ofPattern("yyyy"); 
-        DateTimeFormatter myFormatMonth = DateTimeFormatter.ofPattern("MM"); 
-        String month = myDateObj.format(myFormatMonth);  
-        String year = myDateObj.format(myFormatYear); 
-        
-        LOGGER.info("LOGGER for TAHUN : " +year);
-        LOGGER.info("LOGGER for BULAN : " +month);
-        
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatYear = DateTimeFormatter.ofPattern("yyyy");
+        DateTimeFormatter myFormatMonth = DateTimeFormatter.ofPattern("MM");
+        String month = myDateObj.format(myFormatMonth);
+        String year = myDateObj.format(myFormatYear);
+
         RunningNumberDAO dao = new RunningNumberDAO();
         String checkLatest = dao.getLatestRunning(year, month);
-        
+
         if (checkLatest.equals("0")) {
             // THIS MEAN NEW MONTH, SO NEED TO CREATE NEW RUNNING NUMBER RECORD
-            LOGGER.info("LOGGER for CREATE NEW RUNNING NUMBER : " +checkLatest);
             dao = new RunningNumberDAO();
             dao.insertRunningNumber(year, month, runningNumber);
         } else if (checkLatest.equals("")) {
-            LOGGER.info("LOGGER for CREATE BARU JUGA : " +checkLatest);
             dao = new RunningNumberDAO();
             dao.insertRunningNumber(year, month, runningNumber);
         } else {
             // THE RUNNING NUMBER FOR THE MONTH ALREADY EXIST, JUST UPDATE THE RUNNING NUMBER
-            LOGGER.info("LOGGER for UPDATE RUNNNING NUMBER : " +checkLatest);
+            int data = Integer.parseInt(checkLatest);
             dao = new RunningNumberDAO();
-            runningNumber = String.format("%04d", Integer.parseInt(checkLatest));
-            LOGGER.info("LOGGER for LSETEST RUNNING NUMBER : " +runningNumber);
-//            dao.updateRunningNumber(runningNumber, year, month);
+            runningNumber = String.format("%04d", data + 1);
+            dao.updateRunningNumber(runningNumber, year, month);
         }
         runningNumber = year + month + runningNumber;
-        
+
         return runningNumber;
     }
-    
+
 }

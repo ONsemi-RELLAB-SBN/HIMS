@@ -31,11 +31,11 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - WIP Verification</h1>
+            <h1>WIP Management</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>WIP Information</h2>
+                        <h2>WIP Information - Verify WIP</h2>
                         <form id="wip_information_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceiveToVerify/${wipData.requestId}" method="post">
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
@@ -69,7 +69,8 @@
                                 </div>
                             </div>
                             <div id = "alert_placeholder2"></div>
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
+                            <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
+                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
                             <div class="clearfix"></div>
                         </form>
                     </div>
@@ -81,8 +82,8 @@
                     <div class="main-box">
                         <h2>Scan Trip Ticket</h2>
                         <form id="wip_verification_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerify" method="post">
-                            <input type="text" name="requestId" value="${wipData.requestId}" />
-                            <input type="text" id="rmsEvent" value="${wipData.rmsEvent}" />
+                            <input type="hidden" name="requestId" value="${wipData.requestId}" />
+                            <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <div class="form-group">
                                 <label for="boxNo" class="col-lg-3 control-label">Scan Trip Ticket *</label>
                                 <div class="col-lg-8">
@@ -90,7 +91,7 @@
                                 </div>
                             </div>
                             <div class="pull-right">
-                                <button type="submit" id="verify" class="btn btn-primary">Verify</button>
+                                <button type="submit" id="verify" class="btn btn-primary"><i class='bx bx-log-in-circle bx-md' style='color:#ffffff' ></i> Verify</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>

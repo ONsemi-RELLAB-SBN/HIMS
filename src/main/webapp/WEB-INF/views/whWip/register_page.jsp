@@ -31,11 +31,11 @@
     </s:layout-component>
         <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - Register WIP</h1>
+            <h1>WIP Management</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>Scan Trip Ticket / RMS Event</h2>
+                        <h2>Scan Trip Ticket</h2>
                         <form id="register_wip_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerifyToRegister" method="post">
                             <div class="form-group">
                                 <label for="tripTicket" class="col-lg-3 control-label">Trip Ticket *</label>
@@ -49,10 +49,17 @@
                                     <input type="text" class="form-control" id="intervals" name="intervals" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
+                            <div class="form-group">
+                                <label for="quantity" class="col-lg-3 control-label">Quantity *</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="quantity" name="quantity" placeholder="" value="" autofocus="autofocus">
+                                </div>
+                            </div>
+                                <!--<a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
+                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
                             <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <button type="submit" class="btn btn-primary">Register</button>
+                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset' ></i> Reset</button>
+                                <button type="submit" class="btn btn-primary"><i class='bx bx-registered' style='color:#ffffff' ></i> Register</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -65,12 +72,12 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">HIMS–Sg Gadut Shipping Packing List -READY LIST</h2>
-                            <div class="filter-block pull-right">
+                            <h2 class="pull-left">WIP Information - WIP Ready for shipment</h2>
+<!--                            <div class="filter-block pull-right">
                                 <a href="#delete_modal" data-toggle="modal" class="btn btn-danger danger group_delete pull-right" onclick="modalDelete(this);" id="deleteAll">
                                     <i class="fa fa-trash-o fa-lg"></i> Delete All
                                 </a>
-                            </div>
+                            </div>-->
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -167,12 +174,12 @@
                 });           
             });
             
-            function modalDelete(e) {
-                var deleteUrl = "${contextPath}/whWip/deleteAll";
-                var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
-                $("#delete_modal .modal-body").html(deleteMsg);
-                $("#modal_delete_button").attr("href", deleteUrl);
-            }
+//            function modalDelete(e) {
+//                var deleteUrl = "${contextPath}/whWip/deleteAll";
+//                var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
+//                $("#delete_modal .modal-body").html(deleteMsg);
+//                $("#modal_delete_button").attr("href", deleteUrl);
+//            }
             
         </script>
     </s:layout-component>
