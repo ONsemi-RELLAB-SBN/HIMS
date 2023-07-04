@@ -43,10 +43,10 @@
                                     <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
+                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset' ></i> Reset</button>
-                                <button type="submit" class="btn btn-primary"><i class='bx bxs-shield-plus' style='color:#ffffff'  ></i> Receive</button>
+                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset bx-fw' ></i> Reset</button>
+                                <button type="submit" class="btn btn-primary"><i class='bx bxs-shield-plus bx-fw' style='color:#ffffff'  ></i> Receive</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -127,25 +127,25 @@
                     oTable.page.len($(this).val()).draw();
                 });
                 
-                if ($('#countAll').val() === '0') {
-                    $('#print').hide();
-                } else {
-                    $('#print').show();
-                }
+//                if ($('#countAll').val() === '0') {
+//                    $('#print').hide();
+//                } else {
+//                    $('#print').show();
+//                }
                 
-                if ($('#countAll').val() === '0') {
-                    $('#deleteAll').hide();
-                } else {
-                    $('#deleteAll').show();
-                }
+//                if ($('#countAll').val() === '0') {
+//                    $('#deleteAll').hide();
+//                } else {
+//                    $('#deleteAll').show();
+//                }
                 
                 $(".cancel").click(function () {
                     validator.resetForm();
                 });
                 
-                $(".viewData").click(function () {
-                    $("#data").show();
-                });
+//                $(".viewData").click(function () {
+//                    $("#data").show();
+//                });
             });
             
         </script>

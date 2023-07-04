@@ -10,6 +10,7 @@ import com.onsemi.hms.dao.RunningNumberDAO;
 import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
+import com.onsemi.hms.model.WhWipShip;
 import com.onsemi.hms.tools.EmailSender;
 import java.io.File;
 import java.io.FileWriter;
@@ -43,9 +44,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @SessionAttributes({"userSession"})
 public class WipController {
 
-    private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
     private static final Logger LOGGER = LoggerFactory.getLogger(WipController.class);
     String[] args = {};
+    
+    private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
+    private static final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
 
     private static final String NEW = "0101";
     private static final String RECEIVE = "0102";
@@ -96,9 +99,12 @@ public class WipController {
     public String whNewList(Model model, @ModelAttribute UserSession userSession) {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(NEW + "','" + RECEIVE);
+        pdao = new ParameterDetailsDAO();
+        String statusReceive = pdao.getDetailByCode(RECEIVE);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         model.addAttribute("wipList", wipList);
+        model.addAttribute("status", statusReceive);
         return "whWip/list_new";
     }
 
@@ -149,18 +155,21 @@ public class WipController {
 //         THIS FUNCTION WILL UPDATE THE STATUS FROM RECEIVED TO VERIFIED
         WhWipDAO daoUpdate = new WhWipDAO();
         daoUpdate.updateVerify(requestId);
+        
+        sendEmailWipReady();
+        // TODO - add function to check gts no is eligible to be created into excel files
         return "redirect:/whWip/listNew";
     }
 
-//    @RequestMapping(value = "/listRegister", method = RequestMethod.GET)
-//    public String whRegisterList(Model model, @ModelAttribute UserSession userSession) {
-//        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-//        String status = pdao.getDetailByCode(VERIFY);
-//        WhWipDAO dao = new WhWipDAO();
-//        List<WhWip> wipList = dao.getWhWipByStatus(status);
-//        model.addAttribute("wipList", wipList);
-//        return "whWip/list_register";
-//    }
+    @RequestMapping(value = "/listRegister", method = RequestMethod.GET)
+    public String whRegisterList(Model model, @ModelAttribute UserSession userSession) {
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(VERIFY);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        model.addAttribute("wipList", wipList);
+        return "whWip/list_register";
+    }
     
     @RequestMapping(value = "/registerPage", method = RequestMethod.GET)
     public String whRegisterPage(Model model, @ModelAttribute UserSession userSession) {
@@ -181,17 +190,26 @@ public class WipController {
 
         WhWipDAO daoSelect = new WhWipDAO();
         WhWip daoData = daoSelect.getWipByRmsInterval(tripTicket, intervals);
+        String checkQty = daoData.getQuantity();
+        daoData.setShipQuantity(quantity);
         String status = daoData.getStatus();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String checkStatus = pdao.getDetailByCode(VERIFY);
-        args = new String[1];
+        args = new String[2];
         args[0] = tripTicket + " [" + intervals + "]";
+        args[1] = " [LIMIT to " + checkQty + " pcs] ";
+        
+//        sendEmailWipReady();
 
         if (status == null ? checkStatus == null : status.equals(checkStatus)) {
             WhWipDAO daoUpdate = new WhWipDAO();
-            sendEmailWipReady();
-            daoUpdate.updateRegister(daoData);
-            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.successwip1", args, locale));
+//            sendEmailWipReady();
+            if (Integer.parseInt(checkQty) < Integer.parseInt(quantity)) {
+                redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip2", args, locale));
+            } else {
+                daoUpdate.updateRegister(daoData);
+                redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.successwip1", args, locale));
+            }
         } else {
             if (daoData.getStatus() == null) {
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.search.error", args, locale));
@@ -200,22 +218,6 @@ public class WipController {
             }
         }
         return "redirect:/whWip/registerPage";
-    }
-
-    private String sendEmailWipReady() {
-        String emailStatus = "";
-
-//        String[] receiver = {"hims@onsemi.com"};
-        String[] receiver = {"zbqb9x@onsemi.com"};
-        EmailSender emailSenderCsv = new EmailSender();
-        emailSenderCsv.htmlEmailWithAttachmentTest(
-                servletContext,
-                "HMS-SG", //user name
-                receiver, //to
-                "WIP Status is ready for Shipment to HIMS SF", //subject
-                "List WIP is ready for shipment." //msg
-        );
-        return emailStatus;
     }
 
     @RequestMapping(value = "/listReady", method = RequestMethod.GET)
@@ -239,16 +241,17 @@ public class WipController {
             @RequestParam(required = false) String shippingList,
             @RequestParam(required = false) String shipDate) throws IOException {
 
-        String filePath = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shippinh.csv";
+        String filePath = FILEPATH;
         File file = new File(filePath);
 
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String statusReady = pdao.getDetailByCode(READY);
+        pdao = new ParameterDetailsDAO();
         String statusShip = pdao.getDetailByCode(SHIP);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> dataList = dao.getWhWipByStatus(statusReady);
         String username = System.getProperty("user.name");
-
+        
         for (int i = 0; i < dataList.size(); i++) {
             WhWip wip = new WhWip();
             wip.setId(dataList.get(i).getId());
@@ -259,8 +262,15 @@ public class WipController {
 
             dao = new WhWipDAO();
             dao.updateShip(wip);
+            
+            dao = new WhWipDAO();
+            WhWipShip wip2 = new WhWipShip();
+            wip2.setWipId(dataList.get(i).getId());
+            wip2.setWipShipList(shippingList);
+            dao.insertWhWipShip(wip2);
 
             if (file.exists()) {
+                LOGGER.info("MASUK KE APPEND THE FILE");
                 FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(filePath);
@@ -287,6 +297,7 @@ public class WipController {
                     }
                 }
             } else {
+                LOGGER.info("SINI MASUK CREATE NEW FILE");
                 FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(filePath);
@@ -344,22 +355,42 @@ public class WipController {
         String checkLatest = dao.getLatestRunning(year, month);
 
         if (checkLatest.equals("0")) {
+            LOGGER.info("1111");
             // THIS MEAN NEW MONTH, SO NEED TO CREATE NEW RUNNING NUMBER RECORD
             dao = new RunningNumberDAO();
             dao.insertRunningNumber(year, month, runningNumber);
         } else if (checkLatest.equals("")) {
+            LOGGER.info("22222");
             dao = new RunningNumberDAO();
             dao.insertRunningNumber(year, month, runningNumber);
         } else {
             // THE RUNNING NUMBER FOR THE MONTH ALREADY EXIST, JUST UPDATE THE RUNNING NUMBER
+            LOGGER.info("3333");
             int data = Integer.parseInt(checkLatest);
             dao = new RunningNumberDAO();
             runningNumber = String.format("%04d", data + 1);
+            LOGGER.info("runningNumber DATA HERE : " +runningNumber);
             dao.updateRunningNumber(runningNumber, year, month);
         }
         runningNumber = year + month + runningNumber;
 
         return runningNumber;
+    }
+    
+    private String sendEmailWipReady() {
+        String emailStatus = "";
+        LOGGER.info("THIS MEANS EMAIL HAS BEEN SENT");
+//        String[] receiver = {"hims@onsemi.com"};
+        String[] receiver = {"zbqb9x@onsemi.com"};
+        EmailSender emailSenderCsv = new EmailSender();
+        emailSenderCsv.htmlEmailWithAttachmentTest(
+                servletContext,
+                "HMS-SG", //user name
+                receiver, //to
+                "WIP Status is ready for Shipment to HIMS SF", //subject
+                "List WIP is ready for shipment." //msg
+        );
+        return emailStatus;
     }
 
 }

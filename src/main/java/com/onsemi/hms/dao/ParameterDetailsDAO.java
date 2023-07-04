@@ -338,9 +338,8 @@ public class ParameterDetailsDAO {
     
     public String getDetailByCode (String code) {
         String value = "";
-        LOGGER.info("LOGGER for xxx : " + code);
         String sql = "SELECT GROUP_CONCAT(value SEPARATOR '\\',\\'') as value FROM hms_parameter_details WHERE detail_code IN ('"+code+"')";
-        LOGGER.info("LOGGER for SQL : " +sql);
+        LOGGER.info("LOGGER for SQL HERE : " +sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

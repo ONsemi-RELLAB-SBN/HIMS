@@ -55,11 +55,10 @@
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                                <!--<a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
-                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
+                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset' ></i> Reset</button>
-                                <button type="submit" class="btn btn-primary"><i class='bx bx-registered' style='color:#ffffff' ></i> Register</button>
+                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset bx-fw' ></i> Reset</button>
+                                <button type="submit" class="btn btn-primary"><i class='bx bx-registered bx-fw' style='color:#ffffff' ></i> Register</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -73,11 +72,6 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">WIP Information - WIP Ready for shipment</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="#delete_modal" data-toggle="modal" class="btn btn-danger danger group_delete pull-right" onclick="modalDelete(this);" id="deleteAll">
-                                    <i class="fa fa-trash-o fa-lg"></i> Delete All
-                                </a>
-                            </div>-->
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -107,7 +101,6 @@
                                         <th><span>No</span></th>
                                         <th><span>GTS Number</span></th>
                                         <th><span>RMS Event</span></th>
-                                        <th><span>Hardware ID</span></th>
                                         <th><span>Intervals</span></th>
                                         <th><span>Quantity</span></th>
                                     </tr>
@@ -118,11 +111,8 @@
                                             <td><c:out value="${packingListLoop.index+1}"/></td>
                                             <td><c:out value="${packingList.gtsNo}"/></td>
                                             <td><c:out value="${packingList.rmsEvent}"/></td>
-                                            <td>
-                                                takda apa2
-                                            </td>
                                             <td><c:out value="${packingList.intervals}"/></td>
-                                            <td><c:out value="${packingList.quantity}"/></td>
+                                            <td><c:out value="${packingList.shipQuantity} / ${packingList.quantity}"/></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -164,7 +154,11 @@
                             required: true
                         },
                         intervals: {
+                            number: true,
                             required: true
+                        },
+                        quantity: {
+                            number: true
                         }
                     }
                 });
@@ -173,14 +167,6 @@
                     validator.resetForm();
                 });           
             });
-            
-//            function modalDelete(e) {
-//                var deleteUrl = "${contextPath}/whWip/deleteAll";
-//                var deleteMsg = "Are you sure want to delete all? All related data will be deleted.";
-//                $("#delete_modal .modal-body").html(deleteMsg);
-//                $("#modal_delete_button").attr("href", deleteUrl);
-//            }
-            
         </script>
     </s:layout-component>
 </s:layout-render>

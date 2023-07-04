@@ -40,13 +40,13 @@
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right">
                                     <!--<i class="fa fa-pencil-square-o fa-lg"></i> Prepare Shipment-->
-                                    <i class='bx bx-list-plus'></i> Prepare Shipment
+                                    <i class='bx bx-list-plus bx-fw'></i> Prepare Shipment
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/registerPage" class="btn btn-primary pull-right">
                                     <!--<i class="fa fa-pencil-square-o fa-lg"></i> Register WIP-->
-                                    <i class='bx bx-message-square-add' style='color:#ffffff' ></i> Register WIP
+                                    <i class='bx bx-message-square-add bx-fw' style='color:#ffffff' ></i> Register WIP
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
@@ -79,7 +79,7 @@
                                         <th><span>RMS Event</span></th>
                                         <th><span>Plan Ship Date</span></th>
                                         <th><span>Status</span></th>
-                                        <th><span>WIP BOX NO</span></th>
+                                        <th><span>WIP Shipping List</span></th>
                                         <th><span>View Detail</span></th>
                                     </tr>
                                 </thead>
@@ -93,7 +93,7 @@
                                             <td><c:out value="${wipList.shippingList}"/></td>
                                             <td>
                                                 <a href="${contextPath}/whWip/history/${wipList.shippingList}" class="table-link" title="History">
-                                                    <i class='bx bx-search-alt bx-md'></i>
+                                                    <i class='bx bx-search-alt bx-md bx-fw'></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -118,46 +118,46 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-//                oTable = $('#dt_spml').DataTable({
-//                    dom: 'Brtip',
-//                    columnDefs : [{
-//                        sortable : false,
-//                        targets : [ 7 ]
-//                    }],
-//                    buttons: [
-//                        {
-//                            extend: 'copy',
-//                            exportOptions: {
-//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-//                            }
-//                        },
-//                        {
-//                            extend: 'excel',
-//                            exportOptions: {
-//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-//                            }
-//                        },
-//                        {
-//                            extend: 'pdf',
-//                            exportOptions: {
-//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-//                            }
-//                        },
-//                        {
-//                            extend: 'print',
-//                            exportOptions: {
-//                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
-//                            },
-//                            customize: function (win) {
-//                                $(win.document.body)
-//                                    .css('font-size', '10pt'),
-//                                $(win.document.body).find('table')
-//                                    .addClass('compact')
-//                                    .css('font-size', 'inherit');
-//                            }
-//                        }
-//                    ]
-//                });
+                oTable = $('#dt_spml').DataTable({
+                    dom: 'Brtip',
+                    columnDefs : [{
+                        sortable : false,
+                        targets : [ 5 ]
+                    }],
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4 ]
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4 ]
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4 ]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4 ]
+                            },
+                            customize: function (win) {
+                                $(win.document.body)
+                                    .css('font-size', '10pt'),
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                            }
+                        }
+                    ]
+                });
                 
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
@@ -167,15 +167,6 @@
                     oTable.page.len($(this).val()).draw();
                 });
             });
-
-            function modalDelete(e) {
-                var deleteId = $(e).attr("modaldeleteid");
-                var deleteInfo = $("#modal_delete_info_" + deleteId).html();
-                var deleteUrl = "${contextPath}/wh/whRequest/delete/" + deleteId;
-                var deleteMsg = "<f:message key='general.label.delete.confirmation'><f:param value='" + deleteInfo + "'/></f:message>";
-                $("#delete_modal .modal-body").html(deleteMsg);
-                $("#modal_delete_button").attr("href", deleteUrl);
-            }
-            </script>
+        </script>
     </s:layout-component>
 </s:layout-render>

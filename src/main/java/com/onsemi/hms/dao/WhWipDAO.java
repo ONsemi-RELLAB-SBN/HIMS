@@ -7,6 +7,7 @@ package com.onsemi.hms.dao;
 import com.onsemi.hms.db.DB;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.WhWip;
+import com.onsemi.hms.model.WhWipShip;
 import com.onsemi.hms.tools.QueryResult;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -90,6 +91,36 @@ public class WhWipDAO {
             ps.setString(5, wip.getQuantity());
             ps.setString(6, wip.getShipmentDate());
             ps.setString(7, wip.getStatus());
+            queryResult.setResult(ps.executeUpdate());
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    
+    public QueryResult insertWhWipShip(WhWipShip wip) {
+        QueryResult queryResult = new QueryResult();
+        try {
+            String sql = "INSERT INTO hms_wh_wip_ship (wip_id, wip_ship_list, created_date) VALUES (?,?,NOW())";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, wip.getWipId());
+            ps.setString(2, wip.getWipShipList());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -290,7 +321,7 @@ public class WhWipDAO {
 
     public QueryResult updateRegister(WhWip wip) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_wip SET register_date = NOW(), register_by = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE hms_wh_wip SET register_date = NOW(), register_by = ?, ship_quantity = ?, status = ? WHERE id = ?";
         String username = System.getProperty("user.name");
         ParameterDetailsDAO dao = new ParameterDetailsDAO();
         String status = dao.getDetailByCode(READY);
@@ -298,8 +329,9 @@ public class WhWipDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
 //            ps.setString(1, wip.getRegisterDate());
             ps.setString(1, username);
-            ps.setString(2, status);
-            ps.setString(3, wip.getId());
+            ps.setString(2, wip.getShipQuantity());
+            ps.setString(3, status);
+            ps.setString(4, wip.getId());
             queryResult.setResult(ps.executeUpdate());
             ps.close();
         } catch (SQLException e) {
@@ -424,6 +456,7 @@ public class WhWipDAO {
                 whShipping.setShipDate(rs.getString("ship_date"));
                 whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
                 whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
             }
             rs.close();
@@ -470,6 +503,7 @@ public class WhWipDAO {
                 whShipping.setShipDate(rs.getString("ship_date"));
                 whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
                 whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
             }
             rs.close();
@@ -490,6 +524,7 @@ public class WhWipDAO {
 
     public List<WhWip> getWhWipByStatus(String status) {
         String sql = "SELECT * FROM hms_wh_wip WHERE status IN ('" + status + "')";
+        LOGGER.info("LOGGER for GET ALL FROM SHIPMENT LIST : " +sql);
         List<WhWip> wipList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -517,6 +552,7 @@ public class WhWipDAO {
                 whShipping.setShipDate(rs.getString("ship_date"));
                 whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
                 whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 wipList.add(whShipping);
             }
@@ -567,6 +603,7 @@ public class WhWipDAO {
                 whShipping.setShipDate(rs.getString("ship_date"));
                 whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
                 whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShippingList.add(whShipping);
             }
@@ -613,6 +650,7 @@ public class WhWipDAO {
                 whList.setShipDate(rs.getString("ship_date"));
                 whList.setShipCreatedDate(rs.getString("ship_created_date"));
                 whList.setShipBy(rs.getString("ship_by"));
+                whList.setShipQuantity(rs.getString("ship_quantity"));
                 whList.setShippingList(rs.getString("shipping_list"));
             }
             rs.close();

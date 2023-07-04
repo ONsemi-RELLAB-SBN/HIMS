@@ -25,6 +25,7 @@ public class WhWip {
     private String verifyDate;
     private String registerBy;
     private String registerDate;
+    private String shipQuantity;
     private String readyBy;
     private String readyDate;
     private String shipBy;
@@ -198,6 +199,14 @@ public class WhWip {
 
     public void setShippingList(String shippingList) {
         this.shippingList = shippingList;
+    }
+
+    public String getShipQuantity() {
+        return shipQuantity;
+    }
+
+    public void setShipQuantity(String shipQuantity) {
+        this.shipQuantity = shipQuantity;
     }
 
 }

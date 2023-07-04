@@ -70,7 +70,7 @@
                             </div>
                             <div id = "alert_placeholder2"></div>
                             <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
+                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="clearfix"></div>
                         </form>
                     </div>
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                             <div class="pull-right">
-                                <button type="submit" id="verify" class="btn btn-primary"><i class='bx bx-log-in-circle bx-md' style='color:#ffffff' ></i> Verify</button>
+                                <button type="submit" id="verify" class="btn btn-primary"><i class='bx bx-log-in-circle bx-md bx-fw' style='color:#ffffff' ></i> Verify</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>

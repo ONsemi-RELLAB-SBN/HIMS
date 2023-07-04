@@ -1,6 +1,6 @@
 <%-- 
     Document   : list_register
-    Created on : Jun 21, 2023, 5:09:06 PM
+    Created on : Jul 4, 2023, 11:02:05 AM
     Author     : zbqb9x
 --%>
 
@@ -31,42 +31,20 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - Register WIP</h1>
+            <h1>WIP Management</h1>
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="main-box">
-                        <h2>Scan Trip Ticket / RMS Event</h2>
-                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerifyToUpdate" method="post">
-                            <div class="form-group">
-                                <label for="boxNo" class="col-lg-3 control-label">Box Number *</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
-                                </div>
-                            </div>
-                            <a href="${contextPath}/wh/whRequest/ship" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>
-                            <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel">Reset</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
-                </div>	
-            </div>
-        </div>
-        <div class="col-lg-12">
-            <h1>WIP Management - Register WIP</h1>
-            <div class="row">
-                <div class="col-lg-8">
+                <div class="col-lg-12">
                     <div class="main-box clearfix">
-                            <h2 class="pull-left">Scan Trip Ticket / RMS Event</h2>
-                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/registerPage" data-toggle="modal" class="btn btn-primary pull-right">
-                                    <i class="fa fa-bars fa-lg"></i> button Register WIP
+                        <div class="clearfix">
+                            <h2 class="pull-left">Shipment from Rel Lab - Verified List</h2>
+<!--                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
+                                    <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
                                 </a>
-                            </div>
+                            </div>-->
                             <div class="filter-block pull-right">
                             </div>
+                        </div>
                         <hr/>
                         <div class="clearfix">
                             <div class="form-group pull-left">
@@ -91,42 +69,107 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Request ID</span></th> 
                                         <th><span>GTS NO</span></th>
                                         <th><span>RMS Event</span></th>
                                         <th><span>Intervals</span></th>
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
+                                        <%--<c:if test="${whWip.status == status}"><th><span></span></th></c:if>--%>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${wipList}" var="whWip" varStatus="whWipLoop">
                                         <tr>
                                             <td><c:out value="${whWipLoop.index+1}"/></td>
-                                            <td><c:out value="${whWip.requestId}"/></td>
                                             <td><c:out value="${whWip.gtsNo}"/></td>
                                             <td><c:out value="${whWip.rmsEvent}"/></td>
                                             <td><c:out value="${whWip.intervals}"/></td>
                                             <td><c:out value="${whWip.quantity}"/></td>
                                             <td><c:out value="${whWip.shipmentDate}"/></td>
-                                            <td><c:out value="${whWip.status}"/></td>
+                                            <c:choose>
+                                                <c:when test="${whWip.status == status}">
+                                                    <td><c:out value="${whWip.status}"/></td>
+                                                    <td>
+                                                        <a href="${contextPath}/whWip/listVerify/${whWip.requestId}" class="table-button" title="Verify">
+                                                            <i class='bx bx-list-check bx-tada bx-md bx-fw' ></i>
+                                                        </a>
+                                                    </td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td colspan="2"><c:out value="${whWip.status}"/></td>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
         <hr class="separator">
     </s:layout-component>
     <s:layout-component name="page_js">
-        <!--<script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>-->
+        <!--print-->
+        <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
+        <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
+            $(document).ready(function () {
+                oTable = $('#dt_spml').DataTable({
+                    dom: 'Brtip',
+                    columnDefs : [{
+                        sortable : false,
+                        targets : [ 6 ]
+                    }],
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                            },
+                            customize: function (win) {
+                                $(win.document.body)
+                                    .css('font-size', '10pt')
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                            }
+                        }
+                    ]
+                });
+                
+                $('#dt_spml_search').keyup(function () {
+                    oTable.search($(this).val()).draw();
+                });
+                
+                $("#dt_spml_rows").change(function () {
+                    oTable.page.len($(this).val()).draw();
+                });
+            });
         </script>
     </s:layout-component>
 </s:layout-render>

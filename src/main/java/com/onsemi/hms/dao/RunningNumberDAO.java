@@ -65,7 +65,7 @@ public class RunningNumberDAO {
     
     public QueryResult updateRunningNumber(String runNo, String year, String month) {
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_wip SET running_number = ? WHERE year = '" + year + "' AND month = '" + month + "'" ;
+        String sql = "UPDATE hms_running_number SET running_number = ? WHERE year = '" + year + "' AND month = '" + month + "'" ;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, runNo);

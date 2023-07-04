@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                             <!--<a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
-                            <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left'></i> Back</a>
+                            <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
                                 <button type="submit" class="btn btn-primary"><i class='bx bxs-printer' style='color:#ffffff' ></i> PRINT for ${wipBox}</button>
                                 <input type="hidden" class="form-control" id="shippingList" name="shippingList" value="${wipBox}">
@@ -60,7 +60,7 @@
                                 <table id="dt_spml" class="table">
                                     <thead>
                                         <tr>
-                                            <th><span>Request ID</span></th> 
+                                            <!--<th><span>Request ID</span></th>--> 
                                             <th><span>GTS NO</span></th>
                                             <th><span>RMS Event</span></th>
                                             <th><span>Intervals</span></th>
@@ -72,7 +72,7 @@
                                     <tbody>
                                         <c:forEach items="${wipList}" var="whWip" varStatus="whWipLoop">
                                             <tr>
-                                                <td><c:out value="${whWip.requestId}"/></td>
+                                                <!--<td><c:out value="${whWip.requestId}"/></td>-->
                                                 <td><c:out value="${whWip.gtsNo}"/></td>
                                                 <td><c:out value="${whWip.rmsEvent}"/></td>
                                                 <td><c:out value="${whWip.intervals}"/></td>

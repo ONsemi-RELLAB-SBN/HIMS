@@ -7,14 +7,9 @@ package com.onsemi.hms.config;
 import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.WhWip;
-import com.onsemi.hms.model.WhWipFTP;
-import com.onsemi.hms.tools.QueryResult;
 import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +52,6 @@ public class FtpWip {
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(NEW);
-        LOGGER.info("SINI KITA RUN UNTUK WIP FTP FILES >>> " + username);
-        LOGGER.info("-------------------------------------------------------");
 
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
@@ -73,8 +66,6 @@ public class FtpWip {
                             String[] data = null;
 
                             while ((data = csvReader.readNext()) != null) {
-                                LOGGER.info("LOGGER for request id : " +data[0]);
-                                LOGGER.info("LOGGER for maklumat shipment : " +data[5]);
                                 WhWip wipdata = new WhWip();
                                 wipdata.setRequestId(data[0]);
                                 wipdata.setGtsNo(data[1]);
@@ -88,11 +79,11 @@ public class FtpWip {
                                 int check = wip.getCountExistingData(data[0]);
 
                                 if (check == 0) {
-                                    LOGGER.info("INSERT INTO DATABASE");
+                                    LOGGER.info("INSERT INTO DATABASE " + data[0]);
                                     wip = new WhWipDAO();
                                     wip.insertWhWip(wipdata);
                                 } else {
-                                    LOGGER.info("SKIP INSERT INTO DATABASE");
+                                    LOGGER.info("SKIP INSERT INTO DATABASE FOR " + data[0]);
                                 }
 //                                eqtList.add(dataList);
                             }
