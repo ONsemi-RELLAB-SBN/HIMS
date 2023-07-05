@@ -92,7 +92,8 @@
                                                     <td><c:out value="${whWip.status}"/></td>
                                                     <td>
                                                         <a href="${contextPath}/whWip/listVerify/${whWip.requestId}" class="table-button" title="Verify">
-                                                            <i class='bx bx-list-check bx-tada bx-md bx-fw' ></i>
+                                                            <!--<i class='bx bx-list-check bx-tada bx-md bx-fw' ></i>-->
+                                                            <i class='bx bxs-user-check bx-fade-right bx-md bx-fw' undefined ></i>
                                                         </a>
                                                     </td>
                                                 </c:when>

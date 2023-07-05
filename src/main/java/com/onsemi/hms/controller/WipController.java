@@ -49,6 +49,8 @@ public class WipController {
     
     private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
     private static final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHVERIFY = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
 
     private static final String NEW = "0101";
     private static final String RECEIVE = "0102";
@@ -59,7 +61,9 @@ public class WipController {
 
     private static final String COMMA_DELIMITER = ",";
     private static final String LINE_SEPARATOR = "\n";
-    private static final String HEADER = "Request ID,RMS Event,Shipment Date,Intervals,Quantity";
+    private static final String HEADER = "RequestID,RMSEvent,ShipmentDate,Intervals,Quantity";
+    private static final String HEADERSHIP = "RequestID,RMSEvent,ShipmentDate,Intervals,Quantity";
+    private static final String HEADERVERIFY = "RequestID,ReceiveDate,VerifyDate,Status";
 
     @Autowired
     private MessageSource messageSource;
@@ -154,10 +158,25 @@ public class WipController {
             @RequestParam(required = false) String requestId) {
 //         THIS FUNCTION WILL UPDATE THE STATUS FROM RECEIVED TO VERIFIED
         WhWipDAO daoUpdate = new WhWipDAO();
+        WhWipDAO daoCheck1 = new WhWipDAO();
+        WhWipDAO daoCheck2 = new WhWipDAO();
+        WhWipDAO daoCheck3 = new WhWipDAO();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        
+        String statusVerify = pdao.getDetailByCode(VERIFY);
         daoUpdate.updateVerify(requestId);
         
         sendEmailWipReady();
         // TODO - add function to check gts no is eligible to be created into excel files
+        String gtsno = daoCheck3.getWipGtsByRequestId(requestId);
+        int checkNumber = daoCheck1.getCountByGtsNo(requestId);
+        int checkVerify = daoCheck2.getCountByGtsNoAndStatus(requestId, statusVerify);
+        
+        if (checkNumber == checkVerify) {
+            // RUN CREATE NEW CSV FILES HERE
+            sendCsvForVerify(gtsno);
+        }
+        
         return "redirect:/whWip/listNew";
     }
 
@@ -229,7 +248,7 @@ public class WipController {
         dao = new WhWipDAO();
         int checkReady = dao.getCountByStatus(status);
         String latestShouldBe = getLatestRunningNumber();
-
+        
         model.addAttribute("wipList", wipList);
         model.addAttribute("checkReady", checkReady);
         model.addAttribute("wipBox", latestShouldBe);
@@ -251,15 +270,20 @@ public class WipController {
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> dataList = dao.getWhWipByStatus(statusReady);
         String username = System.getProperty("user.name");
+        updateRunningNumber(shippingList);
         
         for (int i = 0; i < dataList.size(); i++) {
             WhWip wip = new WhWip();
             wip.setId(dataList.get(i).getId());
+            wip.setRequestId(dataList.get(i).getRequestId());
+            wip.setRmsEvent(dataList.get(i).getRmsEvent());
             wip.setShipBy(username);
             wip.setShipDate(shipDate);
             wip.setStatus(statusShip);
+            wip.setIntervals(dataList.get(i).getIntervals());
+            wip.setQuantity(dataList.get(i).getQuantity());
             wip.setShippingList(shippingList);
-
+            
             dao = new WhWipDAO();
             dao.updateShip(wip);
             
@@ -270,22 +294,22 @@ public class WipController {
             dao.insertWhWipShip(wip2);
 
             if (file.exists()) {
-                LOGGER.info("MASUK KE APPEND THE FILE");
                 FileWriter fileWriter = null;
                 try {
-                    fileWriter = new FileWriter(filePath);
+                    fileWriter = new FileWriter(filePath, true);
+                    
                     //New Line after the header
                     fileWriter.append(LINE_SEPARATOR);
                     fileWriter.append(wip.getRequestId());
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getRmsEvent());
                     fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getShipDate());
-                    fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getIntervals());
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getQuantity());
-                    System.out.println("Write new to CSV file Succeed!!!");
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getShipDate());
+                    System.out.println("Write existing to CSV file Succeed!!!");
                 } catch (Exception ee) {
                     ee.printStackTrace();
                 } finally {
@@ -297,10 +321,9 @@ public class WipController {
                     }
                 }
             } else {
-                LOGGER.info("SINI MASUK CREATE NEW FILE");
                 FileWriter fileWriter = null;
                 try {
-                    fileWriter = new FileWriter(filePath);
+                    fileWriter = new FileWriter(filePath, true);
                     //Adding the header
                     fileWriter.append(HEADER);
 
@@ -310,11 +333,11 @@ public class WipController {
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getRmsEvent());
                     fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getShipDate());
-                    fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getIntervals());
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getQuantity());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getShipDate());
                     System.out.println("Write new to CSV file Succeed!!!");
                 } catch (Exception ee) {
                     ee.printStackTrace();
@@ -355,26 +378,32 @@ public class WipController {
         String checkLatest = dao.getLatestRunning(year, month);
 
         if (checkLatest.equals("0")) {
-            LOGGER.info("1111");
             // THIS MEAN NEW MONTH, SO NEED TO CREATE NEW RUNNING NUMBER RECORD
             dao = new RunningNumberDAO();
             dao.insertRunningNumber(year, month, runningNumber);
         } else if (checkLatest.equals("")) {
-            LOGGER.info("22222");
             dao = new RunningNumberDAO();
             dao.insertRunningNumber(year, month, runningNumber);
         } else {
             // THE RUNNING NUMBER FOR THE MONTH ALREADY EXIST, JUST UPDATE THE RUNNING NUMBER
-            LOGGER.info("3333");
             int data = Integer.parseInt(checkLatest);
             dao = new RunningNumberDAO();
             runningNumber = String.format("%04d", data + 1);
-            LOGGER.info("runningNumber DATA HERE : " +runningNumber);
-            dao.updateRunningNumber(runningNumber, year, month);
+//            dao.updateRunningNumber(runningNumber, year, month);
         }
         runningNumber = year + month + runningNumber;
 
         return runningNumber;
+    }
+    
+    private void updateRunningNumber(String shippingList) {
+        String year = shippingList.substring(0, 4);
+        String month = shippingList.substring(4, 6);
+        String runningNumber = shippingList.substring(6, 10);
+        RunningNumberDAO dao = new RunningNumberDAO();
+        dao.updateRunningNumber(runningNumber, year, month);
+//        runningNumber = year + month + runningNumber;
+//        return runningNumber;
     }
     
     private String sendEmailWipReady() {
@@ -391,6 +420,83 @@ public class WipController {
                 "List WIP is ready for shipment." //msg
         );
         return emailStatus;
+    }
+    
+    private void sendCsvForVerify(String gtsNo) {
+        WhWipDAO dao = new WhWipDAO();
+        WhWipDAO daoGet = new WhWipDAO();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        File file = new File(FILEPATHVERIFY);
+        
+        String username = System.getProperty("user.name");
+        List<WhWip> dataList = daoGet.getWipByGtsNo(gtsNo);
+        String statusShip = pdao.getDetailByCode(VERIFY);
+        
+        for (int i = 0; i < dataList.size(); i++) {
+            WhWip wip = new WhWip();
+            wip.setId(dataList.get(i).getId());
+            wip.setRequestId(dataList.get(i).getRequestId());
+            wip.setReceiveDate(dataList.get(i).getReceiveDate());
+            wip.setVerifyDate(dataList.get(i).getVerifyDate());
+            wip.setStatus(statusShip);
+            
+            dao = new WhWipDAO();
+            dao.updateShip(wip);
+
+            if (file.exists()) {
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(FILEPATHVERIFY, true);
+                    
+                    //New Line after the header
+                    fileWriter.append(LINE_SEPARATOR);
+                    fileWriter.append(wip.getRequestId());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getReceiveDate());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getVerifyDate());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getStatus());
+                    System.out.println("Write existing to CSV file Succeed!!!");
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                } finally {
+                    try {
+                        fileWriter.close();
+                    } catch (IOException ie) {
+                        System.out.println("Error occured while closing the fileWriter");
+                        ie.printStackTrace();
+                    }
+                }
+            } else {
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(FILEPATHVERIFY, true);
+                    //Adding the header
+                    fileWriter.append(HEADERVERIFY);
+
+                    //New Line after the header
+                    fileWriter.append(LINE_SEPARATOR);
+                    fileWriter.append(wip.getRequestId());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getReceiveDate());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getVerifyDate());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(wip.getStatus());
+                    System.out.println("Write new to CSV file Succeed!!!");
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                } finally {
+                    try {
+                        fileWriter.close();
+                    } catch (IOException ie) {
+                        System.out.println("Error occured while closing the fileWriter");
+                        ie.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 }
