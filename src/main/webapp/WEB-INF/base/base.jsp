@@ -153,7 +153,8 @@
             </div>
             <footer id="footer-bar">
                 <p id="footer-copyright">
-                    Copyright &copy; 1999-2016, <a href="http://onsemi.com/" target="_blank">ON Semiconductor</a>.
+                    <!--Copyright &copy; 1999-2016, <a href="http://onsemi.com/" target="_blank">ON Semiconductor</a>.-->
+                    Copyright &copy; 2023, <a href="http://onsemi.com/" target="_blank">ON Semiconductor</a>.
                 </p>
             </footer>
             <!-- Modal -->

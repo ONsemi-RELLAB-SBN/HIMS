@@ -575,6 +575,7 @@ public class WhWipDAO {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status =  pdao.getDetailByCode(SHIP);
         String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '"+shipList+"' AND status = '"+status+"'";
+        LOGGER.info("DATA DEKAT SSINI : " +sql);
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -620,6 +621,55 @@ public class WhWipDAO {
             }
         }
         return whShippingList;
+    }
+    
+    public List<WhWip> getWipShipment() {
+        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list IS NOT NULL GROUP BY shipping_list";
+        List<WhWip> wipList = new ArrayList<WhWip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWip();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setStatus(rs.getString("status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setReceiveDate(rs.getString("receive_date"));
+                whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setReadyBy(rs.getString("ready_by"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
+                whShipping.setShippingList(rs.getString("shipping_list"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
     }
     
     public WhWip getWipByRmsInterval(String rmsEvent, String intervals) {
@@ -778,6 +828,31 @@ public class WhWipDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 data = rs.getString("gts_no");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return data;
+    }
+    
+    public String getShipDateByShipList(String shippingList) {
+        String data = "";
+        try {
+            String sql = "SELECT ship_date FROM hms_wh_wip WHERE shipping_list = '"+shippingList+"' LIMIT 1";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                data = rs.getString("ship_date");
             }
             rs.close();
             ps.close();

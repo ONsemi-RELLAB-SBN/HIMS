@@ -76,10 +76,8 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>RMS Event</span></th>
-                                        <th><span>Plan Ship Date</span></th>
-                                        <th><span>Status</span></th>
                                         <th><span>WIP Shipping List</span></th>
+                                        <th><span>Plan Ship Date</span></th>
                                         <th><span>View Detail</span></th>
                                     </tr>
                                 </thead>
@@ -87,13 +85,11 @@
                                     <c:forEach items="${wipList}" var="wipList" varStatus="whLoop">
                                         <tr>
                                             <td><c:out value="${whLoop.index+1}"/></td>
-                                            <td><c:out value="${wipList.rmsEvent}"/></td>
-                                            <td><c:out value="${wipList.shipmentDate}"/></td>
-                                            <td><c:out value="${wipList.status}"/></td>
                                             <td><c:out value="${wipList.shippingList}"/></td>
+                                            <td><c:out value="${wipList.shipmentDate}"/></td>
                                             <td>
-                                                <a href="${contextPath}/whWip/history/${wipList.shippingList}" class="table-link" title="History">
-                                                    <i class='bx bx-search-alt bx-md bx-fw'></i>
+                                                <a href="${contextPath}/whWip/viewPdf/${wipList.shippingList}" class="table-link" title="History">
+                                                    <i class='bx bx-search-alt bx-tada bx-md bx-fw'></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -122,31 +118,31 @@
                     dom: 'Brtip',
                     columnDefs : [{
                         sortable : false,
-                        targets : [ 5 ]
+                        targets : [ 3 ]
                     }],
                     buttons: [
                         {
                             extend: 'copy',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4 ]
+                                columns: [ 0, 1, 2 ]
                             }
                         },
                         {
                             extend: 'excel',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4 ]
+                                columns: [ 0, 1, 2 ]
                             }
                         },
                         {
                             extend: 'pdf',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4 ]
+                                columns: [ 0, 1, 2 ]
                             }
                         },
                         {
                             extend: 'print',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4 ]
+                                columns: [ 0, 1, 2 ]
                             },
                             customize: function (win) {
                                 $(win.document.body)
