@@ -8,20 +8,14 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.Barcode128;
-import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.pdf.AbstractPdfViewShipping;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -41,10 +35,12 @@ public class WipShippingList extends AbstractPdfViewShipping {
         String data = (String) model.get("shippingList");
         WhWipDAO hehe = new WhWipDAO();
         String shipDate = hehe.getShipDateByShipList(data);
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        DateTimeFormatter myFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-//        LocalDateTime dateTime = LocalDateTime.parse(shipDate, myFormatObj);
-//        String formattedDate = shipDate.format(myFormatObj);
+//        Date date = new SimpleDateFormat("d MMMM yyyy hh:mm:ss").parse(shipDate);
+//        DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMMM, yyyy hh:mm:ss");
+//        LocalDate date = getDateFromString(shipDate, format);
+        
+//        System.out.println("HEHE >> " + date);
+//        System.out.println("HEHE >> " + shipDate);
         
         Integer cellPadd = 4;
         Integer cellPadding = 7;
@@ -52,12 +48,13 @@ public class WipShippingList extends AbstractPdfViewShipping {
         String spacing02 = "\n\n";
         String spacing03 = "\n\n\n";
 
-        String title = "WIP MANAGEMENT - WIP SHIPMENT LIST TO SBN FACTORY INFORMATION";
+        String title = "WIP MANAGEMENT - WIP SHIPMENT LIST TO SBN REL LAB";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
 
         Paragraph viewSpace01 = new Paragraph(spacing01, fontOpenSans(8f, Font.NORMAL));
+        /*
         viewSpace01.setAlignment(Element.ALIGN_LEFT);
         doc.add(viewSpace01);
 
@@ -107,10 +104,11 @@ public class WipShippingList extends AbstractPdfViewShipping {
         table01.addCell(cellContent01);
 
         doc.add(table01);
+        */
 
-        PdfPTable table2 = new PdfPTable(4);
+        PdfPTable table2 = new PdfPTable(5);
         table2.setWidthPercentage(100.0f);
-        table2.setWidths(new float[]{2.5f, 2.5f, 1.2f, 1.2f});
+        table2.setWidths(new float[]{0.5f, 2.5f, 1.2f, 1.2f, 2.5f});
         table2.setSpacingBefore(15);
 
         Font fontHeader2 = fontOpenSans(7f, Font.BOLD);
@@ -135,10 +133,10 @@ public class WipShippingList extends AbstractPdfViewShipping {
             doc.add(viewTitle2);
         } else {
             while (i < whwip.size()) {
-                String shippingList = whwip.get(i).getShippingList();
+//                String shippingList = whwip.get(i).getShippingList();
                 if (i == 0) {
                     /* START TABLE LOG */
-                    viewSpace01 = new Paragraph(spacing03, fontOpenSans(8f, Font.NORMAL));
+                    viewSpace01 = new Paragraph(spacing01, fontOpenSans(8f, Font.NORMAL));
                     viewSpace01.setAlignment(Element.ALIGN_LEFT);
                     doc.add(viewSpace01);
                     
@@ -148,7 +146,7 @@ public class WipShippingList extends AbstractPdfViewShipping {
                     doc.add(viewSub);
 
                     //Header Log
-                    cellHeader2.setPhrase(new Phrase("Shipping List", fontHeader2));
+                    cellHeader2.setPhrase(new Phrase("No. ", fontHeader2));
                     table2.addCell(cellHeader2);
                     cellHeader2.setPhrase(new Phrase("RMS Event", fontHeader2));
                     table2.addCell(cellHeader2);
@@ -156,8 +154,10 @@ public class WipShippingList extends AbstractPdfViewShipping {
                     table2.addCell(cellHeader2);
                     cellHeader2.setPhrase(new Phrase("Quantity", fontHeader2));
                     table2.addCell(cellHeader2);
+                    cellHeader2.setPhrase(new Phrase("Shipping Date", fontHeader2));
+                    table2.addCell(cellHeader2);
                 }
-                cellContent.setPhrase(new Phrase(shippingList, fontContent));
+                cellContent.setPhrase(new Phrase(String.valueOf(i+1), fontContent));
                 table2.addCell(cellContent);
 
                 cellContent.setPhrase(new Phrase(whwip.get(i).getRmsEvent(), fontContent));
@@ -168,10 +168,13 @@ public class WipShippingList extends AbstractPdfViewShipping {
 
                 cellContent.setPhrase(new Phrase(whwip.get(i).getShipQuantity(), fontContent));
                 table2.addCell(cellContent);
+
+                cellContent.setPhrase(new Phrase(shipDate, fontContent));
+                table2.addCell(cellContent);
                 i++;
             }
             doc.add(table2);
         }
     }
-
+    
 }

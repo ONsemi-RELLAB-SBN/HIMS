@@ -116,49 +116,49 @@
             $(document).ready(function () {
                 oTable = $('#dt_spml').DataTable({
                     dom: 'Brtip',
-                    columnDefs : [{
-                        sortable : false,
-                        targets : [ 3 ]
-                    }],
+                    columnDefs: [{
+                            sortable: false,
+                            targets: [3]
+                        }],
                     buttons: [
                         {
                             extend: 'copy',
                             exportOptions: {
-                                columns: [ 0, 1, 2 ]
+                                columns: [0, 1, 2]
                             }
                         },
                         {
                             extend: 'excel',
                             exportOptions: {
-                                columns: [ 0, 1, 2 ]
+                                columns: [0, 1, 2]
                             }
                         },
                         {
                             extend: 'pdf',
                             exportOptions: {
-                                columns: [ 0, 1, 2 ]
+                                columns: [0, 1, 2]
                             }
                         },
                         {
                             extend: 'print',
                             exportOptions: {
-                                columns: [ 0, 1, 2 ]
+                                columns: [0, 1, 2]
                             },
                             customize: function (win) {
                                 $(win.document.body)
-                                    .css('font-size', '10pt'),
-                                $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
+                                        .css('font-size', '10pt'),
+                                        $(win.document.body).find('table')
+                                        .addClass('compact')
+                                        .css('font-size', 'inherit');
                             }
                         }
                     ]
                 });
-                
+
                 $('#dt_spml_search').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });
-                
+
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });
