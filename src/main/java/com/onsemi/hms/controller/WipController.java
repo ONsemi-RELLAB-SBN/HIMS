@@ -8,6 +8,7 @@ import com.onsemi.hms.config.FtpWip;
 import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.RunningNumberDAO;
 import com.onsemi.hms.dao.WhWipDAO;
+import com.onsemi.hms.model.ParameterDetails;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.model.WhWipShip;
@@ -55,6 +56,7 @@ public class WipController {
     private static final String FILEPATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
     private static final String FILEPATHVERIFY = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
 
+    private static final String STATUSCODE = "01";
     private static final String NEW = "0101";
     private static final String RECEIVE = "0102";
     private static final String VERIFY = "0103";
@@ -274,8 +276,6 @@ public class WipController {
         
         updateRunningNumber(shippingList);
         sendCsvWipShipping(shippingList, shipDate);
-
-//        return "redirect:/whWip/to";
         return "redirect:/whWip/viewPdf/"+shippingList;
     }
     
@@ -286,13 +286,12 @@ public class WipController {
             @PathVariable("shippingList") String shippingList
     ) throws UnsupportedEncodingException {
         
-        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/whWip/viewWhWipPdf02/" + shippingList, "UTF-8");
+        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/whWip/viewWhWipPdf/" + shippingList, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/whWip/to";
         String title = "WIP Shipping List [" + shippingList + "]";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", title);
-        
         return "pdf/view";
     }
     
@@ -301,23 +300,9 @@ public class WipController {
             Model model,
             @PathVariable("shippingList") String shippingList) {
         
-        WhWipDAO wipdao = new WhWipDAO();
-        List<WhWip> wipList = wipdao.getWhWipByShipment(shippingList);
-        LOGGER.info("SINI MASUK DA DEKAT FUNCTION viewWhWipPdf ADA BERAPA DATA >>> " + wipList.size());
-        return new ModelAndView("whWipShippingPdf", "whWip", wipList);
-    }
-    
-    @RequestMapping(value = "/viewWhWipPdf02/{shippingList}", method = RequestMethod.GET)
-    public ModelAndView viewWhWipPdf02(
-            Model model,
-            @PathVariable("shippingList") String shippingList) {
-        
-//        WhWipDAO wipdao = new WhWipDAO();
-//        List<WhWip> wipList = wipdao.getWhWipByShipment(shippingList);
-//        LOGGER.info("SINI MASUK DA DEKAT FUNCTION viewWhWipPdf ADA BERAPA DATA >>> " + wipList.size());
         return new ModelAndView("wipShipping", "shippingList", shippingList);
     }
-
+    
     // INI SUDAH TIDAK DIGUNAKAN, SBB DA MASUK KE DALAM TO LIST
 //    @RequestMapping(value = "/listShip", method = RequestMethod.GET)
 //    public String whShipList(Model model, @ModelAttribute UserSession userSession) {
@@ -328,6 +313,144 @@ public class WipController {
 //        model.addAttribute("wipList", wipList);
 //        return "whWip/list_ship";
 //    }
+    
+    @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
+    public String query(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String requestId,
+            @RequestParam(required = false) String gtsNo,
+            @RequestParam(required = false) String rmsEvent,
+            @RequestParam(required = false) String intervals,
+            @RequestParam(required = false) String quantity,
+            @RequestParam(required = false) String shipmentDate1,
+            @RequestParam(required = false) String shipmentDate2,
+            @RequestParam(required = false) String receivedDate1,
+            @RequestParam(required = false) String receivedDate2,
+            @RequestParam(required = false) String shipDate1,
+            @RequestParam(required = false) String shipDate2,
+            @RequestParam(required = false) String shippingList,
+            @RequestParam(required = false) String status) {
+        
+        String query = "";
+        int count = 0;
+
+        if (requestId != null) {
+            if (!requestId.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " request_id = \'" + requestId + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND request_id = \'" + requestId + "\' ";
+                }
+            }
+        }
+        if (gtsNo != null) {
+            if (!gtsNo.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " I.gts_no = \'" + gtsNo + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND I.gts_no = \'" + gtsNo + "\' ";
+                }
+            }
+        }
+        if (rmsEvent != null) {
+            if (!rmsEvent.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " rms_event = \'" + rmsEvent + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND rms_event = \'" + rmsEvent + "\' ";
+                }
+            }
+        }
+        if (intervals != null) {
+            if (!intervals.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " intervals = \'" + intervals + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND intervals = \'" + intervals + "\' ";
+                }
+            }
+        }
+        if (quantity != null) {
+            if (!quantity.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " quantity = \'" + quantity + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND quantity = \'" + quantity + "\' ";
+                }
+            }
+        }
+        if (shipmentDate1 != null && shipmentDate2 != null) {
+            if (!shipmentDate1.equals("") && !shipmentDate2.equals("")) {
+                count++;
+                String shipmentDate = " shipment_date BETWEEN CAST(\'" + shipmentDate1 + "\' AS DATE) AND CAST(\'" + shipmentDate2 + "\' AS DATE) ";
+                if (count == 1) {
+                    query = shipmentDate;
+                } else if (count > 1) {
+                    query = query + " AND " + shipmentDate;
+                }
+            }
+        }
+        if (receivedDate1 != null && receivedDate2 != null) {
+            if (!receivedDate1.equals("") && !receivedDate2.equals("")) {
+                count++;
+                String requestedDate = " requested_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 + "\' AS DATE) ";
+                if (count == 1) {
+                    query = requestedDate;
+                } else if (count > 1) {
+                    query = query + " AND " + requestedDate;
+                }
+            }
+        }
+        if (shipDate1 != null && shipDate2 != null) {
+            if (!shipDate1.equals("") && !shipDate2.equals("")) {
+                count++;
+                String shipDate = " ship_date BETWEEN CAST(\'" + shipDate1 + "\' AS DATE) AND CAST(\'" + shipDate2 + "\' AS DATE) ";
+                if (count == 1) {
+                    query = shipDate;
+                } else if (count > 1) {
+                    query = query + " AND " + shipDate;
+                }
+            }
+        }
+        if (shippingList != null) {
+            if (!shippingList.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " shipping_list = \'" + shippingList + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND shipping_list = \'" + shippingList + "\' ";
+                }
+            }
+        }
+        if (status != null) {
+            if (!status.equals("")) {
+                count++;
+                if (count == 1) {
+                    query = " status = \'" + status + "\' ";
+                } else if (count > 1) {
+                    query = query + " AND status = \'" + status + "\' ";
+                }
+            }
+        }
+
+        WhWipDAO wipdao = new WhWipDAO();
+        List<WhWip> wipList = wipdao.getQuery(query);
+        model.addAttribute("wipList", wipList);
+        
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        List<ParameterDetails> statusList = pdao.getStatusParameter(STATUSCODE);
+        model.addAttribute("statusList", statusList);
+        
+        return "whWip/query";
+    }
     
     private String getLatestRunningNumber() {
 
@@ -353,7 +476,6 @@ public class WipController {
             int data = Integer.parseInt(checkLatest);
             dao = new RunningNumberDAO();
             runningNumber = String.format("%04d", data + 1);
-//            dao.updateRunningNumber(runningNumber, year, month);
         }
         runningNumber = year + month + runningNumber;
 
@@ -367,8 +489,6 @@ public class WipController {
         String runningNumber = shippingList.substring(6, 10);
         RunningNumberDAO dao = new RunningNumberDAO();
         dao.updateRunningNumber(runningNumber, year, month);
-//        runningNumber = year + month + runningNumber;
-//        return runningNumber;
     }
     
     private String sendEmailWipReady() {
@@ -400,6 +520,7 @@ public class WipController {
         List<WhWip> dataList = daoGet.getWipByGtsNo(gtsNo);
         
         for (int i = 0; i < dataList.size(); i++) {
+            LOGGER.info("NO GILIRAN : " +i);
             WhWip wip = new WhWip();
             wip.setId(dataList.get(i).getId());
             wip.setRequestId(dataList.get(i).getRequestId());
@@ -407,11 +528,14 @@ public class WipController {
             wip.setVerifyDate(dataList.get(i).getVerifyDate());
             wip.setStatus(statusVerify);
             
+            LOGGER.info("LOGGER for receive date : " +dataList.get(i).getReceiveDate());
+            LOGGER.info("LOGGER for verify date : " +dataList.get(i).getVerifyDate());
+            
             dao = new WhWipDAO();
             dao.updateShip(wip);
+            FileWriter fileWriter = null;
 
             if (file.exists()) {
-                FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(FILEPATHVERIFY, true);
                     
@@ -425,6 +549,7 @@ public class WipController {
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(wip.getStatus());
                     System.out.println("Write existing to CSV file Succeed!!!");
+                    LOGGER.info("LOGGER for append file : " +fileWriter);
                 } catch (Exception ee) {
                     ee.printStackTrace();
                 } finally {
@@ -436,7 +561,6 @@ public class WipController {
                     }
                 }
             } else {
-                FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(FILEPATHVERIFY, true);
                     //Adding the header
@@ -492,6 +616,8 @@ public class WipController {
             wip.setQuantity(dataList.get(i).getQuantity());
             wip.setShippingList(shippingList);
             
+            LOGGER.info("LOGGER for xxx : " +dataList.get(i).getShipDate());
+            
             dao = new WhWipDAO();
             dao.updateShip(wip);
             
@@ -500,9 +626,12 @@ public class WipController {
             wip2.setWipId(dataList.get(i).getId());
             wip2.setWipShipList(shippingList);
             dao.insertWhWipShip(wip2);
+            
+            dao = new WhWipDAO();
+            shipDate = dao.getShipDateByShipList(shippingList);
+            FileWriter fileWriter = null;
 
             if (file.exists()) {
-                FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(FILEPATHSHIP, true);
                     
@@ -529,9 +658,8 @@ public class WipController {
                     }
                 }
             } else {
-                FileWriter fileWriter = null;
                 try {
-                    fileWriter = new FileWriter(filePath, true);
+                    fileWriter = new FileWriter(FILEPATHSHIP, true);
                     //Adding the header
                     fileWriter.append(HEADERSHIP);
 

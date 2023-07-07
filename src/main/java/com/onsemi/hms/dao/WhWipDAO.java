@@ -14,7 +14,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -112,7 +117,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult insertWhWipShip(WhWipShip wip) {
         QueryResult queryResult = new QueryResult();
         try {
@@ -374,7 +379,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateShip(WhWip wip) {
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET ship_created_date = NOW(), ship_date = ?, ship_by = ?, shipping_list = ?, status = ? WHERE id = ?";
@@ -570,12 +575,11 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWip> getWhWipByShipment(String shipList) {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status =  pdao.getDetailByCode(SHIP);
-        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '"+shipList+"' AND status = '"+status+"'";
-        LOGGER.info("DATA DEKAT SSINI : " +sql);
+        String status = pdao.getDetailByCode(SHIP);
+        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '" + shipList + "' AND status = '" + status + "'";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -622,7 +626,7 @@ public class WhWipDAO {
         }
         return whShippingList;
     }
-    
+
     public List<WhWip> getWipShipment() {
         String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list IS NOT NULL GROUP BY shipping_list";
         List<WhWip> wipList = new ArrayList<WhWip>();
@@ -671,9 +675,9 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public WhWip getWipByRmsInterval(String rmsEvent, String intervals) {
-        String sql = "SELECT * FROM hms_wh_wip WHERE rms_event = '"+rmsEvent+"' AND intervals = '"+intervals+"'";
+        String sql = "SELECT * FROM hms_wh_wip WHERE rms_event = '" + rmsEvent + "' AND intervals = '" + intervals + "'";
         WhWip whList = new WhWip();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -717,11 +721,60 @@ public class WhWipDAO {
         }
         return whList;
     }
-    
+
     public List<WhWip> getWipByGtsNo(String gtsNo) {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status =  pdao.getDetailByCode(VERIFY);
-        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no = '"+gtsNo+"' AND status = '"+status+"'";
+        String status = pdao.getDetailByCode(VERIFY);
+        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no = '" + gtsNo + "' AND status = '" + status + "'";
+        List<WhWip> whShippingList = new ArrayList<WhWip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWip();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setStatus(rs.getString("status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setReceiveDate(rs.getString("receive_date"));
+                whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setReadyBy(rs.getString("ready_by"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
+                whShipping.setShippingList(rs.getString("shipping_list"));
+                whShippingList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whShippingList;
+    }
+    
+    public List<WhWip> getQuery(String query) {
+        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no IS NOT NULL AND " + query;
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -793,10 +846,10 @@ public class WhWipDAO {
         }
         return count;
     }
-    
+
     public Integer getCountByStatus(String status) {
         Integer count = null;
-        
+
         try {
             String sql = "SELECT COUNT(*) AS count FROM hms_wh_wip WHERE status = '" + status + "' ";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -819,7 +872,7 @@ public class WhWipDAO {
         }
         return count;
     }
-    
+
     public String getWipGtsByRequestId(String requestId) {
         String data = "";
         try {
@@ -844,11 +897,11 @@ public class WhWipDAO {
         }
         return data;
     }
-    
+
     public String getShipDateByShipList(String shippingList) {
         String data = "";
         try {
-            String sql = "SELECT ship_date FROM hms_wh_wip WHERE shipping_list = '"+shippingList+"' LIMIT 1";
+            String sql = "SELECT ship_date FROM hms_wh_wip WHERE shipping_list = '" + shippingList + "' LIMIT 1";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -867,13 +920,25 @@ public class WhWipDAO {
                 }
             }
         }
+
+        LOGGER.info("LOGGER for xxx : " + data);
+
+//        Date sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(data);
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+//        data = formatter.format(sdf);
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(data);
+//        Date hehe = dateFormat.parse(data);
+//        Date date = dateFormat.parse(data);
+//        LOGGER.info("LOGGER for xxx : " +date);
+
         return data;
     }
-    
+
     public Integer getCountByGtsNo(String requestId) {
         Integer count = null;
         String data = "";
-        
+
         try {
             String sql = "SELECT gts_no FROM hms_wh_wip WHERE request_id = '" + requestId + "' ";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -883,9 +948,9 @@ public class WhWipDAO {
             }
             rs.close();
             ps.close();
-            
+
             if (data == null) {
-            
+
             } else {
                 sql = "SELECT COUNT(*) AS count FROM hms_wh_wip WHERE gts_no = '" + data + "' ";
                 ps = conn.prepareStatement(sql);
@@ -909,7 +974,7 @@ public class WhWipDAO {
         }
         return count;
     }
-    
+
     public Integer getCountByGtsNoAndStatus(String requestId, String status) {
         Integer count = null;
         String data = "";
@@ -923,11 +988,11 @@ public class WhWipDAO {
             }
             rs.close();
             ps.close();
-            
+
             if (data == null) {
-            
+
             } else {
-                sql = "SELECT COUNT(*) AS count FROM hms_wh_wip WHERE gts_no = '" + data + "' AND status = '"+status+"'";
+                sql = "SELECT COUNT(*) AS count FROM hms_wh_wip WHERE gts_no = '" + data + "' AND status = '" + status + "'";
                 ps = conn.prepareStatement(sql);
                 rs = ps.executeQuery();
                 while (rs.next()) {
@@ -950,5 +1015,13 @@ public class WhWipDAO {
         return count;
     }
     //</editor-fold>
+
+    public static LocalDate getDateFromString(String string, DateTimeFormatter format) {
+        // Converting the string to date
+        // in the specified format
+        LocalDate date = LocalDate.parse(string, format);
+        // Returning the converted date
+        return date;
+    }
 
 }
