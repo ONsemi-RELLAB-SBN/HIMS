@@ -24,10 +24,10 @@
                             <h2 class="pull-left"><f:message key="${pageTitle}"/></h2>
                             <div class="filter-block pull-right">
                                 <c:if test="${empty backUrl}">
-                                    <button type="back" class="btn btn-info" onclick="window.history.back();"><i class='bx bxs-chevron-left bx-fw'></i> Back</button>
+                                    <button type="back" class="btn btn-info" onclick="window.history.back();"><i class='bx bxs-chevron-left bx-fw'></i> Shipping List</button>
                                 </c:if>
                                 <c:if test="${not empty backUrl}">
-                                    <a href="${backUrl}" class="btn btn-info"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                                    <a href="${backUrl}" class="btn btn-info"><i class='bx bxs-chevron-left bx-fw'></i> Shipping List</a>
                                 </c:if>
                             </div>
                         </div>
