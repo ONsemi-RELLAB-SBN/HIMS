@@ -336,10 +336,38 @@ public class ParameterDetailsDAO {
         return parameterDetailsList;
     }
     
+    public List<ParameterDetails> getStatusParameter(String masterCode) {
+        String sql = "SELECT value, detail_code FROM hms_parameter_details WHERE master_code = '" + masterCode + "' ORDER BY id ASC";
+        List<ParameterDetails> parameterDetailsList = new ArrayList<ParameterDetails>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ParameterDetails parameterDetails;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                parameterDetails = new ParameterDetails();
+                parameterDetails.setDetailCode(rs.getString("detail_code"));
+                parameterDetails.setValue(rs.getString("value"));
+                parameterDetailsList.add(parameterDetails);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return parameterDetailsList;
+    }
+    
     public String getDetailByCode (String code) {
         String value = "";
         String sql = "SELECT GROUP_CONCAT(value SEPARATOR '\\',\\'') as value FROM hms_parameter_details WHERE detail_code IN ('"+code+"')";
-        LOGGER.info("LOGGER for SQL HERE : " +sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
