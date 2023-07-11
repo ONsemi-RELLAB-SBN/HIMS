@@ -10,6 +10,8 @@
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <!--<link rel="stylesheet" href="${contextPath}/resources/css/004.css" type="text/css" />-->
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
@@ -24,7 +26,7 @@
                 }
             }
             .dataTables_wrapper .dt-buttons {
-                float:none;  
+                float:none;
                 text-align:right;
             }
         </style>
@@ -38,7 +40,7 @@
                         <div class="clearfix">
                             <h2 class="pull-left">Shipment from Rel Lab - WIP Information</h2>
                             <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
+                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
                                 </a>
                             </div>
@@ -75,7 +77,7 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
-                                        <%--<c:if test="${whWip.status == status}"><th><span></span></th></c:if>--%>
+                                            <%--<c:if test="${whWip.status == status}"><th><span></span></th></c:if>--%>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,7 +108,13 @@
                                 </tbody>
                             </table>
                         </div>
+<!--                        <div class="clearfix">
+                            <div class="range" style="--p:10">
+                                <div class="range__label"></div>
+                            </div>
+                        </div>-->
                     </div>
+                </div>
             </div>
         </div>
         <hr class="separator">

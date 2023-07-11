@@ -1,6 +1,6 @@
 <%-- 
-    Document   : list_receive
-    Created on : Jun 22, 2023, 9:38:58 AM
+    Document   : search_shipping
+    Created on : Jul 10, 2023, 3:04:36 PM
     Author     : zbqb9x
 --%>
 
@@ -10,6 +10,7 @@
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/private/css/libs/select2.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
@@ -36,18 +37,22 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>Scan GTS Number</h2>
-                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceive" method="post">
+                        <h2>Search Shipping List By Shipment Date</h2>
+                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/searchShipping" method="post">
                             <div class="form-group">
-                                <label for="boxNo" class="col-lg-3 control-label">GTS Number *</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
+                                <label for="shipList" class="col-lg-3 control-label">Shipping Date *</label>
+                                <div class="col-lg-7">                                      
+                                    <select id="shipList" name="shipList" class="js-example-basic-single" style="width: 100%" >
+                                        <option value="" selected=""></option>
+                                        <c:forEach items="${shipList}" var="list">
+                                            <option value="${list.shippingList}">${list.shipDate} [${list.shippingList}]</option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                             </div>
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                            <a href="${contextPath}/whWip/to" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel" style="font-family:'Orbitron', monospace;"><i class='bx bx-reset bx-fw' ></i> Reset</button>
-                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-shield-plus bx-fw' style='color:#ffffff'  ></i> Receive</button>
+                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-search-alt bx-burst bx-fw' style='color:#ffffff'  ></i> Search</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -61,6 +66,11 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">WIP List</h2>
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/viewPdf/${data}" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
+                                    <i class='bx bx-printer' style='color:#ffffff'  ></i> Print Copy
+                                </a>
+                            </div>
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -95,11 +105,6 @@
                             </table>
                         </div>
                     </div>
-<!--                    <div class="clearfix">
-                        <div class="range" style="--p:20">
-                            <div class="range__label">Progress</div>
-                        </div>
-                    </div>-->
                 </div>
             </div>
         </div>
@@ -111,6 +116,7 @@
         <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.flash.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.html5.min.js"></script>
+        <script src="${contextPath}/resources/private/js/select2.min.js"></script>
     </s:layout-component>
     <s:layout-component name="page_js_inline">
         <script>
@@ -133,25 +139,14 @@
                     oTable.page.len($(this).val()).draw();
                 });
                 
-//                if ($('#countAll').val() === '0') {
-//                    $('#print').hide();
-//                } else {
-//                    $('#print').show();
-//                }
-                
-//                if ($('#countAll').val() === '0') {
-//                    $('#deleteAll').hide();
-//                } else {
-//                    $('#deleteAll').show();
-//                }
-                
                 $(".cancel").click(function () {
                     validator.resetForm();
                 });
                 
-//                $(".viewData").click(function () {
-//                    $("#data").show();
-//                });
+                $(".js-example-basic-single").select2({
+                    placeholder: "Choose one",
+                    allowClear: true
+                });
             });
             
         </script>

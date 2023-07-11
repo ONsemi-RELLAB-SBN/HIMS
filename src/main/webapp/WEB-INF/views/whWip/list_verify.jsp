@@ -10,6 +10,7 @@
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
@@ -70,7 +71,7 @@
                             </div>
                             <div id = "alert_placeholder2"></div>
                             <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
-                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                            <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="clearfix"></div>
                         </form>
                     </div>
@@ -91,7 +92,7 @@
                                 </div>
                             </div>
                             <div class="pull-right">
-                                <button type="submit" id="verify" class="btn btn-primary"><i class='bx bx-log-in-circle bx-md bx-fw' style='color:#ffffff' ></i> Verify</button>
+                                <button type="submit" id="verify" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-log-in-circle bx-md bx-fw' style='color:#ffffff' ></i> Verify</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>

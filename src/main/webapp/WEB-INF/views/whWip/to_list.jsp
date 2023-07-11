@@ -10,6 +10,7 @@
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
@@ -38,15 +39,18 @@
                         <div class="clearfix">
                             <h2 class="pull-left">Shipment to Rel Lab - WIP Information</h2>
                             <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right">
-                                    <!--<i class="fa fa-pencil-square-o fa-lg"></i> Prepare Shipment-->
+                                <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-list-plus bx-fw'></i> Prepare Shipment
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/registerPage" class="btn btn-primary pull-right">
-                                    <!--<i class="fa fa-pencil-square-o fa-lg"></i> Register WIP-->
+                                <a href="${contextPath}/whWip/registerPage" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-message-square-add bx-fw' style='color:#ffffff' ></i> Register WIP
+                                </a>
+                            </div>
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip/searchShipping" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
+                                    <i class='bx bx-search-alt bx-burst bx-fw' style='color:#ffffff'  ></i> Search
                                 </a>
                             </div>
                             <div class="filter-block pull-right">
@@ -86,11 +90,12 @@
                                         <tr>
                                             <td><c:out value="${whLoop.index+1}"/></td>
                                             <td><c:out value="${wipList.shippingList}"/></td>
-                                            <td><c:out value="${wipList.shipmentDate}"/></td>
+                                            <td><c:out value="${wipList.shipDate}"/></td>
                                             <td>
-                                                <a href="${contextPath}/whWip/viewPdf/${wipList.shippingList}" class="table-link" title="History">
-                                                    <i class='bx bx-search-alt bx-tada bx-md bx-fw'></i>
+                                                <a href="${contextPath}/whWip/viewPdf/${wipList.shippingList}" class="table-link" title="Print List">
+                                                    <i class='bx bx-tv bx-md bx-fw'></i>
                                                 </a>
+                                                <c:out value="${wipList.dataAll}"/>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -124,25 +129,25 @@
                         {
                             extend: 'copy',
                             exportOptions: {
-                                columns: [0, 1, 2]
+                                columns: [0, 1, 2, 3]
                             }
                         },
                         {
                             extend: 'excel',
                             exportOptions: {
-                                columns: [0, 1, 2]
+                                columns: [0, 1, 2, 3]
                             }
                         },
                         {
                             extend: 'pdf',
                             exportOptions: {
-                                columns: [0, 1, 2]
+                                columns: [0, 1, 2, 3]
                             }
                         },
                         {
                             extend: 'print',
                             exportOptions: {
-                                columns: [0, 1, 2]
+                                columns: [0, 1, 2, 3]
                             },
                             customize: function (win) {
                                 $(win.document.body)

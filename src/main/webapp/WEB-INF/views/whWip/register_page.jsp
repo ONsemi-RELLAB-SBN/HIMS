@@ -10,6 +10,7 @@
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
@@ -55,10 +56,10 @@
                                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                                <a href="${contextPath}/whWip/to" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset bx-fw' ></i> Reset</button>
-                                <button type="submit" class="btn btn-primary"><i class='bx bx-registered bx-fw' style='color:#ffffff' ></i> Register</button>
+                                <button type="reset" class="btn btn-secondary cancel" style="font-family:'Orbitron', monospace;"><i class='bx bx-reset bx-fw' ></i> Reset</button>
+                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-registered bx-fw' style='color:#ffffff' ></i> Register</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -103,6 +104,7 @@
                                         <th><span>RMS Event</span></th>
                                         <th><span>Intervals</span></th>
                                         <th><span>Quantity</span></th>
+                                        <th><span>Remove</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -113,6 +115,11 @@
                                             <td><c:out value="${packingList.rmsEvent}"/></td>
                                             <td><c:out value="${packingList.intervals}"/></td>
                                             <td><c:out value="${packingList.shipQuantity} / ${packingList.quantity}"/></td>
+                                            <td>
+                                                <a href="${contextPath}/whWip/updateRegisterToVerify/${packingList.requestId}" class="table-link" title="Remove">
+                                                    <i class='bx bx-message-alt-x bx-rotate-90 bx-md bx-fw' style='color:#ff0000'></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

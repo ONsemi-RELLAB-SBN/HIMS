@@ -10,6 +10,7 @@
     <s:layout-component name="page_css">
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
@@ -30,9 +31,9 @@
                                 </div>
                             </div>
                             <!--<a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
-                            <a href="${contextPath}/whWip/to" class="btn btn-info pull-left"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                            <a href="${contextPath}/whWip/to" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="submit" class="btn btn-primary"><i class='bx bxs-printer' style='color:#ffffff' ></i> PRINT for ${wipBox}</button>
+                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-printer' style='color:#ffffff' ></i> PRINT for ${wipBox}</button>
                                 <input type="hidden" class="form-control" id="shippingList" name="shippingList" value="${wipBox}">
                             </div>
                             <div class="clearfix"></div>

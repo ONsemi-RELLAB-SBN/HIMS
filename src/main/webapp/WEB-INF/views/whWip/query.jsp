@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="${contextPath}/resources/private/css/libs/datepicker.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/buttons.dataTables.min.css" type="text/css" />
         <link rel="stylesheet" href="${contextPath}/resources/private/datatables/css/jquery.dataTables.css" type="text/css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_css_inline">
         <style>
@@ -25,7 +26,7 @@
                 }
             }
             .dataTables_wrapper .dt-buttons {
-                float:none;  
+                float:none;
                 text-align:right;
             }
         </style>
@@ -42,13 +43,12 @@
                                 *Please insert the requirement(s) accordingly.</font
                                 <br /><br /><br />
                             </div>
-
                             <div class="form-group col-lg-12" id = "alert_placeholder"></div>
                             <div class="form-group col-lg-12" >
                                 <label for="status" class="col-lg-3 control-label">Status</label>
                                 <div class="col-lg-2">
                                     <select id="status" name="status" class="form-control">
-                                        <option value=""></option>
+                                        <option value="All">All</option>
                                         <c:forEach items="${statusList}" var="list">
                                             <option value="${list.value}">${list.value}</option>
                                         </c:forEach>
@@ -62,7 +62,6 @@
                                 <div class="col-lg-2">
                                     <input type="text" class="form-control" id="gtsNo" name="gtsNo">
                                 </div>
-                                
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
@@ -113,8 +112,8 @@
                                 <br/>
                             </div>
                             <div class="col-lg-12">
-                                <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" id="cancel"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
-                                <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" >Filter Data</button>
+                                <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" id="cancel" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>-->
+                                <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" style="font-family:'Orbitron', monospace;">Filter Data</button>
                             </div>
                             <div class="clearfix"><br/></div>
                         </form>
@@ -154,30 +153,50 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>Request ID</span></th> 
                                         <th><span>GTS No</span></th>
                                         <th><span>RMS Event</span></th>
                                         <th><span>Intervals</span></th>
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
+                                        <th><span>Shipping List</span></th>
                                         <th><span>Ship Date</span></th>
                                         <th><span>Status</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${wipList}" var="wipList" varStatus="whWipLoop">
-                                        <tr>
+                                        <!--<tr class="range" style="--p:100">-->
+                                        <c:if test="${wipList.status == 'WIP New Shipment'}">
+                                            <!--<tr style="background-color:purple; position: relative">-->
+                                        </c:if>
+                                        <c:if test="${wipList.status == 'WIP Received'}">
+                                            <!--<tr class="range" style="--p:15">-->
+                                        </c:if>
+                                        <c:if test="${wipList.status == 'WIP Verified'}">
+                                            <!--<tr style="background-color:blue; position: relative">-->
+                                        </c:if>
+                                        <c:if test="${wipList.status == 'WIP Register For Shipment'}">
+                                            <!--<tr class="range" style="--p:60">-->
+                                        </c:if>
+                                        <c:if test="${wipList.status == 'WIP Ready For Shipment'}">
+                                            <!--<tr style=background-color:green">-->
+                                        </c:if>
+                                        <c:if test="${wipList.status == 'WIP Ship to Rel Lab'}">
+                                            <!--<tr style="background-color:red; position: relative">--> 
+                                            <!--<tr style="border: 2px solid #4CAF50;" >-->
+                                        </c:if>
+                                        <tr class="buttontest">
                                             <td><c:out value="${whWipLoop.index+1}"/></td>
-                                            <td><c:out value="${wipList.requestId}"/></td>
                                             <td><c:out value="${wipList.gtsNo}"/></td>
                                             <td><c:out value="${wipList.rmsEvent}"/></td>
                                             <td><c:out value="${wipList.intervals}"/></td>
                                             <td><c:out value="${wipList.quantity}"/></td>
                                             <td><c:out value="${wipList.shipmentDate}"/></td>
+                                            <td><c:out value="${wipList.shippingList}"/></td>
                                             <td><c:out value="${wipList.shipDate}"/></td>
                                             <td><c:out value="${wipList.status}"/></td>
                                         </tr>
-                                    </c:forEach>
+                                </c:forEach>
                                 </tbody>
                             </table>
                         </div>
