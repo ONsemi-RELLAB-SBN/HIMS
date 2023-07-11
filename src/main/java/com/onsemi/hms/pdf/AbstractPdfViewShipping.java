@@ -52,7 +52,7 @@ public abstract class AbstractPdfViewShipping extends AbstractView {
             HttpServletRequest request, HttpServletResponse response) throws Exception {
         // IE workaround: write into byte array first.
         ByteArrayOutputStream baos = createTemporaryOutputStream();
-        System.out.println("SINI BACA DIA PUNYA ABTRACT FUNCTION");
+//        System.out.println("SINI BACA DIA PUNYA ABTRACT FUNCTION");
 
         // Apply preferences and build metadata.
         Document document = newDocument();
