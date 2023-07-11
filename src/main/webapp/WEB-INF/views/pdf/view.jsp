@@ -11,6 +11,7 @@
         <f:message key="${pageTitle}"/>
     </s:layout-component>
     <s:layout-component name="page_css">
+        <link rel="stylesheet" href="${contextPath}/resources/css/005.css" type="text/css" />
     </s:layout-component>
     <s:layout-component name="page_header">
         <f:message key="${pageTitle}"/>
@@ -27,7 +28,7 @@
                                     <button type="back" class="btn btn-info" onclick="window.history.back();"><i class='bx bxs-chevron-left bx-fw'></i> Shipping List</button>
                                 </c:if>
                                 <c:if test="${not empty backUrl}">
-                                    <a href="${backUrl}" class="btn btn-info"><i class='bx bxs-chevron-left bx-fw'></i> Shipping List</a>
+                                    <a href="${backUrl}" class="btn btn-info" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Shipping List</a>
                                 </c:if>
                             </div>
                         </div>
