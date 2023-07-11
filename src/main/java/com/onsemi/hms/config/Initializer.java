@@ -13,7 +13,7 @@ public class Initializer extends AbstractAnnotationConfigDispatcherServletInitia
     
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{DatabaseConfig.class, SecurityConfig.class, MailConfig.class, FtpInventory.class, FtpEquipment.class, FtpBibCard.class, FtpConfig.class};
+        return new Class[]{DatabaseConfig.class, SecurityConfig.class, MailConfig.class, FtpInventory.class, FtpEquipment.class, FtpBibCard.class, FtpConfig.class, FtpWip.class};
     }
 
     @Override
