@@ -34,10 +34,11 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     private final String emailTemplate = "resources/email";
     //private final String logoPath = "/resources/public/img/spml_all.png";
     private final String logoPath = "/resources/img/cdars_logo.png";
-    
+
     private static final String emailTest = "zbqb9x@onsemi.com";
     private static final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
-    private static final String FILEPATH2 = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHVERIFY = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
 
     @Autowired
     private JavaMailSender mailSender;
@@ -759,4 +760,107 @@ public class EmailSender extends SpringBeanAutowiringSupport {
             }
         }).start();
     }
+    
+    public void wipEmailVerify(final ServletContext servletContext, final String user, final String[] to, final String subject, final String msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HtmlEmail htmlEmail = new HtmlEmail();
+                    EmailDAO emailDAO = new EmailDAO();
+                    Email email = emailDAO.getEmail();
+
+                    htmlEmail.setHostName(email.getHost());
+                    htmlEmail.setSmtpPort(email.getPort());
+                    htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true);
+                    htmlEmail.setDebug(true);
+
+                    String username = System.getProperty("user.name");
+                    File file = new File(FILEPATHVERIFY);
+
+                    htmlEmail.setFrom(email.getSender());
+                    htmlEmail.addTo(to);
+                    htmlEmail.setSubject(subject);
+                    htmlEmail.embed(file);
+
+                    String logo = servletContext.getRealPath(logoPath);
+                    File logoFile = new File(logo);
+                    String logoCid = htmlEmail.embed(logoFile);
+
+                    Map model = new HashMap();
+                    model.put("user", user);
+                    model.put("subject", subject);
+                    model.put("message", msg);
+                    model.put("logoCid", logoCid);
+                    Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_22);
+                    freemarkerConfiguration.setServletContextForTemplateLoading(servletContext, emailTemplate);
+                    String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("templatewip.html"), model);
+                    htmlEmail.setHtmlMsg(msgContent);
+                    String send = htmlEmail.send();
+                    LOGGER.info("EMAIL SENDER: " + send);
+                } catch (EmailException e) {
+                    LOGGER.error(e.getMessage());
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                } catch (TemplateException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }).start();
+    }
+    
+    public void wipEmailShip(final ServletContext servletContext, final String user, final String[] to, final String subject, final String msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HtmlEmail htmlEmail = new HtmlEmail();
+                    EmailDAO emailDAO = new EmailDAO();
+                    Email email = emailDAO.getEmail();
+
+                    htmlEmail.setHostName(email.getHost());
+                    htmlEmail.setSmtpPort(email.getPort());
+                    htmlEmail.setAuthenticator(new DefaultAuthenticator(email.getUsername(), email.getPassword()));
+//                    htmlEmail.setSSLOnConnect(true);
+                    htmlEmail.setSSLOnConnect(false);
+                    htmlEmail.setStartTLSEnabled(true);
+                    htmlEmail.setDebug(true);
+
+                    String username = System.getProperty("user.name");
+                    File file = new File(FILEPATHSHIP);
+
+                    htmlEmail.setFrom(email.getSender());
+                    htmlEmail.addTo(to);
+                    htmlEmail.setSubject(subject);
+                    htmlEmail.embed(file);
+
+                    String logo = servletContext.getRealPath(logoPath);
+                    File logoFile = new File(logo);
+                    String logoCid = htmlEmail.embed(logoFile);
+
+                    Map model = new HashMap();
+                    model.put("user", user);
+                    model.put("subject", subject);
+                    model.put("message", msg);
+                    model.put("logoCid", logoCid);
+                    Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_22);
+                    freemarkerConfiguration.setServletContextForTemplateLoading(servletContext, emailTemplate);
+                    String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("templatewip.html"), model);
+                    htmlEmail.setHtmlMsg(msgContent);
+                    String send = htmlEmail.send();
+                    LOGGER.info("EMAIL SENDER: " + send);
+                } catch (EmailException e) {
+                    LOGGER.error(e.getMessage());
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                } catch (TemplateException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }).start();
+    }
+
 }

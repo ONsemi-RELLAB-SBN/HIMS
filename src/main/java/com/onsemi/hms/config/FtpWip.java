@@ -41,8 +41,8 @@ public class FtpWip {
     String fileLocation = "";
     String filename = "cdars_wip_shipping.csv";
 
-//    @Scheduled(cron = "0 */1 * * * ?") 
-    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
+//    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
+    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
     //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional)) 
     //active but not needed
     public void cronRun() {
@@ -58,9 +58,7 @@ public class FtpWip {
                 if (listOfFile.isFile()) {
                     if (listOfFile.getName().equals(filename)) {
                         fileLocation = targetLocation + listOfFile.getName();
-                        LOGGER.info("Filename found >>> " + filename);
                         CSVReader csvReader = null;
-
                         try {
                             csvReader = new CSVReader(new FileReader(fileLocation), ',', '"', 1);
                             String[] data = null;
@@ -79,16 +77,13 @@ public class FtpWip {
                                 int check = wip.getCountExistingData(data[0]);
 
                                 if (check == 0) {
-                                    LOGGER.info("INSERT INTO DATABASE " + data[0]);
+                                    LOGGER.info("INSERT INTO DATABASE [REQUEST ID] " + data[0]);
                                     wip = new WhWipDAO();
                                     wip.insertWhWip(wipdata);
                                 } else {
-                                    LOGGER.info("SKIP INSERT INTO DATABASE FOR " + data[0]);
+                                    LOGGER.info("SKIP INSERT INTO DATABASE FOR REQUEST ID: " + data[0]);
                                 }
-//                                eqtList.add(dataList);
                             }
-                            LOGGER.info("***********************************");
-//                            LOGGER.info("LOGGER for listing here : " + eqtList);
                         } catch (Exception ee) {
                             LOGGER.info("Error while reading files " + filename);
                             ee.printStackTrace();

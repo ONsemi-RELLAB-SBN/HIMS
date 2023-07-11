@@ -32,6 +32,7 @@ public class WhWip {
     private String shipDate;
     private String shipCreatedDate;
     private String shippingList;
+    private String dataAll;
 
     public String getId() {
         return id;
@@ -207,6 +208,14 @@ public class WhWip {
 
     public void setShipQuantity(String shipQuantity) {
         this.shipQuantity = shipQuantity;
+    }
+
+    public String getDataAll() {
+        return dataAll;
+    }
+
+    public void setDataAll(String dataAll) {
+        this.dataAll = dataAll;
     }
 
 }
