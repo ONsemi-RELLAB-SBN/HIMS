@@ -1,4 +1,4 @@
-<%-- 
+ <%-- 
     Document   : to_list
     Created on : Jun 21, 2023, 8:37:13 AM
     Author     : zbqb9x
@@ -40,7 +40,8 @@
                             <h2 class="pull-left">Shipment to Rel Lab - WIP Information</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
-                                    <i class='bx bx-list-plus bx-fw'></i> Prepare Shipment
+                                    <!--<i class='bx bx-list-plus bx-fw'></i>-->
+                                    <i class='bx bx-package bx-fw' ></i> Prepare Shipment
                                 </a>
                             </div>
                             <div class="filter-block pull-right">

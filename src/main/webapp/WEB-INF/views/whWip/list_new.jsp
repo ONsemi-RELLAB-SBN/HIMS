@@ -44,8 +44,7 @@
                                     <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
                                 </a>
                             </div>
-                            <div class="filter-block pull-right">
-                            </div>
+                            <div class="filter-block pull-right"></div>
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -77,7 +76,7 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
-                                            <%--<c:if test="${whWip.status == status}"><th><span></span></th></c:if>--%>
+                                        <th><span>Verify</span></td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -95,7 +94,8 @@
                                                     <td>
                                                         <a href="${contextPath}/whWip/listVerify/${whWip.requestId}" class="table-button" title="Verify">
                                                             <!--<i class='bx bx-list-check bx-tada bx-md bx-fw' ></i>-->
-                                                            <i class='bx bxs-user-check bx-fade-right bx-md bx-fw' undefined ></i>
+                                                            <!--<i class='bx bxs-user-check bx-fade-right bx-md bx-fw' undefined ></i>-->
+                                                            <i class='bx bx-checkbox-checked bx-lg bx-fw' ></i>
                                                         </a>
                                                     </td>
                                                 </c:when>

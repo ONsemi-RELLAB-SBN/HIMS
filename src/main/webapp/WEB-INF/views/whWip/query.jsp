@@ -29,6 +29,23 @@
                 float:none;
                 text-align:right;
             }
+            .wip-progress-container{
+                width:100%;
+                height:1.5em;
+                position:relative;
+                /*background-color:#f1f1f1*/
+                background-color:#d9d9d9;
+            }
+            .wip-progressbar{
+                /*background-color:#757575;*/
+                background-color:#3fcfbb;
+                height:100%;
+                position:absolute;
+                line-height:inherit
+            }
+            .wip-round-xlarge{
+                border-radius:16px!important
+            }
         </style>
     </s:layout-component>
     <s:layout-component name="page_container">
@@ -56,7 +73,7 @@
                                 </div>
                                 <label for="shippingList" class="col-lg-1 control-label">Shipping List</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="shippingList" name="shippingList">
+                                    <input type="text" class="form-control" id="shippingList" name="shippingList" value='${shippingList}'>
                                 </div>
                                 <label for="gtsNo" class="col-lg-1 control-label">GTS No.</label>
                                 <div class="col-lg-2">
@@ -113,7 +130,7 @@
                             </div>
                             <div class="col-lg-12">
                                 <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" id="cancel" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>-->
-                                <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" style="font-family:'Orbitron', monospace;">Filter Data</button>
+                                <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" style="font-family:'Orbitron', monospace;"><i class='bx bx-filter-alt bx-fw'></i>Filter Data</button>
                             </div>
                             <div class="clearfix"><br/></div>
                         </form>
@@ -165,27 +182,7 @@
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${wipList}" var="wipList" varStatus="whWipLoop">
-                                        <!--<tr class="range" style="--p:100">-->
-                                        <c:if test="${wipList.status == 'WIP New Shipment'}">
-                                            <!--<tr style="background-color:purple; position: relative">-->
-                                        </c:if>
-                                        <c:if test="${wipList.status == 'WIP Received'}">
-                                            <!--<tr class="range" style="--p:15">-->
-                                        </c:if>
-                                        <c:if test="${wipList.status == 'WIP Verified'}">
-                                            <!--<tr style="background-color:blue; position: relative">-->
-                                        </c:if>
-                                        <c:if test="${wipList.status == 'WIP Register For Shipment'}">
-                                            <!--<tr class="range" style="--p:60">-->
-                                        </c:if>
-                                        <c:if test="${wipList.status == 'WIP Ready For Shipment'}">
-                                            <!--<tr style=background-color:green">-->
-                                        </c:if>
-                                        <c:if test="${wipList.status == 'WIP Ship to Rel Lab'}">
-                                            <!--<tr style="background-color:red; position: relative">--> 
-                                            <!--<tr style="border: 2px solid #4CAF50;" >-->
-                                        </c:if>
-                                        <tr class="buttontest">
+                                        <tr>
                                             <td><c:out value="${whWipLoop.index+1}"/></td>
                                             <td><c:out value="${wipList.gtsNo}"/></td>
                                             <td><c:out value="${wipList.rmsEvent}"/></td>
@@ -193,10 +190,32 @@
                                             <td><c:out value="${wipList.quantity}"/></td>
                                             <td><c:out value="${wipList.shipmentDate}"/></td>
                                             <td><c:out value="${wipList.shippingList}"/></td>
-                                            <td><c:out value="${wipList.shipDate}"/></td>
-                                            <td><c:out value="${wipList.status}"/></td>
+                                            <td><time datetime="${wipList.shipDate}"><c:out value="${wipList.shipDate}"/></time></td>
+                                            <td>
+                                                <c:out value="${wipList.status}"/>
+                                                <div class="wip-progress-container wip-round-xlarge">
+                                                    <c:if test="${wipList.status == 'WIP New Shipment'}">
+                                                        <div class="wip-progressbar wip-round-xlarge" style="width:1%"></div>
+                                                    </c:if>
+                                                    <c:if test="${wipList.status == 'WIP Received'}">
+                                                        <div class="wip-progressbar wip-round-xlarge" style="width:20%"></div>
+                                                    </c:if>
+                                                    <c:if test="${wipList.status == 'WIP Verified'}">
+                                                        <div class="wip-progressbar wip-round-xlarge" style="width:40%"></div>
+                                                    </c:if>
+                                                    <c:if test="${wipList.status == 'WIP Register For Shipment'}">
+                                                        <div class="wip-progressbar wip-round-xlarge" style="width:60%"></div>
+                                                    </c:if>
+                                                    <c:if test="${wipList.status == 'WIP Ready For Shipment'}">
+                                                        <div class="wip-progressbar wip-round-xlarge" style="width:80%"></div>
+                                                    </c:if>
+                                                    <c:if test="${wipList.status == 'WIP Ship to Rel Lab'}">
+                                                        <div class="wip-progressbar wip-round-xlarge" style="width:100%"></div>
+                                                    </c:if>
+                                                </div>
+                                            </td>
                                         </tr>
-                                </c:forEach>
+                                    </c:forEach>
                                 </tbody>
                             </table>
                         </div>
