@@ -1,6 +1,6 @@
 <%-- 
-    Document   : list_new
-    Created on : Jun 21, 2023, 3:17:32 PM
+    Document   : list_history
+    Created on : Jul 13, 2023, 2:33:08 PM
     Author     : zbqb9x
 --%>
 
@@ -33,18 +33,18 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management - HISTORY</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Shipment from Rel Lab - WIP Information</h2>
-                            <div class="filter-block pull-right">
+                            <h2 class="pull-left">WIP Log History</h2>
+<!--                            <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
                                 </a>
                             </div>
-                            <div class="filter-block pull-right"></div>
+                            <div class="filter-block pull-right"></div>-->
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -70,38 +70,30 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>GTS NO</span></th>
-                                        <th><span>RMS Event</span></th>
-                                        <th><span>Intervals</span></th>
-                                        <th><span>Quantity</span></th>
-                                        <th><span>Shipment Date</span></th>
+                                        <th><span>Ship List</span></th>
+                                        <th><span>RMS Event Details</span></th>
+                                        <th><span>New Ship List</span></th>
                                         <th><span>Status</span></th>
-                                        <th><span>Verify</span></td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${wipList}" var="whWip" varStatus="whWipLoop">
+                                    <c:forEach items="${wipData}" var="whWip" varStatus="whWipLoop">
                                         <tr>
                                             <td><c:out value="${whWipLoop.index+1}"/></td>
-                                            <td><c:out value="${whWip.gtsNo}"/></td>
-                                            <td><c:out value="${whWip.rmsEvent}"/></td>
-                                            <td><c:out value="${whWip.intervals}"/></td>
-                                            <td><c:out value="${whWip.quantity}"/></td>
-                                            <td><c:out value="${whWip.shipmentDate}"/></td>
+                                            <td><c:out value="${whWip.wipShipList}"/></td>
+                                            <td><c:out value="${whWip.data02}"/></td>
+                                            <td><c:out value="${whWip.data03}"/></td>
                                             <c:choose>
-                                                <c:when test="${whWip.status == status}">
-                                                    <td><c:out value="${whWip.status}"/></td>
-                                                    <td>
-                                                        <a href="${contextPath}/whWip/listVerify/${whWip.requestId}" class="table-button" title="Verify">
-                                                            <!--<i class='bx bx-list-check bx-tada bx-md bx-fw' ></i>-->
-                                                            <!--<i class='bx bxs-user-check bx-fade-right bx-md bx-fw' undefined ></i>-->
-                                                            <i class='bx bx-checkbox-checked bx-lg bx-fw' ></i>
-                                                        </a>
-                                                    </td>
+                                                <c:when test="${whWip.data04 == 'OK'}">
+                                                    <td align='center'><c:out value="${whWip.data04}"/></td>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td colspan='2'><c:out value="${whWip.status}"/></td>
-                                                    <td hidden='true'></td>
+                                                    <td align='center'>
+                                                        <a href="${contextPath}/whWip/viewHistory/${whWip.data03}" class="table-button" title="CHeck Log History">
+                                                            <i class='bx bx-checkbox-checked bx-lg bx-fw' ></i>
+                                                            <c:out value="${whWip.data04}"/></td>
+                                                        </a>
+                                                    </td>
                                                 </c:otherwise>
                                             </c:choose>
                                         </tr>
@@ -109,11 +101,6 @@
                                 </tbody>
                             </table>
                         </div>
-<!--                        <div class="clearfix">
-                            <div class="range" style="--p:10">
-                                <div class="range__label"></div>
-                            </div>
-                        </div>-->
                     </div>
                 </div>
             </div>
@@ -135,31 +122,31 @@
                     dom: 'Brtip',
                     columnDefs : [{
                         sortable : false,
-                        targets : [ 6 ]
+                        targets : [ 4 ]
                     }],
                     buttons: [
                         {
                             extend: 'copy',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4 ]
                             }
                         },
                         {
                             extend: 'excel',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4 ]
                             }
                         },
                         {
                             extend: 'pdf',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4 ]
                             }
                         },
                         {
                             extend: 'print',
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4 ]
                             },
                             customize: function (win) {
                                 $(win.document.body)

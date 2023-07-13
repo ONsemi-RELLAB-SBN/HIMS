@@ -941,7 +941,7 @@ public class WhWipDAO {
     
     public List<WhWip> getQuery(String query) {
         LOGGER.info("FUNCTION getQuery");
-        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no IS NOT NULL " + query;
+        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no IS NOT NULL" + query;
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -987,6 +987,103 @@ public class WhWipDAO {
             }
         }
         return whShippingList;
+    }
+    
+    public List<WhWipShip> getWipShippedAll() {
+        LOGGER.info("FUNCTION getWipShippedAll");
+        String sql = "SELECT * FROM hms_wh_wip_ship";
+        List<WhWipShip> wipList = new ArrayList<WhWipShip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWipShip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWipShip();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setWipId(rs.getString("wip_id"));
+                whShipping.setWipShipList(rs.getString("wip_ship_list"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
+    public List<WhWipShip> getLogWhWip() {
+        LOGGER.info("FUNCTION getLogWhWip");
+        String sql = "SELECT GROUP_CONCAT(wip_id) AS ID, STATUS, GROUP_CONCAT(rms_event) AS RMS, wip_ship_list AS SHIP, shipping_list AS NEW_SHIP, IF(shipping_list=wip_ship_list, \"OK\", \"DATA UPDATED\") AS NEW_STATUS FROM hms_wh_wip_ship A\n" +
+                    "INNER JOIN hms_wh_wip B ON wip_id = B.id\n" +
+                    "GROUP BY wip_ship_list";
+        List<WhWipShip> wipList = new ArrayList<WhWipShip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWipShip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWipShip();
+                whShipping.setId(rs.getString("ID"));
+                whShipping.setData01(rs.getString("STATUS"));
+                whShipping.setData02(rs.getString("RMS"));
+                whShipping.setWipShipList(rs.getString("SHIP"));
+                whShipping.setData03(rs.getString("NEW_SHIP"));
+                whShipping.setData04(rs.getString("NEW_STATUS"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
+    public List<WhWipShip> getLogAll() {
+        LOGGER.info("FUNCTION getLogWhWip");
+        String sql = "SELECT * FROM hms_wh_wip_ship GROUP BY wip_ship_list;";
+        List<WhWipShip> wipList = new ArrayList<WhWipShip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWipShip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWipShip();
+                whShipping.setWipShipList(rs.getString("wip_ship_list"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
     }
 
     public Integer getCountExistingData(String id) {

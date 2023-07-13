@@ -110,10 +110,10 @@ public class WipController {
         String month = myDateObj.format(myFormatMonth);
         String year = myDateObj.format(myFormatYear);
         String shippingList = year + month;
-//        String status = pdao.getDetailByCode(SHIP);
-//        List<WhWip> wipList = dao.getWhWipByStatus(status);
+        String monthyear = myDateObj.getMonth().toString() + " " + myDateObj.getYear();
         List<WhWip> wipList = dao.getWipShipment(shippingList);
         model.addAttribute("wipList", wipList);
+        model.addAttribute("monthyear", monthyear);
         return "whWip/to_list";
     }
 
@@ -136,7 +136,6 @@ public class WipController {
 
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(NEW);
-        // WE CAN ONLY SHOWN THE STATUS - NEW SHIPMENT ONLY, ALL THE RECEIVE STATUS ALREADY MOVED OUT
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(status);
         model.addAttribute("wipList", wipList);
@@ -191,14 +190,11 @@ public class WipController {
         String statusVerify = pdao.getDetailByCode(VERIFY);
         daoUpdate.updateVerify(requestId, name);
 
-//        sendEmailWipReady();
-        // TODO - add function to check gts no is eligible to be created into excel files
         String gtsno = daoCheck3.getWipGtsByRequestId(requestId);
         int checkNumber = daoCheck1.getCountByGtsNo(requestId);
         int checkVerify = daoCheck2.getCountByGtsNoAndStatus(requestId, statusVerify);
 
         if (checkNumber == checkVerify) {
-            // RUN CREATE NEW CSV FILES HERE
             LOGGER.info("********************** WIP VERIFIED START **********************");
             sendCsvForVerify(gtsno);
             sendEmailVerifyWip(gtsno);
@@ -260,10 +256,10 @@ public class WipController {
                 daoUpdate.updateRegister(daoData);
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.successwip1", args, locale));
             }
-        } else if (daoData.getStatus().equalsIgnoreCase(checkReady)) {
+        } else if (status == null ? checkStatus == null : status.equalsIgnoreCase(checkReady)) {
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip3", args, locale));
         } else {
-            if (daoData.getStatus() == null) {
+            if (status == null) {
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.search.error", args, locale));
             } else {
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip1", args, locale));
@@ -344,6 +340,15 @@ public class WipController {
 
         return new ModelAndView("wipShipping", "shippingList", shippingList);
     }
+    
+    @RequestMapping(value = "/history", method = RequestMethod.GET)
+    public String logHistory(Model model, @ModelAttribute UserSession userSession) {
+
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWipShip> wipData = dao.getLogWhWip();
+        model.addAttribute("wipData", wipData);
+        return "whWip/list_history";
+    }
 
     // INI SUDAH TIDAK DIGUNAKAN, SBB DA MASUK KE DALAM TO LIST
 //    @RequestMapping(value = "/listShip", method = RequestMethod.GET)
@@ -355,6 +360,7 @@ public class WipController {
 //        model.addAttribute("wipList", wipList);
 //        return "whWip/list_ship";
 //    }
+    
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -384,7 +390,7 @@ public class WipController {
         }
         if (gtsNo != null) {
             if (!gtsNo.equals("")) {
-                query += " AND I.gts_no = \'" + gtsNo + "\' ";
+                query += " AND gts_no = \'" + gtsNo + "\' ";
             }
         }
         if (rmsEvent != null) {
@@ -409,7 +415,7 @@ public class WipController {
         }
         if (receivedDate1 != null && receivedDate2 != null) {
             if (!receivedDate1.equals("") && !receivedDate2.equals("")) {
-                query += " AND requested_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 + "\' AS DATE) ";
+                query += " AND receive_date BETWEEN CAST(\'" + receivedDate1 + "\' AS DATE) AND CAST(\'" + receivedDate2 + "\' AS DATE) ";
             }
         }
         if (shipDate1 != null && shipDate2 != null) {
@@ -419,7 +425,7 @@ public class WipController {
         }
         if (shippingList != null) {
             if (!shippingList.equals("")) {
-                query += " AND shipping_list = \'" + shippingList + "\' ";
+                query += " AND shipping_list LIKE \'%" + shippingList + "%\' ";
             }
         } else {
             LocalDateTime myDateObj = LocalDateTime.now();
@@ -428,7 +434,7 @@ public class WipController {
             String month = myDateObj.format(myFormatMonth);
             String year = myDateObj.format(myFormatYear);
             shippingList = year + month;
-            query += " AND shipping_list = \'" + shippingList + "\' ";
+            query += " AND shipping_list LIKE \'%" + shippingList + "%\' ";
         }
         if (status != null) {
             if (status.equalsIgnoreCase("All")) {
@@ -449,6 +455,16 @@ public class WipController {
         model.addAttribute("statusList", statusList);
 
         model.addAttribute("shippingList", shippingList);
+        model.addAttribute("gtsNo", gtsNo);
+        model.addAttribute("rmsEvent", rmsEvent);
+        model.addAttribute("intervals", intervals);
+        model.addAttribute("quantity", quantity);
+        model.addAttribute("shipmentDate1", shipmentDate1);
+        model.addAttribute("shipmentDate2", shipmentDate2);
+        model.addAttribute("receivedDate1", receivedDate1);
+        model.addAttribute("receivedDate2", receivedDate2);
+        model.addAttribute("shipDate1", shipDate1);
+        model.addAttribute("shipDate2", shipDate2);
 
         return "whWip/query";
     }
@@ -669,7 +685,7 @@ public class WipController {
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(dataList.get(i).getIntervals());
                     fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(dataList.get(i).getIntervals());
+                    fileWriter.append(dataList.get(i).getQuantity());
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(shipDate);
                     System.out.println("Update existing to CSV file Succeed!!!");
@@ -697,7 +713,7 @@ public class WipController {
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(dataList.get(i).getIntervals());
                     fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(dataList.get(i).getIntervals());
+                    fileWriter.append(dataList.get(i).getQuantity());
                     fileWriter.append(COMMA_DELIMITER);
                     fileWriter.append(shipDate);
                     System.out.println("Write new to CSV file Succeed!!!");

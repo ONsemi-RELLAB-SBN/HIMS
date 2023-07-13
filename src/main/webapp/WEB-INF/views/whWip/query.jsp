@@ -77,60 +77,61 @@
                                 </div>
                                 <label for="gtsNo" class="col-lg-1 control-label">GTS No.</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="gtsNo" name="gtsNo">
+                                    <input type="text" class="form-control" id="gtsNo" name="gtsNo" value='${gtsNo}'>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
                                 <label for="shipmentDate1" class="col-lg-3 control-label">Shipment Date (from Rel Lab) between </label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="shipmentDate1" name="shipmentDate1">
+                                    <input type="text" class="form-control" id="shipmentDate1" name="shipmentDate1" value='${shipmentDate1}'>
                                 </div>
                                 <label for="shipmentDate2" class="col-lg-1 control-label" style="text-align: center;"> AND </label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="shipmentDate2" name="shipmentDate2">
+                                    <input type="text" class="form-control" id="shipmentDate2" name="shipmentDate2" value='${shipmentDate2}'>
                                 </div>
                                 <label for="rmsEvent" class="col-lg-1 control-label">RMS Event</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="rmsEvent" name="rmsEvent">
+                                    <input type="text" class="form-control" id="rmsEvent" name="rmsEvent" value='${rmsEvent}'>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
                                 <label for="receivedDate1" class="col-lg-3 control-label">Receive Date between </label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="receivedDate1" name="receivedDate1">
+                                    <input type="text" class="form-control" id="receivedDate1" name="receivedDate1" value='${receivedDate1}'>
                                 </div>
                                 <label for="receivedDate2" class="col-lg-1 control-label" style="text-align: center;">AND</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="receivedDate2" name="receivedDate2">
+                                    <input type="text" class="form-control" id="receivedDate2" name="receivedDate2" value='${receivedDate2}'>
                                 </div>
                                 <label for="intervals" class="col-lg-1 control-label">Intervals</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="intervals" name="intervals">
+                                    <input type="text" class="form-control" id="intervals" name="intervals" value='${intervals}'>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12" ></div>
                             <div class="form-group col-lg-12">
                                 <label for="shipDate1" class="col-lg-3 control-label">Ship Date (to Rel Lab) between </label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="shipDate1" name="shipDate1">
+                                    <input type="text" class="form-control" id="shipDate1" name="shipDate1" value='${shipDate1}'>
                                 </div>
                                 <label for="shipDate2" class="col-lg-1 control-label" style="text-align: center;">AND</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="shipDate2" name="shipDate2">
+                                    <input type="text" class="form-control" id="shipDate2" name="shipDate2" value='${shipDate2}'>
                                 </div>
                                 <label for="quantity" class="col-lg-1 control-label">Quantity</label>
                                 <div class="col-lg-2">
-                                    <input type="text" class="form-control" id="quantity" name="quantity">
+                                    <input type="text" class="form-control" id="quantity" name="quantity" value='${quantity}'>
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <br/>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="pull-right">
                                 <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" id="cancel" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>-->
-                                <button type="submit" class="btn btn-primary pull-right" name="submit" id="submit" style="font-family:'Orbitron', monospace;"><i class='bx bx-filter-alt bx-fw'></i>Filter Data</button>
+                                <button type="reset" class="btn btn-secondary cancel" style="font-family:'Orbitron', monospace;"><i class='bx bx-reset bx-fw' ></i> Reset</button>
+                                <button type="submit" class="btn btn-primary" name="submit" id="submit" style="font-family:'Orbitron', monospace;"><i class='bx bx-filter-alt bx-fw'></i>Filter Data</button>
                             </div>
                             <div class="clearfix"><br/></div>
                         </form>
@@ -189,7 +190,11 @@
                                             <td><c:out value="${wipList.intervals}"/></td>
                                             <td><c:out value="${wipList.quantity}"/></td>
                                             <td><c:out value="${wipList.shipmentDate}"/></td>
-                                            <td><c:out value="${wipList.shippingList}"/></td>
+                                            <td>
+                                                <a href='${contextPath}/whWip/viewPdf/${wipList.shippingList}' >
+                                                <c:out value="${wipList.shippingList}"/>
+                                                </a>
+                                            </td>
                                             <td><time datetime="${wipList.shipDate}"><c:out value="${wipList.shipDate}"/></time></td>
                                             <td>
                                                 <c:out value="${wipList.status}"/>
@@ -361,6 +366,10 @@
                 $("#dt_spml_rows").change(function () {
                     oTable.page.len($(this).val()).draw();
                 });
+                
+                $(".cancel").click(function () {
+                    validator.resetForm();
+                });  
             });
         </script>
     </s:layout-component>
