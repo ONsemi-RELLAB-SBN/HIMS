@@ -150,14 +150,14 @@ public class WhWipDAO {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="UPDATE STATEMENT">
-    public QueryResult updateStatusByGts(String date, String by, String gtsNo, String data) {
+    public QueryResult updateStatusByGts(String date, String by, String gtsNo, String data, String username) {
         LOGGER.info("FUNCTION updateStatusByGts");
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, status = ? WHERE gts_no = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             String status = "";
-            String username = System.getProperty("user.name");
+//            String username = System.getProperty("user.name");
             ParameterDetailsDAO dao = new ParameterDetailsDAO();
             if (data.equalsIgnoreCase("receive")) {
                 status = dao.getDetailByCode(RECEIVE);
@@ -297,14 +297,14 @@ public class WhWipDAO {
         return queryResult;
     }
 
-    public QueryResult updateVerify(String requestId) {
+    public QueryResult updateVerify(String requestId, String username) {
         LOGGER.info("FUNCTION updateVerify");
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip "
                 + "SET verify_date = NOW(), verify_by = ?, status = ? "
                 + "WHERE request_id = ?";
         try {
-            String username = System.getProperty("user.name");
+//            String username = System.getProperty("user.name");
             ParameterDetailsDAO dao = new ParameterDetailsDAO();
             String status = dao.getDetailByCode(VERIFY);
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -332,13 +332,12 @@ public class WhWipDAO {
         LOGGER.info("FUNCTION updateRegister");
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET register_date = NOW(), register_by = ?, ship_quantity = ?, status = ? WHERE id = ?";
-        String username = System.getProperty("user.name");
+//        String username = System.getProperty("user.name");
         ParameterDetailsDAO dao = new ParameterDetailsDAO();
         String status = dao.getDetailByCode(READY);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-//            ps.setString(1, wip.getRegisterDate());
-            ps.setString(1, username);
+            ps.setString(1, wip.getRegisterBy());
             ps.setString(2, wip.getShipQuantity());
             ps.setString(3, status);
             ps.setString(4, wip.getId());
@@ -639,9 +638,60 @@ public class WhWipDAO {
         return whShippingList;
     }
 
-    public List<WhWip> getWipShipment() {
+    public List<WhWip> getWipShipmentAll() {
         LOGGER.info("FUNCTION getWipShipment");
         String sql = "SELECT *, GROUP_CONCAT(rms_event SEPARATOR ', ') AS sub_data FROM hms_wh_wip WHERE shipping_list IS NOT NULL GROUP BY shipping_list";
+        List<WhWip> wipList = new ArrayList<WhWip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWip();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setStatus(rs.getString("status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setReceiveDate(rs.getString("receive_date"));
+                whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setReadyBy(rs.getString("ready_by"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
+                whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setDataAll(rs.getString("sub_data"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
+    public List<WhWip> getWipShipment(String shippingList) {
+        LOGGER.info("FUNCTION getWipShipment");
+        String sql = "SELECT *, GROUP_CONCAT(rms_event SEPARATOR ', ') AS sub_data FROM hms_wh_wip WHERE shipping_list LIKE '"+shippingList+"%' GROUP BY shipping_list";
         List<WhWip> wipList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -891,7 +941,7 @@ public class WhWipDAO {
     
     public List<WhWip> getQuery(String query) {
         LOGGER.info("FUNCTION getQuery");
-        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no IS NOT NULL AND " + query;
+        String sql = "SELECT * FROM hms_wh_wip WHERE gts_no IS NOT NULL " + query;
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
