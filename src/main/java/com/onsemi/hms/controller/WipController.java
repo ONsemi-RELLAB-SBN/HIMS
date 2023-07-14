@@ -76,7 +76,6 @@ public class WipController {
     @Autowired
     ServletContext servletContext;
 
-//    @RequestMapping(value = "wipList", method = RequestMethod.GET)
     @RequestMapping(value = "/sync", method = {RequestMethod.GET, RequestMethod.POST})
     public String manualsync(Model model) {
 
@@ -548,7 +547,8 @@ public class WipController {
 
     private void sendEmailVerifyWip(String gtsNo) {
 
-        String username = System.getProperty("user.name");
+//        String username = System.getProperty("user.name");
+        String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         EmailSender send = new EmailSender();
         String subject = "WIP Received from Rel Lab";
@@ -559,7 +559,8 @@ public class WipController {
 
     private void sendEmailShipWip() {
 
-        String username = System.getProperty("user.name");
+//        String username = System.getProperty("user.name");
+        String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         EmailSender send = new EmailSender();
         String subject = "WIP is Shipped to Rel Lab SF";
@@ -570,12 +571,10 @@ public class WipController {
 
     private void sendCsvForVerify(String gtsNo) {
 
-//        WhWipDAO dao = new WhWipDAO();
         WhWipDAO daoGet = new WhWipDAO();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         File file = new File(FILEPATHVERIFY);
 
-//        String username = System.getProperty("user.name");
         String statusVerify = pdao.getDetailByCode(VERIFY);
         List<WhWip> dataList = daoGet.getWipByGtsNo(gtsNo);
 
@@ -587,8 +586,6 @@ public class WipController {
             wip.setVerifyDate(dataList.get(i).getVerifyDate());
             wip.setStatus(statusVerify);
 
-//            dao = new WhWipDAO();
-//            dao.updateShip(wip);
             FileWriter fileWriter = null;
 
             if (file.exists()) {
@@ -648,7 +645,6 @@ public class WipController {
     private void sendCsvWipShipping(String shippingList, String shipDate, String username) {
 
         File file = new File(FILEPATHSHIP);
-//        String username = System.getProperty("user.name");
 
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String statusReady = pdao.getDetailByCode(READY);
