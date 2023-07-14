@@ -169,6 +169,15 @@ public class WipController {
         model.addAttribute("wipData", data);
         return "whWip/list_verify";
     }
+    
+    @RequestMapping(value = "/listVerifyAdmin/{requestId}", method = RequestMethod.GET)
+    public String adminToVerify(Model model, @ModelAttribute UserSession userSession, @PathVariable("requestId") String requestId) {
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip data = dao.getWhWipByRequestId(requestId);
+        model.addAttribute("wipData", data);
+        return "whWip/list_verify_admin";
+    }
 
     @RequestMapping(value = "/updateVerify", method = RequestMethod.POST)
     public String updateVerify(
@@ -741,7 +750,7 @@ public class WipController {
         String rmsEvent = "";
         String intervals = "";
         String quantity = "";
-        String text = "<table style=\"width: 90%; border: 1px solid #A4A4A4;\"><tr>"
+        String text = "<table width='90%'><tr>"
                 + "<th><span>No</span></th>"
                 + "<th><span>Request ID</span></th><th><span>RMS Event</span></th>"
                 + "<th><span>Intervals</span></th>"
@@ -773,7 +782,16 @@ public class WipController {
     }
 
     private String tableWipShip(String shipList) {
-        String text = "";
+        String text = "<table width='90%'><tr>"
+                + "<th><span>No</span></th>"
+                + "<th><span>Request ID</span></th><th><span>RMS Event</span></th>"
+                + "<th><span>Intervals</span></th>"
+                + "<th><span>Quantity</span></th>"
+                + "<th><span>Receive Date</span></th>"
+                + "<th><span>Verify Date</span></th>"
+                + "</tr>";
+        
+        text = text + "</table>";
         return text;
     }
 
