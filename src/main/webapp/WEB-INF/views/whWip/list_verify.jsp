@@ -86,7 +86,7 @@
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <div class="form-group">
-                                <label for="boxNo" class="col-lg-3 control-label">Scan Trip Ticket *</label>
+                                <label for="tripTicket" class="col-lg-3 control-label">Scan Trip Ticket *</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" id="tripTicket" name="tripTicket" placeholder="" value="" autofocus="autofocus">
                                 </div>
@@ -137,6 +137,10 @@
                             equalTo: "#rmsEvent"
                         }
                     }
+                });
+                
+                $('#tripTicket').bind('copy paste cut', function (e) {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
             });
         </script>

@@ -172,7 +172,11 @@
                 
                 $(".cancel").click(function () {
                     validator.resetForm();
-                });           
+                });
+                
+                $('#tripTicket').bind('copy paste cut', function (e) {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
             });
         </script>
     </s:layout-component>

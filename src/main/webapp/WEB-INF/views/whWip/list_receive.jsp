@@ -149,6 +149,10 @@
                     validator.resetForm();
                 });
                 
+                $('#boxNo').bind('copy paste cut', function (e) {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                
 //                $(".viewData").click(function () {
 //                    $("#data").show();
 //                });
