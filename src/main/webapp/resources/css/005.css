@@ -100,3 +100,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
         transform: translate(2%, -23%);
     }
 }
+
+.bx-shield-minus:hover {
+    color: red; 
+}

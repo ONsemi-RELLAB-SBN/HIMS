@@ -231,7 +231,7 @@ public class WipController {
         String status = pdao.getDetailByCode(READY);
         List<WhWip> packingList = dao.getWhWipByStatus(status);
         model.addAttribute("packingList", packingList);
-        return "whWip/register_page";
+        return "whWip/wip_register";
     }
 
     @RequestMapping(value = "/updateVerifyToRegister", method = RequestMethod.POST)
@@ -356,6 +356,38 @@ public class WipController {
         List<WhWipShip> wipData = dao.getLogWhWip();
         model.addAttribute("wipData", wipData);
         return "whWip/list_history";
+    }
+    
+    @RequestMapping(value = "/listProcess", method = RequestMethod.GET)
+    public String whListProcess(Model model, @ModelAttribute UserSession userSession) {
+
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+//        String status = pdao.getDetailByCode(NEW + "','" + RECEIVE);
+//        pdao = new ParameterDetailsDAO();
+        String statusVerified = pdao.getDetailByCode(VERIFY);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip> wipList = dao.getWhWipByStatus(statusVerified);
+        model.addAttribute("wipList", wipList);
+        model.addAttribute("status", statusVerified);
+        return "whWip/list_process";
+    }
+    
+    @RequestMapping(value = "/loadWip/{id}", method = RequestMethod.GET)
+    public String whLoadWip(Model model, @ModelAttribute UserSession userSession, @PathVariable("id") String id) {
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip data = dao.getWhWipByRequestId(id);
+        model.addAttribute("wipData", data);
+        return "whWip/wip_load";
+    }
+    
+    @RequestMapping(value = "/unloadWip/{id}", method = RequestMethod.GET)
+    public String whUnloadWip(Model model, @ModelAttribute UserSession userSession, @PathVariable("id") String id) {
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip data = dao.getWhWipByRequestId(id);
+        model.addAttribute("wipData", data);
+        return "whWip/wip_unload";
     }
 
     // INI SUDAH TIDAK DIGUNAKAN, SBB DA MASUK KE DALAM TO LIST
