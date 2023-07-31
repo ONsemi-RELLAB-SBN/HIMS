@@ -33,7 +33,8 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
     private final String emailTemplate = "resources/email";
     //private final String logoPath = "/resources/public/img/spml_all.png";
-    private final String logoPath = "/resources/img/cdars_logo.png";
+//    private final String logoPath = "/resources/img/cdars_logo.png";
+    private final String logoPath = "/resources/img/warehouse.png";
 
     private static final String emailTest = "zbqb9x@onsemi.com";
     private static final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";

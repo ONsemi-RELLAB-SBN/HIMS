@@ -66,7 +66,7 @@ public abstract class AbstractITextPdfViewPotraitBarcodeSticker extends Abstract
 //        event.setHeaderLogo(image);
         //Add Text
 //        event.setHeader("CDARS");
-//        event.setFooter("Copyright © 2016, ONSEMI");
+//        event.setFooter("Copyright © 2016-2023, ONSEMI");
         // Build PDF
         buildPdfDocument(model, document, writer, request, response);
         document.close();

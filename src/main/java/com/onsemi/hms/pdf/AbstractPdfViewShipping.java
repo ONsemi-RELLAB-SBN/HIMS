@@ -75,7 +75,7 @@ public abstract class AbstractPdfViewShipping extends AbstractView {
         event.setHeaderLogo(image);
         //Add Text
         event.setHeader("HARDWARE INVENTORY MANAGEMENT SYSTEM");
-        event.setFooter("Copyright © 2023, ON Semiconductor.");
+        event.setFooter("Copyright © 2016-2023, ON Semiconductor.");
         // Build PDF
         buildPdfDocument(model, document, writer, request, response);
         document.close();
