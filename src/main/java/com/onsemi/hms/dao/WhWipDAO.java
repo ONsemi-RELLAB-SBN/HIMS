@@ -568,6 +568,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 wipList.add(whShipping);
             }
             rs.close();

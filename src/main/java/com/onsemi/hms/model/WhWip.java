@@ -33,6 +33,8 @@ public class WhWip {
     private String shipCreatedDate;
     private String shippingList;
     private String dataAll;
+    private String loadDate;
+    private String unloadDate;
 
     public String getId() {
         return id;
@@ -216,6 +218,22 @@ public class WhWip {
 
     public void setDataAll(String dataAll) {
         this.dataAll = dataAll;
+    }
+
+    public String getLoadDate() {
+        return loadDate;
+    }
+
+    public void setLoadDate(String loadDate) {
+        this.loadDate = loadDate;
+    }
+
+    public String getUnloadDate() {
+        return unloadDate;
+    }
+
+    public void setUnloadDate(String unloadDate) {
+        this.unloadDate = unloadDate;
     }
 
 }
