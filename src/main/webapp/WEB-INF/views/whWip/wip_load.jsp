@@ -37,7 +37,7 @@
                 <div class="col-lg-8">
                     <div class="main-box">
                         <h2>LOAD WIP</h2>
-                        <form id="register_wip_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerifyToRegister" method="post">
+                        <form id="wip_process_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateProcess/loading" method="post">
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
                                 <label for="gtsNo" class="col-lg-3 control-label">GTS No.</label>
@@ -71,13 +71,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="loadDate" class="col-lg-3 control-label">Loading Date</label>
-                                <div class="col-lg-8">
+                                <div class="col-lg-5">
                                     <input type="datetime-local" class="form-control" id="loadDate" name="loadDate" >
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/listProcess" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-registered bx-fw' style='color:#ffffff' ></i> Load WIP</button>
+                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-archive-in bc-fw bx-md' ></i> Load WIP</button>
                             </div>
                             <div class="clearfix"></div>
                         </form>
@@ -98,40 +98,12 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                
-                if ($('#countAll').val() === '0') {
-                    $('#print').hide();
-                } else {
-                    $('#print').show();
-                }
-                
-                if ($('#countAll').val() === '0') {
-                    $('#deleteAll').hide();
-                } else {
-                    $('#deleteAll').show();
-                }
-                
-                var validator = $("#register_wip_form").validate({
+                var validator = $("#wip_process_form").validate({
                     rules: {
-                        tripTicket: {
+                        loadDate: {
                             required: true
-                        },
-                        intervals: {
-                            number: true,
-                            required: true
-                        },
-                        quantity: {
-                            number: true
                         }
                     }
-                });
-                
-                $(".cancel").click(function () {
-                    validator.resetForm();
-                });
-                
-                $('#tripTicket').bind('copy paste cut', function (e) {
-                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
             });
         </script>

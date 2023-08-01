@@ -9,6 +9,7 @@ import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.RunningNumberDAO;
 import com.onsemi.hms.dao.WhWipDAO;
 import com.onsemi.hms.model.ParameterDetails;
+import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.model.WhWipShip;
@@ -18,8 +19,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.ServletContext;
@@ -52,9 +57,11 @@ public class WipController {
     String[] args = {};
 
     private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
-    private static final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-    private static final String FILEPATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-    private static final String FILEPATHVERIFY = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
+    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
+    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
+    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
 
     private static final String STATUSCODE = "01";
     private static final String NEW = "0101";
@@ -69,6 +76,7 @@ public class WipController {
     private static final String HEADER = "Column1, Column2, Column3, Column4";
     private static final String HEADERSHIP = "RequestID,RMSEvent,Intervals,Quantity,ShipmentDate";
     private static final String HEADERVERIFY = "RequestID,ReceiveDate,VerifyDate,Status";
+    private static final String HEADERLOAD = "RequestID,Date";
 
     @Autowired
     private MessageSource messageSource;
@@ -102,7 +110,7 @@ public class WipController {
 
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         WhWipDAO dao = new WhWipDAO();
-        
+
         LocalDateTime myDateObj = LocalDateTime.now();
         DateTimeFormatter myFormatYear = DateTimeFormatter.ofPattern("yyyy");
         DateTimeFormatter myFormatMonth = DateTimeFormatter.ofPattern("MM");
@@ -168,7 +176,7 @@ public class WipController {
         model.addAttribute("wipData", data);
         return "whWip/list_verify";
     }
-    
+
     @RequestMapping(value = "/listVerifyAdmin/{requestId}", method = RequestMethod.GET)
     public String adminToVerify(Model model, @ModelAttribute UserSession userSession, @PathVariable("requestId") String requestId) {
 
@@ -246,6 +254,9 @@ public class WipController {
         WhWip daoData = daoSelect.getWipByRmsInterval(tripTicket, intervals);
         String checkQty = daoData.getQuantity();
         String status = daoData.getStatus();
+        String loadDate = daoData.getLoadDate();
+        String unloadDate = daoData.getUnloadDate();
+        
         daoData.setShipQuantity(quantity);
         daoData.setRegisterBy(name);
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -255,14 +266,18 @@ public class WipController {
         args = new String[2];
         args[0] = tripTicket + " [" + intervals + "]";
         args[1] = " [LIMIT to " + checkQty + " pcs] ";
-        
+
         if (status == null ? checkStatus == null : status.equals(checkStatus)) {
-            WhWipDAO daoUpdate = new WhWipDAO();
             if (Integer.parseInt(checkQty) < Integer.parseInt(quantity)) {
                 redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip2", args, locale));
             } else {
-                daoUpdate.updateRegister(daoData);
-                redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.successwip1", args, locale));
+                if (loadDate != null && unloadDate == null) {
+                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip4", args, locale));
+                } else {
+                    WhWipDAO daoUpdate = new WhWipDAO();
+                    daoUpdate.updateRegister(daoData);
+                    redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.successwip1", args, locale));
+                }
             }
         } else if (status == null ? checkStatus == null : status.equalsIgnoreCase(checkReady)) {
             redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.errorwip3", args, locale));
@@ -319,7 +334,7 @@ public class WipController {
         String name = userSession.getFullname();
         updateRunningNumber(shippingList);
         sendCsvWipShipping(shippingList, shipDate, name);
-        sendEmailShipWip();
+        sendEmailShipWip(shippingList);
         LOGGER.info("********************** WIP SHIPPED END **********************");
 
         return "redirect:/whWip/viewPdf/" + shippingList;
@@ -348,7 +363,7 @@ public class WipController {
 
         return new ModelAndView("wipShipping", "shippingList", shippingList);
     }
-    
+
     @RequestMapping(value = "/history", method = RequestMethod.GET)
     public String logHistory(Model model, @ModelAttribute UserSession userSession) {
 
@@ -357,13 +372,11 @@ public class WipController {
         model.addAttribute("wipData", wipData);
         return "whWip/list_history";
     }
-    
+
     @RequestMapping(value = "/listProcess", method = RequestMethod.GET)
     public String whListProcess(Model model, @ModelAttribute UserSession userSession) {
 
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-//        String status = pdao.getDetailByCode(NEW + "','" + RECEIVE);
-//        pdao = new ParameterDetailsDAO();
         String statusVerified = pdao.getDetailByCode(VERIFY);
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWhWipByStatus(statusVerified);
@@ -371,7 +384,7 @@ public class WipController {
         model.addAttribute("status", statusVerified);
         return "whWip/list_process";
     }
-    
+
     @RequestMapping(value = "/loadWip/{id}", method = RequestMethod.GET)
     public String whLoadWip(Model model, @ModelAttribute UserSession userSession, @PathVariable("id") String id) {
 
@@ -380,7 +393,7 @@ public class WipController {
         model.addAttribute("wipData", data);
         return "whWip/wip_load";
     }
-    
+
     @RequestMapping(value = "/unloadWip/{id}", method = RequestMethod.GET)
     public String whUnloadWip(Model model, @ModelAttribute UserSession userSession, @PathVariable("id") String id) {
 
@@ -388,6 +401,43 @@ public class WipController {
         WhWip data = dao.getWhWipByRequestId(id);
         model.addAttribute("wipData", data);
         return "whWip/wip_unload";
+    }
+
+    @RequestMapping(value = "/updateProcess/{maklumat}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String updateWipProcess(Model model, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttrs, @ModelAttribute UserSession userSession,
+            @PathVariable("maklumat") String maklumat,
+            @RequestParam(required = false) String requestId,
+            @RequestParam(required = false) String loadDate,
+            @RequestParam(required = false) String unloadDate) throws IOException {
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip wip = dao.getWhWipByRequestId(requestId);
+        String rmsEvent = wip.getRmsEvent();
+        
+        switch (maklumat) {
+            case "loading":
+                // update statement
+                dao = new WhWipDAO();
+                dao.updateProcess(maklumat, loadDate, requestId);
+                // csv files sent to inform loading time
+                sendCsvLoading(requestId);
+                // email to inform loading time
+                sendEmailLoading(rmsEvent, loadDate);
+                break;
+            case "unloading":
+                // update statstement
+                dao = new WhWipDAO();
+                dao.updateProcess(maklumat, unloadDate, requestId);
+                // csv files sent to inform unloading time
+                sendCsvUnloading(requestId);
+                // email to inform unloading time
+                sendEmailUnloading(rmsEvent, unloadDate);
+                break;
+            default:
+                throw new AssertionError();
+        }
+
+        return "redirect:/whWip/listProcess";
     }
 
     // INI SUDAH TIDAK DIGUNAKAN, SBB DA MASUK KE DALAM TO LIST
@@ -579,27 +629,73 @@ public class WipController {
 
     private void sendEmailVerifyWip(String gtsNo) {
 
-//        String username = System.getProperty("user.name");
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         EmailSender send = new EmailSender();
         String subject = "WIP Received from Rel Lab";
         String msg = tableWipReceive(gtsNo);
-        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
-        LOGGER.info("SEND RECEIVED WIP EMAIL TO : " + receiver);
+        String msg1 = "";
+//        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
+        send.wipEmail(servletContext, username, receiver, subject, msg, "VERIFY");
+        send = new EmailSender();
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "VERIFY");
     }
 
-    private void sendEmailShipWip() {
+    private void sendEmailShipWip(String shipList) {
 
-//        String username = System.getProperty("user.name");
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         EmailSender send = new EmailSender();
         String subject = "WIP is Shipped to Rel Lab SF";
-        String msg = "WIP is shipped to Rel Lab from Sg Gadut";
-        send.wipEmailShip(servletContext, username, receiver, subject, msg);
-        LOGGER.info("SEND SHIPPED WIP EMAIL TO : " + receiver);
+        String msg1 = "WIP is shipped to Rel Lab from Sg Gadut";
+        String msg2 = tableWipShip(shipList);
+//        send.wipEmailShip(servletContext, username, receiver, subject, msg);
+        send.wipEmail(servletContext, username, receiver, subject, msg2, "SHIP");
+        send = new EmailSender();
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "SHIP");
     }
+    
+    private void sendEmailLoading(String rmsEvent, String date) {
+        
+        String username = "All";
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String subject = "Loading WIP " + rmsEvent + "";
+        String message = "RMS Event " + rmsEvent + " is Loading at " + tukarFormatDate01(date);
+        // email sent to rel lab user
+        EmailSender send = new EmailSender();
+        send.wipEmail(servletContext, username, receiver, subject, message, "LOAD");
+        // email sent to system (with csv)
+        send = new EmailSender();
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "LOAD");
+    }
+    
+    private void sendEmailUnloading(String rmsEvent, String date) {
+        
+        String username = "All";
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String subject = "Unloading WIP " + rmsEvent + "";
+        String message = "RMS Event " + rmsEvent + " is Unloading at " + tukarFormatDate01(date);
+        // email sent to rel lab user
+        EmailSender send = new EmailSender();
+        send.wipEmail(servletContext, username, receiver, subject, message, "UNLOAD");
+        // email sent to system (with csv)
+        send = new EmailSender();
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "UNLOAD");
+    }
+
+    // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - START
+    private String[] getEmailList() {
+        ArrayList<String> To = new ArrayList<String>();
+        WhWipDAO tlD = new WhWipDAO();
+        List<User> toList = tlD.getAllUser();
+        for (User to : toList) {
+            To.add(to.getEmail());
+        }
+        String[] myArrayTo = new String[To.size()];
+        String[] emailTo = To.toArray(myArrayTo);
+        return emailTo;
+    }
+    // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - END
 
     private void sendCsvForVerify(String gtsNo) {
 
@@ -768,6 +864,135 @@ public class WipController {
         }
     }
 
+    private void sendCsvLoading(String requestId) {
+        File file = new File(FILEPATHLOAD);
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip wip = dao.getWhWipByRequestId(requestId);
+
+//        wip.setId(wip);
+        FileWriter fileWriter = null;
+        String date1 = wip.getLoadDate();
+
+        if (file.exists()) {
+            try {
+                fileWriter = new FileWriter(FILEPATHLOAD, true);
+
+                //New Line after the header
+                fileWriter.append(LINE_SEPARATOR);
+                fileWriter.append(wip.getRequestId());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(date1);
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append("");
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append("loading");
+                System.out.println("Update existing to CSV file Succeed!!!");
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            } finally {
+                try {
+                    fileWriter.close();
+                } catch (IOException ie) {
+                    System.out.println("Error occured while closing the fileWriter");
+                    ie.printStackTrace();
+                }
+            }
+        } else {
+            try {
+                fileWriter = new FileWriter(FILEPATHLOAD, true);
+                //Adding the header
+                fileWriter.append(HEADERLOAD);
+
+                //New Line after the header
+                fileWriter.append(LINE_SEPARATOR);
+                fileWriter.append(wip.getRequestId());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(date1);
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append("");
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append("loading");
+                System.out.println("Write new to CSV file Succeed!!!");
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            } finally {
+                try {
+                    fileWriter.close();
+                } catch (IOException ie) {
+                    System.out.println("Error occured while closing the fileWriter");
+                    ie.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private void sendCsvUnloading(String requestId) {
+        File file = new File(FILEPATHUNLOAD);
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip wip = dao.getWhWipByRequestId(requestId);
+
+//        wip.setId(wip);
+        FileWriter fileWriter = null;
+        String date1 = wip.getLoadDate();
+        String date2 = wip.getUnloadDate();
+
+        if (file.exists()) {
+            try {
+                fileWriter = new FileWriter(FILEPATHUNLOAD, true);
+
+                //New Line after the header
+                fileWriter.append(LINE_SEPARATOR);
+                fileWriter.append(wip.getRequestId());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(date2);
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append(date2);
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append("loading");
+                System.out.println("Update existing to CSV file Succeed!!!");
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            } finally {
+                try {
+                    fileWriter.close();
+                } catch (IOException ie) {
+                    System.out.println("Error occured while closing the fileWriter");
+                    ie.printStackTrace();
+                }
+            }
+        } else {
+            try {
+                fileWriter = new FileWriter(FILEPATHUNLOAD, true);
+                //Adding the header
+                fileWriter.append(HEADERLOAD);
+
+                //New Line after the header
+                fileWriter.append(LINE_SEPARATOR);
+                fileWriter.append(wip.getRequestId());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(date2);
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append(date2);
+//                fileWriter.append(COMMA_DELIMITER);
+//                fileWriter.append("loading");
+                System.out.println("Write new to CSV file Succeed!!!");
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            } finally {
+                try {
+                    fileWriter.close();
+                } catch (IOException ie) {
+                    System.out.println("Error occured while closing the fileWriter");
+                    ie.printStackTrace();
+                }
+            }
+        }
+
+    }
+
     private String tableWipReceive(String gtsNo) {
         WhWipDAO wipdao = new WhWipDAO();
         List<WhWip> listWip = wipdao.getWipByGtsNo(gtsNo);
@@ -808,19 +1033,59 @@ public class WipController {
         text = text + "</table>";
         return text;
     }
-
+    
     private String tableWipShip(String shipList) {
+        WhWipDAO wipdao = new WhWipDAO();
+        List<WhWip> listWip = wipdao.getAllWipByShipList(shipList);
+        
+        String requestId = "";
+        String shipDate = "";
+        String rmsEvent = "";
+        String intervals = "";
+        String quantity = "";
         String text = "<table width='90%'><tr>"
                 + "<th><span>No</span></th>"
-                + "<th><span>Request ID</span></th><th><span>RMS Event</span></th>"
+                + "<th><span>Request ID</span></th>"
+                + "<th><span>RMS Event</span></th>"
                 + "<th><span>Intervals</span></th>"
                 + "<th><span>Quantity</span></th>"
-                + "<th><span>Receive Date</span></th>"
-                + "<th><span>Verify Date</span></th>"
+                + "<th><span>Shipment Date</span></th>"
                 + "</tr>";
-        
+
+        for (int i = 0; i < listWip.size(); i++) {
+            requestId = listWip.get(i).getRequestId();
+            rmsEvent = listWip.get(i).getRmsEvent();
+            intervals = listWip.get(i).getIntervals();
+            quantity = listWip.get(i).getShipQuantity();
+            shipDate = listWip.get(i).getShipDate();
+            int index = i + 1;
+            text = text + "<tr align = \"center\">";
+            text = text + "<td>" + index + "</td>";
+            text = text + "<td>" + requestId + "</td>";
+            text = text + "<td>" + rmsEvent + "</td>";
+            text = text + "<td>" + intervals + "</td>";
+            text = text + "<td>" + quantity + "</td>";
+            text = text + "<td>" + shipDate + "</td>";
+            text = text + "</tr>";
+        }
         text = text + "</table>";
         return text;
+    }
+    
+    private String tukarFormatDate01(String date) {
+        // 01 August 2023 11:00:00 AM
+        LocalDateTime dateTime = LocalDateTime.parse(date);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss a");
+        String formattedDateTime = formatter.format(dateTime);
+        return formattedDateTime;
+    }
+    
+    private String tukarFormatDate02(String date) {
+        // 01 August 2023 23:00:00 - 24hour format
+        LocalDateTime dateTime = LocalDateTime.parse(date);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss");
+        String formattedDateTime = formatter.format(dateTime);
+        return formattedDateTime;
     }
 
 }

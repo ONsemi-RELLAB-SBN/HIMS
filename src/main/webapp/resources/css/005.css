@@ -104,3 +104,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 .bx-shield-minus:hover {
     color: red; 
 }
+
+.td, .checkstatus:hover {
+    color:white;
+    background-color: black;
+}

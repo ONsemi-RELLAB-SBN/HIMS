@@ -39,6 +39,7 @@ public class FtpWip {
     ServletContext servletContext;
 
     String fileLocation = "";
+    String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
     String filename = "cdars_wip_shipping.csv";
 
 //    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
@@ -47,7 +48,6 @@ public class FtpWip {
     //active but not needed
     public void cronRun() {
         String username = System.getProperty("user.name");
-        String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();

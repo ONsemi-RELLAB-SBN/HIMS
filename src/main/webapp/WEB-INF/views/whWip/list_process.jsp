@@ -38,11 +38,6 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">WIP Information - Process</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
-                                    <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
-                                </a>
-                            </div>-->
                             <div class="filter-block pull-right"></div>
                         </div>
                         <hr/>
@@ -91,7 +86,7 @@
                                             <td><c:out value="${whWip.shipmentDate}"/></td>
                                             
                                             <c:if test="${empty whWip.loadDate}">
-                                                <td><c:out value="${whWip.status}"/></td>
+                                                <td class="checkstatus"><c:out value="${whWip.status}"/></td>
                                                 <td>
                                                     <a href="${contextPath}/whWip/loadWip/${whWip.requestId}">
                                                         <i class='bx bx-upload bx-lg bx-fw' ></i> LOAD WIP
@@ -101,12 +96,12 @@
                                             </c:if>
                                             <c:if test="${not empty whWip.loadDate}">
                                                 <c:if test="${not empty whWip.unloadDate}">
-                                                    <td>WIP UNLOADING</td>
+                                                    <td class="checkstatus">WIP UNLOADING</td>
                                                     <td>${whWip.loadDate}</td>
                                                     <td>${whWip.unloadDate}</td>
                                                 </c:if>
                                                 <c:if test="${empty whWip.unloadDate}">
-                                                    <td>WIP LOADING</td>
+                                                    <td class="checkstatus">WIP LOADING</td>
                                                     <td>${whWip.loadDate}</td>
                                                     <td>
                                                         <a href="${contextPath}/whWip/unloadWip/${whWip.requestId}">

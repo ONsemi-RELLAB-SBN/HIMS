@@ -5,6 +5,7 @@
 package com.onsemi.hms.dao;
 
 import com.onsemi.hms.db.DB;
+import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.model.WhWipShip;
@@ -412,6 +413,40 @@ public class WhWipDAO {
         }
         return queryResult;
     }
+    
+    public QueryResult updateProcess(String process, String date, String reqId) {
+        LOGGER.info("FUNCTION updateProcess");
+        QueryResult queryResult = new QueryResult();
+        String sql = "";
+        switch (process) {
+            case "loading":
+                sql = "UPDATE hms_wh_wip SET load_date = '"+date+"' WHERE request_id = ? ";
+                break;
+            case "unloading":
+                sql = "UPDATE hms_wh_wip SET unload_date = '"+date+"' WHERE request_id = ? ";
+                break;
+            default:
+                break;
+        }
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, reqId);
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="DELETE STATEMENT">
@@ -471,6 +506,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
             }
             rs.close();
             ps.close();
@@ -519,6 +556,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
             }
             rs.close();
             ps.close();
@@ -622,6 +661,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -672,6 +713,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 whShipping.setDataAll(rs.getString("sub_data"));
                 wipList.add(whShipping);
             }
@@ -723,6 +766,61 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setDataAll(rs.getString("sub_data"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
+    public List<WhWip> getAllWipByShipList(String shipList) {
+        LOGGER.info("FUNCTION getAllWipByShipList");
+        String sql = "SELECT * FROM hms_wh_wip a WHERE a.shipping_list = '"+shipList+"%' ";
+        List<WhWip> wipList = new ArrayList<WhWip>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWip();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setStatus(rs.getString("status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setReceiveDate(rs.getString("receive_date"));
+                whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setReadyBy(rs.getString("ready_by"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
+                whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 whShipping.setDataAll(rs.getString("sub_data"));
                 wipList.add(whShipping);
             }
@@ -774,6 +872,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -824,6 +924,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -872,6 +974,8 @@ public class WhWipDAO {
                 whList.setShipBy(rs.getString("ship_by"));
                 whList.setShipQuantity(rs.getString("ship_quantity"));
                 whList.setShippingList(rs.getString("shipping_list"));
+                whList.setLoadDate(rs.getString("load_date"));
+                whList.setUnloadDate(rs.getString("unload_date"));
             }
             rs.close();
             ps.close();
@@ -923,6 +1027,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -973,6 +1079,8 @@ public class WhWipDAO {
                 whShipping.setShipBy(rs.getString("ship_by"));
                 whShipping.setShipQuantity(rs.getString("ship_quantity"));
                 whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -1086,6 +1194,36 @@ public class WhWipDAO {
             }
         }
         return wipList;
+    }
+    
+    public List<User> getAllUser() {
+        LOGGER.info("FUNCTION GET ALL USER");
+        String sql = "SELECT * FROM hms_user_profile ";
+        List<User> userList = new ArrayList<User>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            User user;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = new User();
+                user.setEmail(rs.getString("email"));
+                user.setFullname(rs.getString("fullname"));
+                userList.add(user);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return userList;
     }
 
     public Integer getCountExistingData(String id) {

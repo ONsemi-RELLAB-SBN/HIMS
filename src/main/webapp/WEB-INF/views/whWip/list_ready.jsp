@@ -26,7 +26,7 @@
                         <form id="shipping_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReadyToShip" method="post">
                             <div class="form-group">
                                 <label for="shipDate" class="col-lg-2 control-label">Shipping Date Time *</label>
-                                <div class="col-lg-12">
+                                <div class="col-lg-3">
                                     <input type="datetime-local" id="shipDate" name="shipDate" class="btn pull-right">
                                 </div>
                             </div>
