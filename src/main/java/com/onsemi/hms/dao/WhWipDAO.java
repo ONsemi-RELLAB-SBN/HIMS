@@ -5,6 +5,7 @@
 package com.onsemi.hms.dao;
 
 import com.onsemi.hms.db.DB;
+import com.onsemi.hms.model.EmailList;
 import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.WhMpList;
 import com.onsemi.hms.model.WhWip;
@@ -418,16 +419,21 @@ public class WhWipDAO {
         LOGGER.info("FUNCTION updateProcess");
         QueryResult queryResult = new QueryResult();
         String sql = "";
-        switch (process) {
-            case "loading":
-                sql = "UPDATE hms_wh_wip SET load_date = '"+date+"' WHERE request_id = ? ";
-                break;
-            case "unloading":
-                sql = "UPDATE hms_wh_wip SET unload_date = '"+date+"' WHERE request_id = ? ";
-                break;
-            default:
-                break;
+        if (process.equalsIgnoreCase("loading")) {
+            sql = "UPDATE hms_wh_wip SET load_date = '"+date+"' WHERE request_id = ? ";
+        } else if (process.equalsIgnoreCase("unloading")) {
+            sql = "UPDATE hms_wh_wip SET unload_date = '"+date+"' WHERE request_id = ? ";
         }
+//        switch (process) {
+//            case "loading":
+//                sql = "UPDATE hms_wh_wip SET load_date = '"+date+"' WHERE request_id = ? ";
+//                break;
+//            case "unloading":
+//                sql = "UPDATE hms_wh_wip SET unload_date = '"+date+"' WHERE request_id = ? ";
+//                break;
+//            default:
+//                break;
+//        }
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, reqId);
@@ -789,8 +795,9 @@ public class WhWipDAO {
     
     public List<WhWip> getAllWipByShipList(String shipList) {
         LOGGER.info("FUNCTION getAllWipByShipList");
-        String sql = "SELECT * FROM hms_wh_wip a WHERE a.shipping_list = '"+shipList+"%' ";
+        String sql = "SELECT * FROM hms_wh_wip a WHERE a.shipping_list = '"+shipList+"' ";
         List<WhWip> wipList = new ArrayList<WhWip>();
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             WhWip whShipping;
@@ -821,7 +828,6 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
-                whShipping.setDataAll(rs.getString("sub_data"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -1412,8 +1418,39 @@ public class WhWipDAO {
         }
         return count;
     }
+    
+    public List<EmailList> getUserToInform(String task) {
+        LOGGER.info("FUNCTION getUserToInform");
+        String sql = "SELECT * FROM hms_email_list WHERE task = '"+task+"' ";
+        List<EmailList> userList = new ArrayList<EmailList>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            EmailList user;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = new EmailList();
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                userList.add(user);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return userList;
+    }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="FUNCTION">
     public static LocalDate getDateFromString(String string, DateTimeFormatter format) {
         LOGGER.info("FUNCTION getDateFromString");
         // Converting the string to date
@@ -1422,5 +1459,6 @@ public class WhWipDAO {
         // Returning the converted date
         return date;
     }
-
+    //</editor-fold>
+    
 }

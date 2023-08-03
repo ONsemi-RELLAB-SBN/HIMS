@@ -39,7 +39,8 @@ public class FtpWip {
     ServletContext servletContext;
 
     String fileLocation = "";
-    String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
+//    String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
+    String targetLocation = "D:\\HIMS_CSV\\RL\\";
     String filename = "cdars_wip_shipping.csv";
 
 //    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??

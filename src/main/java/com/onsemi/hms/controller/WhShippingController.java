@@ -27,11 +27,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +64,8 @@ public class WhShippingController {
     private static final String LINE_SEPARATOR = "\n";
 //    private static final String HEADER = "request id,material pass no,date verified,verified by,shipping date,shipping by,status";
     private static final String HEADER = "request id,box no,date verified,verified by,shipping date,shipping by,status";
-    private static final String PATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
+    private static final String PATHSHIP = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
+//    private static final String PATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String whShipping(
@@ -82,11 +80,10 @@ public class WhShippingController {
     @RequestMapping(value = "/edit/{whShippingId}", method = RequestMethod.GET)
     public String edit(
             Model model,
-            @PathVariable("whShippingId") String whShippingId
-    ) {
+            @PathVariable("whShippingId") String whShippingId) {
+        
         WhShippingDAO whShippingDAO = new WhShippingDAO();
         WhShipping whShipping = whShippingDAO.getWhShippingMergeWithRequest(whShippingId);
-        LOGGER.info("whShipping.getEquipmentType() : " + whShipping.getEquipmentType());
 
         String type = whShipping.getEquipmentType();
         if ("Motherboard".equals(type)) {
@@ -115,25 +112,22 @@ public class WhShippingController {
             HttpServletRequest request,
             @PathVariable("whShippingId") String whShippingId
     ) throws UnsupportedEncodingException {
-//        LOGGER.info("Masuk view 1........");
+
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewWhShippingPdf/" + whShippingId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whShipping";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware Shipping");
-//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
 
     @RequestMapping(value = "/viewWhShippingPdf/{whShippingId}", method = RequestMethod.GET)
     public ModelAndView viewWhShippingPdf(
             Model model,
-            @PathVariable("whShippingId") String whShippingId
-    ) {
+            @PathVariable("whShippingId") String whShippingId ) {
+        
         WhShippingDAO whShippingDAO = new WhShippingDAO();
-//        LOGGER.info("Masuk 1........");
         WhShipping whShipping = whShippingDAO.getWhShippingMergeWithRequest(whShippingId);
-//        LOGGER.info("Masuk 2........");
         return new ModelAndView("whShippingPdf", "whShipping", whShipping);
     }
 
@@ -143,25 +137,22 @@ public class WhShippingController {
             HttpServletRequest request,
             @PathVariable("whShippingId") String whShippingId
     ) throws UnsupportedEncodingException {
-//        LOGGER.info("Masuk view 1........");        
+
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewWhShippingLogPdf/" + whShippingId, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whShipping";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware Shipping History");
-//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
 
     @RequestMapping(value = "/viewWhShippingLogPdf/{whShippingId}", method = RequestMethod.GET)
     public ModelAndView viewWhShippingHistPdf(
             Model model,
-            @PathVariable("whShippingId") String whShippingId
-    ) {
+            @PathVariable("whShippingId") String whShippingId) {
+        
         WhShippingDAO whShippingDAO = new WhShippingDAO();
-//        LOGGER.info("Masuk 1........");
         List<WhShippingLog> whHistoryList = whShippingDAO.getWhShippingReqLog(whShippingId);
-//        LOGGER.info("Masuk 2........");
         return new ModelAndView("whShippingLogPdf", "whShippingLog", whHistoryList);
     }
 
@@ -185,8 +176,8 @@ public class WhShippingController {
             @RequestParam(required = false) String requestedBy,
             @RequestParam(required = false) String inventoryRack,
             @RequestParam(required = false) String inventoryShelf,
-            @RequestParam(required = false) String status
-    ) {
+            @RequestParam(required = false) String status) {
+        
         String query = "";
         int count = 0;
 
@@ -428,7 +419,7 @@ public class WhShippingController {
                     WhMpListDAO whListDao = new WhMpListDAO();
                     WhMpList mplist = whListDao.getWhMpListMergeWithShippingAndRequest(whship.getRequestId());
                     if (file.exists()) { //create csv file                        
-                        LOGGER.info("tiada header");
+//                        LOGGER.info("tiada header");
                         FileWriter fileWriter = null;
                         FileReader fileReader = null;
                         try {
@@ -443,7 +434,7 @@ public class WhShippingController {
                             boolean check = false;
                             int row = 0;
                             while (data != null) {
-                                LOGGER.info("start reading file..........");
+//                                LOGGER.info("start reading file..........");
                                 buff.append(data).append(System.getProperty("line.separator"));
 //                                System.out.println("dataaaaaaaaa : \n" + data);
 
@@ -455,7 +446,7 @@ public class WhShippingController {
                                 );
 
                                 if (split[0].equals(mplist.getRequestId())) {
-                                    LOGGER.info(row + " : request Id found...................." + data);
+//                                    LOGGER.info(row + " : request Id found...................." + data);
                                     CSV csv = new CSV();
                                     csv.open(new File(targetLocation));
                                     csv.put(4, row, mplist.getCreatedDate());
@@ -507,7 +498,7 @@ public class WhShippingController {
                         FileWriter fileWriter = null;
                         try {
                             fileWriter = new FileWriter(PATHSHIP);
-                            LOGGER.info("no file yet");
+//                            LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);
 
@@ -629,24 +620,21 @@ public class WhShippingController {
             Model model,
             HttpServletRequest request
     ) throws UnsupportedEncodingException {
-//        LOGGER.info("Masuk view 1........");        
+
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wh/whShipping/viewPackingListPdf", "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wh/whShipping/packingList";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", "Hardware Packing List From SBN Factory to Rel Lab ON Semiconductor");
-//        LOGGER.info("Masuk view 2........");
         return "pdf/viewer";
     }
 
     @RequestMapping(value = "/viewPackingListPdf", method = RequestMethod.GET)
     public ModelAndView viewPackingListPdf(
-            Model model
-    ) {
+            Model model) {
+        
         WhMpListDAO whMpListDAO = new WhMpListDAO();
-        LOGGER.info("Masuk 1........");
         List<WhMpList> packingList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
-        LOGGER.info("Masuk 2........");
         return new ModelAndView("packingListPdf", "packingList", packingList);
     }
 
@@ -654,8 +642,8 @@ public class WhShippingController {
     public String deleteAll(
             Model model,
             Locale locale,
-            RedirectAttributes redirectAttrs
-    ) {
+            RedirectAttributes redirectAttrs) {
+        
         WhMpListDAO whMpListDAO = new WhMpListDAO();
         QueryResult queryResult = whMpListDAO.deleteAllWhMpList();
         args = new String[1];

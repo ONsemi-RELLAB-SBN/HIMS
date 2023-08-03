@@ -35,7 +35,7 @@ public class FtpInventory {
 
     String fileLocation = "";
 
-//    @Scheduled(cron = "0 */5 * * * ?") //every 5 minutes - cron (sec min hr daysOfMth month daysOfWeek year(optional)) active
+    @Scheduled(cron = "0 */5 * * * ?") //every 5 minutes - cron (sec min hr daysOfMth month daysOfWeek year(optional)) active
     public void cronRun() {
         LOGGER.info("SINI MASUK KE HIMS CRON JOB - RUN");
         String username = System.getProperty("user.name");

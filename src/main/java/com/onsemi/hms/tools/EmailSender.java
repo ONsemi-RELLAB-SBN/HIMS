@@ -36,12 +36,17 @@ public class EmailSender extends SpringBeanAutowiringSupport {
 //    private final String logoPath = "/resources/img/cdars_logo.png";
     private final String logoPath = "/resources/img/warehouse.png";
 
-    private static final String emailTest = "zbqb9x@onsemi.com";
-    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
-    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
-    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
-    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
+//    private static final String emailTest = "zbqb9x@onsemi.com";
+    private static final String FILEPATH        = "D:\\HIMS_CSV\\RL\\cdars_wip_shipping.csv";
+    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
+    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
+    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
+    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
+//    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
+//    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+//    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
+//    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
+//    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
 
     @Autowired
     private JavaMailSender mailSender;
@@ -936,22 +941,34 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String username = System.getProperty("user.name");
                     String filePath = "";
                     
-                    switch (mode) {
-                        case "VERIFY":
-                            filePath = FILEPATHVERIFY;
-                            break;
-                        case "SHIP":
-                            filePath = FILEPATHSHIP;
-                            break;
-                        case "LOAD":
-                            filePath = FILEPATHLOAD;
-                            break;
-                        case "UNLOAD":
-                            filePath = FILEPATHUNLOAD;
-                            break;
-                        default:
-                            break;
+                    if (mode.equalsIgnoreCase("VERIFY")) {
+                        filePath = FILEPATHVERIFY;
+                    } else if (mode.equalsIgnoreCase("SHIP")) {
+                        filePath = FILEPATHSHIP;
+                    } else if (mode.equalsIgnoreCase("LOAD")) {
+                        filePath = FILEPATHLOAD;
+                    } else if (mode.equalsIgnoreCase("UNLOAD")) {
+                        filePath = FILEPATHUNLOAD;
+                    } else if (mode.equalsIgnoreCase("")) {
+                        
                     }
+                    
+//                    switch (mode) {
+//                        case "VERIFY":
+//                            filePath = FILEPATHVERIFY;
+//                            break;
+//                        case "SHIP":
+//                            filePath = FILEPATHSHIP;
+//                            break;
+//                        case "LOAD":
+//                            filePath = FILEPATHLOAD;
+//                            break;
+//                        case "UNLOAD":
+//                            filePath = FILEPATHUNLOAD;
+//                            break;
+//                        default:
+//                            break;
+//                    }
                     
                     File file = new File(filePath);
 
