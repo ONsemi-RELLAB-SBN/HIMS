@@ -37,6 +37,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     private final String logoPath = "/resources/img/warehouse.png";
 
 //    private static final String emailTest = "zbqb9x@onsemi.com";
+    private static final String FILEPATHsh      = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
     private static final String FILEPATH        = "D:\\HIMS_CSV\\RL\\cdars_wip_shipping.csv";
     private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
     private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
@@ -685,7 +686,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String username = System.getProperty("user.name");
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 //                    File file = new File("C:\\HIMS_CSV\\SF\\hms_shipping.csv");
-                    File file = new File(FILEPATH);
+                    File file = new File(FILEPATHsh);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
