@@ -368,7 +368,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("C:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     htmlEmail.setFrom(email.getSender());
