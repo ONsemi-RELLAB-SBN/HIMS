@@ -1100,5 +1100,32 @@ public class WipController {
         String formattedDateTime = formatter.format(dateTime);
         return formattedDateTime;
     }
+    
+    @RequestMapping(value = "/testSendEmail", method = {RequestMethod.GET, RequestMethod.POST})
+    public String emailTest(
+            Model model,
+            HttpServletRequest request,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession
+    ) throws IOException {
+
+        //send email
+        LOGGER.info("send email to warehouse");
+        System.out.println("######################### START EMAIL PROCESS ########################### ");
+        System.out.println("\n******************* EMAIL CDARS *******************");
+        //sent to cdars
+//                    String[] to = {"cdarsrel@gmail.com"};
+        String[] receiver = {"hims@onsemi.com"};
+        EmailSender emailSenderCsv = new EmailSender();
+        emailSenderCsv.htmlEmailWithAttachmentTest(
+                servletContext,
+                "CDARS", //user name
+                receiver, //to
+                "Status for Hardware Shipping from HIMS SF", //subject
+                "Verification and status for Hardware Shipping has been made." //msg
+        );
+        return "redirect:/wh/to";
+    }
 
 }
