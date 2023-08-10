@@ -66,20 +66,20 @@ public class WipController {
     private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
     private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
 
-    private static final String STATUSCODE = "01";
-    private static final String NEW = "0101";
-    private static final String RECEIVE = "0102";
-    private static final String VERIFY = "0103";
-    private static final String REGISTER = "0104";
-    private static final String READY = "0105";
-    private static final String SHIP = "0106";
+    private static final String STATUSCODE  = "01";
+    private static final String NEW         = "0101";
+    private static final String RECEIVE     = "0102";
+    private static final String VERIFY      = "0103";
+    private static final String REGISTER    = "0104";
+    private static final String READY       = "0105";
+    private static final String SHIP        = "0106";
 
     private static final String COMMA_DELIMITER = ",";
-    private static final String LINE_SEPARATOR = "\n";
-    private static final String HEADER = "Column1, Column2, Column3, Column4";
-    private static final String HEADERSHIP = "RequestID,RMSEvent,Intervals,Quantity,ShipmentDate";
-    private static final String HEADERVERIFY = "RequestID,ReceiveDate,VerifyDate,Status";
-    private static final String HEADERLOAD = "RequestID,Date";
+    private static final String LINE_SEPARATOR  = "\n";
+    private static final String HEADER          = "Column1, Column2, Column3, Column4";
+    private static final String HEADERSHIP      = "RequestID,RMSEvent,Intervals,Quantity,ShipmentDate";
+    private static final String HEADERVERIFY    = "RequestID,ReceiveDate,VerifyDate,Status";
+    private static final String HEADERLOAD      = "RequestID,Date";
 
     @Autowired
     private MessageSource messageSource;
@@ -259,7 +259,7 @@ public class WipController {
         String status = daoData.getStatus();
         String loadDate = daoData.getLoadDate();
         String unloadDate = daoData.getUnloadDate();
-        
+
         daoData.setShipQuantity(quantity);
         daoData.setRegisterBy(name);
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -416,7 +416,7 @@ public class WipController {
         WhWipDAO dao = new WhWipDAO();
         WhWip wip = dao.getWhWipByRequestId(requestId);
         String rmsEvent = wip.getRmsEvent();
-        
+
         if (maklumat.equalsIgnoreCase("loading")) {
             dao = new WhWipDAO();
             dao.updateProcess(maklumat, loadDate, requestId);
@@ -433,44 +433,9 @@ public class WipController {
             // email to inform unloading time
             sendEmailUnloading(rmsEvent, unloadDate);
         }
-        
-//        switch (maklumat) {
-//            case "loading":
-//                // update statement
-//                dao = new WhWipDAO();
-//                dao.updateProcess(maklumat, loadDate, requestId);
-//                // csv files sent to inform loading time
-//                sendCsvLoading(requestId);
-//                // email to inform loading time
-//                sendEmailLoading(rmsEvent, loadDate);
-//                break;
-//            case "unloading":
-//                // update statstement
-//                dao = new WhWipDAO();
-//                dao.updateProcess(maklumat, unloadDate, requestId);
-//                // csv files sent to inform unloading time
-//                sendCsvUnloading(requestId);
-//                // email to inform unloading time
-//                sendEmailUnloading(rmsEvent, unloadDate);
-//                break;
-//            default:
-//                throw new AssertionError();
-//        }
-
         return "redirect:/whWip/listProcess";
     }
 
-    // INI SUDAH TIDAK DIGUNAKAN, SBB DA MASUK KE DALAM TO LIST
-//    @RequestMapping(value = "/listShip", method = RequestMethod.GET)
-//    public String whShipList(Model model, @ModelAttribute UserSession userSession) {
-//        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-//        String status = pdao.getDetailByCode(REGISTER);
-//        WhWipDAO dao = new WhWipDAO();
-//        List<WhWip> wipList = dao.getWhWipByStatus(status);
-//        model.addAttribute("wipList", wipList);
-//        return "whWip/list_ship";
-//    }
-    
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String query(
             Model model,
@@ -592,6 +557,7 @@ public class WipController {
         return "whWip/search_shipping";
     }
 
+    //<editor-fold defaultstate="collapsed" desc="FUNCTION">
     private String getLatestRunningNumber() {
 
         String runningNumber = "0001";
@@ -667,7 +633,7 @@ public class WipController {
 
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
-        String[] listAdmin = getEmailList("Admin");
+        String[] listAdmin = getEmailList("Notify Ship");
         String[] listSystem = getEmailList("System");
         EmailSender send = new EmailSender();
         String subject = "WIP is Shipped to Rel Lab";
@@ -678,9 +644,9 @@ public class WipController {
         send = new EmailSender();
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIP");
     }
-    
+
     private void sendEmailLoading(String rmsEvent, String date) {
-        
+
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         String[] listSystem = getEmailList("System");
@@ -694,9 +660,9 @@ public class WipController {
         send = new EmailSender();
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, message, "LOAD");
     }
-    
+
     private void sendEmailUnloading(String rmsEvent, String date) {
-        
+
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         String[] listSystem = getEmailList("System");
@@ -723,7 +689,7 @@ public class WipController {
         String[] emailTo = To.toArray(myArrayTo);
         return emailTo;
     }
-    
+
     private String[] getEmailList(String task) {
         ArrayList<String> To = new ArrayList<String>();
         WhWipDAO dao = new WhWipDAO();
@@ -813,7 +779,6 @@ public class WipController {
     private void sendCsvWipShipping(String shippingList, String shipDate, String username) {
 
         File file = new File(FILEPATHSHIP);
-
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String statusReady = pdao.getDetailByCode(READY);
         pdao = new ParameterDetailsDAO();
@@ -905,12 +870,12 @@ public class WipController {
     }
 
     private void sendCsvLoading(String requestId) {
-        File file = new File(FILEPATHLOAD);
 
+        File file = new File(FILEPATHLOAD);
+        FileWriter fileWriter = null;
         WhWipDAO dao = new WhWipDAO();
         WhWip wip = dao.getWhWipByRequestId(requestId);
 
-        FileWriter fileWriter = null;
         String date1 = wip.getLoadDate();
 
         if (file.exists()) {
@@ -951,17 +916,15 @@ public class WipController {
                 }
             }
         }
-
     }
 
     private void sendCsvUnloading(String requestId) {
-        File file = new File(FILEPATHUNLOAD);
 
+        File file = new File(FILEPATHUNLOAD);
+        FileWriter fileWriter = null;
         WhWipDAO dao = new WhWipDAO();
         WhWip wip = dao.getWhWipByRequestId(requestId);
 
-        FileWriter fileWriter = null;
-        String date1 = wip.getLoadDate();
         String date2 = wip.getUnloadDate();
 
         if (file.exists()) {
@@ -1002,10 +965,10 @@ public class WipController {
                 }
             }
         }
-
     }
 
     private String tableWipReceive(String gtsNo) {
+        
         WhWipDAO wipdao = new WhWipDAO();
         List<WhWip> listWip = wipdao.getWipByGtsNo(gtsNo);
 
@@ -1017,7 +980,6 @@ public class WipController {
         String quantity = "";
         String text = "<table width='90%'><tr>"
                 + "<th><span>No</span></th>"
-//                + "<th><span>Request ID</span></th>"
                 + "<th><span>RMS Event</span></th>"
                 + "<th><span>Intervals</span></th>"
                 + "<th><span>Quantity</span></th>"
@@ -1026,7 +988,6 @@ public class WipController {
                 + "</tr>";
 
         for (int i = 0; i < listWip.size(); i++) {
-//            requestId = listWip.get(i).getRequestId();
             rmsEvent = listWip.get(i).getRmsEvent();
             intervals = listWip.get(i).getIntervals();
             quantity = listWip.get(i).getQuantity();
@@ -1035,7 +996,6 @@ public class WipController {
             int index = i + 1;
             text = text + "<tr align = \"center\">";
             text = text + "<td>" + index + "</td>";
-//            text = text + "<td>" + requestId + "</td>";
             text = text + "<td>" + rmsEvent + "</td>";
             text = text + "<td>" + intervals + "</td>";
             text = text + "<td>" + quantity + "</td>";
@@ -1046,19 +1006,18 @@ public class WipController {
         text = text + "</table>";
         return text;
     }
-    
+
     private String tableWipShip(String shipList) {
+        
         WhWipDAO wipdao = new WhWipDAO();
         List<WhWip> listWip = wipdao.getAllWipByShipList(shipList);
-        
-        String requestId = "";
+
         String shipDate = "";
         String rmsEvent = "";
         String intervals = "";
         String quantity = "";
         String text = "<table width='90%'><tr>"
                 + "<th><span>No</span></th>"
-//                + "<th><span>Request ID</span></th>"
                 + "<th><span>RMS Event</span></th>"
                 + "<th><span>Intervals</span></th>"
                 + "<th><span>Quantity</span></th>"
@@ -1066,7 +1025,6 @@ public class WipController {
                 + "</tr>";
 
         for (int i = 0; i < listWip.size(); i++) {
-//            requestId = listWip.get(i).getRequestId();
             rmsEvent = listWip.get(i).getRmsEvent();
             intervals = listWip.get(i).getIntervals();
             quantity = listWip.get(i).getShipQuantity();
@@ -1074,7 +1032,6 @@ public class WipController {
             int index = i + 1;
             text = text + "<tr align = \"center\">";
             text = text + "<td>" + index + "</td>";
-//            text = text + "<td>" + requestId + "</td>";
             text = text + "<td>" + rmsEvent + "</td>";
             text = text + "<td>" + intervals + "</td>";
             text = text + "<td>" + quantity + "</td>";
@@ -1084,7 +1041,7 @@ public class WipController {
         text = text + "</table>";
         return text;
     }
-    
+
     private String tukarFormatDate01(String date) {
         // 01 August 2023 11:00:00 AM
         LocalDateTime dateTime = LocalDateTime.parse(date);
@@ -1092,7 +1049,7 @@ public class WipController {
         String formattedDateTime = formatter.format(dateTime);
         return formattedDateTime;
     }
-    
+
     private String tukarFormatDate02(String date) {
         // 01 August 2023 23:00:00 - 24hour format
         LocalDateTime dateTime = LocalDateTime.parse(date);
@@ -1100,32 +1057,6 @@ public class WipController {
         String formattedDateTime = formatter.format(dateTime);
         return formattedDateTime;
     }
-    
-    @RequestMapping(value = "/testSendEmail", method = {RequestMethod.GET, RequestMethod.POST})
-    public String emailTest(
-            Model model,
-            HttpServletRequest request,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession
-    ) throws IOException {
-
-        //send email
-        LOGGER.info("send email to warehouse");
-        System.out.println("######################### START EMAIL PROCESS ########################### ");
-        System.out.println("\n******************* EMAIL CDARS *******************");
-        //sent to cdars
-//                    String[] to = {"cdarsrel@gmail.com"};
-        String[] receiver = {"hims@onsemi.com"};
-        EmailSender emailSenderCsv = new EmailSender();
-        emailSenderCsv.htmlEmailWithAttachmentTest(
-                servletContext,
-                "CDARS", //user name
-                receiver, //to
-                "Status for Hardware Shipping from HIMS SF", //subject
-                "Verification and status for Hardware Shipping has been made." //msg
-        );
-        return "redirect:/wh/to";
-    }
+    //</editor-fold>
 
 }
