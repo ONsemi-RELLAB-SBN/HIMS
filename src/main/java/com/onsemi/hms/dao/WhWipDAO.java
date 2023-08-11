@@ -1461,4 +1461,150 @@ public class WhWipDAO {
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="FUNCTION EMAIL TASK LIST">
+    public List<EmailList> getEmailListAll() {
+        LOGGER.info("FUNCTION getEmailListAll");
+        String sql = "SELECT * FROM hms_email_list ";
+        List<EmailList> userList = new ArrayList<EmailList>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            EmailList user;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = new EmailList();
+                user.setId(rs.getString("id"));
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                user.setTask(rs.getString("task"));
+                userList.add(user);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return userList;
+    }
+    
+    public EmailList getEmailListById(String id) {
+        LOGGER.info("FUNCTION getEmailListById");
+        String sql = "SELECT * FROM hms_email_list WHERE id = '"+id+"'";
+        EmailList emailList = new EmailList();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                emailList.setId(rs.getString("id"));
+                emailList.setUsername(rs.getString("username"));
+                emailList.setEmail(rs.getString("email"));
+                emailList.setTask(rs.getString("task"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return emailList;
+    }
+    
+    public QueryResult addEmailList(EmailList list) {
+        LOGGER.info("FUNCTION addEmailList");
+        QueryResult queryResult = new QueryResult();
+        try {
+            String sql = "INSERT INTO hms_email_list (username, email, task) VALUES (?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, list.getUsername());
+            ps.setString(2, list.getEmail());
+            ps.setString(3, list.getTask());
+            queryResult.setResult(ps.executeUpdate());
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    
+    public QueryResult updateEmailList(EmailList list) {
+        LOGGER.info("FUNCTION updateEmailList");
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_email_list "
+                    + "SET username = ?, email = ?, task = ? "
+                    + "WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, list.getUsername());
+            ps.setString(2, list.getEmail());
+            ps.setString(3, list.getTask());
+            ps.setString(4, list.getId());
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    
+    public QueryResult removeEmailList(String id) {
+        LOGGER.info("FUNCTION removeEmailList");
+        QueryResult queryResult = new QueryResult();
+        try {
+            String sql = "DELETE FROM hms_email_list WHERE id = '" + id + "'";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    //</editor-fold>
+    
 }

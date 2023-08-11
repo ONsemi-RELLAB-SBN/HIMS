@@ -19,6 +19,7 @@ public class ParameterDetails {
     private String createdDate;
     private String modifiedBy;
     private String modifiedDate;
+    private String selected;
 
     public String getId() {
         return id;
@@ -89,6 +90,38 @@ public class ParameterDetails {
     }
 
     public void setModifiedDate(String modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
+    }
+    
+    public ParameterDetails() {
+
+    }
+    
+    public ParameterDetails(String id, String masterCode, String detailCode, String value, String selected) {
+        this.id = id;
+        this.masterCode = masterCode;
+        this.detailCode = detailCode;
+        this.value = value;
+        this.selected = selected;
+    }
+
+    public ParameterDetails(String id, String masterCode, String detailCode, String value, String remark, String createdBy, String createdDate, String modifiedBy, String modifiedDate) {
+        this.id = id;
+        this.masterCode = masterCode;
+        this.detailCode = detailCode;
+        this.value = value;
+        this.remark = remark;
+        this.createdBy = createdBy;
+        this.createdDate = createdDate;
+        this.modifiedBy = modifiedBy;
         this.modifiedDate = modifiedDate;
     }
 

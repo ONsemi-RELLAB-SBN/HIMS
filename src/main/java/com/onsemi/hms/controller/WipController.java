@@ -15,6 +15,7 @@ import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
 import com.onsemi.hms.model.WhWipShip;
 import com.onsemi.hms.tools.EmailSender;
+import com.onsemi.hms.tools.QueryResult;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -73,6 +74,7 @@ public class WipController {
     private static final String REGISTER    = "0104";
     private static final String READY       = "0105";
     private static final String SHIP        = "0106";
+    private static final String EMAILTASK   = "02";
 
     private static final String COMMA_DELIMITER = ",";
     private static final String LINE_SEPARATOR  = "\n";
@@ -219,7 +221,6 @@ public class WipController {
             sendEmailVerifyWip(gtsno);
             LOGGER.info("********************** WIP VERIFIED END **********************");
         }
-
         return "redirect:/whWip/listNew";
     }
 
@@ -556,6 +557,119 @@ public class WipController {
         model.addAttribute("data", shipList);
         return "whWip/search_shipping";
     }
+    
+    //<editor-fold defaultstate="collapsed" desc="EMAIL LIST FUNCTION">
+    @RequestMapping(value = "/emailList", method = RequestMethod.GET)
+    public String emailList(Model model, @ModelAttribute UserSession userSession) {
+
+        WhWipDAO dao = new WhWipDAO();
+        List<EmailList> wipList = dao.getEmailListAll();
+        model.addAttribute("emailList", wipList);
+        return "whWip/email_list";
+    }
+    
+    @RequestMapping(value = "/emailList/add", method = RequestMethod.GET)
+    public String addEmailList(Model model) {
+
+        ParameterDetailsDAO parameterDetailsDAO = new ParameterDetailsDAO();
+        List<ParameterDetails> parameterDetailsList = parameterDetailsDAO.getStatusParameter(EMAILTASK);
+        model.addAttribute("statusList", parameterDetailsList);
+        return "whWip/email_list_add";
+    }
+    
+    @RequestMapping(value = "/addEmailList", method = RequestMethod.POST)
+    public String addEmailList(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String task) {
+
+        EmailList list = new EmailList();
+        list.setUsername(username);
+        list.setEmail(email);
+        list.setTask(task);
+        WhWipDAO dao = new WhWipDAO();
+        QueryResult qr = dao.addEmailList(list);
+        args = new String[1];
+        args[0] = username + " [" + email + "]";
+        if (qr.getGeneratedKey().equals("0")) {
+            model.addAttribute("error", messageSource.getMessage("general.label.save.error", args, locale));
+            model.addAttribute("emailList", list);
+            return "whWip/email_list_add";
+        } else {
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.save.success", args, locale));
+            return "redirect:/whWip/emailList/edit/" + qr.getGeneratedKey();
+        }
+    }
+    
+    @RequestMapping(value = "/emailList/edit/{id}", method = RequestMethod.GET)
+    public String editEmailList(Model model, @PathVariable("id") String id) {
+
+        WhWipDAO dao = new WhWipDAO();
+        EmailList list = dao.getEmailListById(id);
+        model.addAttribute("emailList", list);
+        
+        ParameterDetailsDAO parameterDetailsDAO = new ParameterDetailsDAO();
+        List<ParameterDetails> parameterDetailsList = parameterDetailsDAO.getTaskParameter(EMAILTASK, list.getTask());
+        model.addAttribute("statusList", parameterDetailsList);
+        return "whWip/email_list_edit";
+    }
+    
+    @RequestMapping(value = "/updateEmailList", method = RequestMethod.POST)
+    public String updateEmailList(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String task) {
+
+        EmailList list = new EmailList();
+        list.setId(id);
+        list.setUsername(username);
+        list.setEmail(email);
+        list.setTask(task);
+        WhWipDAO dao = new WhWipDAO();
+        QueryResult queryResult = dao.updateEmailList(list);
+        args = new String[1];
+        args[0] = username + " [" + email + "]";
+        if (queryResult.getResult() == 1) {
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.update.success", args, locale));
+        } else {
+            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.update.error", args, locale));
+        }
+        return "redirect:/whWip/emailList/edit/" + id;
+    }
+
+    @RequestMapping(value = "/emailList/remove/{id}", method = RequestMethod.GET)
+    public String removeEmailList(
+            Model model,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @PathVariable("id") String id) {
+
+        WhWipDAO dao = new WhWipDAO();
+        EmailList email = dao.getEmailListById(id);
+        String data = email.getEmail();
+        dao = new WhWipDAO();
+        QueryResult qr = dao.removeEmailList(id);
+        args = new String[1];
+        args[0] = data;
+        if (qr.getResult() == null) {
+            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.delete.error", args, locale));
+        } else if (qr.getResult() == 1) {
+            redirectAttrs.addFlashAttribute("success", messageSource.getMessage("general.label.delete.success", args, locale));
+        } else {
+            redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.delete.error", args, locale));
+        }
+        return "redirect:/whWip/emailList";
+    }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="FUNCTION">
     private String getLatestRunningNumber() {
