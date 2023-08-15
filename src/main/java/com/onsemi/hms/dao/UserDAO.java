@@ -48,8 +48,8 @@ public class UserDAO {
                 ps.setString(2, user.getFullname());
                 ps.setString(3, user.getEmail());
                 ps.executeUpdate();
-                ps.close();
             }
+            ps.close();
         } catch (SQLException e) {
             queryResult.setErrorMessage(e.getMessage());
             LOGGER.error(e.getMessage());
