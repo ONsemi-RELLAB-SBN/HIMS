@@ -27,12 +27,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class FtpWip {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpWip.class);
-    private static final String NEW = "0101";
-    private static final String RECEIVE = "0102";
-    private static final String VERIFY = "0103";
-    private static final String REGISTER = "0104";
-    private static final String READY = "0105";
-    private static final String SHIP = "0106";
+    private static final String NEW         = "0101";
+    private static final String RECEIVE     = "0102";
+    private static final String VERIFY      = "0103";
+    private static final String REGISTER    = "0104";
+    private static final String READY       = "0105";
+    private static final String SHIP        = "0106";
     String[] args = {};
 
     @Autowired
@@ -48,6 +48,8 @@ public class FtpWip {
     //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional)) 
     //active but not needed
     public void cronRun() {
+        
+        LOGGER.info("FTPWIP.java - cronRun");
         String username = System.getProperty("user.name");
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();

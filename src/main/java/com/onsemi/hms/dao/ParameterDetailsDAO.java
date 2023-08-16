@@ -35,6 +35,7 @@ public class ParameterDetailsDAO {
     }
 
     public QueryResult insertParameterDetails(ParameterDetails parameterDetails) {
+        LOGGER.info("FUNCTION insertParameterDetails");
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
@@ -99,6 +100,7 @@ public class ParameterDetailsDAO {
     */
 
     public QueryResult deleteParameterDetails(String parameterDetailsId) {
+        LOGGER.info("FUNCTION deleteParameterDetails");
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
@@ -122,6 +124,7 @@ public class ParameterDetailsDAO {
     }
 
     public ParameterDetails getParameterDetails(String parameterDetailsId) {
+        LOGGER.info("FUNCTION getParameterDetails");
         String sql = "SELECT * FROM hms_parameter_details WHERE id = '" + parameterDetailsId + "'";
         ParameterDetails parameterDetails = null;
         try {
@@ -156,6 +159,7 @@ public class ParameterDetailsDAO {
     }
 
     public List<ParameterDetails> getParameterDetailsList() {
+        LOGGER.info("FUNCTION getParameterDetailsList");
         String sql = "SELECT * FROM hms_parameter_details ORDER BY id ASC";
         List<ParameterDetails> parameterDetailsList = new ArrayList<ParameterDetails>();
         try {
@@ -192,6 +196,7 @@ public class ParameterDetailsDAO {
     }
 
     public String getNextDetailCode(String masterCode) {
+        LOGGER.info("FUNCTION getNextDetailCode");
         String sql = "SELECT LPAD(IFNULL(MAX(m.detail_code)+1, CONCAT('" + masterCode + "','001')),6,'0') AS code "
                     + " FROM hms_parameter_details m "
                     + " WHERE m.master_code = '" + masterCode + "'";
@@ -219,6 +224,7 @@ public class ParameterDetailsDAO {
     }
 
     public QueryResult removeDetailsByMasterCode(String masterCode) {
+        LOGGER.info("FUNCTION removeDetailsByMasterCode");
         QueryResult queryResult = new QueryResult();
         try {
             PreparedStatement ps = conn.prepareStatement(
@@ -242,6 +248,7 @@ public class ParameterDetailsDAO {
     }
 
     public Integer getCountByMasterCode(String masterCode) {
+        LOGGER.info("FUNCTION getCountByMasterCode");
         Integer count = null;
         String sql = "SELECT count(id) AS count FROM hms_parameter_details WHERE master_code = '" + masterCode + "'";
         try {
@@ -301,6 +308,7 @@ public class ParameterDetailsDAO {
     */
     
     public List<ParameterDetails> getParameterDetailsListByMasterCode(String masterCode) {
+        LOGGER.info("FUNCTION getParameterDetailsListByMasterCode");
         String sql = "SELECT * FROM hms_parameter_details WHERE master_code = '" + masterCode + "' ORDER BY id ASC";
         List<ParameterDetails> parameterDetailsList = new ArrayList<ParameterDetails>();
         try {
@@ -337,6 +345,7 @@ public class ParameterDetailsDAO {
     }
     
     public List<ParameterDetails> getStatusParameter(String masterCode) {
+        LOGGER.info("FUNCTION getStatusParameter");
         String sql = "SELECT value, detail_code FROM hms_parameter_details WHERE master_code = '" + masterCode + "' ORDER BY id ASC";
         List<ParameterDetails> parameterDetailsList = new ArrayList<ParameterDetails>();
         try {
@@ -366,6 +375,7 @@ public class ParameterDetailsDAO {
     }
     
     public List<ParameterDetails> getTaskParameter(String masterCode, String name) {
+        LOGGER.info("FUNCTION getTaskParameter");
         String sql = "SELECT id, master_code, value, detail_code, IF(value=\"" + name + "\",\"selected=''\",\"\") AS selected FROM hms_parameter_details WHERE master_code = '" + masterCode + "' ORDER BY id ASC";
         List<ParameterDetails> taskList = new ArrayList<ParameterDetails>();
         try {
@@ -399,6 +409,7 @@ public class ParameterDetailsDAO {
     }
     
     public String getDetailByCode (String code) {
+        LOGGER.info("FUNCTION getDetailByCode");
         String value = "";
         String sql = "SELECT GROUP_CONCAT(value SEPARATOR '\\',\\'') as value FROM hms_parameter_details WHERE detail_code IN ('"+code+"')";
         try {

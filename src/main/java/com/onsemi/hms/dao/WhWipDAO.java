@@ -31,12 +31,12 @@ import org.slf4j.LoggerFactory;
 public class WhWipDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhWipDAO.class);
-    private static final String NEW = "0101";
-    private static final String RECEIVE = "0102";
-    private static final String VERIFY = "0103";
-    private static final String REGISTER = "0104";
-    private static final String READY = "0105";
-    private static final String SHIP = "0106";
+    private static final String NEW         = "0101";
+    private static final String RECEIVE     = "0102";
+    private static final String VERIFY      = "0103";
+    private static final String REGISTER    = "0104";
+    private static final String READY       = "0105";
+    private static final String SHIP        = "0106";
 
     private final Connection conn;
     private final DataSource dataSource;

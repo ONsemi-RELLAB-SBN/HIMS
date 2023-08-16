@@ -546,10 +546,10 @@ public class WipController {
     public String searchShipping(Model model, @ModelAttribute UserSession userSession, @RequestParam(required = false) String shipList) {
 
         WhWipDAO dao = new WhWipDAO();
-        List<WhWip> wipList = dao.getWipByShipDateAll();
+        List<WhWip> list = dao.getWipByShipDateAll();
         dao = new WhWipDAO();
-        wipList = dao.getWipByShipDate(shipList);
-        model.addAttribute("shipList", wipList);
+        List<WhWip> wipList = dao.getWipByShipDate(shipList);
+        model.addAttribute("shipList", list);
         model.addAttribute("wipList", wipList);
         model.addAttribute("data", shipList);
         return "whWip/search_shipping";
