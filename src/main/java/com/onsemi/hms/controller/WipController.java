@@ -113,7 +113,7 @@ public class WipController {
     @RequestMapping(value = "/to", method = RequestMethod.GET)
     public String whToList(Model model, @ModelAttribute UserSession userSession) {
 
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+//        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         WhWipDAO dao = new WhWipDAO();
 
         LocalDateTime myDateObj = LocalDateTime.now();
@@ -340,7 +340,6 @@ public class WipController {
         sendCsvWipShipping(shippingList, shipDate, name);
         sendEmailShipWip(shippingList);
         LOGGER.info("********************** WIP SHIPPED END **********************");
-
         return "redirect:/whWip/viewPdf/" + shippingList;
     }
 
@@ -529,7 +528,6 @@ public class WipController {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         List<ParameterDetails> statusList = pdao.getStatusParameter(STATUSCODE);
         model.addAttribute("statusList", statusList);
-
         model.addAttribute("shippingList", shippingList);
         model.addAttribute("gtsNo", gtsNo);
         model.addAttribute("rmsEvent", rmsEvent);
@@ -541,7 +539,6 @@ public class WipController {
         model.addAttribute("receivedDate2", receivedDate2);
         model.addAttribute("shipDate1", shipDate1);
         model.addAttribute("shipDate2", shipDate2);
-
         return "whWip/query";
     }
 
@@ -551,8 +548,8 @@ public class WipController {
         WhWipDAO dao = new WhWipDAO();
         List<WhWip> wipList = dao.getWipByShipDateAll();
         dao = new WhWipDAO();
-        model.addAttribute("shipList", wipList);
         wipList = dao.getWipByShipDate(shipList);
+        model.addAttribute("shipList", wipList);
         model.addAttribute("wipList", wipList);
         model.addAttribute("data", shipList);
         return "whWip/search_shipping";
@@ -694,11 +691,9 @@ public class WipController {
         } else {
             // THE RUNNING NUMBER FOR THE MONTH ALREADY EXIST, JUST UPDATE THE RUNNING NUMBER
             int data = Integer.parseInt(checkLatest);
-            dao = new RunningNumberDAO();
             runningNumber = String.format("%04d", data + 1);
         }
         runningNumber = year + month + runningNumber;
-
         return runningNumber;
     }
 
@@ -730,15 +725,15 @@ public class WipController {
     private void sendEmailVerifyWip(String gtsNo) {
 
         String username = "All";
-        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         String[] listReceive = getEmailList("Notify Receive");
         String[] listSystem = getEmailList("System");
-        EmailSender send = new EmailSender();
         String subject = "WIP Received from Rel Lab";
         String msg = tableWipReceive(gtsNo);
         String msg1 = "";
-//        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
+        EmailSender send = new EmailSender();
         send.wipEmail(servletContext, username, listReceive, subject, msg, "VERIFY");
+//        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
         send = new EmailSender();
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "VERIFY");
     }
@@ -746,15 +741,15 @@ public class WipController {
     private void sendEmailShipWip(String shipList) {
 
         String username = "All";
-        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         String[] listAdmin = getEmailList("Notify Ship");
         String[] listSystem = getEmailList("System");
-        EmailSender send = new EmailSender();
         String subject = "WIP is Shipped to Rel Lab";
         String msg1 = "WIP is shipped to Rel Lab from Sg Gadut";
         String msg2 = tableWipShip(shipList);
-//        send.wipEmailShip(servletContext, username, receiver, subject, msg);
+        EmailSender send = new EmailSender();
         send.wipEmail(servletContext, username, listAdmin, subject, msg2, "SHIP");
+//        send.wipEmailShip(servletContext, username, receiver, subject, msg);
         send = new EmailSender();
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIP");
     }
@@ -762,7 +757,7 @@ public class WipController {
     private void sendEmailLoading(String rmsEvent, String date) {
 
         String username = "All";
-        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         String[] listSystem = getEmailList("System");
         String[] listLoad = getEmailList("Notify Loading");
         String subject = "Loading WIP " + rmsEvent + "";
@@ -778,7 +773,7 @@ public class WipController {
     private void sendEmailUnloading(String rmsEvent, String date) {
 
         String username = "All";
-        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
         String[] listSystem = getEmailList("System");
         String[] listLoad = getEmailList("Notify Loading");
         String subject = "Unloading WIP " + rmsEvent + "";
@@ -1086,7 +1081,6 @@ public class WipController {
         WhWipDAO wipdao = new WhWipDAO();
         List<WhWip> listWip = wipdao.getWipByGtsNo(gtsNo);
 
-        String requestId = "";
         String receiveDate = "";
         String verifyDate = "";
         String rmsEvent = "";

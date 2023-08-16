@@ -48,6 +48,7 @@ public class UserDAO {
                 ps.setString(2, user.getFullname());
                 ps.setString(3, user.getEmail());
                 ps.executeUpdate();
+                ps.close();
             }
             ps.close();
         } catch (SQLException e) {
@@ -100,7 +101,7 @@ public class UserDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateGroup(String userId, String groupId) {
         QueryResult queryResult = new QueryResult();
         try {
@@ -125,7 +126,7 @@ public class UserDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult deleteUser(String userId) {
         QueryResult queryResult = new QueryResult();
         try {
@@ -197,8 +198,6 @@ public class UserDAO {
         }
         return user;
     }
-
-    
 
     public List<User> getUserList(String groupId) {
         String filterGroupId = "";
@@ -273,7 +272,7 @@ public class UserDAO {
         }
         return count;
     }
-    
+
     //profile use
     public User getUserByLoginId(String loginId) {
         String sql = "SELECT u.*, IFNULL(ug.code, '') AS group_code, IFNULL(ug.name, '') AS group_name, up.fullname, up.email FROM hms_user u "
@@ -315,7 +314,7 @@ public class UserDAO {
         }
         return user;
     }
-    
+
     public QueryResult updatePassword(User user) {
         QueryResult queryResult = new QueryResult();
         try {
@@ -341,12 +340,12 @@ public class UserDAO {
         }
         return queryResult;
     }
-    
+
     public UserAccess getUserDetails(String userId) {
         String sql = "SELECT * "
-                   + "FROM hms_user u, hms_user_group g, hms_user_profile p "
-                   + "WHERE u.id = p.user_id AND u.group_id = g.id AND u.id = '" + userId + "' "
-                   + "ORDER BY u.id ASC ";
+                + "FROM hms_user u, hms_user_group g, hms_user_profile p "
+                + "WHERE u.id = p.user_id AND u.group_id = g.id AND u.id = '" + userId + "' "
+                + "ORDER BY u.id ASC ";
         UserAccess userAccess = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -388,4 +387,5 @@ public class UserDAO {
         }
         return userAccess;
     }
+
 }
