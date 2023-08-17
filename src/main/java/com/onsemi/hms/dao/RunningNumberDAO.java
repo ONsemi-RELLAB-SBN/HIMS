@@ -120,9 +120,6 @@ public class RunningNumberDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 value = rs.getString("running_number");
-//                run.setRunningNumber(rs.getString("running_number"));
-//                run.setYear(rs.getString("year"));
-//                run.setMonth(rs.getString("month"));
                 value = year + month + rs.getString("running_number");
             }
             rs.close();
