@@ -37,18 +37,18 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     private final String logoPath = "/resources/img/warehouse.png";
 
 //    private static final String emailTest = "zbqb9x@onsemi.com";
-    private static final String FILESHIPPING    = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
-    private static final String FILEPATH        = "D:\\HIMS_CSV\\RL\\cdars_wip_shipping.csv";
-    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
-    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
-    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
-    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
-//    private static final String FILESHIPPING    = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
-//    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
-//    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-//    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
-//    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
-//    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
+//    private static final String FILESHIPPING    = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
+//    private static final String FILEPATH        = "D:\\HIMS_CSV\\RL\\cdars_wip_shipping.csv";
+//    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
+//    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
+//    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
+//    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
+    private static final String FILESHIPPING    = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
+    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
+    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
+    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
+    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
 
     @Autowired
     private JavaMailSender mailSender;

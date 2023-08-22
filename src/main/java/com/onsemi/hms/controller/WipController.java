@@ -13,6 +13,7 @@ import com.onsemi.hms.model.ParameterDetails;
 import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
+import com.onsemi.hms.model.WhWip0;
 import com.onsemi.hms.model.WhWipShip;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
@@ -56,16 +57,16 @@ public class WipController {
     String[] args = {};
 
 //    private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
-//    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-//    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-//    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
-//    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
-//    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
-    private static final String FILEPATH        = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
-    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
-    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
-    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
-    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
+    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
+    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
+    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
+//    private static final String FILEPATH        = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
+//    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
+//    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
+//    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
+//    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
 
     private static final String STATUSCODE  = "01";
     private static final String NEW         = "0101";
@@ -74,6 +75,8 @@ public class WipController {
     private static final String REGISTER    = "0104";
     private static final String READY       = "0105";
     private static final String SHIP        = "0106";
+    private static final String INVENTORY   = "0107";
+    private static final String REQUEST     = "0108";
     private static final String EMAILTASK   = "02";
 
     private static final String COMMA_DELIMITER = ",";
@@ -89,16 +92,29 @@ public class WipController {
     @Autowired
     ServletContext servletContext;
 
+    //<editor-fold defaultstate="collapsed" desc="MANUAL SYNC">
     @RequestMapping(value = "/sync", method = {RequestMethod.GET, RequestMethod.POST})
     public String manualsync(Model model) {
 
         LOGGER.info(" ********************** START MANUAL READING FILES **********************");
         FtpWip wip = new FtpWip();
-        wip.cronRun();
+        wip.readWipShipping();
         LOGGER.info(" ********************** COMPLETE MANUAL READING FILES **********************");
         return "redirect:/whWip/listNew";
     }
+    
+    @RequestMapping(value = "/sync0hour", method = {RequestMethod.GET, RequestMethod.POST})
+    public String manualsync0hour(Model model) {
 
+        LOGGER.info(" ********************** START MANUAL READING FILES 0 HOURS **********************");
+        FtpWip wip = new FtpWip();
+        wip.readWip0Hours();
+        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES 0 HOURS **********************");
+        return "redirect:/whWip0/list_from_rellab";
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="WIP MODULE">
     @RequestMapping(value = "/from", method = RequestMethod.GET)
     public String whFromList(Model model, @ModelAttribute UserSession userSession) {
 
@@ -554,6 +570,7 @@ public class WipController {
         model.addAttribute("data", shipList);
         return "whWip/search_shipping";
     }
+    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="EMAIL LIST FUNCTION">
     @RequestMapping(value = "/emailList", method = RequestMethod.GET)
@@ -665,6 +682,116 @@ public class WipController {
             redirectAttrs.addFlashAttribute("error", messageSource.getMessage("general.label.delete.error", args, locale));
         }
         return "redirect:/whWip/emailList";
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="WIP for 0 hours">
+    @RequestMapping(value = "/0hour_from", method = RequestMethod.GET)
+    public String whList01(Model model, @ModelAttribute UserSession userSession) {
+
+        LOGGER.info("MASUK KE LIST ASAL UNTUK 0 HOURS");
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+//        String status = pdao.getDetailByCode(NEW);
+        String status = pdao.getDetailByCode(NEW + "','" + VERIFY);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip0> wipList = dao.getWip0ByStatus(status);
+        
+        LOGGER.info("LOGGER for wip list : " +wipList.size());
+        
+        LocalDateTime myDateObj = LocalDateTime.now();
+        String monthyear = myDateObj.getMonth().toString() + " " + myDateObj.getYear();
+        
+        pdao = new ParameterDetailsDAO();
+        String statusVerify = pdao.getDetailByCode(VERIFY);
+        
+        LOGGER.info("LOGGER for status        : " +status);
+        LOGGER.info("LOGGER for statusReceive : " +statusVerify);
+        
+        model.addAttribute("wipList", wipList);
+        model.addAttribute("monthyear", monthyear);
+        model.addAttribute("status", statusVerify);
+        return "whWip0/list_from_rellab";
+    }
+    
+    @RequestMapping(value = "/0hour_scan", method = RequestMethod.GET)
+    public String whList02(Model model, @ModelAttribute UserSession userSession) {
+
+        WhWipDAO dao = new WhWipDAO();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(READY);
+        List<WhWip0> wipList = dao.getWip0ByStatus(status);
+        model.addAttribute("wipList", wipList);
+        return "whWip0/list_scan";
+    }
+    
+    @RequestMapping(value = "/updateScanGts", method = RequestMethod.POST)
+    public String whFunction01(
+            Model model,
+            HttpServletRequest request,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String gtsNo) throws IOException {
+
+        String columnDate = "verify_date";
+        String columnBy = "verify_by";
+        String flag = "verify";
+        String name = userSession.getFullname();
+        WhWipDAO daoUpdate = new WhWipDAO();
+        daoUpdate.updateStatus0hourByGts(columnDate, columnBy, gtsNo, flag, name);
+        return "redirect:/whWip/0hour_from";
+    }
+    
+    @RequestMapping(value = "/0hour_register/{requestId}", method = RequestMethod.GET)
+    public String whList03(Model model, @ModelAttribute UserSession userSession, @PathVariable("requestId") String requestId) {
+
+        WhWipDAO dao = new WhWipDAO();
+        WhWip0 data = dao.getWhWip0hourByRequestId(requestId);
+        model.addAttribute("wipData", data);
+        return "whWip0/list_register";
+    }
+    
+    @RequestMapping(value = "/0hourUpdateRegister", method = RequestMethod.POST)
+    public String whFunction02(
+            Model model,
+            HttpServletRequest request,
+            Locale locale,
+            RedirectAttributes redirectAttrs,
+            @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String requestId,
+            @RequestParam(required = false) String gtsNo,
+            @RequestParam(required = false) String rack,
+            @RequestParam(required = false) String shelf) throws IOException {
+
+        LOGGER.info("LOGGER for requestId : " +requestId);
+        LOGGER.info("LOGGER for gtsNo : " +gtsNo);
+        LOGGER.info("LOGGER for rack : " +rack);
+        LOGGER.info("LOGGER for shelf : " +shelf);
+//        String columnDate = "verify_date";
+//        String columnBy = "verify_by";
+//        String flag = "verify";
+//        String name = userSession.getFullname();
+//        WhWipDAO daoUpdate = new WhWipDAO();
+//        daoUpdate.updateStatus0hourByGts(columnDate, columnBy, gtsNo, flag, name);
+        return "redirect:/whWip/0hour_from";
+    }
+    
+    @RequestMapping(value = "/0hour_xxx", method = RequestMethod.GET)
+    public String whList06(Model model, @ModelAttribute UserSession userSession) {
+
+        return "whWip0/list_xxx";
+    }
+    
+    @RequestMapping(value = "/0hour_xxx4", method = RequestMethod.GET)
+    public String whList04(Model model, @ModelAttribute UserSession userSession) {
+
+        return "whWip0/list_xxx";
+    }
+    
+    @RequestMapping(value = "/0hour_xxx5", method = RequestMethod.GET)
+    public String whList05(Model model, @ModelAttribute UserSession userSession) {
+
+        return "whWip0/list_xxx";
     }
     //</editor-fold>
 

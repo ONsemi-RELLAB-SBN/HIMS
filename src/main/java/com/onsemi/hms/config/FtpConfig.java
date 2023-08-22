@@ -44,7 +44,8 @@ public class FtpConfig {
     public void cronRun() {
         LOGGER.info("MASUK KE FUNCTION CRON JOB - HMS");
         String username = System.getProperty("user.name");
-        String targetLocation = "D:\\HIMS_CSV\\RL\\";
+//        String targetLocation = "D:\\HIMS_CSV\\RL\\";
+        String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
 
