@@ -1,6 +1,6 @@
 <%-- 
-    Document   : list_from_rellab
-    Created on : Aug 21, 2023, 3:21:47 PM
+    Document   : list_requested
+    Created on : Aug 24, 2023, 12:21:18 PM
     Author     : zbqb9x
 --%>
 
@@ -37,12 +37,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Shipment from Rel Lab - 0 Hours WIP Information [ ${monthyear} ]</h2>
-                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wip0hour/scan" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
-                                    <i class='bx bx-scan bx-fw' ></i> Scan GTS No
-                                </a>
-                            </div>
+                            <h2 class="pull-left">WIP Request List </h2>
                             <div class="filter-block pull-right">
                             </div>
                         </div>
@@ -72,29 +67,29 @@
                                         <th><span>No</span></th>
                                         <th><span>GTS NO</span></th>
                                         <th><span>RMS Event</span></th>
-                                        <th><span>Shipment Date</span></th>
+                                        <!--<th><span>Shipment Date</span></th>-->
                                         <th><span>Status</span></th>
-                                        <th><span>Register</span></th>
+                                        <th><span>Register to Ship</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${wipList}" var="wipList" varStatus="whLoop">
+                                    <c:forEach items="${wipData}" var="wipList" varStatus="whLoop">
                                         <tr>
                                             <td><c:out value="${whLoop.index+1}"/></td>
                                             <td><c:out value="${wipList.gtsNo}"/></td>
                                             <td><c:out value="${wipList.rmsEvent}"/></td>
-                                            <td><c:out value="${wipList.shipmentDate}"/></td>
+                                            <!--<td><c:out value="${wipList.shipmentDate}"/></td>-->
                                             <c:choose>
                                                 <c:when test="${wipList.wipStatus == status}">
                                                     <td><c:out value="${wipList.wipStatus}"/></td>
                                                     <td>
-                                                        <a href="${contextPath}/wip0hour/register/${wipList.requestId}" class="table-button" title="Register">
+                                                        <a href="${contextPath}/wip0hour/pageToShip/${wipList.requestId}" class="table-button" title="Register">
                                                             <i class='bx bx-edit bx-lg bx-fw'></i>
                                                         </a>
                                                     </td>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td colspan='2'><c:out value="${wipList.wipStatus}"/></td>
+                                                    <td colspan='2'><c:out value="${wipList.wipStatus} - ${status}"/></td>
                                                     <td hidden='true'></td>
                                                 </c:otherwise>
                                             </c:choose>

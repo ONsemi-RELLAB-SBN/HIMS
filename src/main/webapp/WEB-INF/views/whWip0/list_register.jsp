@@ -37,7 +37,7 @@
                 <div class="col-lg-8">
                     <div class="main-box">
                         <h2>WIP Information - Register WIP Inventory</h2>
-                        <form id="wip_register_form" class="form-horizontal" role="form" action="${contextPath}/whWip/0hourUpdateRegister/${wipData.requestId}" method="post">
+                        <form id="wip_register_form" class="form-horizontal" role="form" action="${contextPath}/whWip/0hourUpdateRegister" method="post">
                             <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
@@ -85,9 +85,7 @@
                             <div class="form-group">
                             </div>
                             <div id = "alert_placeholder2"></div>
-                            <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
                             <a href="${contextPath}/whWip/0hour_from" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
-                            <!--<a href="${contextPath}/whWip/0hourUpdateRegister" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>-->
                             <div class="pull-right">
                                 <button type="submit" id="verify" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-log-in-circle bx-md bx-fw' style='color:#ffffff' ></i> Register</button>
                             </div>
@@ -96,28 +94,6 @@
                     </div>
                 </div>
             </div>
-                            
-<!--            <div class="row">
-                <div class="col-lg-8">
-                    <div class="main-box">
-                        <h2>Scan Trip Ticket</h2>
-                        <form id="wip_verification_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateVerify" method="post">
-                            <input type="hidden" name="requestId" value="${wipData.requestId}" />
-                            <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
-                            <div class="form-group">
-                                <label for="tripTicket" class="col-lg-3 control-label">Scan Trip Ticket *</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="tripTicket" name="tripTicket" placeholder="" value="" autofocus="autofocus">
-                                </div>
-                            </div>
-                            <div class="pull-right">
-                                <button type="submit" id="verify" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-log-in-circle bx-md bx-fw' style='color:#ffffff' ></i> Verify</button>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
-                </div>	
-            </div>-->
         </div>
         <hr class="separator">
     </s:layout-component>

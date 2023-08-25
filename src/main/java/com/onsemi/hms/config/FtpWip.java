@@ -45,7 +45,8 @@ public class FtpWip {
     String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
 //    String targetLocation = "D:\\HIMS_CSV\\RL\\";
     String filename = "cdars_wip_shipping.csv";
-    String file0hours = "shipping.csv";
+    String file0hoursRead = "shipping.csv";
+    String file0hourReq = "request.csv";
 
 //    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
 //    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
@@ -171,7 +172,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(file0hours)) {
+                    if (listOfFile.getName().equals(file0hoursRead)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {
@@ -208,7 +209,70 @@ public class FtpWip {
             }
 
         } else {
-            LOGGER.info("Folder Empty");
+            LOGGER.info("Folder new 0 hour Empty");
+        }
+    }
+    
+    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
+    public void requestWip0Hours() {
+        
+        LOGGER.info("FUNCTION requestWip0Hours");
+        File folder = new File(targetLocation);
+        File[] listOfFiles = folder.listFiles();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(REQUEST);
+        
+        if (listOfFiles != null) {
+            for (File listOfFile : listOfFiles) {
+                if (listOfFile.isFile()) {
+                    if (listOfFile.getName().equals(file0hourReq)) {
+                        fileLocation = targetLocation + listOfFile.getName();
+                        CSVReader csvReader = null;
+                        try {
+                            csvReader = new CSVReader(new FileReader(fileLocation), ',', '"', 1);
+                            String[] data = null;
+
+                            while ((data = csvReader.readNext()) != null) {
+                                WhWip0 wipdata = new WhWip0();
+                                
+                                // PLEASE UPDATE APA BENDA NK KENA UPDATE DEKAT SINI
+                                wipdata.setRequestId(data[0]);
+                                wipdata.setGtsNo(data[1]);
+                                wipdata.setRmsEvent(data[2]);
+                                wipdata.setIntervals(data[3]);
+                                wipdata.setQuantity(data[4]);
+                                wipdata.setShipmentDate(data[5]);
+                                wipdata.setWipStatus(status);
+
+                                WhWipDAO wip = new WhWipDAO();
+                                int check = wip.getCount0hoursRequest(data[0]);
+
+                                if (check == 0) {
+                                    LOGGER.info("DATA REQEUST ID  " + data[0] + " CANNOT BE REQUESTED");
+//                                    wip = new WhWipDAO();
+//                                    wip.insertWhWip0hour(wipdata);
+//                                    PTT TAKDE APA BENDA NK INSERT DEKAT SINI
+                                } else {
+                                    // request id
+                                    // status - requested
+                                    // who request it
+                                    // when dia request
+                                    // other data needed?
+                                    LOGGER.info("UPDATE DATA FOR REQUEST ID [0 HOUR] : " + data[0] + " TO REQUESTED");
+                                    wip = new WhWipDAO();
+                                    wip.requestWip0hour(status, "SYSTEM", data[0]);
+                                }
+                            }
+                        } catch (Exception ee) {
+                            LOGGER.info("Error while reading files " + filename);
+                            ee.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+        } else {
+            LOGGER.info("Folder request WIP 0 hour Empty");
         }
     }
 

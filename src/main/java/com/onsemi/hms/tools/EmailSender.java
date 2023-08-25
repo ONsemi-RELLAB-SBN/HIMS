@@ -35,20 +35,42 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     //private final String logoPath = "/resources/public/img/spml_all.png";
 //    private final String logoPath = "/resources/img/cdars_logo.png";
     private final String logoPath = "/resources/img/warehouse.png";
+    
+//    private final String FILEPATHSF = "D:\\HIMS_CSV\\SF\\";
+//    private final String FILEPATHRL = "D:\\HIMS_CSV\\RL\\";
+    private final String FILEPATHSF = "D:\\Source Code\\archive\\CSV Import\\";
+    private final String FILEPATHRL = "D:\\Source Code\\archive\\CSV Import\\";
+    
+    private final String FILEINV        = FILEPATHSF + "hms_inventory.csv";
+    private final String STRING2        = FILEPATHSF + "hms_shipping.csv";
+    private final String FILESHIPFROM   = FILEPATHRL + "cdars_wip_shipping.csv";
+    private final String FILESHIPTO     = FILEPATHSF + "hms_wip_shipping.csv";
+    private final String FILEVERIFIED   = FILEPATHSF + "hms_wip_verified.csv";
+    private final String FILELOAD       = FILEPATHSF + "hms_wip_load.csv";
+    private final String FILEUNLOAD     = FILEPATHSF + "hms_wip_unload.csv";
+    private final String FILEINVENTORY  = FILEPATHSF + "hms_wip_inventory.csv";
+    private final String FILESHIPBACK   = FILEPATHSF + "hms_wip_shipback.csv";
+    
 
 //    private static final String emailTest = "zbqb9x@onsemi.com";
+//    private static final String FILEINV         = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
 //    private static final String FILESHIPPING    = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
 //    private static final String FILEPATH        = "D:\\HIMS_CSV\\RL\\cdars_wip_shipping.csv";
 //    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
 //    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
 //    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
 //    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
-    private static final String FILESHIPPING    = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
-    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
-    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
-    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
-    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
+//    private static final String FILEPATHINVENTORY   = "D:\\HIMS_CSV\\SF\\hms_wip_***.csv";
+//    private static final String FILEPATHSHIPBACK    = "D:\\HIMS_CSV\\SF\\hms_wip_***.csv";
+//    private static final String FILEINV2            = "D:\\Source Code\\archive\\CSV Import\\hms_inventory.csv";
+//    private static final String FILESHIPPING        = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
+//    private static final String FILEPATH            = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
+//    private static final String FILEPATHSHIP        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
+//    private static final String FILEPATHVERIFY      = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
+//    private static final String FILEPATHLOAD        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
+//    private static final String FILEPATHUNLOAD      = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
+//    private static final String FILEPATHINVENTORY   = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
+//    private static final String FILEPATHSHIPBACK    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
 
     @Autowired
     private JavaMailSender mailSender;
@@ -211,7 +233,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                    File file = new File(FILEINV);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -265,7 +287,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("D:\\HIMS_CSV\\SF\\Hardware Arrival Report (" + todayDate + ").xls");
+                    File file = new File(FILEPATHSF + "Hardware Arrival Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -319,7 +341,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("D:\\HIMS_CSV\\SF\\Hardware Shipping Report (" + todayDate + ").xls");
+                    File file = new File(FILEPATHSF + "Hardware Shipping Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -370,7 +392,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                    File file = new File(STRING2);
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     htmlEmail.setFrom(email.getSender());
@@ -425,7 +447,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("D:\\HIMS_CSV\\SF\\Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
+                    File file = new File(FILEPATHSF + "Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -479,7 +501,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("D:\\HIMS_CSV\\SF\\Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls");
+                    File file = new File(FILEPATHSF + "Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -533,7 +555,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("D:\\HIMS_CSV\\SF\\Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
+                    File file = new File(FILEPATHSF + "Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -587,7 +609,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     DateFormat dateFormat = new SimpleDateFormat("ddMMMyyyy");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File("D:\\HIMS_CSV\\RL\\HIMS Upper Specs Limit Report (" + todayDate + ").xls");
+                    File file = new File(FILEPATHRL + "HIMS Upper Specs Limit Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -687,7 +709,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String username = System.getProperty("user.name");
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 //                    File file = new File("C:\\HIMS_CSV\\SF\\hms_shipping.csv");
-                    File file = new File(FILESHIPPING);
+                    File file = new File(STRING2);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -738,7 +760,8 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+//                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                    File file = new File(FILEINV);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -789,7 +812,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File(FILEPATHVERIFY);
+                    File file = new File(FILEVERIFIED);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -840,7 +863,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File(FILEPATHSHIP);
+                    File file = new File(FILESHIPTO);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -944,13 +967,17 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String filePath = "";
                     
                     if (mode.equalsIgnoreCase("VERIFY")) {
-                        filePath = FILEPATHVERIFY;
+                        filePath = FILEVERIFIED;
                     } else if (mode.equalsIgnoreCase("SHIP")) {
-                        filePath = FILEPATHSHIP;
+                        filePath = FILESHIPTO;
                     } else if (mode.equalsIgnoreCase("LOAD")) {
-                        filePath = FILEPATHLOAD;
+                        filePath = FILELOAD;
                     } else if (mode.equalsIgnoreCase("UNLOAD")) {
-                        filePath = FILEPATHUNLOAD;
+                        filePath = FILEUNLOAD;
+                    } else if (mode.equalsIgnoreCase("INVENTORY")) {
+                        filePath = FILEINVENTORY;
+                    } else if (mode.equalsIgnoreCase("SHIPBACK")) {
+                        filePath = FILESHIPBACK;
                     } else if (mode.equalsIgnoreCase("")) {
                         
                     }

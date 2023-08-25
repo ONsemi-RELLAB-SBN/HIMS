@@ -272,6 +272,70 @@ public class WhWipDAO {
         }
         return queryResult;
     }
+    
+    public QueryResult registerInventory0hour(String rack, String shelf, String status, String requestId, String username) {
+        LOGGER.info("FUNCTION registerInventory0hour");
+        QueryResult qr = new QueryResult();
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + "wip_status = ?, "
+                    + "rack = ?, "
+                    + "shelf = ?, "
+                    + "register_by = ?, "
+                    + "register_date = NOW() "
+                    + "WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, rack);
+            ps.setString(3, shelf);
+            ps.setString(4, username);
+            ps.setString(5, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
+    
+    public QueryResult requestWip0hour(String status, String requestBy, String requestId) {
+        LOGGER.info("FUNCTION requestWip0hour");
+        QueryResult qr = new QueryResult();
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + "wip_status = ?, "
+                    + "request_by = ?, "
+                    + "request_date = NOW() "
+                    + "WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, requestBy);
+            ps.setString(3, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
 
     /*
     public QueryResult updateStatus(String date, String by, String gtsNo, String data) {
@@ -664,7 +728,7 @@ public class WhWipDAO {
     
     public WhWip0 getWhWip0hourByRequestId(String requestId) {
         LOGGER.info("FUNCTION getWhWipByRequestId");
-        String sql = "SELECT * FROM hms_wh_wip WHERE request_id = '" + requestId + "'";
+        String sql = "SELECT * FROM hms_wh_wip_0 WHERE request_id = '" + requestId + "'";
         WhWip0 whShipping = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1328,8 +1392,8 @@ public class WhWipDAO {
     
     public List<WhWip0> getWip0ByStatus(String status) {
         
-//        String sql = "";
         String sql = "SELECT * FROM hms_wh_wip_0 WHERE wip_status IN ('" + status + "')";
+        LOGGER.info("LOGGER for getWip0ByStatus : " +sql);
         List<WhWip0> wipList = new ArrayList<WhWip0>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1350,6 +1414,8 @@ public class WhWipDAO {
                 wip.setVerifyDate(rs.getString("verify_date"));
                 wip.setRack(rs.getString("rack"));
                 wip.setShelf(rs.getString("shelf"));
+                wip.setRegisterBy(rs.getString("register_by"));
+                wip.setRegisterDate(rs.getString("register_date"));
                 wip.setRequestBy(rs.getString("request_by"));
                 wip.setRequestDate(rs.getString("request_date"));
                 wip.setShipBy(rs.getString("ship_by"));
@@ -1431,6 +1497,34 @@ public class WhWipDAO {
         Integer count = null;
         try {
             String sql = "SELECT COUNT(*) AS count FROM hms_wh_wip_0 WHERE request_id = '" + id + "' ";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return count;
+    }
+    
+    public Integer getCount0hoursRequest(String id) {
+        LOGGER.info("FUNCTION getCountData0hours");
+        Integer count = null;
+        ParameterDetailsDAO dao = new ParameterDetailsDAO();
+        String status = dao.getDetailByCode(INVENTORY);
+        try {
+            String sql = "SELECT COUNT(*) AS count FROM hms_wh_wip_0 WHERE request_id = '" + id + "' AND wip_status = '"+status+"'";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

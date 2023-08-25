@@ -22,6 +22,8 @@ public class WhWip0 {
     private String verifyBy;
     private String rack;
     private String shelf;
+    private String registerBy;
+    private String registerDate;
     private String requestBy;
     private String requestDate;
     private String shipBy;
@@ -125,6 +127,22 @@ public class WhWip0 {
 
     public String getShelf() {
         return shelf;
+    }
+
+    public String getRegisterBy() {
+        return registerBy;
+    }
+
+    public void setRegisterBy(String registerBy) {
+        this.registerBy = registerBy;
+    }
+
+    public String getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        this.registerDate = registerDate;
     }
 
     public void setShelf(String shelf) {

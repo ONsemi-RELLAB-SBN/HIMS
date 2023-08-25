@@ -1,6 +1,6 @@
 <%-- 
-    Document   : list_from_rellab
-    Created on : Aug 21, 2023, 3:21:47 PM
+    Document   : list_to
+    Created on : Aug 24, 2023, 2:32:28 PM
     Author     : zbqb9x
 --%>
 
@@ -37,12 +37,12 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Shipment from Rel Lab - 0 Hours WIP Information [ ${monthyear} ]</h2>
-                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/wip0hour/scan" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
+                            <h2 class="pull-left">Shipment to Rel Lab - 0 Hours WIP Information [ ${monthyear} ]</h2>
+<!--                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/whWip0/scan" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-scan bx-fw' ></i> Scan GTS No
                                 </a>
-                            </div>
+                            </div>-->
                             <div class="filter-block pull-right">
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                                                 <c:when test="${wipList.wipStatus == status}">
                                                     <td><c:out value="${wipList.wipStatus}"/></td>
                                                     <td>
-                                                        <a href="${contextPath}/wip0hour/register/${wipList.requestId}" class="table-button" title="Register">
+                                                        <a href="${contextPath}/whWip0/register/${wipList.requestId}" class="table-button" title="Register">
                                                             <i class='bx bx-edit bx-lg bx-fw'></i>
                                                         </a>
                                                     </td>
