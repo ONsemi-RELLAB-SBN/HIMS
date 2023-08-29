@@ -37,7 +37,7 @@
                 <div class="col-lg-8">
                     <div class="main-box">
                         <h2>Scan GTS Number</h2>
-                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateScanGts" method="post">
+                        <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/wip0hour/updateScanGts" method="post">
                             <div class="form-group">
                                 <label for="gtsNo" class="col-lg-3 control-label">GTS Number *</label>
                                 <div class="col-lg-8">
@@ -46,7 +46,6 @@
                             </div>
                             <a href="${contextPath}/whWip0/from" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <!--<button type="reset" class="btn btn-secondary cancel" style="font-family:'Orbitron', monospace;"><i class='bx bx-reset bx-fw' ></i> Reset</button>-->
                                 <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-shield-plus bx-fw' style='color:#ffffff'  ></i> Receive</button>
                             </div>
                             <div class="clearfix"></div>
@@ -55,52 +54,8 @@
                 </div>	
             </div>
         </div>
-<!--        <div class="col-lg-12">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="main-box clearfix">
-                        <div class="clearfix">
-                            <h2 class="pull-left">WIP List</h2>
-                        </div>
-                        <hr/>
-                        <div class="clearfix">
-                            <div class="filter-block pull-right">
-                                <div id="dt_spml_tt" class="form-group pull-left" style="margin-right: 5px;"></div>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <input type="hidden" class="form-control" id="count" name="count" value="${count}">
-                            <input type="hidden" class="form-control" id="countAll" name="countAll" value="${countAll}">
-                            <table id="dt_spml" class="table">
-                                <thead>
-                                    <tr>
-                                        <th><span>No</span></th>
-                                        <th><span>GTS Number</span></th>
-                                        <th><span>RMS Event</span></th>
-                                        <th><span>Intervals</span></th>
-                                        <th><span>Quantity</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach items="${wipList}" var="wipList" varStatus="wipLoop">
-                                        <tr>
-                                            <td><c:out value="${wipLoop.index+1}"/></td>
-                                            <td><c:out value="${wipList.gtsNo}"/></td>
-                                            <td><c:out value="${wipList.rmsEvent}"/></td>
-                                            <td><c:out value="${wipList.intervals}"/></td>
-                                            <td><c:out value="${wipList.quantity}"/></td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>-->
     </s:layout-component>
     <s:layout-component name="page_js">
-        <!--print-->
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>

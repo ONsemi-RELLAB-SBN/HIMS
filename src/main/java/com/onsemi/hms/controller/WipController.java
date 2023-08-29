@@ -13,7 +13,6 @@ import com.onsemi.hms.model.ParameterDetails;
 import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.UserSession;
 import com.onsemi.hms.model.WhWip;
-import com.onsemi.hms.model.WhWip0;
 import com.onsemi.hms.model.WhWipShip;
 import com.onsemi.hms.tools.EmailSender;
 import com.onsemi.hms.tools.QueryResult;
@@ -56,20 +55,6 @@ public class WipController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WipController.class);
     String[] args = {};
 
-//    private static final String UPLOADED_FOLDER = "E:\\HIMS_Upload\\";
-//    private static final String FILEPATH        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-//    private static final String FILEPATHSHIP    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-//    private static final String FILEPATHVERIFY  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
-//    private static final String FILEPATHLOAD    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
-//    private static final String FILEPATHUNLOAD  = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
-//    private static final String FILEPATHINVENTORY   = "D:\\Source Code\\archive\\CSV Import\\hms_wip_$$$.csv";
-//    private static final String FILEPATHSHIPBACK    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_***.csv";
-//    private static final String FILEPATH        = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
-//    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
-//    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
-//    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
-//    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
-    
 //    private final String FILEPATH = "D:\\HIMS_CSV\\SF\\";
     private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
     private final String FILESHIP       = FILEPATH + "hms_wip_shipping.csv";
@@ -96,8 +81,8 @@ public class WipController {
     private static final String HEADERSHIP      = "RequestID,RMSEvent,Intervals,Quantity,ShipmentDate";
     private static final String HEADERVERIFY    = "RequestID,ReceiveDate,VerifyDate,Status";
     private static final String HEADERLOAD      = "RequestID,Date";
-    private static final String HEADERINVENTORY = "RequestID,Rack,Shelf,Date";
-    private static final String HEADERSHIPBACK  = "RequestID,Date";
+    private static final String HEADERINVENTORY = "RequestID,receiveDate,inventoryDate,Rack,Shelf";
+    private static final String HEADERSHIPBACK  = "RequestID,shipDate";
 
     @Autowired
     private MessageSource messageSource;
@@ -116,25 +101,6 @@ public class WipController {
         return "redirect:/whWip/listNew";
     }
     
-    @RequestMapping(value = "/sync0hour", method = {RequestMethod.GET, RequestMethod.POST})
-    public String manualsync0hour(Model model) {
-
-        LOGGER.info(" ********************** START MANUAL READING FILES 0 HOURS **********************");
-        FtpWip wip = new FtpWip();
-        wip.readWip0Hours();
-        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES 0 HOURS **********************");
-        return "redirect:/whWip0/list_from_rellab";
-    }
-    
-    @RequestMapping(value = "/sync0hourRequest", method = {RequestMethod.GET, RequestMethod.POST})
-    public String manualsync0hourRequest(Model model) {
-
-        LOGGER.info(" ********************** START MANUAL READING FILES 0 HOURS **********************");
-        FtpWip wip = new FtpWip();
-        wip.readWip0Hours();
-        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES 0 HOURS **********************");
-        return "redirect:/whWip0/list_from_rellab";
-    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="WIP MODULE">
@@ -708,113 +674,6 @@ public class WipController {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="WIP for 0 hours">
-    @RequestMapping(value = "/0hour_from", method = RequestMethod.GET)
-    public String whList01(Model model, @ModelAttribute UserSession userSession) {
-
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(NEW + "','" + VERIFY);
-        WhWipDAO dao = new WhWipDAO();
-        List<WhWip0> wipList = dao.getWip0ByStatus(status);
-        
-        LocalDateTime myDateObj = LocalDateTime.now();
-        String monthyear = myDateObj.getMonth().toString() + " " + myDateObj.getYear();
-        
-        pdao = new ParameterDetailsDAO();
-        String statusVerify = pdao.getDetailByCode(VERIFY);
-        
-        model.addAttribute("wipList", wipList);
-        model.addAttribute("monthyear", monthyear);
-        model.addAttribute("status", statusVerify);
-        return "whWip0/list_from_rellab";
-    }
-    
-    @RequestMapping(value = "/0hour_scan", method = RequestMethod.GET)
-    public String whList02(Model model, @ModelAttribute UserSession userSession) {
-
-        WhWipDAO dao = new WhWipDAO();
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(READY);
-        List<WhWip0> wipList = dao.getWip0ByStatus(status);
-        
-        model.addAttribute("wipList", wipList);
-        return "whWip0/list_scan";
-    }
-    
-    @RequestMapping(value = "/updateScanGts", method = RequestMethod.POST)
-    public String whFunction01(
-            Model model,
-            HttpServletRequest request,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String gtsNo) throws IOException {
-
-        String columnDate = "verify_date";
-        String columnBy = "verify_by";
-        String flag = "verify";
-        String name = userSession.getFullname();
-        WhWipDAO daoUpdate = new WhWipDAO();
-        daoUpdate.updateStatus0hourByGts(columnDate, columnBy, gtsNo, flag, name);
-        return "redirect:/whWip/0hour_from";
-    }
-    
-    @RequestMapping(value = "/0hour_register/{requestId}", method = RequestMethod.GET)
-    public String whList03(Model model, @ModelAttribute UserSession userSession, @PathVariable("requestId") String requestId) {
-
-        LOGGER.info("LOGGER for request id : " +requestId);
-        WhWipDAO dao = new WhWipDAO();
-        WhWip0 data = dao.getWhWip0hourByRequestId(requestId);
-        model.addAttribute("wipData", data);
-        return "whWip0/list_register";
-    }
-    
-    @RequestMapping(value = "/0hourUpdateRegister", method = RequestMethod.POST)
-    public String whFunction02(
-            Model model,
-            HttpServletRequest request,
-            Locale locale,
-            RedirectAttributes redirectAttrs,
-            @ModelAttribute UserSession userSession,
-            @RequestParam(required = false) String requestId,
-            @RequestParam(required = false) String rack,
-            @RequestParam(required = false) String shelf) throws IOException {
-
-        String name = userSession.getFullname();
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(INVENTORY);
-        WhWipDAO daoUpdate = new WhWipDAO();
-        daoUpdate.registerInventory0hour(rack, shelf, status, requestId, name);
-        
-        // SEND EMAIL TO HIMS-RL TO UPDATE THE STATUS ALREADY COMPLETE INVENTORY
-        // SEND CSV FILES?
-        return "redirect:/whWip/0hour_from";
-    }
-    
-    @RequestMapping(value = "/0hour_requested", method = RequestMethod.GET)
-    public String whList06(Model model, @ModelAttribute UserSession userSession) {
-
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(REQUEST);
-        WhWipDAO dao = new WhWipDAO();
-        List<WhWip0> wipList = dao.getWip0ByStatus(status);
-        model.addAttribute("wipData", wipList);
-        return "whWip0/list_requested";
-    }
-    
-    @RequestMapping(value = "/0hour_xxx4", method = RequestMethod.GET)
-    public String whList04(Model model, @ModelAttribute UserSession userSession) {
-
-        return "whWip0/list_xxx";
-    }
-    
-    @RequestMapping(value = "/0hour_xxx5", method = RequestMethod.GET)
-    public String whList05(Model model, @ModelAttribute UserSession userSession) {
-
-        return "whWip0/list_xxx";
-    }
-    //</editor-fold>
-
     //<editor-fold defaultstate="collapsed" desc="FUNCTION">
     private String getLatestRunningNumber() {
 
@@ -933,42 +792,6 @@ public class WipController {
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, message, "UNLOAD");
     }
     
-    private void sendEmailDoneInventory(String shipList) {
-
-        String username = "All";
-//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
-        // TODO - create 1 new email list for INVENTORY
-        String[] listAdmin = getEmailList("Notify Ship");
-        String[] listSystem = getEmailList("System");
-        String subject = "WIP is Shipped to Rel Lab";
-        String msg1 = "WIP is shipped to Rel Lab from Sg Gadut";
-        // TODO please create and design the email content here later
-        String msg2 = tableWipShip(shipList);               
-        EmailSender send = new EmailSender();
-        // TODO - PLEASE CREATE ANOTHER EMAIL TO DO THE INVENTORY NOTIFICATION
-        send.wipEmail(servletContext, username, listAdmin, subject, msg2, "INVENTORY");
-        send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "INVENTORY");
-    }
-    
-    private void sendEmailDoneShipBack(String shipList) {
-
-        String username = "All";
-//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
-        // TODO - create 1 new email list for SHIP BACK
-        String[] listAdmin = getEmailList("Notify Ship");
-        String[] listSystem = getEmailList("System");
-        String subject = "WIP is Shipped to Rel Lab";
-        String msg1 = "WIP is shipped to Rel Lab from Sg Gadut";
-        // TODO please create and design the email content here later
-        String msg2 = tableWipShip(shipList);               
-        EmailSender send = new EmailSender();
-        // TODO - PLEASE CREATE ANOTHER EMAIL TO DO THE INVENTORY NOTIFICATION
-        send.wipEmail(servletContext, username, listAdmin, subject, msg2, "SHIP");
-        send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIP");
-    }
-
     // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - START
     private String[] getEmailListSample() {
         ArrayList<String> To = new ArrayList<String>();
@@ -1259,154 +1082,6 @@ public class WipController {
         }
     }
     
-    private void createCsvInventory(String requestId) {
-
-        //  TODO - please update this FUNCTION
-        WhWipDAO daoGet = new WhWipDAO();
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        File file = new File(FILEINVENTORY);
-
-        String statusVerify = pdao.getDetailByCode(INVENTORY);
-        List<WhWip> dataList = daoGet.getWipByGtsNo(requestId);
-
-        for (int i = 0; i < dataList.size(); i++) {
-            WhWip wip = new WhWip();
-            wip.setId(dataList.get(i).getId());
-            wip.setRequestId(dataList.get(i).getRequestId());
-            wip.setReceiveDate(dataList.get(i).getReceiveDate());
-            wip.setVerifyDate(dataList.get(i).getVerifyDate());
-            wip.setStatus(statusVerify);
-
-            FileWriter fileWriter = null;
-
-            if (file.exists()) {
-                try {
-                    fileWriter = new FileWriter(FILEINVENTORY, true);
-
-                    //New Line after the header
-                    fileWriter.append(LINE_SEPARATOR);
-                    fileWriter.append(wip.getRequestId());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getReceiveDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getVerifyDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getStatus());
-                    System.out.println("Update existing to CSV file Succeed!!!");
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                } finally {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException ie) {
-                        System.out.println("Error occured while closing the fileWriter");
-                        ie.printStackTrace();
-                    }
-                }
-            } else {
-                try {
-                    fileWriter = new FileWriter(FILEINVENTORY, true);
-                    //Adding the header
-                    fileWriter.append(HEADERVERIFY);
-
-                    //New Line after the header
-                    fileWriter.append(LINE_SEPARATOR);
-                    fileWriter.append(wip.getRequestId());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getReceiveDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getVerifyDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getStatus());
-                    System.out.println("Write new to CSV file Succeed!!!");
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                } finally {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException ie) {
-                        System.out.println("Error occured while closing the fileWriter");
-                        ie.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-    
-    private void createCsvShipBack(String requestId) {
-
-        //  TODO - please update this FUNCTION
-        WhWipDAO daoGet = new WhWipDAO();
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        File file = new File(FILESHIPBACK);
-
-        String statusVerify = pdao.getDetailByCode(SHIP);
-        List<WhWip> dataList = daoGet.getWipByGtsNo(requestId);
-
-        for (int i = 0; i < dataList.size(); i++) {
-            WhWip wip = new WhWip();
-            wip.setId(dataList.get(i).getId());
-            wip.setRequestId(dataList.get(i).getRequestId());
-            wip.setReceiveDate(dataList.get(i).getReceiveDate());
-            wip.setVerifyDate(dataList.get(i).getVerifyDate());
-            wip.setStatus(statusVerify);
-
-            FileWriter fileWriter = null;
-
-            if (file.exists()) {
-                try {
-                    fileWriter = new FileWriter(FILESHIPBACK, true);
-
-                    //New Line after the header
-                    fileWriter.append(LINE_SEPARATOR);
-                    fileWriter.append(wip.getRequestId());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getReceiveDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getVerifyDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getStatus());
-                    System.out.println("Update existing to CSV file Succeed!!!");
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                } finally {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException ie) {
-                        System.out.println("Error occured while closing the fileWriter");
-                        ie.printStackTrace();
-                    }
-                }
-            } else {
-                try {
-                    fileWriter = new FileWriter(FILESHIPBACK, true);
-                    //Adding the header
-                    fileWriter.append(HEADERVERIFY);
-
-                    //New Line after the header
-                    fileWriter.append(LINE_SEPARATOR);
-                    fileWriter.append(wip.getRequestId());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getReceiveDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getVerifyDate());
-                    fileWriter.append(COMMA_DELIMITER);
-                    fileWriter.append(wip.getStatus());
-                    System.out.println("Write new to CSV file Succeed!!!");
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                } finally {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException ie) {
-                        System.out.println("Error occured while closing the fileWriter");
-                        ie.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
     private String tableWipReceive(String gtsNo) {
         
         WhWipDAO wipdao = new WhWipDAO();

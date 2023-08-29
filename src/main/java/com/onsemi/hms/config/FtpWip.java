@@ -41,12 +41,12 @@ public class FtpWip {
     @Autowired
     ServletContext servletContext;
 
-    String fileLocation = "";
-    String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
-//    String targetLocation = "D:\\HIMS_CSV\\RL\\";
-    String filename = "cdars_wip_shipping.csv";
-    String file0hoursRead = "shipping.csv";
-    String file0hourReq = "request.csv";
+    String fileLocation     = "";
+    String targetLocation   = "D:\\Source Code\\archive\\CSV Import\\";
+//    String targetLocation   = "D:\\HIMS_CSV\\RL\\";
+    String filename         = "cdars_wip_shipping.csv";
+    String file0hoursRead   = "cdars_zero_shipping.csv";
+    String file0hourReq     = "cdars_zero_retrieve.csv";
 
 //    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
 //    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
@@ -105,11 +105,10 @@ public class FtpWip {
         }
     }
     
-    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
+    @Scheduled(cron = "0 */10 * * * *")             // to run every 10 minutes??
     public void readWipShipping() {
         
         LOGGER.info("FTPWIP.java - readWipShipping");
-//        String username = System.getProperty("user.name");
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -159,11 +158,10 @@ public class FtpWip {
         }
     }
     
-    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
+    @Scheduled(cron = "0 */10 * * * *")             // to run every 10 minutes??
     public void readWip0Hours() {
         
         LOGGER.info("FTPWIP.java - readWip0Hours");
-//        String username = System.getProperty("user.name");
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -213,7 +211,7 @@ public class FtpWip {
         }
     }
     
-    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
+    @Scheduled(cron = "0 */10 * * * *")             // to run every 10 minutes??
     public void requestWip0Hours() {
         
         LOGGER.info("FUNCTION requestWip0Hours");
@@ -235,13 +233,8 @@ public class FtpWip {
                             while ((data = csvReader.readNext()) != null) {
                                 WhWip0 wipdata = new WhWip0();
                                 
-                                // PLEASE UPDATE APA BENDA NK KENA UPDATE DEKAT SINI
+                                // PLEASE UPDATE APA BENDA NK KENA UPDATE DEKAT SINI - read the request id dengn request date dia sahaja
                                 wipdata.setRequestId(data[0]);
-                                wipdata.setGtsNo(data[1]);
-                                wipdata.setRmsEvent(data[2]);
-                                wipdata.setIntervals(data[3]);
-                                wipdata.setQuantity(data[4]);
-                                wipdata.setShipmentDate(data[5]);
                                 wipdata.setWipStatus(status);
 
                                 WhWipDAO wip = new WhWipDAO();
@@ -249,15 +242,7 @@ public class FtpWip {
 
                                 if (check == 0) {
                                     LOGGER.info("DATA REQEUST ID  " + data[0] + " CANNOT BE REQUESTED");
-//                                    wip = new WhWipDAO();
-//                                    wip.insertWhWip0hour(wipdata);
-//                                    PTT TAKDE APA BENDA NK INSERT DEKAT SINI
                                 } else {
-                                    // request id
-                                    // status - requested
-                                    // who request it
-                                    // when dia request
-                                    // other data needed?
                                     LOGGER.info("UPDATE DATA FOR REQUEST ID [0 HOUR] : " + data[0] + " TO REQUESTED");
                                     wip = new WhWipDAO();
                                     wip.requestWip0hour(status, "SYSTEM", data[0]);

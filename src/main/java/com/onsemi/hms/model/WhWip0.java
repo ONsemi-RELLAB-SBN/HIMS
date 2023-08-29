@@ -26,8 +26,10 @@ public class WhWip0 {
     private String registerDate;
     private String requestBy;
     private String requestDate;
+    private String readyDate;
     private String shipBy;
     private String shipDate;
+    private String shipList;
 
     public String getId() {
         return id;
@@ -165,6 +167,14 @@ public class WhWip0 {
         this.requestDate = requestDate;
     }
 
+    public String getReadyDate() {
+        return readyDate;
+    }
+
+    public void setReadyDate(String readyDate) {
+        this.readyDate = readyDate;
+    }
+
     public String getShipBy() {
         return shipBy;
     }
@@ -179,6 +189,14 @@ public class WhWip0 {
 
     public void setShipDate(String shipDate) {
         this.shipDate = shipDate;
+    }
+
+    public String getShipList() {
+        return shipList;
+    }
+
+    public void setShipList(String shipList) {
+        this.shipList = shipList;
     }
 
 }

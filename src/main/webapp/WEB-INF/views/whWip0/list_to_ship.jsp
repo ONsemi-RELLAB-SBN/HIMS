@@ -38,6 +38,7 @@
                     <div class="main-box">
                         <h2>Scan Box Number</h2>
                         <form id="check_rack_shelf" class="form-horizontal" role="form" action="${contextPath}/wip0hour/updateToShip" method="post">
+                            <input type="hidden" class="form-control" id="requestId" name="requestId" value="${wipData.requestId}" >
                             <div class="form-group">
                                 <label for="checkboxno" class="col-lg-3 control-label">Box No.</label>
                                 <div class="col-lg-8">
@@ -87,7 +88,6 @@
         </div>
     </s:layout-component>
     <s:layout-component name="page_js">
-        <!--print-->
         <script src="${contextPath}/resources/private/datatables/js/jquery.dataTables.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/dataTables.buttons.min.js"></script>
         <script src="${contextPath}/resources/private/datatables/js/buttons.print.min.js"></script>
@@ -102,33 +102,12 @@
                 jQuery.extend(jQuery.validator.messages, {
                     required: "This field is required by system.",
                     equalTo: "The value not match! Please re-scan.",
-//                    equalToA: "Box number is not match! Please re-scan.",
-//                    equalToR: "Rack value is not match! Please re-scan.",
-//                    equalToS: "Shelf value is not match! Please re-scan.",
                     email: "Please enter a valid email."
                 });
-                
-//                oTable.search($(this).val()).draw();
-                
-//                oTable = $('#dt_spml').DataTable({
-////                    dom: 'Brtip'
-//                });
-                
-//                $('#dt_spml_search').keyup(function () {
-//                    oTable.search($(this).val()).draw();
-//                });
                 
                 $('#boxNo').keyup(function () {
                     oTable.search($(this).val()).draw();
                 });
-                
-//                $("#dt_spml_rows").change(function () {
-//                    oTable.page.len($(this).val()).draw();
-//                });
-//                
-//                $(".cancel").click(function () {
-//                    validator.resetForm();
-//                });
                 
                 var validator = $("#check_rack_shelf").validate({
                     rules: {

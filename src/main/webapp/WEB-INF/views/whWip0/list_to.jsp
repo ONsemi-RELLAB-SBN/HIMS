@@ -38,11 +38,11 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">Shipment to Rel Lab - 0 Hours WIP Information [ ${monthyear} ]</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip0/scan" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
-                                    <i class='bx bx-scan bx-fw' ></i> Scan GTS No
+                            <div class="filter-block pull-right">
+                                <a href="${contextPath}/wip0hour/readyList" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
+                                    <i class='bx bx-scan bx-fw' ></i> Prepare Shipment
                                 </a>
-                            </div>-->
+                            </div>
                             <div class="filter-block pull-right">
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                                         <th><span>RMS Event</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
-                                        <th><span>Register</span></th>
+                                        <th><span>Shipping List</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,20 +84,8 @@
                                             <td><c:out value="${wipList.gtsNo}"/></td>
                                             <td><c:out value="${wipList.rmsEvent}"/></td>
                                             <td><c:out value="${wipList.shipmentDate}"/></td>
-                                            <c:choose>
-                                                <c:when test="${wipList.wipStatus == status}">
-                                                    <td><c:out value="${wipList.wipStatus}"/></td>
-                                                    <td>
-                                                        <a href="${contextPath}/whWip0/register/${wipList.requestId}" class="table-button" title="Register">
-                                                            <i class='bx bx-edit bx-lg bx-fw'></i>
-                                                        </a>
-                                                    </td>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <td colspan='2'><c:out value="${wipList.wipStatus}"/></td>
-                                                    <td hidden='true'></td>
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <td><c:out value="${wipList.wipStatus}"/></td>
+                                            <td><c:out value="${wipList.shipList}"/></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

@@ -37,7 +37,7 @@
                 <div class="col-lg-8">
                     <div class="main-box">
                         <h2>WIP Information - Register WIP Inventory</h2>
-                        <form id="wip_register_form" class="form-horizontal" role="form" action="${contextPath}/whWip/0hourUpdateRegister" method="post">
+                        <form id="wip_register_form" class="form-horizontal" role="form" action="${contextPath}/wip0hour/updateRegister" method="post">
                             <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
@@ -110,11 +110,6 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
-                // CODE TO DISABLE THE FEATURE
-//                $('#inventoryRack').bind('copy paste cut', function (e) {
-//                    e.preventDefault();
-//                });
-
                 jQuery.extend(jQuery.validator.messages, {
                     required: "This field is required.",
                     equalTo: "Value is not match! Please re-scan.",
@@ -127,10 +122,6 @@
                 
                 var validator = $("#wip_register_form").validate({
                     rules: {
-//                        tripTicket: {
-//                            required: true,
-//                            equalTo: "#rmsEvent"
-//                        },
                         rack: {
                             required: true
                         },
@@ -143,12 +134,12 @@
                 $('#tripTicket').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-//                $('#rack').bind('copy paste cut', function (e) {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
-//                $('#shelf').bind('copy paste cut', function (e) {
-//                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
-//                });
+                $('#rack').bind('copy paste cut', function (e) {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                $('#shelf').bind('copy paste cut', function (e) {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
             });
         </script>
     </s:layout-component>

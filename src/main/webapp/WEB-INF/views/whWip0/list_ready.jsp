@@ -1,6 +1,6 @@
 <%-- 
     Document   : list_ready
-    Created on : Jun 21, 2023, 5:10:23 PM
+    Created on : Aug 28, 2023, 2:47:01 PM
     Author     : zbqb9x
 --%>
 
@@ -18,12 +18,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [0 hours]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box">
                         <h2>Prepare Shipment</h2>
-                        <form id="shipping_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReadyToShip" method="post">
+                        <form id="shipping_form" class="form-horizontal" role="form" action="${contextPath}/wip0hour/updateShipmentList" method="post">
                             <div class="form-group">
                                 <label for="shipDate" class="col-lg-2 control-label">Shipping Date Time *</label>
                                 <div class="col-lg-3">
@@ -45,43 +45,43 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
-                        <hr/>
-                        <div class="clearfix">
-                            <div class="form-group pull-left">
-                                <select id="dt_spml_rows" class="form-control">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
+                            <hr/>
+                            <div class="clearfix">
+                                <div class="form-group pull-left">
+                                    <select id="dt_spml_rows" class="form-control">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table id="dt_spml" class="table">
-                                <thead>
-                                    <tr>
-                                        <th><span>GTS NO</span></th>
-                                        <th><span>RMS Event</span></th>
-                                        <th><span>Intervals</span></th>
-                                        <th><span>Quantity</span></th>
-                                        <th><span>Shipment Date</span></th>
-                                        <th><span>Status</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach items="${wipList}" var="whWip" varStatus="whWipLoop">
+                            <div class="table-responsive">
+                                <table id="dt_spml" class="table">
+                                    <thead>
                                         <tr>
-                                            <td><c:out value="${whWip.gtsNo}"/></td>
-                                            <td><c:out value="${whWip.rmsEvent}"/></td>
-                                            <td><c:out value="${whWip.intervals}"/></td>
-                                            <td><c:out value="${whWip.quantity}"/></td>
-                                            <td><c:out value="${whWip.shipmentDate}"/></td>
-                                            <td><c:out value="${whWip.status}"/></td>
+                                            <th><span>GTS NO</span></th>
+                                            <th><span>RMS Event</span></th>
+                                            <th><span>Intervals</span></th>
+                                            <th><span>Quantity</span></th>
+                                            <th><span>Shipment Date</span></th>
+                                            <th><span>Status</span></th>
                                         </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${wipData}" var="whWip" varStatus="whWipLoop">
+                                            <tr>
+                                                <td><c:out value="${whWip.gtsNo}"/></td>
+                                                <td><c:out value="${whWip.rmsEvent}"/></td>
+                                                <td><c:out value="${whWip.intervals}"/></td>
+                                                <td><c:out value="${whWip.quantity}"/></td>
+                                                <td><c:out value="${whWip.shipmentDate}"/></td>
+                                                <td><c:out value="${whWip.wipStatus}"/></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                     </div>
                 </div>
             </div>

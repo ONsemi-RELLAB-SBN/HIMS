@@ -32,14 +32,14 @@ import org.slf4j.LoggerFactory;
 public class WhWipDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhWipDAO.class);
-    private static final String NEW         = "0101";
-    private static final String RECEIVE     = "0102";
-    private static final String VERIFY      = "0103";
-    private static final String REGISTER    = "0104";
-    private static final String READY       = "0105";
-    private static final String SHIP        = "0106";
-    private static final String INVENTORY   = "0107";
-    private static final String REQUEST     = "0108";
+    private static final String NEW = "0101";
+    private static final String RECEIVE = "0102";
+    private static final String VERIFY = "0103";
+    private static final String REGISTER = "0104";
+    private static final String READY = "0105";
+    private static final String SHIP = "0106";
+    private static final String INVENTORY = "0107";
+    private static final String REQUEST = "0108";
 
     private final Connection conn;
     private final DataSource dataSource;
@@ -100,44 +100,6 @@ public class WhWipDAO {
             ps.setString(5, wip.getQuantity());
             ps.setString(6, wip.getShipmentDate());
             ps.setString(7, wip.getStatus());
-            queryResult.setResult(ps.executeUpdate());
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-    
-    public QueryResult insertWhWip0hour(WhWip0 wip) {
-        LOGGER.info("FUNCTION insertWhWip0hour");
-        QueryResult queryResult = new QueryResult();
-        try {
-            String sql = "INSERT INTO hms_wh_wip_0 (request_id, gts_no, rms_event, intervals, quantity, shipment_date, created_date, wip_status)"
-                    + " VALUES (?,?,?,?,?,?,NOW(),?)";
-            LOGGER.info("LOGGER for INSERT DATA INTO 0 HOURS MODULE : " +sql);
-            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-            ps.setString(1, wip.getRequestId());
-            ps.setString(2, wip.getGtsNo());
-            ps.setString(3, wip.getRmsEvent());
-            ps.setString(4, wip.getIntervals());
-            ps.setString(5, wip.getQuantity());
-            ps.setString(6, wip.getShipmentDate());
-            ps.setString(7, wip.getWipStatus());
             queryResult.setResult(ps.executeUpdate());
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -231,110 +193,6 @@ public class WhWipDAO {
             }
         }
         return queryResult;
-    }
-    
-    public QueryResult updateStatus0hourByGts(String date, String by, String gtsNo, String data, String username) {
-        LOGGER.info("FUNCTION updateStatusByGts");
-        QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_wip_0 SET " + date + " = NOW(), " + by + " = ?, wip_status = ? WHERE gts_no = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            String status = "";
-//            String username = System.getProperty("user.name");
-            ParameterDetailsDAO dao = new ParameterDetailsDAO();
-            if (data.equalsIgnoreCase("receive")) {
-                status = dao.getDetailByCode(RECEIVE);
-            } else if (data.equalsIgnoreCase("verify")) {
-                status = dao.getDetailByCode(VERIFY);
-            } else if (data.equalsIgnoreCase("register")) {
-                status = dao.getDetailByCode(REGISTER);
-            } else if (data.equalsIgnoreCase("ready")) {
-                status = dao.getDetailByCode(READY);
-            } else if (data.equalsIgnoreCase("ship")) {
-                status = dao.getDetailByCode(SHIP);
-            }
-            ps.setString(1, username);
-            ps.setString(2, status);
-            ps.setString(3, gtsNo);
-            queryResult.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            queryResult.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return queryResult;
-    }
-    
-    public QueryResult registerInventory0hour(String rack, String shelf, String status, String requestId, String username) {
-        LOGGER.info("FUNCTION registerInventory0hour");
-        QueryResult qr = new QueryResult();
-        String sql = "UPDATE hms_wh_wip_0 SET "
-                    + "wip_status = ?, "
-                    + "rack = ?, "
-                    + "shelf = ?, "
-                    + "register_by = ?, "
-                    + "register_date = NOW() "
-                    + "WHERE request_id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, status);
-            ps.setString(2, rack);
-            ps.setString(3, shelf);
-            ps.setString(4, username);
-            ps.setString(5, requestId);
-            qr.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            qr.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return qr;
-    }
-    
-    public QueryResult requestWip0hour(String status, String requestBy, String requestId) {
-        LOGGER.info("FUNCTION requestWip0hour");
-        QueryResult qr = new QueryResult();
-        String sql = "UPDATE hms_wh_wip_0 SET "
-                    + "wip_status = ?, "
-                    + "request_by = ?, "
-                    + "request_date = NOW() "
-                    + "WHERE request_id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, status);
-            ps.setString(2, requestBy);
-            ps.setString(3, requestId);
-            qr.setResult(ps.executeUpdate());
-            ps.close();
-        } catch (SQLException e) {
-            qr.setErrorMessage(e.getMessage());
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return qr;
     }
 
     /*
@@ -559,15 +417,15 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateProcess(String process, String date, String reqId) {
         LOGGER.info("FUNCTION updateProcess");
         QueryResult queryResult = new QueryResult();
         String sql = "";
         if (process.equalsIgnoreCase("loading")) {
-            sql = "UPDATE hms_wh_wip SET load_date = '"+date+"' WHERE request_id = ? ";
+            sql = "UPDATE hms_wh_wip SET load_date = '" + date + "' WHERE request_id = ? ";
         } else if (process.equalsIgnoreCase("unloading")) {
-            sql = "UPDATE hms_wh_wip SET unload_date = '"+date+"' WHERE request_id = ? ";
+            sql = "UPDATE hms_wh_wip SET unload_date = '" + date + "' WHERE request_id = ? ";
         }
 //        switch (process) {
 //            case "loading":
@@ -709,49 +567,6 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return whShipping;
-    }
-    
-    public WhWip0 getWhWip0hourByRequestId(String requestId) {
-        LOGGER.info("FUNCTION getWhWipByRequestId");
-        String sql = "SELECT * FROM hms_wh_wip_0 WHERE request_id = '" + requestId + "'";
-        WhWip0 whShipping = null;
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                whShipping = new WhWip0();
-                whShipping.setId(rs.getString("id"));
-                whShipping.setRequestId(rs.getString("request_id"));
-                whShipping.setGtsNo(rs.getString("gts_no"));
-                whShipping.setRmsEvent(rs.getString("rms_event"));
-                whShipping.setIntervals(rs.getString("intervals"));
-                whShipping.setQuantity(rs.getString("quantity"));
-                whShipping.setShipmentDate(rs.getString("shipment_date"));
-                whShipping.setWipStatus(rs.getString("wip_status"));
-                whShipping.setCreatedDate(rs.getString("created_date"));
-                whShipping.setVerifyDate(rs.getString("verify_date"));
-                whShipping.setVerifyBy(rs.getString("verify_by"));
-                whShipping.setRack(rs.getString("rack"));
-                whShipping.setShelf(rs.getString("shelf"));
-                whShipping.setRequestDate(rs.getString("request_date"));
-                whShipping.setRequestBy(rs.getString("request_by"));
-                whShipping.setShipDate(rs.getString("ship_date"));
-                whShipping.setShipBy(rs.getString("ship_by"));
             }
             rs.close();
             ps.close();
@@ -927,10 +742,10 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWip> getWipShipment(String shippingList) {
         LOGGER.info("FUNCTION getWipShipment");
-        String sql = "SELECT *, GROUP_CONCAT(rms_event SEPARATOR ', ') AS sub_data FROM hms_wh_wip WHERE shipping_list LIKE '"+shippingList+"%' GROUP BY shipping_list";
+        String sql = "SELECT *, GROUP_CONCAT(rms_event SEPARATOR ', ') AS sub_data FROM hms_wh_wip WHERE shipping_list LIKE '" + shippingList + "%' GROUP BY shipping_list";
         List<WhWip> wipList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -980,10 +795,10 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWip> getAllWipByShipList(String shipList) {
         LOGGER.info("FUNCTION getAllWipByShipList");
-        String sql = "SELECT * FROM hms_wh_wip a WHERE a.shipping_list = '"+shipList+"' ";
+        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '" + shipList + "' ";
         List<WhWip> wipList = new ArrayList<WhWip>();
 
         try {
@@ -1085,10 +900,10 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWip> getWipByShipDate(String shipList) {
         LOGGER.info("FUNCTION getWipByShipDate");
-        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list IS NOT NULL AND shipping_list = '"+shipList+"'";
+        String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list IS NOT NULL AND shipping_list = '" + shipList + "'";
         List<WhWip> wipList = new ArrayList<WhWip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1240,7 +1055,7 @@ public class WhWipDAO {
         }
         return whShippingList;
     }
-    
+
     public List<WhWip> getQuery(String query) {
         LOGGER.info("FUNCTION getQuery");
         String sql = "SELECT * FROM hms_wh_wip WHERE gts_no IS NOT NULL" + query;
@@ -1292,7 +1107,7 @@ public class WhWipDAO {
         }
         return whShippingList;
     }
-    
+
     public List<WhWipShip> getWipShippedAll() {
         LOGGER.info("FUNCTION getWipShippedAll");
         String sql = "SELECT * FROM hms_wh_wip_ship";
@@ -1324,12 +1139,12 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWipShip> getLogWhWip() {
         LOGGER.info("FUNCTION getLogWhWip");
-        String sql = "SELECT GROUP_CONCAT(wip_id) AS ID, STATUS, GROUP_CONCAT(rms_event) AS RMS, wip_ship_list AS SHIP, shipping_list AS NEW_SHIP, IF(shipping_list=wip_ship_list, \"OK\", \"DATA UPDATED\") AS NEW_STATUS FROM hms_wh_wip_ship A\n" +
-                    "INNER JOIN hms_wh_wip B ON wip_id = B.id\n" +
-                    "GROUP BY wip_ship_list";
+        String sql = "SELECT GROUP_CONCAT(wip_id) AS ID, STATUS, GROUP_CONCAT(rms_event) AS RMS, wip_ship_list AS SHIP, shipping_list AS NEW_SHIP, IF(shipping_list=wip_ship_list, \"OK\", \"DATA UPDATED\") AS NEW_STATUS FROM hms_wh_wip_ship A "
+                    + " INNER JOIN hms_wh_wip B ON wip_id = B.id"
+                    + " GROUP BY wip_ship_list";
         List<WhWipShip> wipList = new ArrayList<WhWipShip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1360,7 +1175,7 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
+
     public List<WhWipShip> getLogAll() {
         LOGGER.info("FUNCTION getLogWhWip");
         String sql = "SELECT * FROM hms_wh_wip_ship GROUP BY wip_ship_list;";
@@ -1389,53 +1204,7 @@ public class WhWipDAO {
         }
         return wipList;
     }
-    
-    public List<WhWip0> getWip0ByStatus(String status) {
-        
-        String sql = "SELECT * FROM hms_wh_wip_0 WHERE wip_status IN ('" + status + "')";
-        LOGGER.info("LOGGER for getWip0ByStatus : " +sql);
-        List<WhWip0> wipList = new ArrayList<WhWip0>();
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            WhWip0 wip;
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                wip = new WhWip0();
-                wip.setId(rs.getString("id"));
-                wip.setRequestId(rs.getString("request_id"));
-                wip.setGtsNo(rs.getString("gts_no"));
-                wip.setRmsEvent(rs.getString("rms_event"));
-                wip.setIntervals(rs.getString("intervals"));
-                wip.setQuantity(rs.getString("quantity"));
-                wip.setShipmentDate(rs.getString("shipment_date"));
-                wip.setCreatedDate(rs.getString("created_date"));
-                wip.setWipStatus(rs.getString("wip_status"));
-                wip.setVerifyBy(rs.getString("verify_date"));
-                wip.setVerifyDate(rs.getString("verify_date"));
-                wip.setRack(rs.getString("rack"));
-                wip.setShelf(rs.getString("shelf"));
-                wip.setRegisterBy(rs.getString("register_by"));
-                wip.setRegisterDate(rs.getString("register_date"));
-                wip.setRequestBy(rs.getString("request_by"));
-                wip.setRequestDate(rs.getString("request_date"));
-                wip.setShipBy(rs.getString("ship_by"));
-                wip.setShipDate(rs.getString("ship_date"));
-                wipList.add(wip);
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        }
-        return wipList;
-    }
-    
+
     public List<User> getAllUser() {
         LOGGER.info("FUNCTION GET ALL USER");
         String sql = "SELECT * FROM hms_user_profile ";
@@ -1517,14 +1286,14 @@ public class WhWipDAO {
         }
         return count;
     }
-    
+
     public Integer getCount0hoursRequest(String id) {
         LOGGER.info("FUNCTION getCountData0hours");
         Integer count = null;
         ParameterDetailsDAO dao = new ParameterDetailsDAO();
         String status = dao.getDetailByCode(INVENTORY);
         try {
-            String sql = "SELECT COUNT(*) AS count FROM hms_wh_wip_0 WHERE request_id = '" + id + "' AND wip_status = '"+status+"'";
+            String sql = "SELECT COUNT(*) AS count FROM hms_wh_wip_0 WHERE request_id = '" + id + "' AND wip_status = '" + status + "'";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -1706,10 +1475,10 @@ public class WhWipDAO {
         }
         return count;
     }
-    
+
     public List<EmailList> getUserToInform(String task) {
         LOGGER.info("FUNCTION getUserToInform");
-        String sql = "SELECT * FROM hms_email_list WHERE task = '"+task+"' ";
+        String sql = "SELECT * FROM hms_email_list WHERE task = '" + task + "' ";
         List<EmailList> userList = new ArrayList<EmailList>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1741,14 +1510,11 @@ public class WhWipDAO {
     //<editor-fold defaultstate="collapsed" desc="FUNCTION">
     public static LocalDate getDateFromString(String string, DateTimeFormatter format) {
         LOGGER.info("FUNCTION getDateFromString");
-        // Converting the string to date
-        // in the specified format
         LocalDate date = LocalDate.parse(string, format);
-        // Returning the converted date
         return date;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="FUNCTION EMAIL TASK LIST">
     public List<EmailList> getEmailListAll() {
         LOGGER.info("FUNCTION getEmailListAll");
@@ -1781,10 +1547,10 @@ public class WhWipDAO {
         }
         return userList;
     }
-    
+
     public EmailList getEmailListById(String id) {
         LOGGER.info("FUNCTION getEmailListById");
-        String sql = "SELECT * FROM hms_email_list WHERE id = '"+id+"'";
+        String sql = "SELECT * FROM hms_email_list WHERE id = '" + id + "'";
         EmailList emailList = new EmailList();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1810,7 +1576,7 @@ public class WhWipDAO {
         }
         return emailList;
     }
-    
+
     public QueryResult addEmailList(EmailList list) {
         LOGGER.info("FUNCTION addEmailList");
         QueryResult queryResult = new QueryResult();
@@ -1841,13 +1607,13 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult updateEmailList(EmailList list) {
         LOGGER.info("FUNCTION updateEmailList");
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_email_list "
-                    + "SET username = ?, email = ?, task = ? "
-                    + "WHERE id = ?";
+                + "SET username = ?, email = ?, task = ? "
+                + "WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, list.getUsername());
@@ -1870,7 +1636,7 @@ public class WhWipDAO {
         }
         return queryResult;
     }
-    
+
     public QueryResult removeEmailList(String id) {
         LOGGER.info("FUNCTION removeEmailList");
         QueryResult queryResult = new QueryResult();
@@ -1894,5 +1660,418 @@ public class WhWipDAO {
         return queryResult;
     }
     //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="0 HOUR">
+    //<editor-fold defaultstate="collapsed" desc="INSERT">
+    public QueryResult insertWhWip0hour(WhWip0 wip) {
+        LOGGER.info("FUNCTION insertWhWip0hour");
+        QueryResult queryResult = new QueryResult();
+        try {
+            String sql = "INSERT INTO hms_wh_wip_0 (request_id, gts_no, rms_event, intervals, quantity, shipment_date, created_date, wip_status)"
+                        + " VALUES (?,?,?,?,?,?,NOW(),?)";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, wip.getRequestId());
+            ps.setString(2, wip.getGtsNo());
+            ps.setString(3, wip.getRmsEvent());
+            ps.setString(4, wip.getIntervals());
+            ps.setString(5, wip.getQuantity());
+            ps.setString(6, wip.getShipmentDate());
+            ps.setString(7, wip.getWipStatus());
+            queryResult.setResult(ps.executeUpdate());
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                queryResult.setGeneratedKey(Integer.toString(rs.getInt(1)));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+    //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="UPDATE">
+    public QueryResult updateStatus0hourByGts(String date, String by, String gtsNo, String data, String username) {
+        LOGGER.info("FUNCTION updateStatusByGts");
+        QueryResult queryResult = new QueryResult();
+        String sql = "UPDATE hms_wh_wip_0 SET " + date + " = NOW(), " + by + " = ?, wip_status = ? WHERE gts_no = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            String status = "";
+//            String username = System.getProperty("user.name");
+            ParameterDetailsDAO dao = new ParameterDetailsDAO();
+            if (data.equalsIgnoreCase("receive")) {
+                status = dao.getDetailByCode(RECEIVE);
+            } else if (data.equalsIgnoreCase("verify")) {
+                status = dao.getDetailByCode(VERIFY);
+            } else if (data.equalsIgnoreCase("register")) {
+                status = dao.getDetailByCode(REGISTER);
+            } else if (data.equalsIgnoreCase("ready")) {
+                status = dao.getDetailByCode(READY);
+            } else if (data.equalsIgnoreCase("ship")) {
+                status = dao.getDetailByCode(SHIP);
+            }
+            ps.setString(1, username);
+            ps.setString(2, status);
+            ps.setString(3, gtsNo);
+            queryResult.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            queryResult.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return queryResult;
+    }
+
+    public QueryResult registerInventory0hour(String rack, String shelf, String status, String requestId, String username) {
+        LOGGER.info("FUNCTION registerInventory0hour");
+        QueryResult qr = new QueryResult();
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + " wip_status = ?, "
+                    + " rack = ?, "
+                    + " shelf = ?, "
+                    + " register_by = ?, "
+                    + " register_date = NOW() "
+                    + " WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, rack);
+            ps.setString(3, shelf);
+            ps.setString(4, username);
+            ps.setString(5, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
+
+    public QueryResult requestWip0hour(String status, String requestBy, String requestId) {
+        LOGGER.info("FUNCTION requestWip0hour");
+        QueryResult qr = new QueryResult();
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + " wip_status = ?, "
+                    + " request_by = ?, "
+                    + " request_date = NOW() "
+                    + " WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, requestBy);
+            ps.setString(3, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
+    
+    public QueryResult regToShip0hour(String requestId) {
+        LOGGER.info("FUNCTION regToShip0hour");
+        QueryResult qr = new QueryResult();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(READY);
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + " wip_status = ?, "
+                    + " ready_date = NOW() "
+                    + " WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
+    
+    public QueryResult deleteShip0hour(String requestId) {
+        LOGGER.info("FUNCTION deleteShip0hour");
+        QueryResult qr = new QueryResult();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(REQUEST);
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + " wip_status = ?, "
+                    + " ready_date = null "
+                    + " WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
+    
+    public QueryResult updateShip0hour(String requestId, String shipBy, String shipDate, String shipList) {
+        LOGGER.info("FUNCTION updateShip0hour");
+        QueryResult qr = new QueryResult();
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(SHIP);
+        String sql = "UPDATE hms_wh_wip_0 SET "
+                    + " wip_status = ?, "
+                    + " ship_by = ?, "
+                    + " ship_date = ?, "
+                    + " ship_list = ? "
+                    + " WHERE request_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, shipBy);
+            ps.setString(3, shipDate);
+            ps.setString(4, shipList);
+            ps.setString(5, requestId);
+            qr.setResult(ps.executeUpdate());
+            ps.close();
+        } catch (SQLException e) {
+            qr.setErrorMessage(e.getMessage());
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return qr;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="SELECT">
+    public WhWip0 getWhWip0hourByRequestId(String requestId) {
+        LOGGER.info("FUNCTION getWhWip0hourByRequestId");
+        String sql = "SELECT * FROM hms_wh_wip_0 WHERE request_id = '" + requestId + "'";
+        WhWip0 whShipping = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWip0();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setWipStatus(rs.getString("wip_status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRack(rs.getString("rack"));
+                whShipping.setShelf(rs.getString("shelf"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setRequestDate(rs.getString("request_date"));
+                whShipping.setRequestBy(rs.getString("request_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipList(rs.getString("ship_list"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return whShipping;
+    }
+    
+    public List<WhWip0> getAll0hourWipByShipList(String shipList) {
+        String sql = "SELECT * FROM hms_wh_wip_0 WHERE ship_list = '" + shipList + "' ";
+        LOGGER.info("FUNCTION getAllWipByShipList >> " + sql);
+        List<WhWip0> wipList = new ArrayList<WhWip0>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip0 whShipping;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                whShipping = new WhWip0();
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setWipStatus(rs.getString("wip_status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRack(rs.getString("rack"));
+                whShipping.setShelf(rs.getString("shelf"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setRequestDate(rs.getString("request_date"));
+                whShipping.setRequestBy(rs.getString("request_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipList(rs.getString("ship_list"));
+                wipList.add(whShipping);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
+    public List<WhWip0> getWip0ByStatus(String status) {
+        String sql = "SELECT * FROM hms_wh_wip_0 WHERE wip_status IN ('" + status + "')";
+        LOGGER.info("FUNCTION getWip0ByStatus : " + sql);
+        List<WhWip0> wipList = new ArrayList<WhWip0>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip0 wip;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                wip = new WhWip0();
+                wip.setId(rs.getString("id"));
+                wip.setRequestId(rs.getString("request_id"));
+                wip.setGtsNo(rs.getString("gts_no"));
+                wip.setRmsEvent(rs.getString("rms_event"));
+                wip.setIntervals(rs.getString("intervals"));
+                wip.setQuantity(rs.getString("quantity"));
+                wip.setShipmentDate(rs.getString("shipment_date"));
+                wip.setCreatedDate(rs.getString("created_date"));
+                wip.setWipStatus(rs.getString("wip_status"));
+                wip.setVerifyBy(rs.getString("verify_date"));
+                wip.setVerifyDate(rs.getString("verify_date"));
+                wip.setRack(rs.getString("rack"));
+                wip.setShelf(rs.getString("shelf"));
+                wip.setRegisterBy(rs.getString("register_by"));
+                wip.setRegisterDate(rs.getString("register_date"));
+                wip.setRequestBy(rs.getString("request_by"));
+                wip.setRequestDate(rs.getString("request_date"));
+                wip.setShipBy(rs.getString("ship_by"));
+                wip.setShipDate(rs.getString("ship_date"));
+                wip.setShipList(rs.getString("ship_list"));
+                wipList.add(wip);
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
+    public String getShipDateByRequestId(String requestId) {
+        String data = "";
+        String sql = "SELECT ship_date FROM hms_wh_wip WHERE request_id = '" + requestId + "'";
+        LOGGER.info("FUNCTION getShipDateByRequestId : " +sql);
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                data = rs.getString("ship_date");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return data;
+    }
+    //</editor-fold>
+    
+    //</editor-fold>
+
 }

@@ -43,35 +43,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     
     private final String FILEINV        = FILEPATHSF + "hms_inventory.csv";
     private final String STRING2        = FILEPATHSF + "hms_shipping.csv";
-    private final String FILESHIPFROM   = FILEPATHRL + "cdars_wip_shipping.csv";
     private final String FILESHIPTO     = FILEPATHSF + "hms_wip_shipping.csv";
     private final String FILEVERIFIED   = FILEPATHSF + "hms_wip_verified.csv";
     private final String FILELOAD       = FILEPATHSF + "hms_wip_load.csv";
     private final String FILEUNLOAD     = FILEPATHSF + "hms_wip_unload.csv";
-    private final String FILEINVENTORY  = FILEPATHSF + "hms_wip_inventory.csv";
-    private final String FILESHIPBACK   = FILEPATHSF + "hms_wip_shipback.csv";
+    private final String FILEINVENTORY  = FILEPATHSF + "hms_zero_inventory.csv";
+    private final String FILESHIPBACK   = FILEPATHSF + "hms_zero_shipping.csv";
     
-
-//    private static final String emailTest = "zbqb9x@onsemi.com";
-//    private static final String FILEINV         = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
-//    private static final String FILESHIPPING    = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
-//    private static final String FILEPATH        = "D:\\HIMS_CSV\\RL\\cdars_wip_shipping.csv";
-//    private static final String FILEPATHSHIP    = "D:\\HIMS_CSV\\SF\\hms_wip_shipping.csv";
-//    private static final String FILEPATHVERIFY  = "D:\\HIMS_CSV\\SF\\hms_wip_verified.csv";
-//    private static final String FILEPATHLOAD    = "D:\\HIMS_CSV\\SF\\hms_wip_load.csv";
-//    private static final String FILEPATHUNLOAD  = "D:\\HIMS_CSV\\SF\\hms_wip_unload.csv";
-//    private static final String FILEPATHINVENTORY   = "D:\\HIMS_CSV\\SF\\hms_wip_***.csv";
-//    private static final String FILEPATHSHIPBACK    = "D:\\HIMS_CSV\\SF\\hms_wip_***.csv";
-//    private static final String FILEINV2            = "D:\\Source Code\\archive\\CSV Import\\hms_inventory.csv";
-//    private static final String FILESHIPPING        = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
-//    private static final String FILEPATH            = "D:\\Source Code\\archive\\CSV Import\\cdars_wip_shipping.csv";
-//    private static final String FILEPATHSHIP        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_shipping.csv";
-//    private static final String FILEPATHVERIFY      = "D:\\Source Code\\archive\\CSV Import\\hms_wip_verified.csv";
-//    private static final String FILEPATHLOAD        = "D:\\Source Code\\archive\\CSV Import\\hms_wip_load.csv";
-//    private static final String FILEPATHUNLOAD      = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
-//    private static final String FILEPATHINVENTORY   = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
-//    private static final String FILEPATHSHIPBACK    = "D:\\Source Code\\archive\\CSV Import\\hms_wip_unload.csv";
-
     @Autowired
     private JavaMailSender mailSender;
 
@@ -911,7 +889,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
 //                    htmlEmail.setSSLOnConnect(true);
                     htmlEmail.setSSLOnConnect(false);
                     htmlEmail.setStartTLSEnabled(true);
-                    htmlEmail.setDebug(true);
+                    htmlEmail.setDebug(false);
 
                     String username = System.getProperty("user.name");
 
@@ -934,7 +912,11 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("templatewip.html"), model);
                     htmlEmail.setHtmlMsg(msgContent);
                     String send = htmlEmail.send();
-                    LOGGER.info("EMAIL SENDER: " + send);
+                    for (String penerima : to) {
+                        LOGGER.info("EMAIL >> " + penerima);
+                    }
+                    LOGGER.info("EMAIL SUBJECT : " + subject);
+                    LOGGER.info("EMAIL CONTENT : " + msg);
                 } catch (EmailException e) {
                     LOGGER.error(e.getMessage());
                 } catch (IOException e) {
@@ -961,7 +943,7 @@ public class EmailSender extends SpringBeanAutowiringSupport {
 //                    htmlEmail.setSSLOnConnect(true);
                     htmlEmail.setSSLOnConnect(false);
                     htmlEmail.setStartTLSEnabled(true);
-                    htmlEmail.setDebug(true);
+                    htmlEmail.setDebug(false);
 
                     String username = System.getProperty("user.name");
                     String filePath = "";
@@ -1020,7 +1002,11 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     String msgContent = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("templatewip.html"), model);
                     htmlEmail.setHtmlMsg(msgContent);
                     String send = htmlEmail.send();
-                    LOGGER.info("EMAIL SENDER: " + send);
+                    for (String penerima : to) {
+                        LOGGER.info("EMAIL >> " + penerima);
+                    }
+                    LOGGER.info("EMAIL SUBJECT : " + subject);
+                    LOGGER.info("EMAIL CONTENT : " + msg);
                 } catch (EmailException e) {
                     LOGGER.error(e.getMessage());
                 } catch (IOException e) {
