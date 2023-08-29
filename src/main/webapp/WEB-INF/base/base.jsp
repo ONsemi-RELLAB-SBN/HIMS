@@ -17,6 +17,7 @@
             <!-- libraries -->
             <!-- <link href="${contextPath}/resources/private/css/libs/jquery-ui-1.10.2.custom.css" rel="stylesheet" type="text/css" /> -->
             <link href="${contextPath}/resources/private/css/libs/font-awesome.css" type="text/css" rel="stylesheet" />
+            <link href="${contextPath}/resources/fontawesome-free-6.4.2-web/css/font-awesome.css" type="text/css" rel="stylesheet" />
 
             <!-- global styles -->
             <link rel="stylesheet" type="text/css" href="${contextPath}/resources/private/css/compiled/layout.css">
