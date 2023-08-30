@@ -2045,6 +2045,53 @@ public class WhWipDAO {
         return wipList;
     }
     
+    public List<WhWip0> getWip0Shipment() {
+        String sql = "SELECT *, GROUP_CONCAT(rms_event SEPARATOR ', ') AS sub_data FROM hms_wh_wip_0 WHERE ship_list IS NOT NULL GROUP BY ship_list";
+        LOGGER.info("FUNCTION getWip0ByStatus : " + sql);
+        List<WhWip0> wipList = new ArrayList<WhWip0>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            WhWip0 wip;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                wip = new WhWip0();
+                wip.setId(rs.getString("id"));
+                wip.setRequestId(rs.getString("request_id"));
+                wip.setGtsNo(rs.getString("gts_no"));
+                wip.setRmsEvent(rs.getString("rms_event"));
+                wip.setIntervals(rs.getString("intervals"));
+                wip.setQuantity(rs.getString("quantity"));
+                wip.setShipmentDate(rs.getString("shipment_date"));
+                wip.setCreatedDate(rs.getString("created_date"));
+                wip.setWipStatus(rs.getString("wip_status"));
+                wip.setVerifyBy(rs.getString("verify_date"));
+                wip.setVerifyDate(rs.getString("verify_date"));
+                wip.setRack(rs.getString("rack"));
+                wip.setShelf(rs.getString("shelf"));
+                wip.setRegisterBy(rs.getString("register_by"));
+                wip.setRegisterDate(rs.getString("register_date"));
+                wip.setRequestBy(rs.getString("request_by"));
+                wip.setRequestDate(rs.getString("request_date"));
+                wip.setShipBy(rs.getString("ship_by"));
+                wip.setShipDate(rs.getString("ship_date"));
+                wip.setShipList(rs.getString("ship_list"));
+                wip.setDataShip(rs.getString("sub_data"));
+                wipList.add(wip);
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return wipList;
+    }
+    
     public String getShipDateByRequestId(String requestId) {
         String data = "";
         String sql = "SELECT ship_date FROM hms_wh_wip WHERE request_id = '" + requestId + "'";

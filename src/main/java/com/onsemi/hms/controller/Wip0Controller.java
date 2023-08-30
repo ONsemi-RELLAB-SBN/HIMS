@@ -224,7 +224,7 @@ public class Wip0Controller {
         
         WhWipDAO daoUpdate = new WhWipDAO();
         daoUpdate.regToShip0hour(requestId);
-        return "redirect:/wip0hour/to";
+        return "redirect:/wip0hour/request";
     }
     
     @RequestMapping(value = "/to", method = RequestMethod.GET)
@@ -233,7 +233,8 @@ public class Wip0Controller {
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String status = pdao.getDetailByCode(SHIP);
         WhWipDAO dao = new WhWipDAO();
-        List<WhWip0> wipList = dao.getWip0ByStatus(status);
+//        List<WhWip0> wipList = dao.getWip0ByStatus(status);
+        List<WhWip0> wipList = dao.getWip0Shipment();
         
         LocalDateTime myDateObj = LocalDateTime.now();
         String monthyear = myDateObj.getMonth().toString() + " " + myDateObj.getYear();

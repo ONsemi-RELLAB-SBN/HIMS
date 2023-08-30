@@ -70,22 +70,25 @@
                                 <thead>
                                     <tr>
                                         <th><span>No</span></th>
-                                        <th><span>GTS NO</span></th>
-                                        <th><span>RMS Event</span></th>
+                                        <th><span>Shipping List</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
-                                        <th><span>Shipping List</span></th>
+                                        <th><span>RMS Event</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${wipList}" var="wipList" varStatus="whLoop">
                                         <tr>
                                             <td><c:out value="${whLoop.index+1}"/></td>
-                                            <td><c:out value="${wipList.gtsNo}"/></td>
-                                            <td><c:out value="${wipList.rmsEvent}"/></td>
-                                            <td><c:out value="${wipList.shipmentDate}"/></td>
-                                            <td><c:out value="${wipList.wipStatus}"/></td>
                                             <td><c:out value="${wipList.shipList}"/></td>
+                                            <td><c:out value="${wipList.shipDate}"/></td>
+                                            <td><c:out value="${wipList.wipStatus}"/></td>
+                                            <td>
+                                                <a href="${contextPath}/wip0hour/viewPdf/${wipList.shipList}" class="table-link" title="Print List">
+                                                    <i class='bx bx-tv bx-md bx-fw'></i>
+                                                </a>
+                                                <c:out value="${wipList.dataShip}"/>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

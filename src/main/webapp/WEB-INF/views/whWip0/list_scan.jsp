@@ -44,7 +44,7 @@
                                     <input type="text" class="form-control" id="gtsNo" name="gtsNo" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
-                            <a href="${contextPath}/whWip0/from" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                            <a href="${contextPath}/wip0hour/from" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
                                 <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-shield-plus bx-fw' style='color:#ffffff'  ></i> Receive</button>
                             </div>

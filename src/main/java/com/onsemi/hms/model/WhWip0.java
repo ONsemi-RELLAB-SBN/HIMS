@@ -30,6 +30,7 @@ public class WhWip0 {
     private String shipBy;
     private String shipDate;
     private String shipList;
+    private String dataShip;
 
     public String getId() {
         return id;
@@ -197,6 +198,14 @@ public class WhWip0 {
 
     public void setShipList(String shipList) {
         this.shipList = shipList;
+    }
+
+    public String getDataShip() {
+        return dataShip;
+    }
+
+    public void setDataShip(String dataShip) {
+        this.dataShip = dataShip;
     }
 
 }
