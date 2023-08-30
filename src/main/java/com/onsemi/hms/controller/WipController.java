@@ -357,7 +357,7 @@ public class WipController {
 
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/whWip/viewWhWipPdf/" + shippingList, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/whWip/to";
-        String title = "WIP Shipping List [" + shippingList + "]";
+        String title = "Stress WIP Shipping List [" + shippingList + "]";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", title);
