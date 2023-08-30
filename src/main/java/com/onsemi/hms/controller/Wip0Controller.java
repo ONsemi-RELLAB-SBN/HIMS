@@ -17,6 +17,8 @@ import com.onsemi.hms.tools.EmailSender;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -274,6 +277,30 @@ public class Wip0Controller {
         createCsvShipBack(shippingList, shipDate, name);
         sendEmailDoneShipBack(shippingList);
         return "redirect:/wip0hour/to";
+    }
+    
+    @RequestMapping(value = "/viewPdf/{shippingList}", method = RequestMethod.GET)
+    public String viewWipPdf(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable("shippingList") String shippingList
+    ) throws UnsupportedEncodingException {
+
+        String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wip0hour/viewWhWipPdf/" + shippingList, "UTF-8");
+        String backUrl = servletContext.getContextPath() + "/wip0hour/to";
+        String title = "Storage WIP Shipping List [" + shippingList + "]";
+        model.addAttribute("pdfUrl", pdfUrl);
+        model.addAttribute("backUrl", backUrl);
+        model.addAttribute("pageTitle", title);
+        return "pdf/view";
+    }
+
+    @RequestMapping(value = "/viewWhWipPdf/{shippingList}", method = RequestMethod.GET)
+    public ModelAndView viewWhWipPdf(
+            Model model,
+            @PathVariable("shippingList") String shippingList) {
+
+        return new ModelAndView("storagewipShipping", "shippingList", shippingList);
     }
     //</editor-fold>
     

@@ -14,7 +14,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.onsemi.hms.dao.WhWipDAO;
-import com.onsemi.hms.model.WhWip;
+import com.onsemi.hms.model.WhWip0;
 import com.onsemi.hms.pdf.AbstractPdfViewShipping;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author zbqb9x
  */
-public class WipShippingList extends AbstractPdfViewShipping {
-
+public class WipStorageShippingList extends AbstractPdfViewShipping {
+    
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
             PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
@@ -34,7 +34,7 @@ public class WipShippingList extends AbstractPdfViewShipping {
         
         String data = (String) model.get("shippingList");
         WhWipDAO wipData = new WhWipDAO();
-        String shipDate = wipData.getShipDateByShipList(data);
+        String shipDate = wipData.getStorageShipDateByShipList(data);
         
         Integer cellPadd = 4;
         Integer cellPadding = 7;
@@ -42,15 +42,15 @@ public class WipShippingList extends AbstractPdfViewShipping {
         String spacing02 = "\n\n";
         String spacing03 = "\n\n\n";
 
-        String title = "WIP MANAGEMENT - STRESS WIP SHIPMENT LIST TO SBN REL LAB";
+        String title = "WIP MANAGEMENT - STORAGE WIP SHIPMENT LIST TO SBN REL LAB";
         Paragraph viewTitle = new Paragraph(title, fontOpenSans(10f, Font.BOLD));
         viewTitle.setAlignment(Element.ALIGN_CENTER);
         doc.add(viewTitle);
 
         Paragraph viewSpace01 = new Paragraph(spacing01, fontOpenSans(8f, Font.NORMAL));
-        PdfPTable table2 = new PdfPTable(5);
+        PdfPTable table2 = new PdfPTable(3);
         table2.setWidthPercentage(100.0f);
-        table2.setWidths(new float[]{0.5f, 2.5f, 1.2f, 1.2f, 2.5f});
+        table2.setWidths(new float[]{0.5f, 3.5f, 3.5f});
         table2.setSpacingBefore(15);
 
         Font fontHeader2 = fontOpenSans(7f, Font.BOLD);
@@ -64,7 +64,7 @@ public class WipShippingList extends AbstractPdfViewShipping {
         cellContent.setPadding(cellPadding);
 
         WhWipDAO dao = new WhWipDAO();
-        List<WhWip> whwip = dao.getWhWipByShipment(data);
+        List<WhWip0> whwip = dao.getAll0hourWipByShipList(data);
 
         int i = 0;
         if (whwip.isEmpty()) {
@@ -81,7 +81,7 @@ public class WipShippingList extends AbstractPdfViewShipping {
                     viewSpace01.setAlignment(Element.ALIGN_LEFT);
                     doc.add(viewSpace01);
                     
-                    String subTitle = "STRESS WIP INFORMATION";
+                    String subTitle = "STORAGE WIP INFORMATION";
                     Paragraph viewSub = new Paragraph(subTitle, fontOpenSans(8f, Font.BOLD));
                     viewSub.setAlignment(Element.ALIGN_LEFT);
                     doc.add(viewSub);
@@ -89,11 +89,7 @@ public class WipShippingList extends AbstractPdfViewShipping {
                     //Header Log
                     cellHeader2.setPhrase(new Phrase("No. ", fontHeader2));
                     table2.addCell(cellHeader2);
-                    cellHeader2.setPhrase(new Phrase("RMS Event", fontHeader2));
-                    table2.addCell(cellHeader2);
-                    cellHeader2.setPhrase(new Phrase("Intervals", fontHeader2));
-                    table2.addCell(cellHeader2);
-                    cellHeader2.setPhrase(new Phrase("Quantity", fontHeader2));
+                    cellHeader2.setPhrase(new Phrase("Box Number", fontHeader2));
                     table2.addCell(cellHeader2);
                     cellHeader2.setPhrase(new Phrase("Shipping Date", fontHeader2));
                     table2.addCell(cellHeader2);
@@ -102,12 +98,6 @@ public class WipShippingList extends AbstractPdfViewShipping {
                 table2.addCell(cellContent);
 
                 cellContent.setPhrase(new Phrase(whwip.get(i).getRmsEvent(), fontContent));
-                table2.addCell(cellContent);
-
-                cellContent.setPhrase(new Phrase(whwip.get(i).getIntervals(), fontContent));
-                table2.addCell(cellContent);
-
-                cellContent.setPhrase(new Phrase(whwip.get(i).getShipQuantity(), fontContent));
                 table2.addCell(cellContent);
 
                 cellContent.setPhrase(new Phrase(shipDate, fontContent));

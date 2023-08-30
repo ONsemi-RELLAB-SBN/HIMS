@@ -642,6 +642,7 @@ public class WhWipDAO {
         String status = pdao.getDetailByCode(SHIP);
         String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '" + shipList + "' AND status = '" + status + "'";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
+        LOGGER.info("FUNCTION getWhWipByShipment >>> " + sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             WhWip whShipping;
@@ -2097,6 +2098,33 @@ public class WhWipDAO {
         String sql = "SELECT ship_date FROM hms_wh_wip WHERE request_id = '" + requestId + "'";
         LOGGER.info("FUNCTION getShipDateByRequestId : " +sql);
         try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                data = rs.getString("ship_date");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return data;
+    }
+    
+    public String getStorageShipDateByShipList(String shippingList) {
+        LOGGER.info("FUNCTION getStorageShipDateByShipList");
+        String data = "";
+        try {
+            String sql = "SELECT ship_date FROM hms_wh_wip_0 WHERE ship_list = '" + shippingList + "' LIMIT 1";
+            LOGGER.info("LOGGER for getStorageShipDateByShipList : " +sql);
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
