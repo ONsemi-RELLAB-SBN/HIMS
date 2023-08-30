@@ -32,7 +32,7 @@
     </s:layout-component>
         <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
@@ -72,7 +72,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">WIP Information - WIP Ready for shipment</h2>
+                            <h2 class="pull-left">Stress WIP Information - Ready For Shipment</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">

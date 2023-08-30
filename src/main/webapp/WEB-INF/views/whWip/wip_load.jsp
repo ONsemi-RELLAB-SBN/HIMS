@@ -32,11 +32,11 @@
     </s:layout-component>
         <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>LOAD WIP</h2>
+                        <h2>LOAD STRESS WIP</h2>
                         <form id="wip_process_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateProcess/loading" method="post">
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
@@ -73,6 +73,17 @@
                                 <label for="loadDate" class="col-lg-3 control-label">Loading Date</label>
                                 <div class="col-lg-5">
                                     <input type="datetime-local" class="form-control" id="loadDate" name="loadDate" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="chamber" class="col-lg-3 control-label">Chamber</label>
+                                <div class="col-lg-5">
+                                    <select id="chamber" name="chamber" class="js-example-basic-single" style="width: 100%" >
+                                        <option value="" selected=""></option>
+                                        <c:forEach items="${chamber}" var="list">
+                                            <option value="${list.id}"> ${list.name}</option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/listProcess" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>

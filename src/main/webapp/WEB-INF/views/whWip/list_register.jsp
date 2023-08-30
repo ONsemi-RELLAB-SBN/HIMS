@@ -32,17 +32,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">Shipment from Rel Lab - Verified List</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right">
-                                    <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
-                                </a>
-                            </div>-->
                             <div class="filter-block pull-right">
                             </div>
                         </div>
@@ -76,7 +71,6 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
-                                        <%--<c:if test="${whWip.status == status}"><th><span></span></th></c:if>--%>
                                     </tr>
                                 </thead>
                                 <tbody>

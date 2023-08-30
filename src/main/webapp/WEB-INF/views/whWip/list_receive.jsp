@@ -32,7 +32,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
@@ -60,7 +60,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">WIP List</h2>
+                            <h2 class="pull-left">Stress WIP List</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -95,11 +95,6 @@
                             </table>
                         </div>
                     </div>
-<!--                    <div class="clearfix">
-                        <div class="range" style="--p:20">
-                            <div class="range__label">Progress</div>
-                        </div>
-                    </div>-->
                 </div>
             </div>
         </div>
@@ -133,18 +128,6 @@
                     oTable.page.len($(this).val()).draw();
                 });
                 
-//                if ($('#countAll').val() === '0') {
-//                    $('#print').hide();
-//                } else {
-//                    $('#print').show();
-//                }
-                
-//                if ($('#countAll').val() === '0') {
-//                    $('#deleteAll').hide();
-//                } else {
-//                    $('#deleteAll').show();
-//                }
-                
                 $(".cancel").click(function () {
                     validator.resetForm();
                 });
@@ -152,12 +135,7 @@
                 $('#boxNo').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
-                
-//                $(".viewData").click(function () {
-//                    $("#data").show();
-//                });
             });
-            
         </script>
     </s:layout-component>
 </s:layout-render>

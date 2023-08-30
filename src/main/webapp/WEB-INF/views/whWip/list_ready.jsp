@@ -18,7 +18,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box">

@@ -32,12 +32,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">WIP Information - Process</h2>
+                            <h2 class="pull-left">Stress WIP Information - Process</h2>
                             <div class="filter-block pull-right"></div>
                         </div>
                         <hr/>
@@ -70,7 +70,6 @@
                                         <th><span>Quantity</span></th>
                                         <th><span>Shipment Date</span></th>
                                         <th><span>Status</span></th>
-                                        <!--<th><span>Process</span></td>-->
                                         <th><span>Loading</span></td>
                                         <th><span>Unloading</span></td>
                                     </tr>

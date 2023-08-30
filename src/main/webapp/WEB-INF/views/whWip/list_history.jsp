@@ -33,18 +33,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management - HISTORY</h1>
+            <h1>WIP Management [Stress WIP] - HISTORY</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">WIP Log History</h2>
-<!--                            <div class="filter-block pull-right">
-                                <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
-                                    <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
-                                </a>
-                            </div>
-                            <div class="filter-block pull-right"></div>-->
                         </div>
                         <hr/>
                         <div class="clearfix">

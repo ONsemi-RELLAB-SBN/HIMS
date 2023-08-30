@@ -76,13 +76,20 @@ public class Wip0Controller {
     private static final String INVENTORY   = "0107";
     private static final String REQUEST     = "0108";
     private static final String EMAILTASK   = "02";
+    private static final String ESYSTEM     = "0201";
+    private static final String EADMIN      = "0202";
+    private static final String ERECEIVE    = "0203";
+    private static final String ELOADING    = "0204";
+    private static final String ESHIP       = "0205";
+    private static final String EINVENTORY  = "0206";
+    private static final String ESHIPBACK   = "0207";
 
     private static final String COMMA_DELIMITER = ",";
     private static final String LINE_SEPARATOR  = "\n";
     private static final String HEADER          = "Column1, Column2, Column3, Column4";
     private static final String HEADERSHIP      = "RequestID,RMSEvent,Intervals,Quantity,ShipmentDate";
     private static final String HEADERVERIFY    = "RequestID,ReceiveDate,VerifyDate,Status";
-    private static final String HEADERLOAD      = "RequestID,Date";
+    private static final String HEADERLOAD      = "RequestID,Date,Chamber";
     private static final String HEADERINVENTORY = "RequestID,ReceiveDate,InventoryDate,Rack,Shelf";
     private static final String HEADERSHIPBACK  = "RequestID,ShipDate";
 

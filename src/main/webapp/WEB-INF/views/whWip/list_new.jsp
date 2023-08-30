@@ -33,12 +33,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Shipment from Rel Lab - WIP Information</h2>
+                            <h2 class="pull-left">Shipment from Rel Lab - Stress WIP Information</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No
@@ -93,8 +93,6 @@
                                                     <td><c:out value="${whWip.status}"/></td>
                                                     <td>
                                                         <a href="${contextPath}/whWip/listVerify/${whWip.requestId}" class="table-button" title="Verify">
-                                                            <!--<i class='bx bx-list-check bx-tada bx-md bx-fw' ></i>-->
-                                                            <!--<i class='bx bxs-user-check bx-fade-right bx-md bx-fw' undefined ></i>-->
                                                             <i class='bx bx-checkbox-checked bx-lg bx-fw' ></i>
                                                         </a>
                                                     </td>
@@ -109,11 +107,6 @@
                                 </tbody>
                             </table>
                         </div>
-<!--                        <div class="clearfix">
-                            <div class="range" style="--p:10">
-                                <div class="range__label"></div>
-                            </div>
-                        </div>-->
                     </div>
                 </div>
             </div>

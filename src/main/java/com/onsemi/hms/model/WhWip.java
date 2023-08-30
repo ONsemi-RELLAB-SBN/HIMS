@@ -35,6 +35,7 @@ public class WhWip {
     private String dataAll;
     private String loadDate;
     private String unloadDate;
+    private String chamber;
 
     public String getId() {
         return id;
@@ -234,6 +235,14 @@ public class WhWip {
 
     public void setUnloadDate(String unloadDate) {
         this.unloadDate = unloadDate;
+    }
+
+    public String getChamber() {
+        return chamber;
+    }
+
+    public void setChamber(String chamber) {
+        this.chamber = chamber;
     }
 
 }

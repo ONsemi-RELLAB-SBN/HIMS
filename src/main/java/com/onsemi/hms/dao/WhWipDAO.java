@@ -5,6 +5,7 @@
 package com.onsemi.hms.dao;
 
 import com.onsemi.hms.db.DB;
+import com.onsemi.hms.model.Chamber;
 import com.onsemi.hms.model.EmailList;
 import com.onsemi.hms.model.User;
 import com.onsemi.hms.model.WhMpList;
@@ -418,12 +419,12 @@ public class WhWipDAO {
         return queryResult;
     }
 
-    public QueryResult updateProcess(String process, String date, String reqId) {
+    public QueryResult updateProcess(String process, String date, String reqId, String chamber) {
         LOGGER.info("FUNCTION updateProcess");
         QueryResult queryResult = new QueryResult();
         String sql = "";
         if (process.equalsIgnoreCase("loading")) {
-            sql = "UPDATE hms_wh_wip SET load_date = '" + date + "' WHERE request_id = ? ";
+            sql = "UPDATE hms_wh_wip SET load_date = '" + date + "', chamber = '" + chamber + "' WHERE request_id = ? ";
         } else if (process.equalsIgnoreCase("unloading")) {
             sql = "UPDATE hms_wh_wip SET unload_date = '" + date + "' WHERE request_id = ? ";
         }
@@ -1179,7 +1180,7 @@ public class WhWipDAO {
 
     public List<WhWipShip> getLogAll() {
         LOGGER.info("FUNCTION getLogWhWip");
-        String sql = "SELECT * FROM hms_wh_wip_ship GROUP BY wip_ship_list;";
+        String sql = "SELECT * FROM hms_wh_wip_ship GROUP BY wip_ship_list ";
         List<WhWipShip> wipList = new ArrayList<WhWipShip>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1513,6 +1514,38 @@ public class WhWipDAO {
         LOGGER.info("FUNCTION getDateFromString");
         LocalDate date = LocalDate.parse(string, format);
         return date;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="CHAMBER">
+    public List<Chamber> getAllChamber() {
+        LOGGER.info("FUNCTION getLogWhWip");
+        String sql = "SELECT * FROM hms_chamber ";
+        List<Chamber> list = new ArrayList<Chamber>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            Chamber chamber;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                chamber = new Chamber();
+                chamber.setId(rs.getString("id"));
+                chamber.setName(rs.getString("name"));
+                list.add(chamber);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return list;
     }
     //</editor-fold>
 

@@ -32,11 +32,11 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>WIP Information - Verify WIP</h2>
+                        <h2>Stress WIP Information - Verify WIP</h2>
                         <form id="wip_information_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceiveToVerify/${wipData.requestId}" method="post">
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
@@ -70,7 +70,6 @@
                                 </div>
                             </div>
                             <div id = "alert_placeholder2"></div>
-                            <!--<a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left"><i class="fa fa-reply"></i> Back</a>-->
                             <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="clearfix"></div>
                         </form>
@@ -86,9 +85,7 @@
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <div style='text-align: center;'>
-                                <!-- insert your custom barcode setting your data in the GET parameter "data" -->
-                                <img alt='Barcode Generator TEC-IT'
-                                     src='https://barcode.tec-it.com/barcode.ashx?data=${wipData.rmsEvent}&code=&translate-esc=true'/>
+                                <img alt='Barcode Generator TEC-IT' src='https://barcode.tec-it.com/barcode.ashx?data=${wipData.rmsEvent}&code=&translate-esc=true'/>
                             </div>
                             <div class="form-group">
                                 <label for="tripTicket" class="col-lg-3 control-label">Scan Trip Ticket *</label>

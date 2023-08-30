@@ -8,6 +8,7 @@ import com.onsemi.hms.config.FtpWip;
 import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.RunningNumberDAO;
 import com.onsemi.hms.dao.WhWipDAO;
+import com.onsemi.hms.model.Chamber;
 import com.onsemi.hms.model.EmailList;
 import com.onsemi.hms.model.ParameterDetails;
 import com.onsemi.hms.model.User;
@@ -74,15 +75,22 @@ public class WipController {
     private static final String INVENTORY   = "0107";
     private static final String REQUEST     = "0108";
     private static final String EMAILTASK   = "02";
+    private static final String ESYSTEM     = "0201";
+    private static final String EADMIN      = "0202";
+    private static final String ERECEIVE    = "0203";
+    private static final String ELOADING    = "0204";
+    private static final String ESHIP       = "0205";
+    private static final String EINVENTORY  = "0206";
+    private static final String ESHIPBACK   = "0207";
 
     private static final String COMMA_DELIMITER = ",";
     private static final String LINE_SEPARATOR  = "\n";
     private static final String HEADER          = "Column1, Column2, Column3, Column4";
     private static final String HEADERSHIP      = "RequestID,RMSEvent,Intervals,Quantity,ShipmentDate";
     private static final String HEADERVERIFY    = "RequestID,ReceiveDate,VerifyDate,Status";
-    private static final String HEADERLOAD      = "RequestID,Date";
-    private static final String HEADERINVENTORY = "RequestID,receiveDate,inventoryDate,Rack,Shelf";
-    private static final String HEADERSHIPBACK  = "RequestID,shipDate";
+    private static final String HEADERLOAD      = "RequestID,Date,Chamber";
+    private static final String HEADERINVENTORY = "RequestID,ReceiveDate,InventoryDate,Rack,Shelf";
+    private static final String HEADERSHIPBACK  = "RequestID,ShipDate";
 
     @Autowired
     private MessageSource messageSource;
@@ -398,7 +406,10 @@ public class WipController {
 
         WhWipDAO dao = new WhWipDAO();
         WhWip data = dao.getWhWipByRequestId(id);
+        dao = new WhWipDAO();
+        List<Chamber> data1 = dao.getAllChamber();
         model.addAttribute("wipData", data);
+        model.addAttribute("chamber", data1);
         return "whWip/wip_load";
     }
 
@@ -415,6 +426,7 @@ public class WipController {
     public String updateWipProcess(Model model, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttrs, @ModelAttribute UserSession userSession,
             @PathVariable("maklumat") String maklumat,
             @RequestParam(required = false) String requestId,
+            @RequestParam(required = false) String chamber,
             @RequestParam(required = false) String loadDate,
             @RequestParam(required = false) String unloadDate) throws IOException {
 
@@ -424,7 +436,7 @@ public class WipController {
 
         if (maklumat.equalsIgnoreCase("loading")) {
             dao = new WhWipDAO();
-            dao.updateProcess(maklumat, loadDate, requestId);
+            dao.updateProcess(maklumat, loadDate, requestId, chamber);
             // csv files sent to inform loading time
             sendCsvLoading(requestId);
             // email to inform loading time
@@ -432,7 +444,7 @@ public class WipController {
         } else if (maklumat.equalsIgnoreCase("unloading")) {
             // update statstement
             dao = new WhWipDAO();
-            dao.updateProcess(maklumat, unloadDate, requestId);
+            dao.updateProcess(maklumat, unloadDate, requestId, chamber);
             // csv files sent to inform unloading time
             sendCsvUnloading(requestId);
             // email to inform unloading time

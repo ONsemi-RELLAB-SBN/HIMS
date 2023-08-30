@@ -32,12 +32,12 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management</h1>
+            <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Shipment to Rel Lab - WIP Information [ ${monthyear} ]</h2>
+                            <h2 class="pull-left">Shipment to Rel Lab - Stress WIP Information [ ${monthyear} ]</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <!--<i class='bx bx-list-plus bx-fw'></i>-->
