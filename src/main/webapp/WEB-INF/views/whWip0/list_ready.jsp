@@ -18,7 +18,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management [0 hours]</h1>
+            <h1>WIP Management [Storage WIP]</h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="main-box">
@@ -30,7 +30,7 @@
                                     <input type="datetime-local" id="shipDate" name="shipDate" class="btn pull-right">
                                 </div>
                             </div>
-                            <a href="${contextPath}/whWip/to" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                            <a href="${contextPath}/wip0hour/to" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
                                 <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-printer' style='color:#ffffff' ></i> PRINT for ${wipBox}</button>
                                 <input type="hidden" class="form-control" id="shippingList" name="shippingList" value="${wipBox}">

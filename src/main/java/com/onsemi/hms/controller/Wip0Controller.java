@@ -17,9 +17,13 @@ import com.onsemi.hms.tools.EmailSender;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.ServletContext;
@@ -262,7 +266,7 @@ public class Wip0Controller {
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
             @RequestParam(required = false) String shipDate,
-            @RequestParam(required = false) String shippingList) throws IOException {
+            @RequestParam(required = false) String shippingList) throws IOException, ParseException {
         
         String name = userSession.getFullname();
         updateRunningNumber(shippingList);
@@ -303,7 +307,7 @@ public class Wip0Controller {
         send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "INVENTORY");
     }
     
-    private void sendEmailDoneShipBack(String shipList) {
+    private void sendEmailDoneShipBack(String shipList) throws ParseException {
 
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
@@ -524,7 +528,7 @@ public class Wip0Controller {
         return text;
     }
     
-    private String tableWipShip0hour(String shipList) {
+    private String tableWipShip0hour(String shipList) throws ParseException {
         
         WhWipDAO wipdao = new WhWipDAO();
         List<WhWip0> listWip = wipdao.getAll0hourWipByShipList(shipList);
@@ -545,7 +549,7 @@ public class Wip0Controller {
             text += "<tr align = \"center\">";
             text += "<td>" + index + "</td>";
             text += "<td>" + rmsEvent + "</td>";
-            text += "<td>" + tukarFormatDate01(shipDate) + "</td>";
+            text += "<td>" + tukarFormat02(shipDate) + "</td>";
             text += "</tr>";
         }
         text += "</table>";
@@ -595,6 +599,14 @@ public class Wip0Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss a");
         String formattedDateTime = formatter.format(dateTime);
         return formattedDateTime;
+    }
+    
+    private String tukarFormat02(String date) throws ParseException {
+        // 01 Sep 2023 01:01:00 AM
+        DateFormat outputDateFormat = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss a");
+        Date date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+        String formattedDate = outputDateFormat.format(date2);
+        return formattedDate;
     }
     //</editor-fold>
     

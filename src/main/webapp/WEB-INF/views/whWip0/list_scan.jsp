@@ -32,7 +32,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management [0 hours]</h1>
+            <h1>WIP Management [Storage WIP]</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">

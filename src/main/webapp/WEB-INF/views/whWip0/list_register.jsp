@@ -32,7 +32,7 @@
     </s:layout-component>
     <s:layout-component name="page_container">
         <div class="col-lg-12">
-            <h1>WIP Management [0 hours]</h1>
+            <h1>WIP Management [Storage WIP]</h1>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
@@ -85,7 +85,7 @@
                             <div class="form-group">
                             </div>
                             <div id = "alert_placeholder2"></div>
-                            <a href="${contextPath}/whWip/0hour_from" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
+                            <a href="${contextPath}/wip0hour/from" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
                                 <button type="submit" id="verify" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bx-log-in-circle bx-md bx-fw' style='color:#ffffff' ></i> Register</button>
                             </div>
