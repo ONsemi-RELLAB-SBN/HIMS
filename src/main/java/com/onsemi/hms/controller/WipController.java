@@ -440,7 +440,7 @@ public class WipController {
             // csv files sent to inform loading time
             sendCsvLoading(requestId);
             // email to inform loading time
-            sendEmailLoading(rmsEvent, loadDate);
+            sendEmailLoading(rmsEvent, loadDate, chamber);
         } else if (maklumat.equalsIgnoreCase("unloading")) {
             // update statstement
             dao = new WhWipDAO();
@@ -448,7 +448,7 @@ public class WipController {
             // csv files sent to inform unloading time
             sendCsvUnloading(requestId);
             // email to inform unloading time
-            sendEmailUnloading(rmsEvent, unloadDate);
+            sendEmailUnloading(rmsEvent, unloadDate, chamber);
         }
         return "redirect:/whWip/listProcess";
     }
@@ -728,7 +728,7 @@ public class WipController {
 
         String emailStatus = "";
 //        String[] receiver = {"hims@onsemi.com"};
-        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         EmailSender emailSenderCsv = new EmailSender();
         emailSenderCsv.htmlEmailWithAttachmentTest(
                 servletContext,
@@ -743,65 +743,65 @@ public class WipController {
     private void sendEmailVerifyWip(String gtsNo) {
 
         String username = "All";
-//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         String[] listReceive = getEmailList("Notify Receive");
         String[] listSystem = getEmailList("System");
-        String subject = "WIP Received from Rel Lab";
+        String subject = "Stress WIP Received from Rel Lab";
         String msg = tableWipReceive(gtsNo);
         String msg1 = "";
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, listReceive, subject, msg, "VERIFY");
+        send.wipEmail(servletContext, username, receiver, subject, msg, "VERIFY");
 //        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "VERIFY");
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "VERIFY");
     }
 
     private void sendEmailShipWip(String shipList) {
 
         String username = "All";
-//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         String[] listAdmin = getEmailList("Notify Ship");
         String[] listSystem = getEmailList("System");
-        String subject = "WIP is Shipped to Rel Lab";
-        String msg1 = "WIP is shipped to Rel Lab from Sg Gadut";
+        String subject = "Stress WIP is Shipped to Rel Lab";
+        String msg1 = "Stress WIP is shipped to Rel Lab from Sg Gadut";
         String msg2 = tableWipShip(shipList);
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, listAdmin, subject, msg2, "SHIP");
+        send.wipEmail(servletContext, username, receiver, subject, msg2, "SHIP");
 //        send.wipEmailShip(servletContext, username, receiver, subject, msg);
         send = new EmailSender();
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIP");
     }
 
-    private void sendEmailLoading(String rmsEvent, String date) {
+    private void sendEmailLoading(String rmsEvent, String date, String chamber) {
 
         String username = "All";
-//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         String[] listSystem = getEmailList("System");
         String[] listLoad = getEmailList("Notify Loading");
-        String subject = "Loading WIP " + rmsEvent + "";
-        String message = "RMS Event " + rmsEvent + " is Loading at " + tukarFormatDate01(date);
+        String subject = "Loading Stress WIP " + rmsEvent + "";
+        String message = "RMS Event " + rmsEvent + " is Loading at " + tukarFormatDate01(date) + " in chamber " +chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, listLoad, subject, message, "LOAD");
+        send.wipEmail(servletContext, username, receiver, subject, message, "LOAD");
         // email sent to system (with csv)
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listSystem, subject, message, "LOAD");
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "LOAD");
     }
 
-    private void sendEmailUnloading(String rmsEvent, String date) {
+    private void sendEmailUnloading(String rmsEvent, String date, String chamber) {
 
         String username = "All";
-//        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com"};
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         String[] listSystem = getEmailList("System");
         String[] listLoad = getEmailList("Notify Loading");
-        String subject = "Unloading WIP " + rmsEvent + "";
-        String message = "RMS Event " + rmsEvent + " is Unloading at " + tukarFormatDate01(date);
+        String subject = "Unloading Stress WIP " + rmsEvent + "";
+        String message = "RMS Event " + rmsEvent + " is Unloading at " + tukarFormatDate01(date) + " from chamber " + chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, listLoad, subject, message, "UNLOAD");
+        send.wipEmail(servletContext, username, receiver, subject, message, "UNLOAD");
         // email sent to system (with csv)
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listSystem, subject, message, "UNLOAD");
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "UNLOAD");
     }
     
     // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - START
@@ -1003,15 +1003,15 @@ public class WipController {
         WhWipDAO dao = new WhWipDAO();
         WhWip wip = dao.getWhWipByRequestId(requestId);
 
-        String date1 = wip.getLoadDate();
-
         if (file.exists()) {
             try {
                 fileWriter = new FileWriter(FILELOAD, true);
                 fileWriter.append(LINE_SEPARATOR);
                 fileWriter.append(wip.getRequestId());
                 fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(date1);
+                fileWriter.append(wip.getLoadDate());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(wip.getChamber());
                 System.out.println("Update existing to CSV file Succeed!!!");
             } catch (Exception ee) {
                 ee.printStackTrace();
@@ -1030,7 +1030,9 @@ public class WipController {
                 fileWriter.append(LINE_SEPARATOR);
                 fileWriter.append(wip.getRequestId());
                 fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(date1);
+                fileWriter.append(wip.getLoadDate());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(wip.getChamber());
                 System.out.println("Write new to CSV file Succeed!!!");
             } catch (Exception ee) {
                 ee.printStackTrace();
@@ -1061,6 +1063,8 @@ public class WipController {
                 fileWriter.append(wip.getRequestId());
                 fileWriter.append(COMMA_DELIMITER);
                 fileWriter.append(date2);
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(wip.getChamber());
                 System.out.println("Update existing to CSV file Succeed!!!");
             } catch (Exception ee) {
                 ee.printStackTrace();
@@ -1080,6 +1084,8 @@ public class WipController {
                 fileWriter.append(wip.getRequestId());
                 fileWriter.append(COMMA_DELIMITER);
                 fileWriter.append(date2);
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(wip.getChamber());
                 System.out.println("Write new to CSV file Succeed!!!");
             } catch (Exception ee) {
                 ee.printStackTrace();

@@ -45,8 +45,8 @@ public class FtpWip {
     String targetLocation   = "D:\\Source Code\\archive\\CSV Import\\";
 //    String targetLocation   = "D:\\HIMS_CSV\\RL\\";
     String filename         = "cdars_wip_shipping.csv";
-    String file0hoursRead   = "cdars_zero_shipping.csv";
-    String file0hourReq     = "cdars_zero_retrieve.csv";
+    String storageRead      = "cdars_zero_shipping.csv";
+    String storageReq       = "cdars_zero_retrieve.csv";
 
 //    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
 //    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
@@ -170,7 +170,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(file0hoursRead)) {
+                    if (listOfFile.getName().equals(storageRead)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {
@@ -223,7 +223,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(file0hourReq)) {
+                    if (listOfFile.getName().equals(storageReq)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {

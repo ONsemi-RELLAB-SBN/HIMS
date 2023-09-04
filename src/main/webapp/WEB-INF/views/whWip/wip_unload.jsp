@@ -69,10 +69,16 @@
                                     <input type="text" class="form-control" id="shipDate" name="shipDate" value="${wipData.shipmentDate}" readonly>
                                 </div>
                             </div>
-                                <div class="form-group">
+                            <div class="form-group">
                                 <label for="unloadDate" class="col-lg-3 control-label">Unloading Date</label>
                                 <div class="col-lg-5">
                                     <input type="datetime-local" class="form-control" id="unloadDate" name="unloadDate" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="chamber" class="col-lg-3 control-label">Chamber</label>
+                                <div class="col-lg-5">
+                                    <input type="text" class="form-control" id="chamber" name="chamber" value="${wipData.chamber}" readonly>
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/listProcess" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>

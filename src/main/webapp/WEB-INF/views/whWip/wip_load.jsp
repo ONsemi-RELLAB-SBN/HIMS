@@ -81,7 +81,7 @@
                                     <select id="chamber" name="chamber" class="js-example-basic-single" style="width: 100%" >
                                         <option value="" selected=""></option>
                                         <c:forEach items="${chamber}" var="list">
-                                            <option value="${list.id}"> ${list.name}</option>
+                                            <option value="${list.name}"> ${list.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>

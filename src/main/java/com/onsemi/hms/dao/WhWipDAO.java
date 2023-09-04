@@ -518,6 +518,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
             }
             rs.close();
             ps.close();
@@ -568,6 +569,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
             }
             rs.close();
             ps.close();
@@ -619,6 +621,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -674,6 +677,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -726,6 +730,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 whShipping.setDataAll(rs.getString("sub_data"));
                 wipList.add(whShipping);
             }
@@ -779,6 +784,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 whShipping.setDataAll(rs.getString("sub_data"));
                 wipList.add(whShipping);
             }
@@ -833,6 +839,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -885,6 +892,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -937,6 +945,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 wipList.add(whShipping);
             }
             rs.close();
@@ -958,35 +967,36 @@ public class WhWipDAO {
     public WhWip getWipByRmsInterval(String rmsEvent, String intervals) {
         LOGGER.info("FUNCTION getWipByRmsInterval");
         String sql = "SELECT * FROM hms_wh_wip WHERE rms_event = '" + rmsEvent + "' AND intervals = '" + intervals + "'";
-        WhWip whList = new WhWip();
+        WhWip whShipping = new WhWip();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                whList.setId(rs.getString("id"));
-                whList.setRequestId(rs.getString("request_id"));
-                whList.setGtsNo(rs.getString("gts_no"));
-                whList.setRmsEvent(rs.getString("rms_event"));
-                whList.setIntervals(rs.getString("intervals"));
-                whList.setQuantity(rs.getString("quantity"));
-                whList.setShipmentDate(rs.getString("shipment_date"));
-                whList.setStatus(rs.getString("status"));
-                whList.setCreatedDate(rs.getString("created_date"));
-                whList.setReceiveDate(rs.getString("receive_date"));
-                whList.setReceiveBy(rs.getString("receive_by"));
-                whList.setVerifyDate(rs.getString("verify_date"));
-                whList.setVerifyBy(rs.getString("verify_by"));
-                whList.setRegisterDate(rs.getString("register_date"));
-                whList.setRegisterBy(rs.getString("register_by"));
-                whList.setReadyDate(rs.getString("ready_date"));
-                whList.setReadyBy(rs.getString("ready_by"));
-                whList.setShipDate(rs.getString("ship_date"));
-                whList.setShipCreatedDate(rs.getString("ship_created_date"));
-                whList.setShipBy(rs.getString("ship_by"));
-                whList.setShipQuantity(rs.getString("ship_quantity"));
-                whList.setShippingList(rs.getString("shipping_list"));
-                whList.setLoadDate(rs.getString("load_date"));
-                whList.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setId(rs.getString("id"));
+                whShipping.setRequestId(rs.getString("request_id"));
+                whShipping.setGtsNo(rs.getString("gts_no"));
+                whShipping.setRmsEvent(rs.getString("rms_event"));
+                whShipping.setIntervals(rs.getString("intervals"));
+                whShipping.setQuantity(rs.getString("quantity"));
+                whShipping.setShipmentDate(rs.getString("shipment_date"));
+                whShipping.setStatus(rs.getString("status"));
+                whShipping.setCreatedDate(rs.getString("created_date"));
+                whShipping.setReceiveDate(rs.getString("receive_date"));
+                whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setVerifyDate(rs.getString("verify_date"));
+                whShipping.setVerifyBy(rs.getString("verify_by"));
+                whShipping.setRegisterDate(rs.getString("register_date"));
+                whShipping.setRegisterBy(rs.getString("register_by"));
+                whShipping.setReadyDate(rs.getString("ready_date"));
+                whShipping.setReadyBy(rs.getString("ready_by"));
+                whShipping.setShipDate(rs.getString("ship_date"));
+                whShipping.setShipCreatedDate(rs.getString("ship_created_date"));
+                whShipping.setShipBy(rs.getString("ship_by"));
+                whShipping.setShipQuantity(rs.getString("ship_quantity"));
+                whShipping.setShippingList(rs.getString("shipping_list"));
+                whShipping.setLoadDate(rs.getString("load_date"));
+                whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
             }
             rs.close();
             ps.close();
@@ -1001,7 +1011,7 @@ public class WhWipDAO {
                 }
             }
         }
-        return whList;
+        return whShipping;
     }
 
     public List<WhWip> getWipByGtsNo(String gtsNo) {
@@ -1040,6 +1050,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 whShippingList.add(whShipping);
             }
             rs.close();
@@ -1092,6 +1103,7 @@ public class WhWipDAO {
                 whShipping.setShippingList(rs.getString("shipping_list"));
                 whShipping.setLoadDate(rs.getString("load_date"));
                 whShipping.setUnloadDate(rs.getString("unload_date"));
+                whShipping.setChamber(rs.getString("chamber"));
                 whShippingList.add(whShipping);
             }
             rs.close();

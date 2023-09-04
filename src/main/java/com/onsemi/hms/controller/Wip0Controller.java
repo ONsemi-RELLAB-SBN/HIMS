@@ -103,20 +103,20 @@ public class Wip0Controller {
     @RequestMapping(value = "/sync", method = {RequestMethod.GET, RequestMethod.POST})
     public String manualsync0hour(Model model) {
 
-        LOGGER.info(" ********************** START MANUAL READING FILES ZERO HOURS **********************");
+        LOGGER.info(" ********************** START MANUAL READING FILES STORAGE WIP **********************");
         FtpWip wip = new FtpWip();
         wip.readWip0Hours();
-        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES ZERO HOURS **********************");
+        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES STORAGE WIP **********************");
         return "redirect:/wip0hour/from";
     }
     
     @RequestMapping(value = "/syncRequest", method = {RequestMethod.GET, RequestMethod.POST})
     public String manualsync0hourRequest(Model model) {
 
-        LOGGER.info(" ********************** START MANUAL READING FILES ZERO HOURS **********************");
+        LOGGER.info(" ********************** START MANUAL REQUEST READING FILES STORAGE WIP **********************");
         FtpWip wip = new FtpWip();
         wip.requestWip0Hours();
-        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES ZERO HOURS **********************");
+        LOGGER.info(" ********************** COMPLETE MANUAL REQUEST READING FILES STORAGE WIP **********************");
         return "redirect:/wip0hour/from";
     }
     //</editor-fold>
@@ -331,8 +331,8 @@ public class Wip0Controller {
         // TODO - create 1 new email list for INVENTORY
         String[] listAdmin = getEmailList("Notify Ship");
         String[] listSystem = getEmailList("System");
-        String subject = "WIP Zero Hour Done Inventory";
-        String msg1 = "WIP zero hour done inventory";
+        String subject = "Storage WIP Done Inventory";
+        String msg1 = "Storage WIP done inventory";
         // TODO please create and design the email content here later
         String msg2 = tableWipInventory(requestId);               
         EmailSender send = new EmailSender();
@@ -349,8 +349,8 @@ public class Wip0Controller {
         // TODO - create 1 new email list for SHIP BACK
         String[] listAdmin = getEmailList("Notify Ship");
         String[] listSystem = getEmailList("System");
-        String subject = "WIP Zero Hour Shipped To Rel Lab";
-        String msg1 = "WIP zero hour is shipped to Rel Lab from Sg Gadut";
+        String subject = "Storage WIP Shipped To Rel Lab";
+        String msg1 = "Storage WIP is shipped to Rel Lab from Sg Gadut";
         // TODO please create and design the email content here later
         String msg2 = tableWipShip0hour(shipList);
         EmailSender send = new EmailSender();
