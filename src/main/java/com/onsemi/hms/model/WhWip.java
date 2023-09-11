@@ -21,6 +21,7 @@ public class WhWip {
     private String status;
     private String receiveBy;
     private String receiveDate;
+    private String location;
     private String verifyBy;
     private String verifyDate;
     private String registerBy;
@@ -123,6 +124,14 @@ public class WhWip {
 
     public void setReceiveDate(String receiveDate) {
         this.receiveDate = receiveDate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getVerifyBy() {
