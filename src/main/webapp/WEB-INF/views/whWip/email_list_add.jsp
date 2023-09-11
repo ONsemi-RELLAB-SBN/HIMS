@@ -22,16 +22,16 @@
                             <div class="form-group">
                                 <label for="username" class="col-lg-4 control-label">User Name *</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" id="username" name="username" placeholder="User Name" value="${username}">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="User Name" value="">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="col-lg-4 control-label">Email Address *</label>
                                 <div class="col-lg-8">
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" value="${email}">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" value="">
                                 </div>
                             </div>
-                                <div class="form-group">
+                            <div class="form-group">
                                 <label for="task" class="col-lg-4 control-label">Task *</label>
                                 <div class="col-lg-8">
                                     <select id="task" name="task" class="form-control">
@@ -42,6 +42,60 @@
                                     </select>
                                 </div>
                             </div>
+<!--                            <div class="form-group">
+                                <label for="isActive" class="col-lg-4 control-label">Is Active *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isActive" name="isActive" placeholder="Active?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isSystem" class="col-lg-4 control-label">Is System *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isSystem" name="isSystem" placeholder="System" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isReceive" class="col-lg-4 control-label">Received WIP [Stress] *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isReceive" name="isReceive" placeholder="Is Received?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isVerify" class="col-lg-4 control-label">Verify WIP [Stress] *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isVerify" name="isVerify" placeholder="Is Verified?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isLoad" class="col-lg-4 control-label">Loading WIP [Stress] *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isLoad" name="isLoad" placeholder="Is Loading?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isUnload" class="col-lg-4 control-label">Unloading WIP [Stress] *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isUnload" name="isUnload" placeholder="Is Unloading?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isShip" class="col-lg-4 control-label">Ship WIP [Stress] *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isShip" name="isShip" placeholder="Is Shipped?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isReceiveStorage" class="col-lg-4 control-label">WIP [Storage] Received *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isReceiveStorage" name="isReceiveStorage" placeholder="WIP [Storage] Received?" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="isShipStorage" class="col-lg-4 control-label">WIP [Storage] Shipped *</label>
+                                <div class="col-lg-1">
+                                    <input type="checkbox" class="form-control" id="isShipStorage" name="isShipStorage" placeholder="WIP [Storage] Ship?" value="">
+                                </div>
+                            </div>-->
                             <a href="${contextPath}/whWip/emailList" class="btn btn-info pull-left"><i class='bx bx-left-arrow bx-fw' ></i> Back</a>
                             <div class="pull-right">
                                 <button type="reset" class="btn btn-secondary cancel"><i class='bx bx-reset bx-fw' ></i>Reset</button>

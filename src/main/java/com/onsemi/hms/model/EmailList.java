@@ -13,6 +13,16 @@ public class EmailList {
     private String username;
     private String email;
     private String task;
+    private String isActive;
+    private String isSystem;
+    private String isAdmin;
+    private String isReceive;
+    private String isVerify;
+    private String isLoad;
+    private String isUnload;
+    private String isShip;
+    private String isReceiveStorage;
+    private String isShipStorage;
 
     public String getId() {
         return id;
@@ -44,6 +54,86 @@ public class EmailList {
 
     public void setTask(String task) {
         this.task = task;
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+    public String getIsSystem() {
+        return isSystem;
+    }
+
+    public void setIsSystem(String isSystem) {
+        this.isSystem = isSystem;
+    }
+
+    public String getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(String isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    public String getIsReceive() {
+        return isReceive;
+    }
+
+    public void setIsReceive(String isReceive) {
+        this.isReceive = isReceive;
+    }
+
+    public String getIsVerify() {
+        return isVerify;
+    }
+
+    public void setIsVerify(String isVerify) {
+        this.isVerify = isVerify;
+    }
+
+    public String getIsLoad() {
+        return isLoad;
+    }
+
+    public void setIsLoad(String isLoad) {
+        this.isLoad = isLoad;
+    }
+
+    public String getIsUnload() {
+        return isUnload;
+    }
+
+    public void setIsUnload(String isUnload) {
+        this.isUnload = isUnload;
+    }
+
+    public String getIsShip() {
+        return isShip;
+    }
+
+    public void setIsShip(String isShip) {
+        this.isShip = isShip;
+    }
+
+    public String getIsReceiveStorage() {
+        return isReceiveStorage;
+    }
+
+    public void setIsReceiveStorage(String isReceiveStorage) {
+        this.isReceiveStorage = isReceiveStorage;
+    }
+
+    public String getIsShipStorage() {
+        return isShipStorage;
+    }
+
+    public void setIsShipStorage(String isShipStorage) {
+        this.isShipStorage = isShipStorage;
     }
     
 }
