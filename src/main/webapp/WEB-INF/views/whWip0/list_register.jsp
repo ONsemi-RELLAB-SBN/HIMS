@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>WIP Information - Register WIP Inventory</h2>
+                        <h2>WIP [Storage] Information - Register WIP Inventory</h2>
                         <form id="wip_register_form" class="form-horizontal" role="form" action="${contextPath}/wip0hour/updateRegister" method="post">
                             <input type="hidden" id="rmsEvent" value="${wipData.rmsEvent}" />
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />

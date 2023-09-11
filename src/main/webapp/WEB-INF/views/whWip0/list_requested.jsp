@@ -37,7 +37,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Storage WIP Request List </h2>
+                            <h2 class="pull-left">WIP [Storage] Request List </h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/wip0hour/readyList" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-scan bx-fw' ></i> Prepare Shipment
