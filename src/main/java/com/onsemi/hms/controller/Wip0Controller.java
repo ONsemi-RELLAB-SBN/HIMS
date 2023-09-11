@@ -15,8 +15,11 @@ import com.onsemi.hms.model.WhWip0;
 import com.onsemi.hms.model.WhWipShip;
 import com.onsemi.hms.tools.EmailSender;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -103,20 +107,20 @@ public class Wip0Controller {
     @RequestMapping(value = "/sync", method = {RequestMethod.GET, RequestMethod.POST})
     public String manualsync0hour(Model model) {
 
-        LOGGER.info(" ********************** START MANUAL READING FILES STORAGE WIP **********************");
+        LOGGER.info(" ********************** START MANUAL READING FILES WIP [STORAGE] **********************");
         FtpWip wip = new FtpWip();
         wip.readWip0Hours();
-        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES STORAGE WIP **********************");
+        LOGGER.info(" ********************** COMPLETE MANUAL READING FILES WIP [STORAGE] **********************");
         return "redirect:/wip0hour/from";
     }
     
     @RequestMapping(value = "/syncRequest", method = {RequestMethod.GET, RequestMethod.POST})
     public String manualsync0hourRequest(Model model) {
 
-        LOGGER.info(" ********************** START MANUAL REQUEST READING FILES STORAGE WIP **********************");
+        LOGGER.info(" ********************** START MANUAL REQUEST READING FILES WIP [STORAGE] **********************");
         FtpWip wip = new FtpWip();
         wip.requestWip0Hours();
-        LOGGER.info(" ********************** COMPLETE MANUAL REQUEST READING FILES STORAGE WIP **********************");
+        LOGGER.info(" ********************** COMPLETE MANUAL REQUEST READING FILES WIP [STORAGE] **********************");
         return "redirect:/wip0hour/from";
     }
     //</editor-fold>
@@ -130,14 +134,10 @@ public class Wip0Controller {
         WhWipDAO dao = new WhWipDAO();
         List<WhWip0> wipList = dao.getWip0ByStatus(status);
         
-        LocalDateTime myDateObj = LocalDateTime.now();
-        String monthyear = myDateObj.getMonth().toString() + " " + myDateObj.getYear();
-        
         pdao = new ParameterDetailsDAO();
         String statusVerify = pdao.getDetailByCode(VERIFY);
         
         model.addAttribute("wipList", wipList);
-        model.addAttribute("monthyear", monthyear);
         model.addAttribute("status", statusVerify);
         return "whWip0/list_from_rellab";
     }
@@ -295,7 +295,7 @@ public class Wip0Controller {
 
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/wip0hour/viewWhWipPdf/" + shippingList, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/wip0hour/to";
-        String title = "Storage WIP Shipping List [" + shippingList + "]";
+        String title = "WIP [Storage] Shipping List [" + shippingList + "]";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", title);
@@ -329,10 +329,10 @@ public class Wip0Controller {
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         // TODO - create 1 new email list for INVENTORY
-        String[] listAdmin = getEmailList("Notify Ship");
-        String[] listSystem = getEmailList("System");
-        String subject = "Storage WIP Done Inventory";
-        String msg1 = "Storage WIP done inventory";
+        String[] listNotify = getEmailList("isReceiveStorage");
+        String[] listSystem = getEmailList("isSystem");
+        String subject = "WIP [Storage] Done Inventory";
+        String msg1 = "WIP [Storage] done inventory";
         // TODO please create and design the email content here later
         String msg2 = tableWipInventory(requestId);               
         EmailSender send = new EmailSender();
@@ -347,10 +347,10 @@ public class Wip0Controller {
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         // TODO - create 1 new email list for SHIP BACK
-        String[] listAdmin = getEmailList("Notify Ship");
-        String[] listSystem = getEmailList("System");
-        String subject = "Storage WIP Shipped To Rel Lab";
-        String msg1 = "Storage WIP is shipped to Rel Lab from Sg Gadut";
+        String[] listNotify = getEmailList("isShipStorage");
+        String[] listSystem = getEmailList("isSystem");
+        String subject = "WIP [Storage] Shipped To Rel Lab";
+        String msg1 = "WIP [Storage] is shipped to Rel Lab from Sg Gadut";
         // TODO please create and design the email content here later
         String msg2 = tableWipShip0hour(shipList);
         EmailSender send = new EmailSender();
@@ -642,6 +642,63 @@ public class Wip0Controller {
         Date date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
         String formattedDate = outputDateFormat.format(date2);
         return formattedDate;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="TESTING PAGE">
+    
+    // THIS FUNCTION WILL READ AND UPDATE THE DATA BASED ON THE REQUEST ID WE SET
+    @RequestMapping(value = "/testUpdateData", method = {RequestMethod.GET, RequestMethod.POST})
+    public String updateCsvData () throws FileNotFoundException, IOException {
+        
+        LOGGER.info("MASUK FUNCTION KITA NK TEST READ AND UPDATE NI ");
+        String filePath = FILEPATH + "sample_data_serial.csv";
+        File file = new File(filePath);
+        
+        if (file.exists()) {
+            LOGGER.info("SINI KITA JUMPA ILE TU, SO, NK UPDATE MACAM MANA??");
+            
+            // Create a FileReader object to read the file
+            FileReader fileReader = new FileReader(filePath);
+
+            // Create a Scanner object to read the file
+            Scanner scanner = new Scanner(fileReader);
+
+            // Create a PrintWriter object to write the updated file
+            PrintWriter printWriter = new PrintWriter(filePath);
+
+            // Read the file line by line
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                
+                // Split the line into columns
+                String[] columns = line.split(",");
+                
+                // PLEASE SET AND CHECK THE REQUEST ID FROM HERE
+                // Check if the first column matches 1996
+                if (columns[0].equals("1996")) {
+                    // ALL THE DATA IN HERE ALSO HARDCODED - CAN WE MAKE IT FLEXIBLE?
+                    columns[2] = "Updated";
+                    columns[3] = "In Progress";
+                    LOGGER.info("CUBA UPDATE");
+                } else {
+                    LOGGER.info("SKIPPED");
+                }
+
+                // Write the updated line to the new file
+                printWriter.println(String.join(",", columns));
+            }
+
+            // Close the file readers and writers
+            fileReader.close();
+            scanner.close();
+            printWriter.close();
+            
+        } else {
+            LOGGER.info("SINI KITA SKIP, SEBAB TAK JUMPA DA FILE TERSEBUT");
+        }
+        
+        return "redirect:/wip0hour/from";
     }
     //</editor-fold>
     

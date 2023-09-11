@@ -174,6 +174,7 @@ public class WipController {
             Locale locale,
             RedirectAttributes redirectAttrs,
             @ModelAttribute UserSession userSession,
+            @RequestParam(required = false) String location,
             @RequestParam(required = false) String boxNo) throws IOException {
 
         String columnDate = "receive_date";
@@ -182,7 +183,8 @@ public class WipController {
         String flag = "receive";
         String name = userSession.getFullname();
         WhWipDAO daoUpdate = new WhWipDAO();
-        daoUpdate.updateStatusByGts(columnDate, columnBy, gtsNo, flag, name);
+        daoUpdate.updateStatusByGts(columnDate, columnBy, gtsNo, location, flag, name);
+        sendEmailReceiveWip(gtsNo, location);
         return "redirect:/whWip/listNew";
     }
 
@@ -365,7 +367,7 @@ public class WipController {
 
         String pdfUrl = URLEncoder.encode(request.getContextPath() + "/whWip/viewWhWipPdf/" + shippingList, "UTF-8");
         String backUrl = servletContext.getContextPath() + "/whWip/to";
-        String title = "Stress WIP Shipping List [" + shippingList + "]";
+        String title = "WIP [Stress] Shipping List [" + shippingList + "]";
         model.addAttribute("pdfUrl", pdfUrl);
         model.addAttribute("backUrl", backUrl);
         model.addAttribute("pageTitle", title);
@@ -428,6 +430,7 @@ public class WipController {
             @RequestParam(required = false) String requestId,
             @RequestParam(required = false) String chamber,
             @RequestParam(required = false) String loadDate,
+            @RequestParam(required = false) String intervals,
             @RequestParam(required = false) String unloadDate) throws IOException {
 
         WhWipDAO dao = new WhWipDAO();
@@ -440,7 +443,7 @@ public class WipController {
             // csv files sent to inform loading time
             sendCsvLoading(requestId);
             // email to inform loading time
-            sendEmailLoading(rmsEvent, loadDate, chamber);
+            sendEmailLoading(rmsEvent, loadDate, chamber, intervals);
         } else if (maklumat.equalsIgnoreCase("unloading")) {
             // update statstement
             dao = new WhWipDAO();
@@ -448,7 +451,7 @@ public class WipController {
             // csv files sent to inform unloading time
             sendCsvUnloading(requestId);
             // email to inform unloading time
-            sendEmailUnloading(rmsEvent, unloadDate, chamber);
+            sendEmailUnloading(rmsEvent, unloadDate, chamber, intervals);
         }
         return "redirect:/whWip/listProcess";
     }
@@ -740,14 +743,32 @@ public class WipController {
         return emailStatus;
     }
 
+    private void sendEmailReceiveWip(String gtsNo, String location) {
+
+        String username = "All";
+        String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
+        String[] listReceive = getEmailList("isReceive");
+        String[] listSystem = getEmailList("isSystem");
+        String subject = "WIP [Stress] Received from Rel Lab";
+        subject += "<br/>";
+        subject += "GTS number " + gtsNo + " received and locate at " + location;
+        String msg = tableWipReceive(gtsNo);
+        String msg1 = "";
+        EmailSender send = new EmailSender();
+        send.wipEmail(servletContext, username, receiver, subject, msg, "VERIFY");
+//        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
+        send = new EmailSender();
+        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "VERIFY");
+    }
+    
     private void sendEmailVerifyWip(String gtsNo) {
 
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
-        String[] listReceive = getEmailList("Notify Receive");
-        String[] listSystem = getEmailList("System");
-        String subject = "Stress WIP Received from Rel Lab";
-        String msg = tableWipReceive(gtsNo);
+        String[] listReceive = getEmailList("isVerify");
+        String[] listSystem = getEmailList("isSystem");
+        String subject = "WIP [Stress] Verified";
+        String msg = tableWipVerify(gtsNo);
         String msg1 = "";
         EmailSender send = new EmailSender();
         send.wipEmail(servletContext, username, receiver, subject, msg, "VERIFY");
@@ -760,10 +781,10 @@ public class WipController {
 
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
-        String[] listAdmin = getEmailList("Notify Ship");
-        String[] listSystem = getEmailList("System");
-        String subject = "Stress WIP is Shipped to Rel Lab";
-        String msg1 = "Stress WIP is shipped to Rel Lab from Sg Gadut";
+        String[] listAdmin = getEmailList("isShip");
+        String[] listSystem = getEmailList("isSystem");
+        String subject = "WIP [Stress] is Shipped to Rel Lab";
+        String msg1 = "WIP [Stress] is shipped to Rel Lab from Sg Gadut";
         String msg2 = tableWipShip(shipList);
         EmailSender send = new EmailSender();
         send.wipEmail(servletContext, username, receiver, subject, msg2, "SHIP");
@@ -772,14 +793,14 @@ public class WipController {
         send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIP");
     }
 
-    private void sendEmailLoading(String rmsEvent, String date, String chamber) {
+    private void sendEmailLoading(String rmsEvent, String date, String chamber, String interval) {
 
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
-        String[] listSystem = getEmailList("System");
-        String[] listLoad = getEmailList("Notify Loading");
-        String subject = "Loading Stress WIP " + rmsEvent + "";
-        String message = "RMS Event " + rmsEvent + " is Loading at " + tukarFormatDate01(date) + " in chamber " +chamber;
+        String[] listSystem = getEmailList("isSystem");
+        String[] listLoad = getEmailList("isLoad");
+        String subject = "Loading WIP [Stress] " + rmsEvent + "";
+        String message = "RMS Event " + rmsEvent + " [ " + interval + "hrs] is Loading at " + tukarFormatDate01(date) + " in chamber " +chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
         send.wipEmail(servletContext, username, receiver, subject, message, "LOAD");
@@ -788,14 +809,14 @@ public class WipController {
         send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "LOAD");
     }
 
-    private void sendEmailUnloading(String rmsEvent, String date, String chamber) {
+    private void sendEmailUnloading(String rmsEvent, String date, String chamber, String interval) {
 
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
-        String[] listSystem = getEmailList("System");
-        String[] listLoad = getEmailList("Notify Loading");
-        String subject = "Unloading Stress WIP " + rmsEvent + "";
-        String message = "RMS Event " + rmsEvent + " is Unloading at " + tukarFormatDate01(date) + " from chamber " + chamber;
+        String[] listSystem = getEmailList("isSystem");
+        String[] listLoad = getEmailList("isUnload");
+        String subject = "Unloading WIP [Stress] " + rmsEvent + "";
+        String message = "RMS Event " + rmsEvent + " [ " + interval + "hrs] is Unloading at " + tukarFormatDate01(date) + " from chamber " + chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
         send.wipEmail(servletContext, username, receiver, subject, message, "UNLOAD");
@@ -1101,6 +1122,42 @@ public class WipController {
     }
     
     private String tableWipReceive(String gtsNo) {
+        
+        WhWipDAO wipdao = new WhWipDAO();
+        List<WhWip> listWip = wipdao.getWipByGtsNo(gtsNo);
+
+        String receiveDate = "";
+        String verifyDate = "";
+        String rmsEvent = "";
+        String intervals = "";
+        String quantity = "";
+        String text = "<table width='90%'><tr>"
+                + "<th><span>No</span></th>"
+                + "<th><span>RMS Event</span></th>"
+                + "<th><span>Intervals</span></th>"
+                + "<th><span>Quantity</span></th>"
+                + "<th><span>Receive Date</span></th>"
+                + "</tr>";
+
+        for (int i = 0; i < listWip.size(); i++) {
+            rmsEvent = listWip.get(i).getRmsEvent();
+            intervals = listWip.get(i).getIntervals();
+            quantity = listWip.get(i).getQuantity();
+            receiveDate = listWip.get(i).getReceiveDate();
+            int index = i + 1;
+            text = text + "<tr align = \"center\">";
+            text = text + "<td>" + index + "</td>";
+            text = text + "<td>" + rmsEvent + "</td>";
+            text = text + "<td>" + intervals + "</td>";
+            text = text + "<td>" + quantity + "</td>";
+            text = text + "<td>" + receiveDate + "</td>";
+            text = text + "</tr>";
+        }
+        text = text + "</table>";
+        return text;
+    }
+    
+    private String tableWipVerify(String gtsNo) {
         
         WhWipDAO wipdao = new WhWipDAO();
         List<WhWip> listWip = wipdao.getWipByGtsNo(gtsNo);
