@@ -156,10 +156,11 @@ public class WhWipDAO {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="UPDATE STATEMENT">
-    public QueryResult updateStatusByGts(String date, String by, String gtsNo, String data, String username) {
+    public QueryResult updateStatusByGts(String date, String by, String gtsNo, String location, String data, String username) {
         LOGGER.info("FUNCTION updateStatusByGts");
         QueryResult queryResult = new QueryResult();
-        String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, status = ? WHERE gts_no = ?";
+        String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, location = '" + location + "', status = ? WHERE gts_no = ?";
+        LOGGER.info("LOGGER for QUERY DEKAT SINI : " +sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             String status = "";
@@ -505,6 +506,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -556,6 +558,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -608,6 +611,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -664,6 +668,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -717,6 +722,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -771,6 +777,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -826,6 +833,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -879,6 +887,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -932,6 +941,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -983,6 +993,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -1037,6 +1048,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -1090,6 +1102,7 @@ public class WhWipDAO {
                 whShipping.setCreatedDate(rs.getString("created_date"));
                 whShipping.setReceiveDate(rs.getString("receive_date"));
                 whShipping.setReceiveBy(rs.getString("receive_by"));
+                whShipping.setLocation(rs.getString("location"));
                 whShipping.setVerifyDate(rs.getString("verify_date"));
                 whShipping.setVerifyBy(rs.getString("verify_by"));
                 whShipping.setRegisterDate(rs.getString("register_date"));
@@ -1490,9 +1503,42 @@ public class WhWipDAO {
         return count;
     }
 
-    public List<EmailList> getUserToInform(String task) {
+    /*
+    public List<EmailList> getUserToInformBackup(String task) {
         LOGGER.info("FUNCTION getUserToInform");
         String sql = "SELECT * FROM hms_email_list WHERE task = '" + task + "' ";
+        List<EmailList> userList = new ArrayList<EmailList>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            EmailList user;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = new EmailList();
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                userList.add(user);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return userList;
+    }
+    */
+
+    public List<EmailList> getUserToInform(String task) {
+        LOGGER.info("FUNCTION getUserToInform");
+//        String sql = "SELECT * FROM hms_email_list WHERE task = '" + task + "' ";
+        String sql = "SELECT * FROM hms_email_list WHERE " + task + " = '1' AND isActive = '1'";
         List<EmailList> userList = new ArrayList<EmailList>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1576,6 +1622,16 @@ public class WhWipDAO {
                 user.setEmail(rs.getString("email"));
                 user.setUsername(rs.getString("username"));
                 user.setTask(rs.getString("task"));
+                user.setIsActive(rs.getString("isActive"));
+                user.setIsSystem(rs.getString("isSystem"));
+                user.setIsAdmin(rs.getString("isAdmin"));
+                user.setIsReceive(rs.getString("isReceive"));
+                user.setIsVerify(rs.getString("isVerify"));
+                user.setIsLoad(rs.getString("isLoad"));
+                user.setIsUnload(rs.getString("isUnload"));
+                user.setIsShip(rs.getString("isShip"));
+                user.setIsReceiveStorage(rs.getString("isReceiveStorage"));
+                user.setIsShipStorage(rs.getString("isShipStorage"));
                 userList.add(user);
             }
             rs.close();
@@ -1606,6 +1662,16 @@ public class WhWipDAO {
                 emailList.setUsername(rs.getString("username"));
                 emailList.setEmail(rs.getString("email"));
                 emailList.setTask(rs.getString("task"));
+                emailList.setIsActive(rs.getString("isActive"));
+                emailList.setIsSystem(rs.getString("isSystem"));
+                emailList.setIsAdmin(rs.getString("isAdmin"));
+                emailList.setIsReceive(rs.getString("isReceive"));
+                emailList.setIsVerify(rs.getString("isVerify"));
+                emailList.setIsLoad(rs.getString("isLoad"));
+                emailList.setIsUnload(rs.getString("isUnload"));
+                emailList.setIsShip(rs.getString("isShip"));
+                emailList.setIsReceiveStorage(rs.getString("isReceiveStorage"));
+                emailList.setIsShipStorage(rs.getString("isShipStorage"));
             }
             rs.close();
             ps.close();
