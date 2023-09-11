@@ -72,7 +72,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Stress WIP Information - Ready For Shipment</h2>
+                            <h2 class="pull-left">WIP [Stress] Information - Ready For Shipment</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">

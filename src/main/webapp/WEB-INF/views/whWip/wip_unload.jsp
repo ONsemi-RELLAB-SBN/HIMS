@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>UNLOAD STRESS WIP</h2>
+                        <h2>UNLOAD WIP [STRESS]</h2>
                         <form id="wip_process_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateProcess/unloading" method="post">
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">

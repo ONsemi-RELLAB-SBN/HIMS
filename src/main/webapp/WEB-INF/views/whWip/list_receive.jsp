@@ -34,14 +34,20 @@
         <div class="col-lg-12">
             <h1>WIP Management [Stress WIP]</h1>
             <div class="row">
-                <div class="col-lg-8">
+                <div class="col-lg-6">
                     <div class="main-box">
                         <h2>Scan GTS Number</h2>
                         <form id="add_mp_list_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceive" method="post">
                             <div class="form-group">
                                 <label for="boxNo" class="col-lg-3 control-label">GTS Number *</label>
-                                <div class="col-lg-8">
+                                <div class="col-lg-6">
                                     <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="location" class="col-lg-3 control-label">Kanban Location *</label>
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" id="location" name="location" placeholder="" value="" autofocus="autofocus">
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
@@ -60,7 +66,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Stress WIP List</h2>
+                            <h2 class="pull-left">WIP [Stress] List</h2>
                         </div>
                         <hr/>
                         <div class="clearfix">
@@ -133,6 +139,9 @@
                 });
                 
                 $('#boxNo').bind('copy paste cut', function (e) {
+                    e.preventDefault(); //this line will help us to disable cut,copy,paste  
+                });
+                $('#location').bind('copy paste cut', function (e) {
                     e.preventDefault(); //this line will help us to disable cut,copy,paste  
                 });
             });

@@ -37,7 +37,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">HW for Shipment to Rel Lab List</h2>
+                            <h2 class="pull-left">Shipment to Rel Lab List</h2>
                             <div class="filter-block pull-right">
                             </div>
                         </div>

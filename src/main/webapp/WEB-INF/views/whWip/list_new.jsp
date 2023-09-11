@@ -38,7 +38,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Shipment from Rel Lab - Stress WIP Information</h2>
+                            <h2 class="pull-left">Shipment from Rel Lab - WIP [Stress] Information</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReceive" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-scan bx-fw' style='color:#ffffff'></i> Scan GTS No

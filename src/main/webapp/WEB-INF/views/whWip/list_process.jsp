@@ -37,7 +37,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Stress WIP Information - Process</h2>
+                            <h2 class="pull-left">WIP [Stress] Information - Process</h2>
                             <div class="filter-block pull-right"></div>
                         </div>
                         <hr/>
@@ -68,10 +68,10 @@
                                         <th><span>RMS Event</span></th>
                                         <th><span>Intervals</span></th>
                                         <th><span>Quantity</span></th>
-                                        <th><span>Shipment Date</span></th>
-                                        <th><span>Status</span></th>
                                         <th><span>Loading</span></td>
                                         <th><span>Unloading</span></td>
+                                        <th><span>Chamber</span></td>
+                                        <th><span>Status</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,31 +82,33 @@
                                             <td><c:out value="${whWip.rmsEvent}"/></td>
                                             <td><c:out value="${whWip.intervals}"/></td>
                                             <td><c:out value="${whWip.quantity}"/></td>
-                                            <td><c:out value="${whWip.shipmentDate}"/></td>
                                             
                                             <c:if test="${empty whWip.loadDate}">
-                                                <td class="checkstatus"><c:out value="${whWip.status}"/></td>
                                                 <td>
                                                     <a href="${contextPath}/whWip/loadWip/${whWip.requestId}">
                                                         <i class='bx bx-upload bx-lg bx-fw' ></i> LOAD WIP
                                                     </a>
                                                 </td>
                                                 <td><i class='bx bx-shield-minus bx-lg bx-fw'></i></td>
+                                                <td><c:out value="-"/></td>
+                                                <td class="checkstatus">PENDING LOADING</td>
                                             </c:if>
                                             <c:if test="${not empty whWip.loadDate}">
                                                 <c:if test="${not empty whWip.unloadDate}">
-                                                    <td class="checkstatus">WIP UNLOADING</td>
                                                     <td>${whWip.loadDate}</td>
                                                     <td>${whWip.unloadDate}</td>
+                                                    <td><c:out value="${whWip.chamber}"/></td>
+                                                    <td class="checkstatus">PENDING FOR SHIPMENT</td>
                                                 </c:if>
                                                 <c:if test="${empty whWip.unloadDate}">
-                                                    <td class="checkstatus">WIP LOADING</td>
                                                     <td>${whWip.loadDate}</td>
                                                     <td>
                                                         <a href="${contextPath}/whWip/unloadWip/${whWip.requestId}">
                                                             <i class='bx bx-download bx-lg bx-fw' ></i> UNLOAD WIP
                                                         </a>
                                                     </td>
+                                                    <td><c:out value="${whWip.chamber}"/></td>
+                                                    <td class="checkstatus">LOADING IN PROCESS</td>
                                                 </c:if>
                                             </c:if>
                                         </tr>

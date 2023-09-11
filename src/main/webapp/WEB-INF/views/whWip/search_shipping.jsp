@@ -65,7 +65,7 @@
                 <div class="col-lg-12">
                     <div class="main-box clearfix">
                         <div class="clearfix">
-                            <h2 class="pull-left">Stress WIP List</h2>
+                            <h2 class="pull-left">WIP [Stress] List</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/viewPdf/${data}" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
                                     <i class='bx bx-printer' style='color:#ffffff'  ></i> Print Copy

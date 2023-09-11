@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="main-box">
-                        <h2>Stress WIP Information - Verify WIP</h2>
+                        <h2>WIP [Stress] Information - Verify</h2>
                         <form id="wip_information_form" class="form-horizontal" role="form" action="${contextPath}/whWip/updateReceiveToVerify/${wipData.requestId}" method="post">
                             <input type="hidden" name="requestId" value="${wipData.requestId}" />
                             <div class="form-group">
