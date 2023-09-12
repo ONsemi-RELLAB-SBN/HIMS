@@ -1025,10 +1025,10 @@ public class WhWipDAO {
         return whShipping;
     }
 
-    public List<WhWip> getWipByGtsNo(String gtsNo) {
+    public List<WhWip> getWipByGtsNo(String gtsNo, String status) {
         LOGGER.info("FUNCTION getWipByGtsNo");
-        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        String status = pdao.getDetailByCode(VERIFY);
+//        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+//        String status = pdao.getDetailByCode(VERIFY);
         String sql = "SELECT * FROM hms_wh_wip WHERE gts_no = '" + gtsNo + "' AND status = '" + status + "'";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
