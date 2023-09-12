@@ -40,8 +40,7 @@
                             <h2 class="pull-left">Shipment to Rel Lab - WIP [Stress] Information [ ${monthyear} ]</h2>
                             <div class="filter-block pull-right">
                                 <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
-                                    <!--<i class='bx bx-list-plus bx-fw'></i>-->
-                                    <i class='bx bx-package bx-fw' ></i> Prepare Shipment
+                                    <i class='bx bxs-truck bx-fw' ></i> Prepare Shipment
                                 </a>
                             </div>
                             <div class="filter-block pull-right">

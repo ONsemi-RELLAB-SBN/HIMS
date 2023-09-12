@@ -73,6 +73,9 @@
                     <div class="main-box clearfix">
                         <div class="clearfix">
                             <h2 class="pull-left">WIP [Stress] Information - Ready For Shipment</h2>
+                            <a href="${contextPath}/whWip/listReady" class="btn btn-primary pull-right" style="font-family:'Orbitron', monospace;">
+                                <i class='bx bxs-truck bx-fw'></i> Prepare Shipment
+                            </a>
                         </div>
                         <hr/>
                         <div class="clearfix">

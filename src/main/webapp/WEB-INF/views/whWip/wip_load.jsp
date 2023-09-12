@@ -113,6 +113,9 @@
                     rules: {
                         loadDate: {
                             required: true
+                        },
+                        chamber: {
+                            required: true
                         }
                     }
                 });
