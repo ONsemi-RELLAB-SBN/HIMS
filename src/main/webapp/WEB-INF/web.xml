@@ -25,4 +25,12 @@
         <servlet-name>HIMS SF</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>PageNotFound</servlet-name>
+        <servlet-class>com.example.servlet.PageNotFound</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PageNotFound</servlet-name>
+        <url-pattern>/404</url-pattern>
+    </servlet-mapping>
 </web-app>
