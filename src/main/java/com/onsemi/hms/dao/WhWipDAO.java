@@ -2206,7 +2206,7 @@ public class WhWipDAO {
     
     public String getShipDateByRequestId(String requestId) {
         String data = "";
-        String sql = "SELECT ship_date FROM hms_wh_wip WHERE request_id = '" + requestId + "'";
+        String sql = "SELECT ship_date FROM hms_wh_wip_0 WHERE request_id = '" + requestId + "'";
         LOGGER.info("FUNCTION getShipDateByRequestId : " +sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

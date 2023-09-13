@@ -121,11 +121,11 @@ public class Wip0Controller {
         FtpWip wip = new FtpWip();
         wip.requestWip0Hours();
         LOGGER.info(" ********************** COMPLETE MANUAL REQUEST READING FILES WIP [STORAGE] **********************");
-        return "redirect:/wip0hour/from";
+        return "redirect:/wip0hour/request";
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="WIP for 0 hours">
+    //<editor-fold defaultstate="collapsed" desc="WIP for 0 hours [Storage WIP]">
     @RequestMapping(value = "/from", method = RequestMethod.GET)
     public String whList01(Model model, @ModelAttribute UserSession userSession) {
 
@@ -309,6 +309,18 @@ public class Wip0Controller {
 
         return new ModelAndView("storagewipShipping", "shippingList", shippingList);
     }
+    
+    @RequestMapping(value = "/inventoryList", method = RequestMethod.GET)
+    public String whList08(Model model, @ModelAttribute UserSession userSession) {
+
+        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
+        String status = pdao.getDetailByCode(INVENTORY);
+        WhWipDAO dao = new WhWipDAO();
+        List<WhWip0> wipList = dao.getWip0ByStatus(status);
+        model.addAttribute("status", status);
+        model.addAttribute("wipData", wipList);
+        return "whWip0/list_inventory";
+    }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="FUNCTION">
@@ -343,7 +355,7 @@ public class Wip0Controller {
     }
     
     private void sendEmailDoneShipBack(String shipList) throws ParseException {
-
+        
         String username = "All";
         String[] receiver = {"fg79cj@onsemi.com", "zbqb9x@onsemi.com", "fg7dtj@onsemi.com"};
         // TODO - create 1 new email list for SHIP BACK
@@ -445,7 +457,7 @@ public class Wip0Controller {
             wip.setWipStatus(status);
             
             WhWipDAO dao = new WhWipDAO();
-            dao.updateShip0hour(wip.getId(), name, shipDate, shippingList);
+            dao.updateShip0hour(wip.getRequestId(), name, shipDate, shippingList);
             
             // START LOGGER
             dao = new WhWipDAO();
@@ -456,7 +468,7 @@ public class Wip0Controller {
             // END LOGGER
             
             dao = new WhWipDAO();
-            String tarikhShip = dao.getShipDateByRequestId(wip.getId());
+            String tarikhShip = dao.getShipDateByRequestId(wip.getRequestId());
             FileWriter fileWriter = null;
 
             if (file.exists()) {
