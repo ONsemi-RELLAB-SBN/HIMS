@@ -28,6 +28,10 @@
                 float:none;
                 text-align:right;
             }
+            span.mode2 {
+                rotate: 270deg;
+                margin-bottom: 15px;
+            }
         </style>
     </s:layout-component>
     <s:layout-component name="page_container">
@@ -72,7 +76,16 @@
                                         <th><span>No</span></th>
                                         <th><span>User Name</span></th>
                                         <th><span>Email Address</span></th>
-                                        <th><span>Info</span></th>
+                                        <th><span class="mode2">Stress<br>Receive</span></th>
+                                        <th><span class="mode2">Stress<br>Verify</span></th>
+                                        <th><span class="mode2">Stress<br>Loading</span></th>
+                                        <th><span class="mode2">Stress<br>Unloading</span></th>
+                                        <th><span class="mode2">Stress<br>Ship</span></th>
+                                        <th><span class="mode2">Storage<br>Inventory</span></th>
+                                        <th><span class="mode2">Storage<br>Ship</span></th>
+                                        <th><span class="mode2">Admin</span></th>
+                                        <th><span class="mode2">System</span></th>
+                                        <th><span class="mode2">Active</span></th>
                                         <th><span>Manage</span></th>
                                     </tr>
                                 </thead>
@@ -82,7 +95,66 @@
                                             <td><c:out value="${whLoop.index+1}"/></td>
                                             <td><c:out value="${wipList.username}"/></td>
                                             <td><c:out value="${wipList.email}"/></td>
-                                            <td><c:out value="${wipList.task}"/></td>
+                                            <c:if test="${wipList.isReceive == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isReceive == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isVerify == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isVerify == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isLoad == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isLoad == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isUnload == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isUnload == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isShip == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isShip == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isReceiveStorage == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isReceiveStorage == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isShipStorage == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isShipStorage == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isAdmin == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isAdmin == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isSystem == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isSystem == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isActive == 1}">
+                                                <td><i class='bx bx-pull-right bx-checkbox-checked bx-lg bx-fw'></i></i></td>
+                                            </c:if>
+                                            <c:if test="${wipList.isActive == 0}">
+                                                <td><i class='bx bx-pull-right bx-checkbox bx-lg bx-fw' ></i></td>
+                                            </c:if>
                                             <td>
                                                 <a href="${contextPath}/whWip/emailList/edit/${wipList.id}" >
                                                     <i class='bx bx-edit bx-md bx-fw' ></i>
