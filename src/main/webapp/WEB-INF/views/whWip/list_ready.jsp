@@ -32,7 +32,9 @@
                             </div>
                             <a href="${contextPath}/whWip/to" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
                             <div class="pull-right">
-                                <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-printer' style='color:#ffffff' ></i> PRINT for ${wipBox}</button>
+                                <c:if test="${checkReady > 0}">
+                                    <button type="submit" class="btn btn-primary" style="font-family:'Orbitron', monospace;"><i class='bx bxs-printer' style='color:#ffffff' ></i> PRINT for ${wipBox}</button>
+                                </c:if>
                                 <input type="hidden" class="form-control" id="shippingList" name="shippingList" value="${wipBox}">
                             </div>
                             <div class="clearfix"></div>
