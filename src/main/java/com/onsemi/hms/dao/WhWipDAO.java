@@ -160,7 +160,6 @@ public class WhWipDAO {
         LOGGER.info("FUNCTION updateStatusByGts");
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip SET " + date + " = NOW(), " + by + " = ?, location = '" + location + "', status = ? WHERE gts_no = ?";
-        LOGGER.info("LOGGER for QUERY DEKAT SINI : " +sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             String status = "";
@@ -650,7 +649,6 @@ public class WhWipDAO {
         String status = pdao.getDetailByCode(SHIP);
         String sql = "SELECT * FROM hms_wh_wip WHERE shipping_list = '" + shipList + "' AND status = '" + status + "'";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
-        LOGGER.info("FUNCTION getWhWipByShipment >>> " + sql);
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             WhWip whShipping;
@@ -1027,8 +1025,6 @@ public class WhWipDAO {
 
     public List<WhWip> getWipByGtsNo(String gtsNo, String status) {
         LOGGER.info("FUNCTION getWipByGtsNo");
-//        ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-//        String status = pdao.getDetailByCode(VERIFY);
         String sql = "SELECT * FROM hms_wh_wip WHERE gts_no = '" + gtsNo + "' AND status = '" + status + "'";
         List<WhWip> whShippingList = new ArrayList<WhWip>();
         try {
@@ -1396,7 +1392,7 @@ public class WhWipDAO {
     }
 
     public String getShipDateByShipList(String shippingList) {
-        LOGGER.info("FUNCTION getCountByGtsNo");
+        LOGGER.info("FUNCTION getShipDateByShipList");
         String data = "";
         try {
             String sql = "SELECT ship_date FROM hms_wh_wip WHERE shipping_list = '" + shippingList + "' LIMIT 1";
@@ -1815,7 +1811,7 @@ public class WhWipDAO {
     
     //<editor-fold defaultstate="collapsed" desc="UPDATE">
     public QueryResult updateStatus0hourByGts(String date, String by, String gtsNo, String data, String username) {
-        LOGGER.info("FUNCTION updateStatusByGts");
+        LOGGER.info("FUNCTION updateStatus0hourByGts");
         QueryResult queryResult = new QueryResult();
         String sql = "UPDATE hms_wh_wip_0 SET " + date + " = NOW(), " + by + " = ?, wip_status = ? WHERE gts_no = ?";
         try {
@@ -2016,8 +2012,8 @@ public class WhWipDAO {
     
     //<editor-fold defaultstate="collapsed" desc="SELECT">
     public WhWip0 getWhWip0hourByRequestId(String requestId) {
-        LOGGER.info("FUNCTION getWhWip0hourByRequestId");
         String sql = "SELECT * FROM hms_wh_wip_0 WHERE request_id = '" + requestId + "'";
+        LOGGER.info("FUNCTION getWhWip0hourByRequestId > " + sql);
         WhWip0 whShipping = null;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -2064,7 +2060,7 @@ public class WhWipDAO {
     
     public List<WhWip0> getAll0hourWipByShipList(String shipList) {
         String sql = "SELECT * FROM hms_wh_wip_0 WHERE ship_list = '" + shipList + "' ";
-        LOGGER.info("FUNCTION getAllWipByShipList >> " + sql);
+        LOGGER.info("FUNCTION getAll0hourWipByShipList >> " + sql);
         List<WhWip0> wipList = new ArrayList<WhWip0>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -2159,7 +2155,7 @@ public class WhWipDAO {
     
     public List<WhWip0> getWip0Shipment() {
         String sql = "SELECT *, GROUP_CONCAT(rms_event SEPARATOR ', ') AS sub_data FROM hms_wh_wip_0 WHERE ship_list IS NOT NULL GROUP BY ship_list";
-        LOGGER.info("FUNCTION getWip0ByStatus : " + sql);
+        LOGGER.info("FUNCTION getWip0Shipment : " + sql);
         List<WhWip0> wipList = new ArrayList<WhWip0>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -2231,7 +2227,6 @@ public class WhWipDAO {
     }
     
     public String getStorageShipDateByShipList(String shippingList) {
-        LOGGER.info("FUNCTION getStorageShipDateByShipList");
         String data = "";
         try {
             String sql = "SELECT ship_date FROM hms_wh_wip_0 WHERE ship_list = '" + shippingList + "' LIMIT 1";
