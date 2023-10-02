@@ -349,9 +349,9 @@ public class Wip0Controller {
         String msg2 = tableWipInventory(requestId);               
         EmailSender send = new EmailSender();
         // TODO - PLEASE CREATE ANOTHER EMAIL TO DO THE INVENTORY NOTIFICATION
-        send.wipEmail(servletContext, username, receiver, subject, msg2, "INVENTORY");
+        send.wipEmail(servletContext, username, listNotify, subject, msg2, "INVENTORY");
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "INVENTORY");
+        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "INVENTORY");
     }
     
     private void sendEmailDoneShipBack(String shipList) throws ParseException {
@@ -367,9 +367,9 @@ public class Wip0Controller {
         String msg2 = tableWipShip0hour(shipList);
         EmailSender send = new EmailSender();
         // TODO - PLEASE CREATE ANOTHER EMAIL TO DO THE INVENTORY NOTIFICATION
-        send.wipEmail(servletContext, username, receiver, subject, msg2, "SHIPBACK");
+        send.wipEmail(servletContext, username, listNotify, subject, msg2, "SHIPBACK");
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "SHIPBACK");
+        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIPBACK");
     }
     
     private void createCsvInventory(String requestId) {

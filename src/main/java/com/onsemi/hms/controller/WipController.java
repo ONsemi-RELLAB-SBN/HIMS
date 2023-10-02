@@ -758,7 +758,7 @@ public class WipController {
         msg += tableWipReceive(gtsNo, statusReceive);
 //        String msg1 = "";
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, receiver, subject, msg, "VERIFY");
+        send.wipEmail(servletContext, username, listReceive, subject, msg, "VERIFY");
 //        WE COMMENTED THE CSV FILES, SINCE THE DATA ONLY UPDATED ONCE LOAD TECH VERIFY THE DATA
 //        send = new EmailSender();
 //        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "VERIFY");
@@ -776,10 +776,10 @@ public class WipController {
         String msg = tableWipVerify(gtsNo, statusVerify);
         String msg1 = "";
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, receiver, subject, msg, "VERIFY");
+        send.wipEmail(servletContext, username, listReceive, subject, msg, "VERIFY");
 //        send.wipEmailVerify(servletContext, username, receiver, subject, msg);
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "VERIFY");
+        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "VERIFY");
     }
 
     private void sendEmailShipWip(String shipList) {
@@ -792,10 +792,10 @@ public class WipController {
         String msg1 = "WIP [Stress] is shipped to Rel Lab from Sg Gadut";
         String msg2 = tableWipShip(shipList);
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, receiver, subject, msg2, "SHIP");
+        send.wipEmail(servletContext, username, listAdmin, subject, msg2, "SHIP");
 //        send.wipEmailShip(servletContext, username, receiver, subject, msg);
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, receiver, subject, msg1, "SHIP");
+        send.wipEmailWithAttach(servletContext, username, listSystem, subject, msg1, "SHIP");
     }
 
     private void sendEmailLoading(String rmsEvent, String date, String chamber, String interval) {
@@ -808,10 +808,10 @@ public class WipController {
         String message = "RMS Event " + rmsEvent + " [ " + interval + "hrs] is Loading at " + tukarFormatDate01(date) + " in chamber " +chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, receiver, subject, message, "LOAD");
+        send.wipEmail(servletContext, username, listSystem, subject, message, "LOAD");
         // email sent to system (with csv)
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "LOAD");
+        send.wipEmailWithAttach(servletContext, username, listLoad, subject, message, "LOAD");
     }
 
     private void sendEmailUnloading(String rmsEvent, String date, String chamber, String interval) {
@@ -824,10 +824,10 @@ public class WipController {
         String message = "RMS Event " + rmsEvent + " [ " + interval + "hrs] is Unloading at " + tukarFormatDate01(date) + " from chamber " + chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, receiver, subject, message, "UNLOAD");
+        send.wipEmail(servletContext, username, listSystem, subject, message, "UNLOAD");
         // email sent to system (with csv)
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, receiver, subject, message, "UNLOAD");
+        send.wipEmailWithAttach(servletContext, username, listLoad, subject, message, "UNLOAD");
     }
     
     // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - START
