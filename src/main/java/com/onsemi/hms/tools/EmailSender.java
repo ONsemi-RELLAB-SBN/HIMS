@@ -36,10 +36,10 @@ public class EmailSender extends SpringBeanAutowiringSupport {
 //    private final String logoPath = "/resources/img/cdars_logo.png";
     private final String logoPath = "/resources/img/warehouse.png";
     
-    private final String FILEPATHSF = "D:\\HIMS_CSV\\SF\\";
-    private final String FILEPATHRL = "D:\\HIMS_CSV\\RL\\";
-//    private final String FILEPATHSF = "D:\\Source Code\\archive\\CSV Import\\";
-//    private final String FILEPATHRL = "D:\\Source Code\\archive\\CSV Import\\";
+//    private final String FILEPATHSF = "D:\\HIMS_CSV\\SF\\";
+//    private final String FILEPATHRL = "D:\\HIMS_CSV\\RL\\";
+    private final String FILEPATHSF = "D:\\Source Code\\archive\\CSV Import\\";
+    private final String FILEPATHRL = "D:\\Source Code\\archive\\CSV Import\\";
     
     private final String FILEINV        = FILEPATHSF + "hms_inventory.csv";
     private final String STRING2        = FILEPATHSF + "hms_shipping.csv";

@@ -34,8 +34,8 @@ public class FtpConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpConfig.class);
     String[] args = {};
-//    private static final String targetLocation = "D:\\Source Code\\archive\\CSV Import\\";
-    private static final String TARGETLOCATION  = "D:\\HIMS_CSV\\RL\\";
+//    private static final String TARGETLOCATION  = "D:\\HIMS_CSV\\RL\\";
+    private static final String TARGETLOCATION = "D:\\Source Code\\archive\\CSV Import\\";
     private static final String FILERETRIEVE    = "cdars_retrieve.csv";
     private static final String FILESHIPPING    = "cdars_shipping.csv";
     private static final String FILESTATUS      = "cdars_retrieval_status.csv";

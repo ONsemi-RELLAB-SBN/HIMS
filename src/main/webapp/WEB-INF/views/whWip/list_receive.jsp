@@ -41,13 +41,13 @@
                             <div class="form-group">
                                 <label for="boxNo" class="col-lg-3 control-label">GTS Number *</label>
                                 <div class="col-lg-6">
-                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus">
+                                    <input type="text" class="form-control" id="boxNo" name="boxNo" placeholder="" value="" autofocus="autofocus" required>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="location" class="col-lg-3 control-label">Kanban Location *</label>
                                 <div class="col-lg-6">
-                                    <input type="text" class="form-control" id="location" name="location" placeholder="" value="" autofocus="autofocus">
+                                    <input type="text" class="form-control" id="location" name="location" placeholder="" value="" autofocus="autofocus" required>
                                 </div>
                             </div>
                             <a href="${contextPath}/whWip/listNew" class="btn btn-info pull-left" style="font-family:'Orbitron', monospace;"><i class='bx bxs-chevron-left bx-fw'></i> Back</a>
@@ -116,10 +116,27 @@
     <s:layout-component name="page_js_inline">
         <script>
             $(document).ready(function () {
+                jQuery.extend(jQuery.validator.messages, {
+                    required: "This field is required.",
+                    equalTo: "Value is not match! Please re-scan.",
+                    email: "Please enter a valid email.",
+                });
+                
+                var validator = $("#add_mp_list_form").validate({
+                    rules: {
+                        boxNo: {
+                            required: true
+                        },
+                        location: {
+                            required: true
+                        }
+                    }
+                });
+                
 //                oTable.search($(this).val()).draw();
                 
                 oTable = $('#dt_spml').DataTable({
-//                    dom: 'Brtip'
+                    dom: 'Brtip'
                 });
                 
                 $('#dt_spml_search').keyup(function () {

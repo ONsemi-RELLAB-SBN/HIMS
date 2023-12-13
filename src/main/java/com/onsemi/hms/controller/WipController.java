@@ -56,8 +56,8 @@ public class WipController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WipController.class);
     String[] args = {};
 
-    private final String FILEPATH = "D:\\HIMS_CSV\\SF\\";
-//    private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
+//    private final String FILEPATH = "D:\\HIMS_CSV\\SF\\";
+    private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
     private final String FILESHIP       = FILEPATH + "hms_wip_shipping.csv";
     private final String FILEVERIFIED   = FILEPATH + "hms_wip_verified.csv";
     private final String FILELOAD       = FILEPATH + "hms_wip_load.csv";
