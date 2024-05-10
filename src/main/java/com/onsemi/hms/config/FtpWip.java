@@ -42,7 +42,7 @@ public class FtpWip {
     ServletContext servletContext;
 
     String fileLocation     = "";
-//    String targetLocation   = "D:\\HIMS_CSVC\\RL\\";
+//    String targetLocation   = "D:\\HIMS_CSV\\RL\\";
     String targetLocation   = "D:\\Source Code\\archive\\CSV Import\\";
     String filename         = "cdars_wip_shipping.csv";
     String storageRead      = "cdars_zero_shipping.csv";

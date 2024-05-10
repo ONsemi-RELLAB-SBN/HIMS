@@ -808,10 +808,10 @@ public class WipController {
         String message = "RMS Event " + rmsEvent + " [ " + interval + "hrs] is Loading at " + tukarFormatDate01(date) + " in chamber " +chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, listSystem, subject, message, "LOAD");
+        send.wipEmail(servletContext, username, listLoad, subject, message, "LOAD");
         // email sent to system (with csv)
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listLoad, subject, message, "LOAD");
+        send.wipEmailWithAttach(servletContext, username, listSystem, subject, message, "LOAD");
     }
 
     private void sendEmailUnloading(String rmsEvent, String date, String chamber, String interval) {
@@ -824,10 +824,10 @@ public class WipController {
         String message = "RMS Event " + rmsEvent + " [ " + interval + "hrs] is Unloading at " + tukarFormatDate01(date) + " from chamber " + chamber;
         // email sent to rel lab user
         EmailSender send = new EmailSender();
-        send.wipEmail(servletContext, username, listSystem, subject, message, "UNLOAD");
+        send.wipEmail(servletContext, username, listLoad, subject, message, "UNLOAD");
         // email sent to system (with csv)
         send = new EmailSender();
-        send.wipEmailWithAttach(servletContext, username, listLoad, subject, message, "UNLOAD");
+        send.wipEmailWithAttach(servletContext, username, listSystem, subject, message, "UNLOAD");
     }
     
     // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - START
