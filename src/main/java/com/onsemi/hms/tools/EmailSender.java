@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 import com.onsemi.hms.dao.EmailDAO;
+import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.model.Email;
 import com.onsemi.hms.model.User;
 import java.text.DateFormat;
@@ -38,17 +39,17 @@ public class EmailSender extends SpringBeanAutowiringSupport {
     
 //    private final String FILEPATHSF = "D:\\HIMS_CSV\\SF\\";
 //    private final String FILEPATHRL = "D:\\HIMS_CSV\\RL\\";
-    private final String FILEPATHSF = "D:\\Source Code\\archive\\CSV Import\\";
-    private final String FILEPATHRL = "D:\\Source Code\\archive\\CSV Import\\";
-    
-    private final String FILEINV        = FILEPATHSF + "hms_inventory.csv";
-    private final String STRING2        = FILEPATHSF + "hms_shipping.csv";
-    private final String FILESHIPTO     = FILEPATHSF + "hms_wip_shipping.csv";
-    private final String FILEVERIFIED   = FILEPATHSF + "hms_wip_verified.csv";
-    private final String FILELOAD       = FILEPATHSF + "hms_wip_load.csv";
-    private final String FILEUNLOAD     = FILEPATHSF + "hms_wip_unload.csv";
-    private final String FILEINVENTORY  = FILEPATHSF + "hms_zero_inventory.csv";
-    private final String FILESHIPBACK   = FILEPATHSF + "hms_zero_shipping.csv";
+//    private final String FILEPATHSF = "D:\\Source Code\\archive\\CSV Import\\";
+//    private final String FILEPATHRL = "D:\\Source Code\\archive\\CSV Import\\";
+//    
+//    private final String FILEINV        = FILEPATHSF + "hms_inventory.csv";
+//    private final String STRING2        = FILEPATHSF + "hms_shipping.csv";
+//    private final String FILESHIPTO     = FILEPATHSF + "hms_wip_shipping.csv";
+//    private final String FILEVERIFIED   = FILEPATHSF + "hms_wip_verified.csv";
+//    private final String FILELOAD       = FILEPATHSF + "hms_wip_load.csv";
+//    private final String FILEUNLOAD     = FILEPATHSF + "hms_wip_unload.csv";
+//    private final String FILEINVENTORY  = FILEPATHSF + "hms_zero_inventory.csv";
+//    private final String FILESHIPBACK   = FILEPATHSF + "hms_zero_shipping.csv";
     
     @Autowired
     private JavaMailSender mailSender;
@@ -211,7 +212,11 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File(FILEINV);
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_inventory = pmdao002.getURLPath("sf_inventory");
+                    File file = new File(location + file_inventory);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -262,10 +267,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File(FILEPATHSF + "Hardware Arrival Report (" + todayDate + ").xls");
+                    File file = new File(location + "Hardware Arrival Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -316,10 +324,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File(FILEPATHSF + "Hardware Shipping Report (" + todayDate + ").xls");
+                    File file = new File(location + "Hardware Shipping Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -370,7 +381,12 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File(STRING2);
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_ship = pmdao002.getURLPath("sf_ship");
+                    
+                    File file = new File(location + file_ship);
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     htmlEmail.setFrom(email.getSender());
@@ -422,10 +438,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File(FILEPATHSF + "Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
+                    File file = new File(location + "Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -476,10 +495,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File(FILEPATHSF + "Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls");
+                    File file = new File(location + "Material Pass Expiry Date Within 3 Days Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -530,10 +552,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    
                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File(FILEPATHSF + "Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
+                    File file = new File(location + "Material Pass Expiry Date Report Within 1 Month (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -584,10 +609,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("rl_path");
+                    
                     DateFormat dateFormat = new SimpleDateFormat("ddMMMyyyy");
                     Date date = new Date();
                     String todayDate = dateFormat.format(date);
-                    File file = new File(FILEPATHRL + "HIMS Upper Specs Limit Report (" + todayDate + ").xls");
+                    File file = new File(location + "HIMS Upper Specs Limit Report (" + todayDate + ").xls");
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -685,9 +713,14 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_ship = pmdao002.getURLPath("sf_ship");
+                    
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 //                    File file = new File("C:\\HIMS_CSV\\SF\\hms_shipping.csv");
-                    File file = new File(STRING2);
+                    File file = new File(location + file_ship);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -738,8 +771,13 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_inventory = pmdao002.getURLPath("sf_inventory");
+                    
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
-                    File file = new File(FILEINV);
+                    File file = new File(location + file_inventory);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -790,7 +828,12 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File(FILEVERIFIED);
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_verify = pmdao002.getURLPath("sf_wip_verify");
+                    
+                    File file = new File(location + file_verify);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -841,7 +884,12 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(true);
 
                     String username = System.getProperty("user.name");
-                    File file = new File(FILESHIPTO);
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_ship = pmdao002.getURLPath("sf_wip_ship");
+                    
+                    File file = new File(location + file_ship);
 
                     htmlEmail.setFrom(email.getSender());
                     htmlEmail.addTo(to);
@@ -946,20 +994,41 @@ public class EmailSender extends SpringBeanAutowiringSupport {
                     htmlEmail.setDebug(false);
 
                     String username = System.getProperty("user.name");
+                    ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                    String location = pmdao001.getURLPath("sf_path");
+                    ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                    String file_verify = pmdao002.getURLPath("sf_wip_verify");
+                    ParameterDetailsDAO pmdao003 = new ParameterDetailsDAO();
+                    String file_ship = pmdao003.getURLPath("sf_wip_ship");
+                    ParameterDetailsDAO pmdao004 = new ParameterDetailsDAO();
+                    String file_load = pmdao004.getURLPath("sf_wip_load");
+                    ParameterDetailsDAO pmdao005 = new ParameterDetailsDAO();
+                    String file_unload = pmdao005.getURLPath("sf_wip_unload");
+                    ParameterDetailsDAO pmdao006 = new ParameterDetailsDAO();
+                    String file_inventory = pmdao006.getURLPath("sf_zero_inventory");
+                    ParameterDetailsDAO pmdao007 = new ParameterDetailsDAO();
+                    String file_shipback = pmdao007.getURLPath("sf_zero_ship");
+                    
                     String filePath = "";
                     
                     if (mode.equalsIgnoreCase("VERIFY")) {
-                        filePath = FILEVERIFIED;
+//                        filePath = FILEVERIFIED;
+                        filePath = location + file_verify;
                     } else if (mode.equalsIgnoreCase("SHIP")) {
-                        filePath = FILESHIPTO;
+//                        filePath = FILESHIPTO;
+                        filePath = location + file_ship;
                     } else if (mode.equalsIgnoreCase("LOAD")) {
-                        filePath = FILELOAD;
+//                        filePath = FILELOAD;
+                        filePath = location + file_load;
                     } else if (mode.equalsIgnoreCase("UNLOAD")) {
-                        filePath = FILEUNLOAD;
+//                        filePath = FILEUNLOAD;
+                        filePath = location + file_unload;
                     } else if (mode.equalsIgnoreCase("INVENTORY")) {
-                        filePath = FILEINVENTORY;
+//                        filePath = FILEINVENTORY;
+                        filePath = location + file_inventory;
                     } else if (mode.equalsIgnoreCase("SHIPBACK")) {
-                        filePath = FILESHIPBACK;
+//                        filePath = FILESHIPBACK;
+                        filePath = location + file_shipback;
                     } else if (mode.equalsIgnoreCase("")) {
                         
                     }

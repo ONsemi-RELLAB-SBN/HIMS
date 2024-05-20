@@ -3,6 +3,7 @@ package com.onsemi.hms.controller;
 import com.onsemi.hms.dao.InventoryMgtDAO;
 import com.onsemi.hms.tools.CSV;
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.WhInventoryDAO;
 import com.onsemi.hms.dao.WhMpListDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
@@ -64,7 +65,7 @@ public class WhShippingController {
     private static final String LINE_SEPARATOR = "\n";
 //    private static final String HEADER = "request id,material pass no,date verified,verified by,shipping date,shipping by,status";
     private static final String HEADER = "request id,box no,date verified,verified by,shipping date,shipping by,status";
-    private static final String PATHSHIP = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
+//    private static final String PATHSHIP = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
 //    private static final String PATHSHIP = "D:\\Source Code\\archive\\CSV Import\\hms_shipping.csv";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -372,6 +373,12 @@ public class WhShippingController {
     ) throws IOException {
         WhShippingDAO whShipD = new WhShippingDAO();
         int count = whShipD.getCountBoxNo(boxNo); //mpno in shipping
+        
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_ship = pmdao002.getURLPath("sf_ship");
+        
         if (count != 0) {
             WhMpListDAO whMpListDAO = new WhMpListDAO();
             int countMpNo = whMpListDAO.getCountBoxNo(boxNo); //mpno in mplist
@@ -414,7 +421,7 @@ public class WhShippingController {
                     /*create csv & email*/
                     String username = System.getProperty("user.name");
 //                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
-                    File file = new File(PATHSHIP);
+                    File file = new File(location + file_ship);
 
                     WhMpListDAO whListDao = new WhMpListDAO();
                     WhMpList mplist = whListDao.getWhMpListMergeWithShippingAndRequest(whship.getRequestId());
@@ -423,7 +430,7 @@ public class WhShippingController {
                         FileWriter fileWriter = null;
                         FileReader fileReader = null;
                         try {
-                            String targetLocation = PATHSHIP;
+                            String targetLocation = location + file_ship;
                             fileWriter = new FileWriter(targetLocation, true);
                             fileReader = new FileReader(targetLocation);
 
@@ -497,7 +504,7 @@ public class WhShippingController {
                     } else {
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter(PATHSHIP);
+                            fileWriter = new FileWriter(location + file_ship);
 //                            LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);

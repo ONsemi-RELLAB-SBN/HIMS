@@ -2,6 +2,7 @@ package com.onsemi.hms.controller;
 
 import com.onsemi.hms.dao.InventoryMgtDAO;
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.WhInventoryDAO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -387,6 +388,12 @@ public class WhRetrieveController {
         if (ck == true && cp == true) {
             WhRetrieveDAO whRetrieveDAO2 = new WhRetrieveDAO();
             WhRetrieve query2 = whRetrieveDAO2.getWhRetrieve(refId);
+            
+            ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+            String location = pmdao001.getURLPath("sf_path");
+            ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+            String file_inventory = pmdao002.getURLPath("sf_inventory");
+            
             if (query2.getFlag().equals("1")) {
                 LogModule logModule2 = new LogModule();
                 LogModuleDAO logModuleDAO2 = new LogModuleDAO();
@@ -438,15 +445,20 @@ public class WhRetrieveController {
                     args[0] = boxNo;
                     if (queryResult1.getResult() != 0) {
                         String username = System.getProperty("user.name");
+                        String targetLocation = location + file_inventory;
                         //SEND EMAIL
-                        File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+//                        File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                        File file = new File(targetLocation);
                         if (file.exists()) {
                             FileWriter fileWriter = null;
                             FileReader fileReader = null;
                             try {
-                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv", true);
-                                fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
-                                String targetLocation = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
+                                fileWriter = new FileWriter(targetLocation, true);
+                                fileReader = new FileReader(targetLocation);
+                                
+//                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv", true);
+//                                fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+//                                String targetLocation = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
 
                                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                                 String data = bufferedReader.readLine();
@@ -584,7 +596,8 @@ public class WhRetrieveController {
                         } else {
                             FileWriter fileWriter = null;
                             try {
-                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+//                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                                fileWriter = new FileWriter(targetLocation);
                                 fileWriter.append(HEADER);
                                 fileWriter.append(LINE_SEPARATOR);
                                 WhInventoryDAO whdao = new WhInventoryDAO();

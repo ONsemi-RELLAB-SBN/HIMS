@@ -43,10 +43,10 @@ public class FtpWip {
 
     String fileLocation     = "";
 //    String targetLocation   = "D:\\HIMS_CSV\\RL\\";
-    String targetLocation   = "D:\\Source Code\\archive\\CSV Import\\";
-    String filename         = "cdars_wip_shipping.csv";
-    String storageRead      = "cdars_zero_shipping.csv";
-    String storageReq       = "cdars_zero_retrieve.csv";
+//    String targetLocation   = "D:\\Source Code\\archive\\CSV Import\\";
+//    String filename         = "cdars_wip_shipping.csv";
+//    String storageRead      = "cdars_zero_shipping.csv";
+//    String storageReq       = "cdars_zero_retrieve.csv";
 
 //    @Scheduled(cron = "*/10 * * * * *")         // to run every 10 seconds??
 //    @Scheduled(cron = "0 */10 * * * *")         // to run every 10 minutes??
@@ -56,6 +56,11 @@ public class FtpWip {
         
         LOGGER.info("FTPWIP.java - cronRun");
         String username = System.getProperty("user.name");
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String targetLocation = pmdao001.getURLPath("rl_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_wip_ship = pmdao002.getURLPath("rl_wip_ship");
+        
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -64,7 +69,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(filename)) {
+                    if (listOfFile.getName().equals(file_wip_ship)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {
@@ -93,7 +98,7 @@ public class FtpWip {
                                 }
                             }
                         } catch (Exception ee) {
-                            LOGGER.info("Error while reading files " + filename);
+                            LOGGER.info("Error while reading files " + file_wip_ship);
                             ee.printStackTrace();
                         }
                     }
@@ -109,6 +114,11 @@ public class FtpWip {
     public void readWipShipping() {
         
         LOGGER.info("FTPWIP.java - readWipShipping");
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String targetLocation = pmdao001.getURLPath("rl_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_wip_ship = pmdao002.getURLPath("rl_wip_ship");
+        
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -117,7 +127,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(filename)) {
+                    if (listOfFile.getName().equals(file_wip_ship)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {
@@ -146,7 +156,7 @@ public class FtpWip {
                                 }
                             }
                         } catch (Exception ee) {
-                            LOGGER.info("Error while reading files " + filename);
+                            LOGGER.info("Error while reading files " + file_wip_ship);
                             ee.printStackTrace();
                         }
                     }
@@ -162,6 +172,11 @@ public class FtpWip {
     public void readWip0Hours() {
         
         LOGGER.info("FTPWIP.java - readWip0Hours");
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String targetLocation = pmdao001.getURLPath("rl_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_zero_ship = pmdao002.getURLPath("rl_zero_ship");
+        
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -170,7 +185,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(storageRead)) {
+                    if (listOfFile.getName().equals(file_zero_ship)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {
@@ -199,7 +214,7 @@ public class FtpWip {
                                 }
                             }
                         } catch (Exception ee) {
-                            LOGGER.info("Error while reading files " + filename);
+                            LOGGER.info("Error while reading files " + file_zero_ship);
                             ee.printStackTrace();
                         }
                     }
@@ -215,6 +230,11 @@ public class FtpWip {
     public void requestWip0Hours() {
         
         LOGGER.info("FUNCTION requestWip0Hours");
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String targetLocation = pmdao001.getURLPath("rl_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_zero_retrieve = pmdao002.getURLPath("rl_zero_retrieve");
+        
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
@@ -223,7 +243,7 @@ public class FtpWip {
         if (listOfFiles != null) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(storageReq)) {
+                    if (listOfFile.getName().equals(file_zero_retrieve)) {
                         fileLocation = targetLocation + listOfFile.getName();
                         CSVReader csvReader = null;
                         try {
@@ -249,7 +269,7 @@ public class FtpWip {
                                 }
                             }
                         } catch (Exception ee) {
-                            LOGGER.info("Error while reading files " + filename);
+                            LOGGER.info("Error while reading files " + file_zero_retrieve);
                             ee.printStackTrace();
                         }
                     }

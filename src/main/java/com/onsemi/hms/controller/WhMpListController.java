@@ -2,6 +2,7 @@ package com.onsemi.hms.controller;
 
 import com.onsemi.hms.tools.CSV;
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.WhInventoryDAO;
 import java.util.List;
 import java.util.Locale;
@@ -25,9 +26,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
@@ -64,9 +62,7 @@ public class WhMpListController {
     private static final String HEADER = "request id,box_no,date verified,verified by,shipping date,shipping by,status";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String whMpList(
-            Model model
-    ) {
+    public String whMpList(Model model) {
         WhMpListDAO whMpListDAO = new WhMpListDAO();
         List<WhMpList> whMpListList = whMpListDAO.getWhMpListMergeWithShippingAndRequestList();
         model.addAttribute("whMpListList", whMpListList);
@@ -77,6 +73,7 @@ public class WhMpListController {
 //    public String add(Model model) {
 //        return "whMpList/add";
 //    }
+    
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(
             Model model,
@@ -87,8 +84,17 @@ public class WhMpListController {
             //            @RequestParam(required = false) String materialPassNo
             @RequestParam(required = false) String boxNo //change from MpNo to boxNo
     ) throws IOException {
+        
         WhShippingDAO whShipD = new WhShippingDAO();
         int count = whShipD.getCountBoxNo(boxNo); //boxNo in shipping
+        
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String targetLocation = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_ship = pmdao002.getURLPath("sf_ship");
+        
+        targetLocation += file_ship;
+        
         if (count != 0) {
             WhMpListDAO whMpListDAO = new WhMpListDAO();
             int countMpNo = whMpListDAO.getCountBoxNo(boxNo); //boxNo in mplist
@@ -129,7 +135,8 @@ public class WhMpListController {
                 } else {
                     /*create csv & email*/
                     String username = System.getProperty("user.name");
-                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                    File file = new File(targetLocation);
+//                    File file = new File("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
 
                     WhMpListDAO whListDao = new WhMpListDAO();
                     WhMpList mplist = whListDao.getWhMpListMergeWithShippingAndRequest(whship.getRequestId());
@@ -138,9 +145,11 @@ public class WhMpListController {
                         FileWriter fileWriter = null;
                         FileReader fileReader = null;
                         try {
-                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
-                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
-                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
+                            fileWriter = new FileWriter(targetLocation, true);
+                            fileReader = new FileReader(targetLocation);
+//                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
+//                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+//                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_shipping.csv";
 
                             BufferedReader bufferedReader = new BufferedReader(fileReader);
                             String data = bufferedReader.readLine();
@@ -179,7 +188,8 @@ public class WhMpListController {
                             fileReader.close();
 
                             if (check == false) {
-                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
+//                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv", true);
+                                fileWriter = new FileWriter(targetLocation, true);
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
                                 fileWriter.append(mplist.getShippingId());
@@ -211,7 +221,8 @@ public class WhMpListController {
                     } else {
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+//                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_shipping.csv");
+                            fileWriter = new FileWriter(targetLocation);
                             LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);

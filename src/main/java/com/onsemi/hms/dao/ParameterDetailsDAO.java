@@ -433,5 +433,57 @@ public class ParameterDetailsDAO {
         }
         return value;
     }
+    
+    public String getURLPath (String code) {
+        LOGGER.info("FUNCTION getURLPath");
+        String value = "";
+        String sql = "SELECT VALUE FROM hms_config WHERE NAME = '"+code+"'";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                value = rs.getString("value");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return value;
+    }
+    
+    public String getFileName (String code) {
+        LOGGER.info("FUNCTION geetFileName");
+        String value = "";
+        String sql = "SELECT VALUE FROM hms_config WHERE NAME = '"+code+"'";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                value = rs.getString("value");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        return value;
+    }
 
 }

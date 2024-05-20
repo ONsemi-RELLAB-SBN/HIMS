@@ -57,13 +57,13 @@ public class WipController {
     String[] args = {};
 
 //    private final String FILEPATH = "D:\\HIMS_CSV\\SF\\";
-    private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
-    private final String FILESHIP       = FILEPATH + "hms_wip_shipping.csv";
-    private final String FILEVERIFIED   = FILEPATH + "hms_wip_verified.csv";
-    private final String FILELOAD       = FILEPATH + "hms_wip_load.csv";
-    private final String FILEUNLOAD     = FILEPATH + "hms_wip_unload.csv";
-    private final String FILEINVENTORY  = FILEPATH + "hms_wip_inventory.csv";
-    private final String FILESHIPBACK   = FILEPATH + "hms_wip_shipback.csv";
+//    private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
+//    private final String FILESHIP       = FILEPATH + "hms_wip_shipping.csv";
+//    private final String FILEVERIFIED   = FILEPATH + "hms_wip_verified.csv";
+//    private final String FILELOAD       = FILEPATH + "hms_wip_load.csv";
+//    private final String FILEUNLOAD     = FILEPATH + "hms_wip_unload.csv";
+//    private final String FILEINVENTORY  = FILEPATH + "hms_wip_inventory.csv";
+//    private final String FILESHIPBACK   = FILEPATH + "hms_wip_shipback.csv";
 
     private static final String STATUSCODE  = "01";
     private static final String NEW         = "0101";
@@ -857,10 +857,17 @@ public class WipController {
     // SAMPLE GET EMAIL ADDRESS IN A LIST FORMAT - END
 
     private void sendCsvForVerify(String gtsNo) {
+        
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_verify = pmdao002.getURLPath("sf_wip_verify");
+        String targetlocation = location + file_verify;
 
         WhWipDAO daoGet = new WhWipDAO();
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
-        File file = new File(FILEVERIFIED);
+//        File file = new File(FILEVERIFIED);
+        File file = new File(targetlocation);
 
         String statusVerify = pdao.getDetailByCode(VERIFY);
         List<WhWip> dataList = daoGet.getWipByGtsNo(gtsNo, statusVerify);
@@ -877,7 +884,8 @@ public class WipController {
 
             if (file.exists()) {
                 try {
-                    fileWriter = new FileWriter(FILEVERIFIED, true);
+//                    fileWriter = new FileWriter(FILEVERIFIED, true);
+                    fileWriter = new FileWriter(targetlocation, true);
 
                     //New Line after the header
                     fileWriter.append(LINE_SEPARATOR);
@@ -901,7 +909,8 @@ public class WipController {
                 }
             } else {
                 try {
-                    fileWriter = new FileWriter(FILEVERIFIED, true);
+//                    fileWriter = new FileWriter(FILEVERIFIED, true);
+                    fileWriter = new FileWriter(targetlocation, true);
                     //Adding the header
                     fileWriter.append(HEADERVERIFY);
 
@@ -931,7 +940,14 @@ public class WipController {
 
     private void sendCsvWipShipping(String shippingList, String shipDate, String username) {
 
-        File file = new File(FILESHIP);
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_ship = pmdao002.getURLPath("sf_wip_ship");
+        String targetlocation = location + file_ship;
+        
+//        File file = new File(FILESHIP);
+        File file = new File(targetlocation);
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String statusReady = pdao.getDetailByCode(READY);
         pdao = new ParameterDetailsDAO();
@@ -966,7 +982,8 @@ public class WipController {
 
             if (file.exists()) {
                 try {
-                    fileWriter = new FileWriter(FILESHIP, true);
+//                    fileWriter = new FileWriter(targetlocationFILESHIP, true);
+                    fileWriter = new FileWriter(targetlocation, true);
 
                     //New Line after the header
                     fileWriter.append(LINE_SEPARATOR);
@@ -992,7 +1009,8 @@ public class WipController {
                 }
             } else {
                 try {
-                    fileWriter = new FileWriter(FILESHIP, true);
+//                    fileWriter = new FileWriter(FILESHIP, true);
+                    fileWriter = new FileWriter(targetlocation, true);
                     //Adding the header
                     fileWriter.append(HEADERSHIP);
 
@@ -1024,14 +1042,22 @@ public class WipController {
 
     private void sendCsvLoading(String requestId) {
 
-        File file = new File(FILELOAD);
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_load = pmdao002.getURLPath("sf_wip_load");
+        String targetlocation = location + file_load;
+        
+//        File file = new File(FILELOAD);
+        File file = new File(targetlocation);
         FileWriter fileWriter = null;
         WhWipDAO dao = new WhWipDAO();
         WhWip wip = dao.getWhWipByRequestId(requestId);
 
         if (file.exists()) {
             try {
-                fileWriter = new FileWriter(FILELOAD, true);
+//                fileWriter = new FileWriter(FILELOAD, true);
+                fileWriter = new FileWriter(targetlocation, true);
                 fileWriter.append(LINE_SEPARATOR);
                 fileWriter.append(wip.getRequestId());
                 fileWriter.append(COMMA_DELIMITER);
@@ -1051,7 +1077,8 @@ public class WipController {
             }
         } else {
             try {
-                fileWriter = new FileWriter(FILELOAD, true);
+//                fileWriter = new FileWriter(FILELOAD, true);
+                fileWriter = new FileWriter(targetlocation, true);
                 fileWriter.append(HEADERLOAD);
                 fileWriter.append(LINE_SEPARATOR);
                 fileWriter.append(wip.getRequestId());
@@ -1075,7 +1102,14 @@ public class WipController {
 
     private void sendCsvUnloading(String requestId) {
 
-        File file = new File(FILEUNLOAD);
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_unload = pmdao002.getURLPath("sf_wip_unload");
+        String targetlocation = location + file_unload;
+        
+//        File file = new File(FILEUNLOAD);
+        File file = new File(targetlocation);
         FileWriter fileWriter = null;
         WhWipDAO dao = new WhWipDAO();
         WhWip wip = dao.getWhWipByRequestId(requestId);
@@ -1084,7 +1118,8 @@ public class WipController {
 
         if (file.exists()) {
             try {
-                fileWriter = new FileWriter(FILEUNLOAD, true);
+//                fileWriter = new FileWriter(FILEUNLOAD, true);
+                fileWriter = new FileWriter(targetlocation, true);
                 fileWriter.append(LINE_SEPARATOR);
                 fileWriter.append(wip.getRequestId());
                 fileWriter.append(COMMA_DELIMITER);
@@ -1104,7 +1139,8 @@ public class WipController {
             }
         } else {
             try {
-                fileWriter = new FileWriter(FILEUNLOAD, true);
+//                fileWriter = new FileWriter(FILEUNLOAD, true);
+                fileWriter = new FileWriter(targetlocation, true);
                 fileWriter.append(HEADERLOAD);
                 fileWriter.append(LINE_SEPARATOR);
                 fileWriter.append(wip.getRequestId());

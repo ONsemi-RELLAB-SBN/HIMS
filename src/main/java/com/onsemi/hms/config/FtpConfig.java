@@ -1,6 +1,7 @@
 package com.onsemi.hms.config;
 
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.ParameterDetailsDAO;
 import com.onsemi.hms.dao.WhMpListDAO;
 import com.onsemi.hms.dao.WhRequestDAO;
 import com.onsemi.hms.dao.WhRetrieveDAO;
@@ -34,6 +35,7 @@ public class FtpConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpConfig.class);
     String[] args = {};
+    
 //    private static final String TARGETLOCATION  = "D:\\HIMS_CSV\\RL\\";
     private static final String TARGETLOCATION = "D:\\Source Code\\archive\\CSV Import\\";
     private static final String FILERETRIEVE    = "cdars_retrieve.csv";
@@ -44,21 +46,33 @@ public class FtpConfig {
     @Autowired
     ServletContext servletContext;
 
-
     @Scheduled(cron = "0 */1 * * * ?") //every 2 minute - cron (sec min hr daysOfMth month daysOfWeek year(optional)) //active
     public void cronRun() {
         LOGGER.info("MASUK KE FUNCTION CRON JOB - HMS");
-        String username = System.getProperty("user.name");
-
+//        String username = System.getProperty("user.name");
         
-        File folder = new File(TARGETLOCATION);
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("rl_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_retrieve = pmdao002.getURLPath("rl_retrieve");
+        ParameterDetailsDAO pmdao003 = new ParameterDetailsDAO();
+        String file_ship = pmdao003.getURLPath("rl_ship");
+        ParameterDetailsDAO pmdao004 = new ParameterDetailsDAO();
+        String file_status = pmdao004.getURLPath("rl_retrieve_status");
+//        LOGGER.info("LOGGER for TARGETLOCATION : " + location);
+//        LOGGER.info("LOGGER for FILESHIPPING : " + file_retrieve);
+//        LOGGER.info("LOGGER for FILESHIPPING : " + file_ship);
+//        LOGGER.info("LOGGER for FILESTATUS : " + file_status);
+        
+//        File folder = new File(TARGETLOCATION);
+        File folder = new File(location);
         File[] listOfFiles = folder.listFiles();
 
         if (listOfFiles.length != 0) {
             for (File listOfFile : listOfFiles) {
                 if (listOfFile.isFile()) {
-                    if (listOfFile.getName().equals(FILERETRIEVE)) {
-                        fileLocation = TARGETLOCATION + listOfFile.getName();
+                    if (listOfFile.getName().equals(file_retrieve)) {
+                        fileLocation = location + listOfFile.getName();
                         LOGGER.info("Request file found.");
 
                         CSVReader csvReader = null;
@@ -200,8 +214,8 @@ public class FtpConfig {
                             LOGGER.info("Error while reading cdars_retrieve.csv");
                             ee.printStackTrace();
                         }
-                    } else if (listOfFile.getName().equals(FILESHIPPING)) {
-                        fileLocation = TARGETLOCATION + listOfFile.getName();
+                    } else if (listOfFile.getName().equals(file_ship)) {
+                        fileLocation = location + listOfFile.getName();
                         LOGGER.info("Shipping file found.");
 
                         CSVReader csvReader = null;
@@ -344,8 +358,8 @@ public class FtpConfig {
                             LOGGER.info("Error while reading cdars_shipping.csv");
                             ee.printStackTrace();
                         }
-                    } else if (listOfFile.getName().equals(FILESTATUS)) {
-                        fileLocation = TARGETLOCATION + listOfFile.getName();
+                    } else if (listOfFile.getName().equals(file_status)) {
+                        fileLocation = location + listOfFile.getName();
                         LOGGER.info("Close status file found.");
 
                         CSVReader csvReader = null;

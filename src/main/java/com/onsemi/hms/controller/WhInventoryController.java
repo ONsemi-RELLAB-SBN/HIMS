@@ -3,6 +3,7 @@ package com.onsemi.hms.controller;
 import com.onsemi.hms.dao.InventoryMgtDAO;
 import com.onsemi.hms.tools.CSV;
 import com.onsemi.hms.dao.LogModuleDAO;
+import com.onsemi.hms.dao.ParameterDetailsDAO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -196,6 +197,8 @@ public class WhInventoryController {
             @RequestParam(required = false) String equipmentType,
             @RequestParam(required = false) String equipmentId
     ) {
+        
+        LOGGER.info("LOGGER for SINI MASUK DEKAT UPDATE FUNCTION : ");
         inventoryRack = inventoryRack.toUpperCase();
         inventoryShelf = inventoryShelf.toUpperCase();
 
@@ -258,7 +261,7 @@ public class WhInventoryController {
                 ck = true;
             }
         }
-
+        
         InventoryMgtDAO inventoryMgtDao = new InventoryMgtDAO();
         int countShelf = inventoryMgtDao.getCountShelf(inventoryShelf);
 
@@ -277,6 +280,7 @@ public class WhInventoryController {
         QueryResult queryResult = null;
         String url = "";
         if (checkRackShelf == true) {
+            LOGGER.info("SINI CHECK RACK LEPAS");
             InventoryMgtDAO inventoryMgtDAO3 = new InventoryMgtDAO();
             WhInventoryMgt whInventoryMgt = inventoryMgtDAO3.getInventoryDetails(inventoryShelf);
             WhInventoryMgt imgt = new WhInventoryMgt();
@@ -327,13 +331,20 @@ public class WhInventoryController {
                 logModule3.setVerifiedDate(query3.getInventoryDate());
                 QueryResult queryResult3 = logModuleDAO3.insertLogForVerification(logModule3);
                 LOGGER.info("Inventory Pass");
+                
+                ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+                String location = pmdao001.getURLPath("sf_path");
+                ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+                String file_inventory = pmdao002.getURLPath("sf_inventory");
 
                 args = new String[1];
                 args[0] = materialPassNo;
                 if (queryResult.getResult() == 1) {
                     String username = System.getProperty("user.name");
+                    String targetLocation = location + file_inventory;
                     //SEND EMAIL
-                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+//                    File file = new File("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                    File file = new File(targetLocation);
                     if (file.exists()) {
                         LOGGER.info("dh ada header");
                         FileWriter fileWriter = null;
@@ -341,9 +352,12 @@ public class WhInventoryController {
 
                         boolean check = false;
                         try {
-                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv", true);
-                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
-                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
+//                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv", true);
+//                            fileReader = new FileReader("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+//                            String targetLocation = "D:\\HIMS_CSV\\SF\\hms_inventory.csv";
+                            fileWriter = new FileWriter(targetLocation, true);
+                            fileReader = new FileReader(targetLocation);
+                            LOGGER.info("DEKAT SINI KITA WRITE EXISTING DATA AND READ THE DATA BACK FOR COMPARISON");
 
                             BufferedReader bufferedReader = new BufferedReader(fileReader);
                             String data = bufferedReader.readLine();
@@ -396,7 +410,9 @@ public class WhInventoryController {
 
                         if (check == false) {
                             try {
-                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                                LOGGER.info("DEKAT SINI KITA NK WRITE NEW DATA FOR INVENTORY");
+//                                fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv", true);
+                                fileWriter = new FileWriter(targetLocation, true);
                                 //New Line after the header
                                 fileWriter.append(LINE_SEPARATOR);
                                 WhInventoryDAO whdao = new WhInventoryDAO();
@@ -506,7 +522,9 @@ public class WhInventoryController {
                     } else {
                         FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                            LOGGER.info("KAT SINI KITA WRITE NEW INVENTORY DATA CHANGES");
+//                            fileWriter = new FileWriter("D:\\HIMS_CSV\\SF\\hms_inventory.csv");
+                            fileWriter = new FileWriter(targetLocation);
                             LOGGER.info("no file yet");
                             //Adding the header
                             fileWriter.append(HEADER);
@@ -887,14 +905,14 @@ public class WhInventoryController {
         String query = "WHERE rack_id = '' ";
 
         if (rackId == null) {
-            LOGGER.debug("null~~~~");
+            LOGGER.debug("RACK ID null~~~~");
         } else if (rackId.equals("")) {
             query = "WHERE rack_id = '' ";
-            LOGGER.debug("aaaaaaaaaaaaaaa");
+            LOGGER.debug("RACK ID EMPTY");
         } else if (rackId.equals("All")) {
             query = "";
         } else {
-            query = "WHERE rack_id= '" + rackId + "' ";
+            query = "WHERE rack_id = '" + rackId + "' ";
         }
         InventoryMgtDAO wh = new InventoryMgtDAO();
         List<WhInventoryMgt> inventoryMgtList = wh.getInventoryDetailsList(query);
@@ -904,4 +922,5 @@ public class WhInventoryController {
         model.addAttribute("inventoryMgtList2", inventoryMgtList2);
         return "whInventory/viewInventory";
     }
+
 }

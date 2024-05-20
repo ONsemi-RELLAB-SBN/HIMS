@@ -62,13 +62,13 @@ public class Wip0Controller {
     String[] args = {};
     
 //    private final String FILEPATH = "D:\\HIMS_CSV\\SF\\";
-    private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
-    private final String FILESHIP       = FILEPATH + "hms_wip_shipping.csv";
-    private final String FILEVERIFIED   = FILEPATH + "hms_wip_verified.csv";
-    private final String FILELOAD       = FILEPATH + "hms_wip_load.csv";
-    private final String FILEUNLOAD     = FILEPATH + "hms_wip_unload.csv";
-    private final String FILEINVENTORY  = FILEPATH + "hms_zero_inventory.csv";
-    private final String FILESHIPBACK   = FILEPATH + "hms_zero_shipping.csv";
+//    private final String FILEPATH = "D:\\Source Code\\archive\\CSV Import\\";
+//    private final String FILESHIP       = FILEPATH + "hms_wip_shipping.csv";
+//    private final String FILEVERIFIED   = FILEPATH + "hms_wip_verified.csv";
+//    private final String FILELOAD       = FILEPATH + "hms_wip_load.csv";
+//    private final String FILEUNLOAD     = FILEPATH + "hms_wip_unload.csv";
+//    private final String FILEINVENTORY  = FILEPATH + "hms_zero_inventory.csv";
+//    private final String FILESHIPBACK   = FILEPATH + "hms_zero_shipping.csv";
 
     private static final String STATUSCODE  = "01";
     private static final String NEW         = "0101";
@@ -376,12 +376,21 @@ public class Wip0Controller {
 
         WhWipDAO daoGet = new WhWipDAO();
         WhWip0 wip = daoGet.getWhWip0hourByRequestId(requestId);
-        File file = new File(FILEINVENTORY);
+        
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_inventory = pmdao002.getURLPath("sf_zero_inventory");
+        String targetlocation = location + file_inventory;
+        
+//        File file = new File(FILEINVENTORY);
+        File file = new File(targetlocation);
         FileWriter fileWriter = null;
 
         if (file.exists()) {
             try {
-                fileWriter = new FileWriter(FILEINVENTORY, true);
+//                fileWriter = new FileWriter(FILEINVENTORY, true);
+                fileWriter = new FileWriter(targetlocation, true);
 
                 //New Line after the header
                 fileWriter.append(LINE_SEPARATOR);
@@ -407,7 +416,8 @@ public class Wip0Controller {
             }
         } else {
             try {
-                fileWriter = new FileWriter(FILEINVENTORY, true);
+                fileWriter = new FileWriter(targetlocation, true);
+//                fileWriter = new FileWriter(FILEINVENTORY, true);
                 //Adding the header
                 fileWriter.append(HEADERINVENTORY);
 
@@ -438,7 +448,14 @@ public class Wip0Controller {
     
     private void createCsvShipBack(String shippingList, String shipDate, String name) {
 
-        File file = new File(FILESHIPBACK);
+        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+        String location = pmdao001.getURLPath("sf_path");
+        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+        String file_ship = pmdao002.getURLPath("sf_zero_ship");
+        String targetLocation = location + file_ship;
+        
+//        File file = new File(FILESHIPBACK);
+        File file = new File(targetLocation);
         ParameterDetailsDAO pdao = new ParameterDetailsDAO();
         String statusShip = pdao.getDetailByCode(READY);
         pdao = new ParameterDetailsDAO();
@@ -473,7 +490,8 @@ public class Wip0Controller {
 
             if (file.exists()) {
                 try {
-                    fileWriter = new FileWriter(FILESHIPBACK, true);
+//                    fileWriter = new FileWriter(FILESHIPBACK, true);
+                    fileWriter = new FileWriter(targetLocation, true);
 
                     //New Line after the header
                     fileWriter.append(LINE_SEPARATOR);
@@ -493,7 +511,8 @@ public class Wip0Controller {
                 }
             } else {
                 try {
-                    fileWriter = new FileWriter(FILESHIPBACK, true);
+//                    fileWriter = new FileWriter(FILESHIPBACK, true);
+                    fileWriter = new FileWriter(targetLocation, true);
                     //Adding the header
                     fileWriter.append(HEADERSHIPBACK);
 
@@ -664,7 +683,7 @@ public class Wip0Controller {
     public String updateCsvData () throws FileNotFoundException, IOException {
         
         LOGGER.info("MASUK FUNCTION KITA NK TEST READ AND UPDATE NI ");
-        String filePath = FILEPATH + "sample_data_serial.csv";
+        String filePath = "D:\\Source Code\\archive\\CSV Import\\sample_data_serial.csv";
         File file = new File(filePath);
         
         if (file.exists()) {
