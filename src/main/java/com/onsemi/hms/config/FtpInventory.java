@@ -1,11 +1,9 @@
 package com.onsemi.hms.config;
 
 import com.onsemi.hms.dao.InventoryMgtDAO;
-import com.onsemi.hms.dao.LogModuleDAO;
 import com.onsemi.hms.dao.WhInventoryDAO;
 import com.onsemi.hms.dao.WhRetrieveDAO;
 import com.onsemi.hms.model.IonicFtpRetrieve;
-import com.onsemi.hms.model.LogModule;
 import com.onsemi.hms.model.WhInventory;
 import com.onsemi.hms.model.WhInventoryMgt;
 import com.onsemi.hms.model.WhRetrieve;
@@ -21,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableScheduling
@@ -35,11 +32,16 @@ public class FtpInventory {
 
     String fileLocation = "";
 
-    @Scheduled(cron = "0 */5 * * * ?") //every 5 minutes - cron (sec min hr daysOfMth month daysOfWeek year(optional)) active
+//    @Scheduled(cron = "0 */5 * * * ?") //every 5 minutes - cron (sec min hr daysOfMth month daysOfWeek year(optional)) active
     public void cronRun() {
         LOGGER.info("SINI MASUK KE HIMS CRON JOB - RUN");
         String username = System.getProperty("user.name");
 //        String targetLocation = "C:\\Users\\" + username + "\\Documents\\";
+//        ParameterDetailsDAO pmdao001 = new ParameterDetailsDAO();
+//        String location = pmdao001.getURLPath("sf_path");
+//        ParameterDetailsDAO pmdao002 = new ParameterDetailsDAO();
+//        String file_retrieve = pmdao002.getURLPath("sf_retrieve");
+        
         String targetLocation = "D:\\CSV Import\\";
         File folder = new File(targetLocation);
         File[] listOfFiles = folder.listFiles();
@@ -221,4 +223,5 @@ public class FtpInventory {
             LOGGER.info("Folder Empty");
         }
     }
+
 }

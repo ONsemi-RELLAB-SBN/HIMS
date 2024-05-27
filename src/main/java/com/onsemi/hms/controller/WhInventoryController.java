@@ -28,6 +28,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
@@ -71,9 +72,19 @@ public class WhInventoryController {
             @ModelAttribute UserSession userSession
     ) {
         WhInventoryDAO whInventoryDAO = new WhInventoryDAO();
+        LocalTime startTime = LocalTime.now();
         List<WhInventory> whInventoryList = whInventoryDAO.getWhInventoryListMergeRetrieve();
         String groupId = userSession.getGroup();
+        LocalTime endTime = LocalTime.now();
 //        LOGGER.info("groupId" + groupId);
+//        LOGGER.info("LOGGER for xxx : " +endTime - startTime);
+        LOGGER.info("LOGGER for start : " +startTime.getNano());
+        LOGGER.info("LOGGER for  end  : " +endTime.getNano());
+        
+        long differenceInNanos = endTime.getNano() - startTime.getNano();
+        long differenceInMilli = differenceInNanos / 1000000;
+        LOGGER.info("LOGGER for differenceInMilli : " + differenceInMilli);
+        
         model.addAttribute("userSession", userSession);
         model.addAttribute("whInventoryList", whInventoryList);
         model.addAttribute("groupId", groupId);
